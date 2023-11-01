@@ -1,15 +1,25 @@
 using ApiValidation;
 using ApiValidation.Database;
-using ApiValidation.Models;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+#region Serilog
+var logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .Enrich.FromLogContext()
+    .Filter.ByIncludingOnly("StatusCode >= 400 and RequestPath like '%/api/%'")
+    .CreateLogger();
+builder.Logging.ClearProviders();
+builder.Logging.AddSerilog(logger);
 
+#endregion
+
+// Add services to the container.
 builder.Services.AddDbContext<ApiDbContext>(option => option.UseSqlServer("Data Source=LAPTOP-JPSCHNGH\\DATSQL;Initial Catalog=sakila-web;Trusted_Connection=true;TrustServerCertificate=true"));
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
