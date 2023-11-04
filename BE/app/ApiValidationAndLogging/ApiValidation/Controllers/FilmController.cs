@@ -2,6 +2,7 @@
 using ApiValidation.Models;
 using FluentValidation;
 using FluentValidation.Results;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Data.SqlClient;
@@ -20,7 +21,7 @@ namespace ApiValidation.Controllers
             _dbContext = dbContext;
         }
 
-        [HttpGet]
+        [HttpGet, Authorize]
         [ProducesResponseType(typeof(IEnumerable<Film>), 200)]
         public async Task<ActionResult<IEnumerable<Film>>> GetAllFilms()
         {
