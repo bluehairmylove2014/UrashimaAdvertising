@@ -1,13 +1,14 @@
 ﻿#pragma warning disable 
+using ApiValidation.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-
+using System.Security.Cryptography;
 
 namespace ApiValidation.Controllers
 {
-    [Route("/api/auth")]
+    [Route("/api/v1/auth")]
     [ApiController]
     public class AuthController : Controller
     {
@@ -21,13 +22,21 @@ namespace ApiValidation.Controllers
             public string Password { get; set; }
         }
 
+        public class TokenDto
+        {
+            public string Token { get; set; }
+            public string RefreshToken { get; set; }
+        }
+
+        private static RefreshToken myRefreshToken { get; set; }
+
         public AuthController(IConfiguration configuration)
         {
             _configuration = configuration;
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginDto login)
+        public async Task<ActionResult<TokenDto>> Login(LoginDto login)
         {
             if (login.Username != USER_NAME)
             {
@@ -40,8 +49,68 @@ namespace ApiValidation.Controllers
             }
 
             string token = CreateToken(login.Username);
+            var refresh_token = GenerateRefreshToken();
+            SetRefreshToken(refresh_token);
 
-            return Ok(token);
+            return Ok(new TokenDto {
+                Token = token,
+                RefreshToken = refresh_token.Token
+            });
+        }
+
+        [HttpPost("refresh-token")]
+        public async Task<ActionResult<string>> RefreshToken(LoginDto login, string refreshToken)
+        {
+            if (string.IsNullOrEmpty(refreshToken))
+            {
+                return BadRequest(new
+                {
+                    message = "Refresh token không hợp lệ"
+                });
+            }
+
+            if (myRefreshToken.Expires < DateTime.Now)
+            {
+                return Unauthorized(new
+                {
+                    message = "Refresh Token đã hết hạn, vui lòng đăng nhập lại"
+                });
+            }
+
+            string token = CreateToken(login.Username);
+            var refresh_token = GenerateRefreshToken();
+            SetRefreshToken(refresh_token);
+            
+            return Ok(new
+            {
+                message = "Refresh token thành công",
+                token,
+                refreshToken = refresh_token.Token,
+            });
+        }
+
+        private RefreshToken GenerateRefreshToken()
+        {
+            var refreshToken = new RefreshToken
+            {
+                Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
+                Expires = DateTime.Now.AddDays(7),
+                Created = DateTime.Now
+            };
+
+            return refreshToken;
+        }
+
+        private void SetRefreshToken(RefreshToken newRefreshToken)
+        {
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Expires = newRefreshToken.Expires
+            };
+            Response.Cookies.Append("refreshToken", newRefreshToken.Token, cookieOptions);
+
+            myRefreshToken = newRefreshToken;
         }
 
         private string CreateToken(string username)
