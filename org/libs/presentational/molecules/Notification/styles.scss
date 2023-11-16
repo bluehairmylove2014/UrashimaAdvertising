@@ -1,0 +1,40 @@
+@import '@globalStyles/mixins.scss';
+
+.notification {
+    background-color: var(--white-smoke);
+    padding: 0.75rem 1.5rem;
+    color: black;
+    box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    pointer-events: none;
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    z-index: 10;
+    transform: translateX(-50%);
+    font-size: 0.75rem;
+    font-weight: 600;
+    // direction - justify content - align items - flex wrap
+    @include dflex(row, center, center, nowrap);
+    gap: 0.5rem;
+
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease-in-out;
+
+    &.SUCCESS {
+        background-color: var(--verdigris);
+        color: white;
+    }
+
+    &.ERROR {
+        background-color: red;
+        color: white;
+    }
+
+    &.active {
+        opacity: 1;
+        visibility: visible;
+        transform: translate(-50%, min(5em, 80px));
+    }
+}

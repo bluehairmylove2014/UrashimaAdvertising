@@ -1,0 +1,36 @@
+@import '@globalStyles/mixins.scss';
+
+.quantity {
+    // direction - justify content - align items - flex wrap
+    @include dflex(row, flex-start, center, nowrap);
+    $border-template: 1px solid black;
+    border: $border-template;
+    border-radius: 5px;
+    overflow: hidden;
+
+    &>* {
+        width: 2rem;
+        height: 30px;
+        // direction - justify content - align items - flex wrap
+        @include dflex(row, center, center, nowrap);
+        margin: 0;
+        padding: 0;
+
+    }
+
+    .quantity__decrease-btn,
+    .quantity__increase-btn {
+        border: none;
+
+        button {
+            // direction - justify content - align items - flex wrap
+            @include dflex(row, center, center, nowrap);
+        }
+    }
+
+    span {
+        color: black;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+}

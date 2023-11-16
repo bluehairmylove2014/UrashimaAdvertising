@@ -1,0 +1,12 @@
+@import '@globalStyles/mixins.scss';
+
+.product-img {
+    width: 100%;
+    aspect-ratio: 1;
+    position: relative;
+    overflow: hidden;
+
+    img {
+        @include absolute-center;
+    }
+}

@@ -1,0 +1,41 @@
+.slider-container {
+    position: relative;
+    width: 100%;
+
+    .slider__bar,
+    .slider__bar--disabled {
+        width: 100%;
+        height: 2px;
+        position: absolute;
+        top: 50%;
+        left: 0;
+    }
+
+    .slider__bar--disabled {
+        background-color: var(--verdigris);
+    }
+
+    .slider__bar {
+        background-color: var(--saffron-mango);
+    }
+
+    .slider__button--left,
+    .slider__button--right {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 15px;
+        height: 15px;
+        background-color: var(--saffron-mango);
+        border-radius: 50%;
+        cursor: pointer;
+    }
+
+    .slider__button--left {
+        left: 0;
+    }
+
+    .slider__button--right {
+        right: 0;
+    }
+}

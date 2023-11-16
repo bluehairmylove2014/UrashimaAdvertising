@@ -1,0 +1,788 @@
+[
+  {
+    "id": "19057grtbeukfa198",
+    "thumbnail": "https://thenewdawn.b-cdn.net/products/helios/thumbnail.png",
+    "name": "Đồng hồ thông minh HELIOS thường",
+    "features": [
+      "Thoải mái thay đổi hình nền",
+      "Có dự báo thời tiết",
+      "Màn hình FHD sắc nét",
+      "Tích hợp loa cao cấp (nghe nhạc, xem phim)"
+    ],
+    "price": 350000,
+    "discount": 0.125,
+    "outOfStock": false,
+    "images": [
+      {
+        "id": 1,
+        "src": "https://thenewdawn.b-cdn.net/products/helios/thumbnail.png",
+        "alt": "helios"
+      },
+      {
+        "id": 2,
+        "src": "https://thenewdawn.b-cdn.net/products/helios/helios2.png",
+        "alt": "helios"
+      },
+      {
+        "id": 3,
+        "src": "https://thenewdawn.b-cdn.net/products/helios/helios3.png",
+        "alt": "helios"
+      },
+      {
+        "id": 4,
+        "src": "https://thenewdawn.b-cdn.net/products/helios/helios1.png",
+        "alt": "helios"
+      }
+    ],
+    "details": [
+      {
+        "tag": "h3",
+        "children": "Đồng hồ thông minh HELIOS PRO"
+      },
+      {
+        "tag": "h6",
+        "children": "Thoải mái thay đổi hình nền"
+      },
+      {
+        "tag": "p",
+        "children": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+      },
+      {
+        "tag": "img",
+        "src": "https://thenewdawn.b-cdn.net/products/helios/helios1.png",
+        "alt": "helios detail"
+      },
+      {
+        "tag": "h6",
+        "children": "Có dự báo thời tiết"
+      },
+      {
+        "tag": "p",
+        "children": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+      },
+      {
+        "tag": "img",
+        "src": "https://thenewdawn.b-cdn.net/products/helios/helios2.png",
+        "alt": "helios detail"
+      },
+      {
+        "tag": "h6",
+        "children": "Màn hình FHD sắc nét và Tích hợp loa cao cấp"
+      },
+      {
+        "tag": "p",
+        "children": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+      },
+      {
+        "tag": "h6",
+        "children": "Có trợ lý ảo hỗ trợ tìm kiếm, thao tác và phản hồi"
+      },
+      {
+        "tag": "p",
+        "children": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+      },
+      {
+        "tag": "img",
+        "src": "https://thenewdawn.b-cdn.net/products/helios/helios3.png",
+        "alt": "helios detail"
+      },
+      {
+        "tag": "h6",
+        "children": "Vỏ làm bằng kim loại chắc chắn"
+      },
+      {
+        "tag": "p",
+        "children": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+      }
+    ],
+    "specifications": [
+      {
+        "name": "Nhà sản xuất",
+        "detail": "The New Dawn"
+      },
+      {
+        "name": "Độ phân giải",
+        "detail": "Full HD"
+      },
+      {
+        "name": "Loa",
+        "detail": "Siêu thính"
+      },
+      {
+        "name": "Micro",
+        "detail": "Siêu chất"
+      },
+      {
+        "name": "Kích thước",
+        "detail": "15 x 7 x 5 (cm) (dài x cao x rộng)"
+      },
+      {
+        "name": "Màu sắc",
+        "detail": "Đen nhám"
+      },
+      {
+        "name": "Cáp đi kèm",
+        "detail": "USB 2.0"
+      },
+      {
+        "name": "Bảo hành",
+        "detail": "6 tháng"
+      }
+    ]
+  },
+  {
+    "id": "1923eukfa198",
+    "thumbnail": "https://thenewdawn.b-cdn.net/products/helios_pro/thumbnail.png",
+    "name": "Đồng hồ thông minh HELIOS PRO",
+    "features": [
+      "Có tất cả tính năng của bản thường",
+      "Màn hình được nâng cấp rõ rệt",
+      "Khung kim loại chắc chắn",
+      "Tích hợp AI phản hồi và điều khuyển"
+    ],
+    "price": 650000,
+    "discount": 0.235,
+    "outOfStock": false,
+    "images": [
+      {
+        "id": 1,
+        "src": "https://thenewdawn.b-cdn.net/products/helios/thumbnail.png",
+        "alt": "helios"
+      },
+      {
+        "id": 2,
+        "src": "https://thenewdawn.b-cdn.net/products/helios/helios2.png",
+        "alt": "helios"
+      },
+      {
+        "id": 3,
+        "src": "https://thenewdawn.b-cdn.net/products/helios/helios3.png",
+        "alt": "helios"
+      },
+      {
+        "id": 4,
+        "src": "https://thenewdawn.b-cdn.net/products/helios/helios1.png",
+        "alt": "helios"
+      }
+    ],
+    "details": [
+      {
+        "tag": "h3",
+        "children": "Đồng hồ thông minh HELIOS PRO"
+      },
+      {
+        "tag": "h6",
+        "children": "Thoải mái thay đổi hình nền"
+      },
+      {
+        "tag": "p",
+        "children": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+      },
+      {
+        "tag": "img",
+        "src": "https://thenewdawn.b-cdn.net/products/helios/helios1.png",
+        "alt": "helios detail"
+      },
+      {
+        "tag": "h6",
+        "children": "Có dự báo thời tiết"
+      },
+      {
+        "tag": "p",
+        "children": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+      },
+      {
+        "tag": "img",
+        "src": "https://thenewdawn.b-cdn.net/products/helios/helios2.png",
+        "alt": "helios detail"
+      },
+      {
+        "tag": "h6",
+        "children": "Màn hình FHD sắc nét và Tích hợp loa cao cấp"
+      },
+      {
+        "tag": "p",
+        "children": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+      },
+      {
+        "tag": "h6",
+        "children": "Có trợ lý ảo hỗ trợ tìm kiếm, thao tác và phản hồi"
+      },
+      {
+        "tag": "p",
+        "children": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+      },
+      {
+        "tag": "img",
+        "src": "https://thenewdawn.b-cdn.net/products/helios/helios3.png",
+        "alt": "helios detail"
+      },
+      {
+        "tag": "h6",
+        "children": "Vỏ làm bằng kim loại chắc chắn"
+      },
+      {
+        "tag": "p",
+        "children": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+      }
+    ],
+    "specifications": [
+      {
+        "name": "Nhà sản xuất",
+        "detail": "The New Dawn"
+      },
+      {
+        "name": "Độ phân giải",
+        "detail": "Full HD"
+      },
+      {
+        "name": "Loa",
+        "detail": "Siêu thính"
+      },
+      {
+        "name": "Micro",
+        "detail": "Siêu chất"
+      },
+      {
+        "name": "Kích thước",
+        "detail": "15 x 7 x 5 (cm) (dài x cao x rộng)"
+      },
+      {
+        "name": "Màu sắc",
+        "detail": "Đen nhám"
+      },
+      {
+        "name": "Cáp đi kèm",
+        "detail": "USB 2.0"
+      },
+      {
+        "name": "Bảo hành",
+        "detail": "6 tháng"
+      }
+    ]
+  },
+  {
+    "id": "19015beukfa198",
+    "thumbnail": "https://thenewdawn.b-cdn.net/products/helios_legendary/thumbnail.png",
+    "name": "Robo EMO thông minh",
+    "features": [
+      "Tự động khám phá thế giới",
+      "Giải trí cùng bạn mỗi ngày",
+      "Tự nhận biết, nghe, nhìn và học hỏi",
+      "Hỗ trợ bạn các công việc hằng ngày"
+    ],
+    "price": 12000000,
+    "discount": 0,
+    "outOfStock": false,
+    "images": [
+      {
+        "id": 1,
+        "src": "https://thenewdawn.b-cdn.net/products/helios/thumbnail.png",
+        "alt": "helios"
+      },
+      {
+        "id": 2,
+        "src": "https://thenewdawn.b-cdn.net/products/helios/helios2.png",
+        "alt": "helios"
+      },
+      {
+        "id": 3,
+        "src": "https://thenewdawn.b-cdn.net/products/helios/helios3.png",
+        "alt": "helios"
+      },
+      {
+        "id": 4,
+        "src": "https://thenewdawn.b-cdn.net/products/helios/helios1.png",
+        "alt": "helios"
+      }
+    ],
+    "details": [
+      {
+        "tag": "h3",
+        "children": "Đồng hồ thông minh HELIOS PRO"
+      },
+      {
+        "tag": "h6",
+        "children": "Thoải mái thay đổi hình nền"
+      },
+      {
+        "tag": "p",
+        "children": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+      },
+      {
+        "tag": "img",
+        "src": "https://thenewdawn.b-cdn.net/products/helios/helios1.png",
+        "alt": "helios detail"
+      },
+      {
+        "tag": "h6",
+        "children": "Có dự báo thời tiết"
+      },
+      {
+        "tag": "p",
+        "children": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+      },
+      {
+        "tag": "img",
+        "src": "https://thenewdawn.b-cdn.net/products/helios/helios2.png",
+        "alt": "helios detail"
+      },
+      {
+        "tag": "h6",
+        "children": "Màn hình FHD sắc nét và Tích hợp loa cao cấp"
+      },
+      {
+        "tag": "p",
+        "children": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+      },
+      {
+        "tag": "h6",
+        "children": "Có trợ lý ảo hỗ trợ tìm kiếm, thao tác và phản hồi"
+      },
+      {
+        "tag": "p",
+        "children": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+      },
+      {
+        "tag": "img",
+        "src": "https://thenewdawn.b-cdn.net/products/helios/helios3.png",
+        "alt": "helios detail"
+      },
+      {
+        "tag": "h6",
+        "children": "Vỏ làm bằng kim loại chắc chắn"
+      },
+      {
+        "tag": "p",
+        "children": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+      }
+    ],
+    "specifications": [
+      {
+        "name": "Nhà sản xuất",
+        "detail": "The New Dawn"
+      },
+      {
+        "name": "Độ phân giải",
+        "detail": "Full HD"
+      },
+      {
+        "name": "Loa",
+        "detail": "Siêu thính"
+      },
+      {
+        "name": "Micro",
+        "detail": "Siêu chất"
+      },
+      {
+        "name": "Kích thước",
+        "detail": "15 x 7 x 5 (cm) (dài x cao x rộng)"
+      },
+      {
+        "name": "Màu sắc",
+        "detail": "Đen nhám"
+      },
+      {
+        "name": "Cáp đi kèm",
+        "detail": "USB 2.0"
+      },
+      {
+        "name": "Bảo hành",
+        "detail": "6 tháng"
+      }
+    ]
+  },
+  {
+    "id": "190tbeukfa198",
+    "thumbnail": "https://thenewdawn.b-cdn.net/products/helios/thumbnail.png",
+    "name": "Đồng hồ thông minh HELIOS thường",
+    "features": [
+      "Thoải mái thay đổi hình nền",
+      "Có dự báo thời tiết",
+      "Màn hình FHD sắc nét",
+      "Tích hợp loa cao cấp (nghe nhạc, xem phim)"
+    ],
+    "price": 350000,
+    "discount": 0.125,
+    "outOfStock": false,
+    "images": [
+      {
+        "id": 1,
+        "src": "https://thenewdawn.b-cdn.net/products/helios/thumbnail.png",
+        "alt": "helios"
+      },
+      {
+        "id": 2,
+        "src": "https://thenewdawn.b-cdn.net/products/helios/helios2.png",
+        "alt": "helios"
+      },
+      {
+        "id": 3,
+        "src": "https://thenewdawn.b-cdn.net/products/helios/helios3.png",
+        "alt": "helios"
+      },
+      {
+        "id": 4,
+        "src": "https://thenewdawn.b-cdn.net/products/helios/helios1.png",
+        "alt": "helios"
+      }
+    ],
+    "details": [
+      {
+        "tag": "h3",
+        "children": "Đồng hồ thông minh HELIOS PRO"
+      },
+      {
+        "tag": "h6",
+        "children": "Thoải mái thay đổi hình nền"
+      },
+      {
+        "tag": "p",
+        "children": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+      },
+      {
+        "tag": "img",
+        "src": "https://thenewdawn.b-cdn.net/products/helios/helios1.png",
+        "alt": "helios detail"
+      },
+      {
+        "tag": "h6",
+        "children": "Có dự báo thời tiết"
+      },
+      {
+        "tag": "p",
+        "children": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+      },
+      {
+        "tag": "img",
+        "src": "https://thenewdawn.b-cdn.net/products/helios/helios2.png",
+        "alt": "helios detail"
+      },
+      {
+        "tag": "h6",
+        "children": "Màn hình FHD sắc nét và Tích hợp loa cao cấp"
+      },
+      {
+        "tag": "p",
+        "children": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+      },
+      {
+        "tag": "h6",
+        "children": "Có trợ lý ảo hỗ trợ tìm kiếm, thao tác và phản hồi"
+      },
+      {
+        "tag": "p",
+        "children": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+      },
+      {
+        "tag": "img",
+        "src": "https://thenewdawn.b-cdn.net/products/helios/helios3.png",
+        "alt": "helios detail"
+      },
+      {
+        "tag": "h6",
+        "children": "Vỏ làm bằng kim loại chắc chắn"
+      },
+      {
+        "tag": "p",
+        "children": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+      }
+    ],
+    "specifications": [
+      {
+        "name": "Nhà sản xuất",
+        "detail": "The New Dawn"
+      },
+      {
+        "name": "Độ phân giải",
+        "detail": "Full HD"
+      },
+      {
+        "name": "Loa",
+        "detail": "Siêu thính"
+      },
+      {
+        "name": "Micro",
+        "detail": "Siêu chất"
+      },
+      {
+        "name": "Kích thước",
+        "detail": "15 x 7 x 5 (cm) (dài x cao x rộng)"
+      },
+      {
+        "name": "Màu sắc",
+        "detail": "Đen nhám"
+      },
+      {
+        "name": "Cáp đi kèm",
+        "detail": "USB 2.0"
+      },
+      {
+        "name": "Bảo hành",
+        "detail": "6 tháng"
+      }
+    ]
+  },
+  {
+    "id": "1923euka198",
+    "thumbnail": "https://thenewdawn.b-cdn.net/products/helios_pro/thumbnail.png",
+    "name": "Đồng hồ thông minh HELIOS PRO",
+    "features": [
+      "Có tất cả tính năng của bản thường",
+      "Màn hình được nâng cấp rõ rệt",
+      "Khung kim loại chắc chắn",
+      "Tích hợp AI phản hồi và điều khuyển"
+    ],
+    "price": 650000,
+    "discount": 0.235,
+    "outOfStock": false,
+    "images": [
+      {
+        "id": 1,
+        "src": "https://thenewdawn.b-cdn.net/products/helios/thumbnail.png",
+        "alt": "helios"
+      },
+      {
+        "id": 2,
+        "src": "https://thenewdawn.b-cdn.net/products/helios/helios2.png",
+        "alt": "helios"
+      },
+      {
+        "id": 3,
+        "src": "https://thenewdawn.b-cdn.net/products/helios/helios3.png",
+        "alt": "helios"
+      },
+      {
+        "id": 4,
+        "src": "https://thenewdawn.b-cdn.net/products/helios/helios1.png",
+        "alt": "helios"
+      }
+    ],
+    "details": [
+      {
+        "tag": "h3",
+        "children": "Đồng hồ thông minh HELIOS PRO"
+      },
+      {
+        "tag": "h6",
+        "children": "Thoải mái thay đổi hình nền"
+      },
+      {
+        "tag": "p",
+        "children": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+      },
+      {
+        "tag": "img",
+        "src": "https://thenewdawn.b-cdn.net/products/helios/helios1.png",
+        "alt": "helios detail"
+      },
+      {
+        "tag": "h6",
+        "children": "Có dự báo thời tiết"
+      },
+      {
+        "tag": "p",
+        "children": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+      },
+      {
+        "tag": "img",
+        "src": "https://thenewdawn.b-cdn.net/products/helios/helios2.png",
+        "alt": "helios detail"
+      },
+      {
+        "tag": "h6",
+        "children": "Màn hình FHD sắc nét và Tích hợp loa cao cấp"
+      },
+      {
+        "tag": "p",
+        "children": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+      },
+      {
+        "tag": "h6",
+        "children": "Có trợ lý ảo hỗ trợ tìm kiếm, thao tác và phản hồi"
+      },
+      {
+        "tag": "p",
+        "children": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+      },
+      {
+        "tag": "img",
+        "src": "https://thenewdawn.b-cdn.net/products/helios/helios3.png",
+        "alt": "helios detail"
+      },
+      {
+        "tag": "h6",
+        "children": "Vỏ làm bằng kim loại chắc chắn"
+      },
+      {
+        "tag": "p",
+        "children": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+      }
+    ],
+    "specifications": [
+      {
+        "name": "Nhà sản xuất",
+        "detail": "The New Dawn"
+      },
+      {
+        "name": "Độ phân giải",
+        "detail": "Full HD"
+      },
+      {
+        "name": "Loa",
+        "detail": "Siêu thính"
+      },
+      {
+        "name": "Micro",
+        "detail": "Siêu chất"
+      },
+      {
+        "name": "Kích thước",
+        "detail": "15 x 7 x 5 (cm) (dài x cao x rộng)"
+      },
+      {
+        "name": "Màu sắc",
+        "detail": "Đen nhám"
+      },
+      {
+        "name": "Cáp đi kèm",
+        "detail": "USB 2.0"
+      },
+      {
+        "name": "Bảo hành",
+        "detail": "6 tháng"
+      }
+    ]
+  },
+  {
+    "id": "19015beukf8",
+    "thumbnail": "https://thenewdawn.b-cdn.net/products/helios_legendary/thumbnail.png",
+    "name": "Robo EMO thông minh",
+    "features": [
+      "Tự động khám phá thế giới",
+      "Giải trí cùng bạn mỗi ngày",
+      "Tự nhận biết, nghe, nhìn và học hỏi",
+      "Hỗ trợ bạn các công việc hằng ngày"
+    ],
+    "price": 12000000,
+    "discount": 0,
+    "outOfStock": false,
+    "images": [
+      {
+        "id": 1,
+        "src": "https://thenewdawn.b-cdn.net/products/helios/thumbnail.png",
+        "alt": "helios"
+      },
+      {
+        "id": 2,
+        "src": "https://thenewdawn.b-cdn.net/products/helios/helios2.png",
+        "alt": "helios"
+      },
+      {
+        "id": 3,
+        "src": "https://thenewdawn.b-cdn.net/products/helios/helios3.png",
+        "alt": "helios"
+      },
+      {
+        "id": 4,
+        "src": "https://thenewdawn.b-cdn.net/products/helios/helios1.png",
+        "alt": "helios"
+      }
+    ],
+    "details": [
+      {
+        "tag": "h3",
+        "children": "Đồng hồ thông minh HELIOS PRO"
+      },
+      {
+        "tag": "h6",
+        "children": "Thoải mái thay đổi hình nền"
+      },
+      {
+        "tag": "p",
+        "children": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+      },
+      {
+        "tag": "img",
+        "src": "https://thenewdawn.b-cdn.net/products/helios/helios1.png",
+        "alt": "helios detail"
+      },
+      {
+        "tag": "h6",
+        "children": "Có dự báo thời tiết"
+      },
+      {
+        "tag": "p",
+        "children": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+      },
+      {
+        "tag": "img",
+        "src": "https://thenewdawn.b-cdn.net/products/helios/helios2.png",
+        "alt": "helios detail"
+      },
+      {
+        "tag": "h6",
+        "children": "Màn hình FHD sắc nét và Tích hợp loa cao cấp"
+      },
+      {
+        "tag": "p",
+        "children": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+      },
+      {
+        "tag": "h6",
+        "children": "Có trợ lý ảo hỗ trợ tìm kiếm, thao tác và phản hồi"
+      },
+      {
+        "tag": "p",
+        "children": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+      },
+      {
+        "tag": "img",
+        "src": "https://thenewdawn.b-cdn.net/products/helios/helios3.png",
+        "alt": "helios detail"
+      },
+      {
+        "tag": "h6",
+        "children": "Vỏ làm bằng kim loại chắc chắn"
+      },
+      {
+        "tag": "p",
+        "children": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+      }
+    ],
+    "specifications": [
+      {
+        "name": "Nhà sản xuất",
+        "detail": "The New Dawn"
+      },
+      {
+        "name": "Độ phân giải",
+        "detail": "Full HD"
+      },
+      {
+        "name": "Loa",
+        "detail": "Siêu thính"
+      },
+      {
+        "name": "Micro",
+        "detail": "Siêu chất"
+      },
+      {
+        "name": "Kích thước",
+        "detail": "15 x 7 x 5 (cm) (dài x cao x rộng)"
+      },
+      {
+        "name": "Màu sắc",
+        "detail": "Đen nhám"
+      },
+      {
+        "name": "Cáp đi kèm",
+        "detail": "USB 2.0"
+      },
+      {
+        "name": "Bảo hành",
+        "detail": "6 tháng"
+      }
+    ]
+  }
+]

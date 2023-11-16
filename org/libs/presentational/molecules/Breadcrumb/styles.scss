@@ -1,0 +1,26 @@
+@import '@globalStyles/mixins.scss';
+
+.breadcrumbs {
+    // direction - justify content - align items - flex wrap
+    @include dflex(row, flex-start, center, nowrap);
+
+    a {
+        opacity: 0.6;
+        font-size: 0.6rem;
+        font-weight: 600;
+
+        &:hover {
+            opacity: 1;
+        }
+    }
+
+    a:not(:last-child) {
+        opacity: 1;
+
+        &::after {
+            content: '>';
+            margin: 0 5px;
+            pointer-events: none;
+        }
+    }
+}

@@ -1,0 +1,3 @@
+export const QUERY_KEYS = {
+  SEARCH_PRODUCT: "SEARCH_PRODUCT",
+};

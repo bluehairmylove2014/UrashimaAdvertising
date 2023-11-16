@@ -1,0 +1,138 @@
+@import '@globalStyles/mixins.scss';
+
+.common-button {
+    outline: none;
+    transition: 0.1s ease-in-out;
+    // Default
+    background-color: var(--white-smoke);
+    color: var(--dark);
+    border: 1px solid white;
+    border-radius: 5px;
+    width: 100%;
+    height: 100%;
+    padding: 0 20px;
+    font-weight: 600;
+    font-size: 0.75rem;
+    cursor: pointer;
+    position: relative;
+
+    &.fill {
+        &:hover {
+            background-color: var(--soft-peach);
+            border-color: var(--soft-peach);
+        }
+    }
+
+    &.onlyChildren {
+        background-color: transparent;
+        border: none;
+        color: white;
+    }
+
+    &.onlyBorder {
+        background-color: transparent;
+        border: 1px solid white;
+        color: white;
+
+        &:hover {
+            background-color: var(--white-smoke);
+            color: var(--dark);
+        }
+    }
+
+    &.modern-fill {
+        background-color: var(--chardonnay);
+        border-color: var(--chardonnay);
+        color: var(--dark);
+        border-radius: 0;
+
+        &:hover {
+            background-color: var(--saffron-mango);
+            border-color: var(--saffron-mango);
+        }
+    }
+
+    &.modern-onlyBorder {
+        background-color: transparent;
+        border-color: var(--dark);
+        color: var(--dark);
+        border-radius: 0;
+
+        &:hover {
+            background-color: var(--chardonnay);
+            border-color: var(--chardonnay);
+            color: var(--dark);
+        }
+    }
+
+    &.soft-fill {
+        background-color: var(--irish-green);
+        border-color: var(--irish-green);
+        color: white;
+        border-radius: 0;
+
+        &:hover {
+            background-color: green;
+            border-color: green;
+        }
+    }
+
+    &.soft-peach {
+        background-color: var(--soft-peach);
+        border-color: var(--soft-peach);
+        color: black;
+        border-radius: 0;
+
+        &:hover {
+            background-color: var(--gainsboro);
+            border-color: --gainsboro;
+        }
+    }
+
+    &.square {
+        border-radius: 50%;
+        background-color: var(--soft-peach);
+        // direction - justify content - align items - flex wrap
+        @include dflex(row, center, center, nowrap);
+
+
+        &:hover {
+            background-color: var(--gainsboro);
+        }
+    }
+
+    &.none {
+        background-color: transparent;
+        border-color: transparent;
+        color: inherit;
+    }
+
+    &:disabled {
+        // opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .loader {
+        @include absolute-center;
+        display: none;
+        z-index: 3;
+    }
+
+    &.loading {
+        opacity: 0.5;
+
+        &>*:not(.loader) {
+            opacity: 0;
+        }
+
+        .loader {
+            display: block;
+        }
+    }
+
+    *:not(.loader) {
+        position: relative;
+        pointer-events: none;
+        z-index: 2;
+    }
+}

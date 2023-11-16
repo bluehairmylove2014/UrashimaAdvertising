@@ -1,0 +1,77 @@
+@import '@globalStyles/mixins.scss';
+
+.nav-dropdown {
+    width: fit-content;
+    height: 100%;
+    position: relative;
+    // direction - justify content - align items - flex wrap
+    @include dflex(row, center, center, nowrap);
+
+    .nav-dropdown__trigger {
+        width: 100%;
+        height: 100%;
+        // border - border radius - background color - color - padding - font size
+        @include normal-btn(none, 5px, transparent, white, 0, 0.8rem);
+
+        &>* {
+            // direction - justify content - align items - flex wrap
+            @include dflex(row, center, center, nowrap);
+            font-weight: 500;
+            font-size: 0.75rem;
+
+            img {
+                margin-right: 8px;
+            }
+
+            i {
+                margin-left: 8px;
+            }
+        }
+
+        &:hover {
+            color: var(--soft-peach);
+        }
+    }
+
+    .nav-dropdown__content {
+        background-color: var(--white-smoke);
+        position: absolute;
+        top: calc(100% + 12px);
+        right: 0;
+        z-index: 11;
+        border-radius: 5px;
+        width: 100%;
+        height: 100px;
+        box-shadow: 0px 13px 15px 0px rgba(0, 0, 0, 0.1);
+        // direction - justify content - align items - flex wrap
+        @include dflex(column, flex-start, center, nowrap);
+
+        height: 0;
+        overflow: hidden;
+        pointer-events: none;
+
+        button {
+            width: 100%;
+            height: 50px;
+            cursor: pointer;
+            transition: all 0.1s ease-in-out;
+
+            &,
+            p {
+                font-weight: 500;
+                font-size: 0.7rem;
+            }
+
+            &:hover {
+                background-color: var(--soft-peach);
+            }
+        }
+    }
+
+    &.active {
+        .nav-dropdown__content {
+            height: fit-content;
+            pointer-events: all;
+        }
+    }
+}

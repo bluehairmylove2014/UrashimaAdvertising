@@ -1,0 +1,29 @@
+{
+  "name": "auth-ua-e2e",
+  "$schema": "../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "auth-ua-e2e/src",
+  "targets": {
+    "e2e": {
+      "executor": "@nx/cypress:cypress",
+      "options": {
+        "cypressConfig": "auth-ua-e2e/cypress.config.ts",
+        "testingType": "e2e",
+        "devServerTarget": "auth-ua:serve"
+      },
+      "configurations": {
+        "production": {
+          "devServerTarget": "auth-ua:serve:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["auth-ua-e2e/**/*.{js,ts}"]
+      }
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["auth-ua"]
+}

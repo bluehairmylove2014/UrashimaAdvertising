@@ -1,0 +1,50 @@
+@import '@globalStyles/mixins.scss';
+
+$bar-bg-color: var(--dark-jungle-green);
+
+
+.loader {
+    // direction - justify content - align items - flex wrap
+    @include dflex(row, center, center, nowrap);
+    width: 100%;
+
+    .bar {
+        width: 2px;
+        height: 10px;
+        margin: 0 3px;
+        border-radius: 10px;
+        animation: scale-in-and-out 1s ease-in-out infinite;
+        background-color: $bar-bg-color;
+        display: inline-block;
+
+        &:nth-child(1) {
+            animation-delay: 0.01s;
+        }
+
+        &:nth-child(2) {
+            animation-delay: 0.09s;
+        }
+
+        &:nth-child(3) {
+            animation-delay: 0.19s;
+        }
+
+        &:nth-child(4) {
+            animation-delay: 0.29s;
+        }
+    }
+}
+
+@keyframes scale-in-and-out {
+    0% {
+        transform: scale(1);
+    }
+
+    20% {
+        transform: scale(1, 2);
+    }
+
+    40% {
+        transform: scale(1);
+    }
+}

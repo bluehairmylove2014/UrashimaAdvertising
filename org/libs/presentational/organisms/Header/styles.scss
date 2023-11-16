@@ -1,0 +1,104 @@
+@import '@globalStyles/mixins.scss';
+
+$header-height: 70px;
+
+.header__wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: $header-height;
+    background-color: var(--dark);
+    z-index: 9;
+}
+
+.header {
+    width: 100%;
+    height: 100%;
+    @include dflex(row, space-between, center, nowrap);
+    gap: 2rem;
+}
+
+.logo {
+    height: $header-height;
+
+    img {
+        width: auto;
+        height: 100%;
+    }
+}
+
+nav ul {
+    width: fit-content;
+    @include dflex(row, flex-end, center, nowrap);
+    gap: 1.5rem;
+
+    .nav__item--link {
+        font-size: 0.75rem;
+        color: white;
+        font-weight: 500;
+        transition: all 0.2s ease-in-out;
+
+        i {
+            margin-right: 8px;
+            font-size: 0.7rem;
+            bottom: -1px;
+        }
+
+        &:hover {
+            color: rgb(161, 161, 161);
+        }
+
+        .cart-item {
+            // direction - justify content - align items - flex wrap
+            @include dflex(row, flex-end, center, nowrap);
+            gap: 5px;
+            position: relative;
+            cursor: pointer;
+
+            span {
+                margin-right: 7px;
+            }
+
+            .cart-item__badge {
+                position: absolute;
+                top: -12px;
+                right: -12px;
+                background-color: var(--saffron-mango);
+                color: black;
+                border-radius: 50%;
+                padding: 4px 8px;
+                font-size: 0.5rem;
+                font-weight: 600;
+                transition: all 0.2s ease-in-out;
+            }
+
+            &:hover .cart-item__badge {
+                opacity: 0.4;
+            }
+        }
+    }
+
+    .user {
+        @include dflex(row, flex-end, center, nowrap);
+        gap: 10px;
+
+        .user__rank {
+            @include dflex(row, flex-end, center, nowrap);
+        }
+
+        .user__avatar {
+
+            @include dflex(row, flex-end, center, nowrap);
+
+            img {
+                border-radius: 50%;
+                overflow: hidden;
+            }
+        }
+    }
+
+    .login-button {
+        height: 40px;
+    }
+}

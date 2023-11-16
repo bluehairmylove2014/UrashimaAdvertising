@@ -1,0 +1,52 @@
+@import '@globalStyles/mixins.scss';
+
+.auth-input {
+    width: 100%;
+    height: 60px;
+    position: relative;
+    // direction - justify content - align items - flex wrap
+    @include dflex(column, flex-start, flex-start, nowrap);
+
+    .input-wrapper {
+        width: 100%;
+        flex-grow: 1;
+        border: 1px solid var(--verdigris);
+        border-radius: 5px;
+        background-color: inherit;
+        overflow: hidden;
+
+        input {
+            border: none;
+            outline: none;
+            background-color: transparent;
+            width: 100%;
+            height: 100%;
+            padding: 0 20px;
+            font-size: 0.6rem;
+        }
+    }
+
+    label {
+        flex-shrink: 1;
+        font-size: 0.6rem;
+        font-weight: 600;
+        transform: translateY(-50%);
+        background-color: inherit;
+        opacity: 1;
+        padding: 0 8px;
+        color: var(--verdigris);
+    }
+
+    &.active {
+        $focus-color: var(--kingfisher-daisy);
+
+        .input-wrapper {
+            border-color: $focus-color;
+        }
+
+        label {
+            opacity: 1;
+            color: var(--kingfisher-daisy);
+        }
+    }
+}
