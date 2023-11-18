@@ -4,7 +4,7 @@ import { Toaster, toast } from 'sonner';
 
 export type notificationContentType = string;
 
-const Notification = () => {
+const Notification = (): JSX.Element => {
   return <Toaster expand={false} richColors closeButton position="top-right" />;
 };
 

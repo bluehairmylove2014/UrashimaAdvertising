@@ -3,6 +3,7 @@
 import { useForm, Controller, FieldErrors } from 'react-hook-form';
 import React from 'react';
 import { useNotification } from '../atoms/Notification';
+import CustomButton from './../atoms/CustomButton';
 
 type loginFormData = {
   email: string;
@@ -25,11 +26,15 @@ function LoginForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit(handleLogin, handleFormSubmitError)}>
-      <div>
-        <p>Welcome to</p>
-        <h3>UrashimaAds Hub</h3>
+    <form
+      className="py-3 px-5 max-w-full overflow-hidden"
+      onSubmit={handleSubmit(handleLogin, handleFormSubmitError)}
+    >
+      <div className="leading-4 mb-2">
+        <p className="text-center font-extrabold">Welcome to</p>
+        <h4 className="text-center font-extrabold">URASHIMA ADVERTISING</h4>
       </div>
+      <CustomButton style="fill-primary">SIGN IN</CustomButton>
     </form>
   );
 }

@@ -24,7 +24,7 @@ function CustomImage({
   isPriority,
   quality,
   loading,
-}: customImageParams) {
+}: customImageParams): JSX.Element {
   return (
     <div
       className={`relative w-full h-full overflow-hidden ${externalClassName}`}
