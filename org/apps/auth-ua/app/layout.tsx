@@ -1,4 +1,5 @@
 import './global.css';
+import AccessPageTemplate from '@presentational/templates/AccessPageTemplate';
 
 export const metadata = {
   title: 'Welcome to auth-ua',
@@ -12,7 +13,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <AccessPageTemplate>{children}</AccessPageTemplate>
+      </body>
     </html>
   );
 }

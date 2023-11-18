@@ -15,9 +15,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@assets/*": ["./libs/assets/*"],
+      "@assets/*": ["./libs/presentational/assets*"],
       "@constants/*": ["./libs/constants/*"],
-      "@globalStyles/*": ["./libs/presentational/globalStyles/*"],
       "@modules/*": ["./libs/modules/*"],
       "@presentational/*": ["./libs/presentational/*"],
       "@storages/*": ["./libs/storages/*"],

@@ -1,7 +1,1 @@
-export * from "./product";
-export * from "./cart";
-export * from "./user";
-export * from "./account";
-export * from "./categories";
-export * from "./order";
-
+export * from './account';

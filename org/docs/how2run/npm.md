@@ -15,8 +15,9 @@ chạy `npm i @nrwl/<package>` với `<package>` là gói bạn cần dùng. Ở
 
 Sau khi đã cài đặt NX, Di chuyển tới thư mục project mới khởi tạo, bạn có thể tạo một ứng dụng Next.js
 mới bằng cách chạy lệnh sau:
-`npx nx g @nrwl/next:app myapp`
+`npx nx g @nrwl/next:app myapp --directory=apps/myapp`
 Thay `myapp` bằng tên của ứng dụng của bạn.
+Thay `apps/myapp` bằng đường dẫn tới app của bạn
 
 ## Tạo thư viện chia sẻ
 

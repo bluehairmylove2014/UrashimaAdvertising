@@ -1,7 +1,7 @@
 {
   "name": "auth-ua",
-  "$schema": "../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "auth-ua",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/auth-ua",
   "projectType": "application",
   "targets": {
     "build": {
@@ -9,11 +9,11 @@
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
-        "outputPath": "dist/auth-ua"
+        "outputPath": "dist/apps/auth-ua"
       },
       "configurations": {
         "development": {
-          "outputPath": "auth-ua"
+          "outputPath": "apps/auth-ua"
         },
         "production": {}
       }
@@ -46,14 +46,14 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "auth-ua/jest.config.ts"
+        "jestConfig": "apps/auth-ua/jest.config.ts"
       }
     },
     "lint": {
       "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["auth-ua/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": ["apps/auth-ua/**/*.{ts,tsx,js,jsx}"]
       }
     }
   },

@@ -1,10 +1,10 @@
-import { AuthService, SocialService } from "../../../../services";
-import { useMutation } from "@tanstack/react-query";
-import { mutationConfig } from "../../../configs";
+import { AuthService } from '../../../../services';
+import { useMutation } from '@tanstack/react-query';
+import { mutationConfig } from '../../../configs';
 
 // Initialize the AuthService
 const authService = new AuthService();
-const socialService = new SocialService();
+// const socialService = new SocialService();
 
 /**
  * Use this mutation to login
@@ -33,29 +33,29 @@ export const useRefreshTokenMutation = () => {
   });
 };
 
-/**
- * Use this mutation to google login update account on server
- */
-export const useUpdateAccountMutation = () => {
-  return useMutation(socialService.updateAccount, {
-    retry: mutationConfig.RETRY,
-  });
-};
+// /**
+//  * Use this mutation to google login update account on server
+//  */
+// export const useUpdateAccountMutation = () => {
+//   return useMutation(socialService.updateAccount, {
+//     retry: mutationConfig.RETRY,
+//   });
+// };
 
-/**
- * Use this mutation to facebook login get access token
- */
-export const useGetFBAccessTokenMutation = () => {
-  return useMutation(socialService.getFBAccessToken, {
-    retry: mutationConfig.RETRY,
-  });
-};
+// /**
+//  * Use this mutation to facebook login get access token
+//  */
+// export const useGetFBAccessTokenMutation = () => {
+//   return useMutation(socialService.getFBAccessToken, {
+//     retry: mutationConfig.RETRY,
+//   });
+// };
 
-/**
- * Use this mutation to facebook login get fb user infor
- */
-export const useGetFBUserInforMutation = () => {
-  return useMutation(socialService.getFBUserInfor, {
-    retry: mutationConfig.RETRY,
-  });
-};
+// /**
+//  * Use this mutation to facebook login get fb user infor
+//  */
+// export const useGetFBUserInforMutation = () => {
+//   return useMutation(socialService.getFBUserInfor, {
+//     retry: mutationConfig.RETRY,
+//   });
+// };
