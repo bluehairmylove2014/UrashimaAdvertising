@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-"use client";
-import React, { useContext } from "react";
-import { AuthContext } from "../../lib/auth/process/context/authContext";
+'use client';
+import React, { useContext } from 'react';
+import { AuthContext } from '../../lib/auth/process/context/authContext';
 
 type WrappedComponentProps = {
   children: React.ReactNode;

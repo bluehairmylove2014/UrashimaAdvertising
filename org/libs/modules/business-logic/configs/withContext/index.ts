@@ -1,1 +1,1 @@
-export * from "./withTokenFromContext";
+export * from './withTokenFromContext';

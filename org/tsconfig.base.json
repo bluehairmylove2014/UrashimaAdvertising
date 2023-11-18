@@ -15,13 +15,12 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@assets/*": ["./libs/assets/*"],
-      "@constants/*": ["./libs/constants/*"],
-      "@globalStyles/*": ["./libs/presentational/globalStyles/*"],
-      "@modules/*": ["./libs/modules/*"],
-      "@presentational/*": ["./libs/presentational/*"],
-      "@storages/*": ["./libs/storages/*"],
-      "@utils/*": ["./libs/utils/*"]
+      "@assets/*": ["libs/presentational/assets*"],
+      "@constants/*": ["libs/constants/*"],
+      "@modules/*": ["libs/modules/*"],
+      "@presentational/*": ["libs/presentational/*"],
+      "@storages/*": ["libs/storages/*"],
+      "@utils/*": ["libs/utils/*"]
     }
   },
   "exclude": ["node_modules", "tmp"]

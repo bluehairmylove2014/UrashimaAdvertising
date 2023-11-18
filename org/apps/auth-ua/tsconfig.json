@@ -16,20 +16,16 @@
         "name": "next"
       }
     ],
-    "types": [
-      "jest",
-      "node"
-    ]
+    "types": ["jest", "node"]
   },
   "include": [
     "**/*.ts",
     "**/*.tsx",
     "**/*.js",
     "**/*.jsx",
-    "../auth-ua/.next/types/**/*.ts",
-    "../dist/auth-ua/.next/types/**/*.ts",
-    "next-env.d.ts",
-    "../../auth-ua/.next/types/**/*.ts"
+    "../../apps/auth-ua/.next/types/**/*.ts",
+    "../../dist/apps/auth-ua/.next/types/**/*.ts",
+    "next-env.d.ts"
   ],
   "exclude": [
     "node_modules",
