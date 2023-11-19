@@ -1,9 +1,10 @@
-import { axiosMockAdapterInstance } from "../../config/axios";
-import accountsData from "../data/accounts.json";
-import { getApiUrl } from "../../config/url";
-import { loginUrl } from "../../config/apis";
+import { axiosMockAdapterInstance } from '../../config/axios';
+import accountsData from '../data/accounts.json';
+import { getApiUrl } from '../../config/url';
+import { loginUrl } from '../../config/apis';
+import { IAccount } from '@business-layer/services/entities';
 
-const accounts = accountsData;
+const accounts: IAccount[] = accountsData;
 
 axiosMockAdapterInstance
   .onPost(getApiUrl(false) + loginUrl)
@@ -17,8 +18,8 @@ axiosMockAdapterInstance
       return [
         200,
         {
-          message: "Login success",
-          token: "This is new login access token :>",
+          message: 'Login success',
+          token: 'This is new login access token :>',
         },
       ];
     } else {
@@ -31,7 +32,7 @@ axiosMockAdapterInstance
          */
         401,
         {
-          message: "Wrong email or password",
+          message: 'Wrong email or password',
         },
       ];
     }

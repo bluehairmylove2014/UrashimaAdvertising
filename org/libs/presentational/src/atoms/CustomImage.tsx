@@ -1,12 +1,10 @@
 import Image from 'next/image';
-import React from 'react';
 
 type customImageParams = {
   src: string;
   alt: string;
   width: string;
   height: string;
-  externalClassName?: string;
   blurDataURL?: string;
   placeholder?: 'empty' | 'blur';
   isPriority?: boolean;
@@ -18,19 +16,19 @@ function CustomImage({
   alt,
   width,
   height,
-  externalClassName,
   blurDataURL,
   placeholder,
   isPriority,
-  quality,
+  quality = 100,
   loading,
 }: customImageParams): JSX.Element {
   return (
     <div
-      className={`relative w-full h-full overflow-hidden ${externalClassName}`}
+      className="relative w-full h-full overflow-hidden"
       style={{ width, height }}
     >
       <Image
+        className="object-cover"
         src={src}
         alt={alt}
         fill

@@ -1,5 +1,5 @@
 import React from 'react';
-import Notification from '@presentational/src/atoms/Notification';
+import Notification from '@presentational/atoms/Notification';
 
 type accessPageTemplateParams = {
   children: React.ReactNode;

@@ -1,9 +1,10 @@
-import { axiosMockAdapterInstance } from "../../config/axios";
-import accountsData from "../data/accounts.json";
-import { getApiUrl } from "../../config/url";
-import { registerUrl } from "../../config/apis";
+import { axiosMockAdapterInstance } from '../../config/axios';
+import accountsData from '../data/accounts.json';
+import { getApiUrl } from '../../config/url';
+import { registerUrl } from '../../config/apis';
+import { IAccount } from '@business-layer/services/entities';
 
-const accounts = accountsData;
+const accounts: IAccount[] = accountsData;
 
 axiosMockAdapterInstance
   .onPost(getApiUrl(false) + registerUrl)
@@ -24,20 +25,20 @@ axiosMockAdapterInstance
          */
         409,
         {
-          message: "Email is exist",
+          message: 'Email is exist',
         },
       ];
     } else {
       accounts.push({
-        id: accounts.length + 1 + "",
+        id: accounts.length + 1 + '',
         email: data.email,
         password: data.password,
       });
       return [
         200,
         {
-          message: "Register success",
-          token: "This is new access token :>",
+          message: 'Register success',
+          token: 'This is new access token :>',
         },
       ];
     }

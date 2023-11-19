@@ -17,8 +17,8 @@
     "paths": {
       "@assets/*": ["libs/presentational/assets*"],
       "@constants/*": ["libs/constants/*"],
-      "@modules/*": ["libs/modules/*"],
-      "@presentational/*": ["libs/presentational/*"],
+      "@business-layer/*": ["libs/business-layer/src/*"],
+      "@presentational/*": ["libs/presentational/src/*"],
       "@storages/*": ["libs/storages/*"],
       "@utils/*": ["libs/utils/*"]
     }

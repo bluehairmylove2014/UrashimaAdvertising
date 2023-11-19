@@ -1,6 +1,5 @@
 'use client';
-// import ButtonLoader from "../ButtonLoader/ButtonLoader";
-import React from 'react';
+import ButtonLoader from './ButtonLoader';
 
 type buttonType = 'button' | 'submit';
 type buttonStyle =
@@ -20,11 +19,23 @@ const defaultType = 'button';
 function getTailwindClassStyle(style: buttonStyle) {
   switch (style) {
     case 'fill-primary':
-      return 'bg-blue-500 text-white rounded hover:bg-blue-700 transition-colors';
+      return {
+        normal: 'bg-blue-500 hover:bg-blue-700 transition-colors',
+        disabled: 'bg-cyan-500 cursor-not-allowed',
+        common: 'rounded text-white',
+      };
     case 'fill-secondary':
-      return '';
+      return {
+        normal: 'bg-gray-100 rounded hover:bg-gray-300 transition-colors',
+        disabled: 'bg-gray-300 cursor-not-allowed',
+        common: 'rounded text-white',
+      };
     default:
-      return '';
+      return {
+        normal: '',
+        disabled: '',
+        common: '',
+      };
   }
 }
 
@@ -36,17 +47,24 @@ function CustomButton({
   type,
   onClick,
 }: commonButtonType): JSX.Element {
-  const stylesToTailwindClass = getTailwindClassStyle(style);
+  const {
+    normal: normalStyle,
+    disabled: disabledStyle,
+    common: commonStyle,
+  } = getTailwindClassStyle(style);
 
   return (
     <button
-      className={`${stylesToTailwindClass} shadow-sm w-full py-2 font-semibold text-xs `}
+      className={`${commonStyle} shadow-sm w-full py-2 font-semibold text-xs ${
+        loading ? disabledStyle : normalStyle
+      }`}
       onClick={onClick}
       disabled={disabled || loading}
       type={type || defaultType}
     >
-      {/* <div className="loader">{loading ? <ButtonLoader /> : <></>}</div> */}
-      {children}
+      <div className="loader">
+        {loading ? <ButtonLoader label="Signing in..." /> : <>{children}</>}
+      </div>
     </button>
   );
 }

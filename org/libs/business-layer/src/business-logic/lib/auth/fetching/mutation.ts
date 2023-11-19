@@ -1,6 +1,6 @@
-import { AuthService } from '../../../../services';
+import { AuthService } from '@business-layer/services';
 import { useMutation } from '@tanstack/react-query';
-import { mutationConfig } from '../../../configs';
+import { mutationConfig } from '@business-layer/business-logic/configs';
 
 // Initialize the AuthService
 const authService = new AuthService();

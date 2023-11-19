@@ -1,13 +1,13 @@
-import axiosLib, { isAxiosError, AxiosError } from "axios";
-import AxiosMockAdapter from "axios-mock-adapter";
-import { authServiceConfig } from "./config";
+import axiosLib, { isAxiosError, AxiosError } from 'axios';
+import AxiosMockAdapter from 'axios-mock-adapter';
+import { authServiceConfig } from './config';
 
 function isDevelopment(): boolean {
-  return !process.env["NODE_ENV"] || process.env["NODE_ENV"] === "development";
+  return !process.env['NODE_ENV'] || process.env['NODE_ENV'] === 'development';
 }
 
 const MOCK_API = {
-  DELAY_RESPONSE_MOCK_API: 500,
+  DELAY_RESPONSE_MOCK_API: 2000,
 };
 const axiosInstance = axiosLib.create();
 const axiosMockInstance = axiosLib.create();

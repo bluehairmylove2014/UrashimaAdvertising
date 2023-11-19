@@ -1,7 +1,7 @@
 import './global.scss';
-import AccessPageTemplate from '@presentational/src/templates/AccessPageTemplate';
+import AccessPageTemplate from '@presentational/templates/AccessPageTemplate';
 import { Montserrat } from 'next/font/google';
-import { BusinessLogicProvider } from '@modules/business-logic/provider';
+import { BusinessLogicProvider } from '@business-layer/business-logic/provider';
 
 export const metadata = {
   title: 'Urashima Ads',
