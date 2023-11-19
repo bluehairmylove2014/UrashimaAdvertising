@@ -7,13 +7,16 @@ function handleClickOutside(
   if (!focusArea.contains(target)) {
     focusArea.classList.remove(className);
     document.removeEventListener(
-      "click",
+      'click',
       (focusArea as any)._handleClickOutside
     );
   }
 }
 
-function toggleClass(element: HTMLElement, className: string = "active"): void {
+function toggleClass(
+  element: HTMLElement | null,
+  className: string = 'active'
+): void {
   if (!element) {
     return;
   }
@@ -22,19 +25,19 @@ function toggleClass(element: HTMLElement, className: string = "active"): void {
 
   if (element.classList.contains(className)) {
     element.classList.remove(className);
-    document.removeEventListener("click", (element as any)._handleClickOutside);
+    document.removeEventListener('click', (element as any)._handleClickOutside);
   } else {
     element.classList.add(className);
     (element as any)._handleClickOutside = boundHandleClickOutside;
     setTimeout(() => {
-      document.addEventListener("click", (element as any)._handleClickOutside);
+      document.addEventListener('click', (element as any)._handleClickOutside);
     }, 100);
   }
 }
 
 function toggleClassNoListener(
-  element: HTMLElement,
-  className: string = "active"
+  element: HTMLElement | null,
+  className: string = 'active'
 ): void {
   if (!element) {
     return;
@@ -46,4 +49,15 @@ function toggleClassNoListener(
   }
 }
 
-export { toggleClass, toggleClassNoListener };
+function addClass(element: HTMLElement | null, className: string) {
+  if (element && !element.classList.contains(className)) {
+    element.classList.add(className);
+  }
+}
+function removeClass(element: HTMLElement | null, className: string) {
+  if (element && element.classList.contains(className)) {
+    element.classList.remove(className);
+  }
+}
+
+export { toggleClass, toggleClassNoListener, addClass, removeClass };

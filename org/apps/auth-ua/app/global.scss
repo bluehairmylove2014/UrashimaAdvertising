@@ -1,8 +1,14 @@
-/* Tailwind css config */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
+@import url('https://cdn-uicons.flaticon.com/2.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css');
+@import url('https://cdn-uicons.flaticon.com/2.0.0/uicons-bold-rounded/css/uicons-bold-rounded.css');
+@import url('https://cdn-uicons.flaticon.com/2.0.0/uicons-solid-rounded/css/uicons-solid-rounded.css');
+@import url('https://cdn-uicons.flaticon.com/2.0.0/uicons-thin-rounded/css/uicons-thin-rounded.css');
+@import url('https://cdn-uicons.flaticon.com/2.0.0/uicons-thin-straight/css/uicons-thin-straight.css');
+@import url('https://cdn-uicons.flaticon.com/2.0.0/uicons-regular-straight/css/uicons-regular-straight.css');
+@import url('https://cdn-uicons.flaticon.com/2.0.0/uicons-bold-straight/css/uicons-bold-straight.css');
+@import url('https://cdn-uicons.flaticon.com/2.0.0/uicons-solid-straight/css/uicons-solid-straight.css');
 
 // Responsive settings
 $desktop-breakpoint: 1024px;
@@ -11,23 +17,10 @@ $mobile-breakpoint: 480px;
 
 // $container-width: 1400px;
 
-// Color define
-:root {
-  --dark: #111111;
-  --dark-jungle-green: #2F2F2F;
-  --verdigris: #23ac95;
-  --soft-peach: #e6e6e6;
-  --gainsboro: #DCDCDC;
-
-  --chardonnay: #ffc561;
-  --saffron-mango: #e7ad49;
-
-  --irish-green: #009D2C;
-
-  --white-smoke: #F6F6F6;
-
-  --kingfisher-daisy: #3D007A;
-  --violet-blue: #6000c0;
+@font-face {
+  font-family: 'LuckiestGuy';
+  src: url('/assets/fonts/luckiest_guy/LuckiestGuy-Regular.ttf') format('woff2'),
+    // url('/path/to/your/font.woff') format('woff');
 }
 
 /* Smooth scroll behavior*/
@@ -97,7 +90,6 @@ body {
   /* Firefox */
 }
 
-
 // .container {
 //   margin: 0px auto;
 //   padding: 0px 100px;
@@ -109,7 +101,6 @@ body {
 //     padding: 0px 50px;
 //   }
 // }
-
 
 // @media (max-width: $mobile-breakpoint) {
 //   .container {
@@ -185,7 +176,7 @@ a {
 
 i {
   position: relative;
-  bottom: -1px;
+  bottom: -1.75px;
 }
 
 label {
