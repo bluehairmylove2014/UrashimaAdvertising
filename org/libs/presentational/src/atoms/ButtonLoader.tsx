@@ -1,10 +1,31 @@
-function ButtonLoader({ label }: { label: string }) {
+type loaderColorType = 'WHITE' | 'BLUE';
+
+function loaderColorTailwindCssMapping(color: loaderColorType | undefined) {
+  switch (color) {
+    case 'WHITE':
+      return 'text-white';
+    case 'BLUE':
+      return 'text-blue-800';
+    default:
+      return 'text-white';
+  }
+}
+
+function ButtonLoader({
+  label,
+  loaderColor,
+}: {
+  label: string;
+  loaderColor?: loaderColorType;
+}) {
   return (
     <div className="flex flex-row justify-center items-center">
       <svg
         aria-hidden="true"
         role="status"
-        className="inline w-4 h-4 me-3 text-white animate-spin"
+        className={`inline w-4 h-4 me-3 animate-spin ${loaderColorTailwindCssMapping(
+          loaderColor
+        )}`}
         viewBox="0 0 100 101"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
