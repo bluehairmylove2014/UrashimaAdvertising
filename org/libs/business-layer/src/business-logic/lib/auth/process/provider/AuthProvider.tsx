@@ -1,11 +1,11 @@
-import { axios } from "../../../../../services";
-import { authConfig } from "../../../../configs";
-import { useRefreshToken } from "../hooks/useRefreshToken";
-import { BroadcastProvider } from "./BroadcastProvider";
-import { AuthContextProvider } from "./ContextProvider";
-import { useLogout } from "../hooks";
-import { withAuthenticateUrl } from "./withAuthenticateUrl";
-import { useHandleRefreshToken } from "../hooks/useHandleRefreshToken";
+import { axios } from '../../../../../services';
+import { authConfig } from '../../../../configs';
+import { useRefreshToken } from '../hooks/useRefreshToken';
+import { BroadcastProvider } from './BroadcastProvider';
+import { AuthContextProvider } from './ContextProvider';
+import { useLogout } from '../hooks';
+import { withAuthenticateUrl } from './withAuthenticateUrl';
+import { useHandleRefreshToken } from '../hooks/useHandleRefreshToken';
 
 export type AuthProviderType = {
   children: React.ReactNode;
@@ -21,43 +21,30 @@ export const AuthProvider: React.FC<AuthProviderType> = ({ children }) => {
   // Use axios interceptor to handle response
   axios.interceptors.response.use(
     (response) => {
-      // If response is successful, return the response
       return response;
     },
-    (error) => {
-      // If the response status is 401 and the message is "Invalid credential"
-      // It means token is expired now! Need to refresh
+    async (error) => {
       if (
         error.response?.status === 401 &&
-        error.response.data?.message === "Invalid credential" &&
+        error.response.data?.message === 'Invalid credential' &&
         authConfig.isNeedRefreshToken
       ) {
-        // Get the token
         const refreshToken = getRefreshToken();
         if (refreshToken) {
-          // If token exists, refresh the token
-          onRefreshToken(refreshToken)
-            .then((res) => {
-              // Check if res.token is undefined
-              if (!res.token) {
-                return Promise.reject(error);
-              }
-
-              // Update the new token for the request
-              error.config.headers["Authorization"] = "Bearer " + res.token;
-            })
-            .catch((err) => {
-              onLogout();
-            })
-            .finally(() => {
-              // Resend the request with the new token
-              return axios(error.config);
-            });
+          try {
+            const res = await onRefreshToken(refreshToken);
+            if (!res.token) {
+              return Promise.reject(error);
+            }
+            error.config.headers['Authorization'] = 'Bearer ' + res.token;
+            return axios(error.config);
+          } catch (err) {
+            onLogout();
+          }
         } else {
           onLogout();
         }
       }
-      // If any other error, reject the promise
       return Promise.reject(error);
     }
   );

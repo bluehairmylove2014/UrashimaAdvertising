@@ -1,7 +1,11 @@
 'use client';
 
 import { useForm } from 'react-hook-form';
-import { useLogin } from '@business-layer/business-logic/lib/auth';
+import {
+  useLogin,
+  useGoogleLogin,
+  useFacebookLogin,
+} from '@business-layer/business-logic/lib/auth';
 import { useNotification } from '@presentational/atoms/Notification';
 import CustomButton from '@presentational/atoms/CustomButton';
 import AuthInput, { authInputParams } from '@presentational/atoms/AuthInput';
@@ -38,6 +42,8 @@ function LoginForm() {
   const resolver = useYupValidationResolver(loginSchema);
   const { showSuccess, showError, showReactHookFormError } = useNotification();
   const { onLogin, isLoading: isLoginLoading } = useLogin();
+  const { onGoogleLogin } = useGoogleLogin();
+  const { onFacebookLogin } = useFacebookLogin();
   const { control, handleSubmit } = useForm<loginFormData>({
     defaultValues: Object.fromEntries(
       authInputList.map(({ name }) => [name, ''])
@@ -50,8 +56,13 @@ function LoginForm() {
       .then((msg) => showSuccess(msg))
       .catch((error) => showError(error.message));
   };
-  const handleGoogleLogin = () => {};
-  const handleFacebookLogin = () => {};
+  const handleGoogleLogin = () => {
+    console.log('CLICK');
+    onGoogleLogin();
+  };
+  const handleFacebookLogin = () => {
+    onFacebookLogin();
+  };
 
   return (
     <form
@@ -92,6 +103,7 @@ function LoginForm() {
       </p>
       <div className="flex flex-row justify-center items-center gap-4">
         <IconButton
+          type="button"
           shape="circle"
           callback={handleGoogleLogin}
           customSize={`${iconButtonSize}px`}
@@ -104,6 +116,7 @@ function LoginForm() {
           />
         </IconButton>
         <IconButton
+          type="button"
           shape="circle"
           callback={handleFacebookLogin}
           customSize={`${iconButtonSize}px`}

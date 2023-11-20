@@ -1,40 +1,20 @@
-import { loginUrl, refreshTokenUrl, registerUrl } from "../../config/apis";
-import { Services } from "../../service";
+import { loginUrl, refreshTokenUrl } from '../../config/apis';
+import { Services } from '../../service';
 import {
   authenticationResponseSchema,
   refreshTokenResponseSchema,
-} from "./schema";
+} from './schema';
 import {
   LoginParams,
-  RegisterParams,
   Token,
   AuthenticationResponse,
   RefreshTokenResponse,
-} from "./type";
+} from './type';
 
-export * from "./type";
+export * from './type';
 export class AuthService extends Services {
   abortController?: AbortController;
 
-  register = async (data: RegisterParams): Promise<AuthenticationResponse> => {
-    this.abortController = new AbortController();
-    try {
-      const response = await this.fetchApi<
-        typeof authenticationResponseSchema,
-        AuthenticationResponse
-      >({
-        method: "POST",
-        url: registerUrl,
-        schema: authenticationResponseSchema,
-        data,
-        signal: this.abortController.signal,
-        transformResponse: (res) => res,
-      });
-      return response;
-    } catch (error) {
-      throw this.handleError(error);
-    }
-  };
   login = async (data: LoginParams): Promise<AuthenticationResponse> => {
     this.abortController = new AbortController();
     try {
@@ -42,7 +22,7 @@ export class AuthService extends Services {
         typeof authenticationResponseSchema,
         AuthenticationResponse
       >({
-        method: "POST",
+        method: 'POST',
         url: loginUrl,
         schema: authenticationResponseSchema,
         data,
@@ -61,7 +41,7 @@ export class AuthService extends Services {
         typeof refreshTokenResponseSchema,
         RefreshTokenResponse
       >({
-        method: "POST",
+        method: 'POST',
         url: refreshTokenUrl,
         schema: refreshTokenResponseSchema,
         data: { refreshToken },
