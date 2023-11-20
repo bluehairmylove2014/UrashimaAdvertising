@@ -15,14 +15,14 @@ export const useLoginMutation = () => {
   });
 };
 
-/**
- * Use this mutation to register
- */
-export const useRegisterMutation = () => {
-  return useMutation(authService.register, {
-    retry: mutationConfig.RETRY,
-  });
-};
+// /**
+//  * Use this mutation to register
+//  */
+// export const useRegisterMutation = () => {
+//   return useMutation(authService.register, {
+//     retry: mutationConfig.RETRY,
+//   });
+// };
 
 /**
  * Use this mutation to refresh token
@@ -52,10 +52,10 @@ export const useGetFBAccessTokenMutation = () => {
 };
 
 /**
- * Use this mutation to facebook login get fb user infor
+ * Use this mutation to facebook login get fb user info
  */
-export const useGetFBUserInforMutation = () => {
-  return useMutation(socialService.getFBUserInfor, {
+export const useGetFBUserInfoMutation = () => {
+  return useMutation(socialService.getFBUserInfo, {
     retry: mutationConfig.RETRY,
   });
 };

@@ -1,7 +1,7 @@
 import { AxiosResponse } from 'axios';
 import {
   facebookGetFBAccessTokenUrl,
-  facebookGetFBUserInforUrl,
+  facebookGetFBUserInfoUrl,
   googleGetUserInfoUrl,
   googleValidateTokenUrl,
   updateAccountUrl,
@@ -12,6 +12,7 @@ import { updateAccountResponseSchema } from './schema';
 import {
   GetFBAccessTokenParams,
   GetFBAccessTokenResponse,
+  GetFBUserInfoResponse,
   GetUserInfoResponse,
   GoogleGetUserInfoResponse,
   GoogleValidateTokenResponse,
@@ -124,16 +125,20 @@ export class SocialService extends Services {
   getFBUserInfo = async (token: Token): Promise<GetUserInfoResponse> => {
     this.abortController = new AbortController();
     try {
-      const response: AxiosResponse<GetUserInfoResponse> =
+      const response: AxiosResponse<GetFBUserInfoResponse> =
         await getAxiosNormalInstance().get(
-          facebookGetFBUserInforUrl + `&access_token=${token}`,
+          facebookGetFBUserInfoUrl + `&access_token=${token}`,
           {
             signal: this.abortController.signal,
           }
         );
       if (response.status === 200) {
         // Token is valid
-        return response.data;
+        return {
+          email: response.data.email,
+          firstName: response.data.first_name,
+          lastName: response.data.last_name,
+        };
       } else {
         throw new Error('Error get facebook user infor response.status');
       }

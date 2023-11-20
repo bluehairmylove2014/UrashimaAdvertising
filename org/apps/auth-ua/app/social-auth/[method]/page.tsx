@@ -1,11 +1,15 @@
 'use client';
 
 import ButtonLoader from '@presentational/atoms/ButtonLoader';
-import { useGoogleLogin } from '@business-layer/business-logic/lib/auth';
+import {
+  useFacebookLogin,
+  useGoogleLogin,
+} from '@business-layer/business-logic/lib/auth';
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { PAGE_URLS } from '@constants/pages';
 import Image from 'next/image';
+import { SOCIAL_LOGIN_METHODS } from '../../../constants/social';
 
 type authStateType = {
   order: number;
@@ -16,11 +20,11 @@ const authState: {
 } = {
   CHECK_LOGIN_STATE: {
     order: 1,
-    name: 'Đang kiểm tra đăng nhập...',
+    name: 'Checking login...',
   },
   REDIRECT_STATE: {
     order: 2,
-    name: 'Đang điều hướng...',
+    name: 'Redirecting...',
   },
 };
 
@@ -30,19 +34,40 @@ function SocialAuth() {
   );
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const router = useRouter();
+  const socialLoginMethod = useParams().method;
   const { onCheckGoogleLogin } = useGoogleLogin();
+  const { onCheckFacebookLogin } = useFacebookLogin();
 
   useEffect(() => {
-    onCheckGoogleLogin()
-      .then((msg) => {
-        setCurAuthState(authState.REDIRECT_STATE);
+    if (socialLoginMethod && SOCIAL_LOGIN_METHODS.includes(socialLoginMethod)) {
+      let checkingMethod = null;
+      switch (socialLoginMethod) {
+        case 'gg':
+          checkingMethod = onCheckGoogleLogin;
+          break;
+        case 'fb':
+          checkingMethod = onCheckFacebookLogin;
+          break;
+      }
+      checkingMethod &&
+        checkingMethod()
+          .then((msg) => {
+            setCurAuthState(authState.REDIRECT_STATE);
+            // Handle get redirect url here
+            setTimeout(() => {
+              router.push(PAGE_URLS.HOME);
+            }, 4000);
+          })
+          .catch((error) => {
+            setErrorMsg(error.message);
+          });
+    } else {
+      setErrorMsg('Unexpected error! Redirecting...');
+      setTimeout(() => {
+        // router.push(PAGE_URLS.HOME);
+      }, 4000);
+    }
 
-        // Handle get redirect url here
-        setTimeout(() => {
-          router.push(PAGE_URLS.HOME);
-        }, 4000);
-      })
-      .catch((error) => setErrorMsg(error.msg));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -51,14 +76,14 @@ function SocialAuth() {
       <div className="container mx-auto max-w-xs">
         <div className="w-full h-fit bg-white overflow-hidden rounded px-4 py-10">
           {errorMsg ? (
-            <div className="flex flex-row justify-center items-center gap-3">
+            <div className="flex flex-row flex-nowrap justify-center items-center gap-3">
               <Image
                 src="/assets/images/icons/error.png"
                 alt="error"
                 width={30}
                 height={30}
               />
-              <span>{errorMsg}</span>
+              <span className="flex shrink w-fit text-base">{errorMsg}</span>
             </div>
           ) : (
             <ButtonLoader label={curAuthState.name} loaderColor="BLUE" />

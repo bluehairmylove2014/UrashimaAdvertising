@@ -5,7 +5,6 @@ import { updateAccountUrl } from '../../config/apis';
 axiosMockAdapterInstance
   .onPost(getApiUrl(false) + updateAccountUrl)
   .reply((config: any) => {
-    console.log('UPDATE ACCOUNT: ', JSON.parse(config.data));
     return [
       200,
       {

@@ -1,21 +1,28 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { SocialService, isAxiosError } from '@business-layer/services';
-import { useEffect, useMemo, useState } from 'react';
+import { SocialService } from '@business-layer/services';
+import { useMemo } from 'react';
 import { googleConfig } from '../../../../configs';
-import { BROADCAST_MESSAGE, GOOGLE_MESSAGE } from '../../constants';
+import { BROADCAST_MESSAGE } from '../../constants';
 import { useUpdateAccountMutation } from '../../fetching/mutation';
 import { getRedirectUri } from '../helper/uriHelper';
 import { getTokenFromUrl } from '../helper/urlSearchParamsHelper';
-import { googlePopupPostMessage } from '../helper/windowEventHelper';
 import { useAccessToken } from './useAccessToken';
 import { useAuthBroadcastChannel } from './useAuthBroadcastChannel';
 import { useHandleRefreshToken } from './useHandleRefreshToken';
+import { googleRedirectUriPath } from '../../config';
 
-// const successMessage = "Login success";
 const failedMessage = 'Login failed';
 
 const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '';
-const redirectUri = getRedirectUri();
+const redirectUri = getRedirectUri() + googleRedirectUriPath;
+
+/**
+ * ---HOW TO USE---
+ * 1. button onClick={onGoogleLogin()} in your login with google button
+ * 2. Call onCheckGoogleLogin().then(msg => ...).catch(err => ...) in
+ * your redirect page (login page => google api page => redirect page)
+ * 3. You should change your redirect page url in /auth/config/index.ts
+ */
 
 export const useGoogleLogin = () => {
   // Configure auth url
@@ -44,7 +51,6 @@ export const useGoogleLogin = () => {
         socialService
           .validateToken(accessToken)
           .then((res) => {
-            console.log('VALIDATE RESPONSE: ', res);
             socialService
               .getAccountInfo(accessToken)
               .then((data) => {

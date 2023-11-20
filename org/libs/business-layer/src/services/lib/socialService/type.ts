@@ -39,11 +39,7 @@ export type GoogleGetUserInfoResponse = {
     }
   ];
 };
-export type GetUserInfoResponse = {
-  email: string;
-  firstName: string;
-  lastName: string;
-};
+
 export type GetFBAccessTokenParams = {
   clientId: string;
   clientSecret: string;
@@ -54,4 +50,16 @@ export type GetFBAccessTokenResponse = {
   access_token: string;
   token_type: string;
   expires_in: string;
+};
+export type GetFBUserInfoResponse = {
+  email: string;
+  first_name: string;
+  id: string;
+  last_name: string;
+};
+
+export type GetUserInfoResponse = {
+  email: string;
+  firstName: string;
+  lastName: string;
 };

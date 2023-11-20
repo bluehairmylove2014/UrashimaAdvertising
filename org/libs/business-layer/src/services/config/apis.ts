@@ -10,8 +10,8 @@ export const googleValidateTokenUrl =
   'https://www.googleapis.com/oauth2/v3/tokeninfo';
 // FACEBOOK
 export const facebookGetFBAccessTokenUrl =
-  'https://graph.facebook.com/me?fields=first_name,last_name,email';
-export const facebookGetFBUserInforUrl =
+  'https://graph.facebook.com/v17.0/oauth/access_token';
+export const facebookGetFBUserInfoUrl =
   'https://graph.facebook.com/me?fields=first_name,last_name,email';
 
 export const exchangeratesapi = 'http://api.exchangeratesapi.io/v1';

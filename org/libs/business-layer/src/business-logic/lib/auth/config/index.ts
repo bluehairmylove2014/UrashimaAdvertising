@@ -6,6 +6,7 @@ export const authUrls = [
     redirectUrl: '/',
   },
 ];
-export const googleRedirectUriPath = '/social-auth';
+export const googleRedirectUriPath = '/social-auth/gg';
+export const facebookRedirectUriPath = '/social-auth/fb';
 
 export const Loader = DefaultLoader;
