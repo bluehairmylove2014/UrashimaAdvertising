@@ -1,13 +1,13 @@
-import { ZodSchema } from "zod";
+import { ZodSchema } from 'zod';
 import {
   axios,
   getAxiosNormalInstance,
   isAxiosError,
   isCancel,
-} from "../config/axios";
-import { getApiUrl } from "../config/url";
+} from '../config/axios';
+import { getApiUrl } from '../config/url';
 
-const unknownError: string = "Unexpected error occurred";
+const unknownError: string = 'Unexpected error occurred';
 export class Services {
   abortController?: AbortController;
   axios: any;
@@ -29,14 +29,14 @@ export class Services {
   }
 
   handleError(error: any): Error {
-    console.error("service error: ", error);
+    console.error('service error: ', error);
     if (this.isCancel(error)) {
       this.cancelRequest();
       return error;
     }
     return new Error(
       isAxiosError(error)
-        ? error?.response?.data?.message || unknownError
+        ? error?.response?.data?.message ?? unknownError
         : unknownError
     );
   }

@@ -1,6 +1,22 @@
-import { AuthService, SocialService } from '@business-layer/services';
+import {
+  AuthService,
+  authenticationResponseType,
+  loginParamsType,
+  refreshTokenResponseType,
+  SocialService,
+} from '@business-layer/services';
 import { useMutation } from '@tanstack/react-query';
 import { mutationConfig } from '@business-layer/business-logic/configs';
+import {
+  getFBAccessTokenParamsType,
+  getFBAccessTokenResponseType,
+  getGithubAccessTokenParamsType,
+  getGithubAccessTokenResponseType,
+  getGithubUserInfoResponseType,
+  getUserInfoResponseType,
+  updateAccountParamsType,
+  updateAccountResponseType,
+} from '@business-layer/services/lib/socialService/type';
 
 // Initialize the AuthService
 const authService = new AuthService();
@@ -10,52 +26,69 @@ const socialService = new SocialService();
  * Use this mutation to login
  */
 export const useLoginMutation = () => {
-  return useMutation(authService.login, {
-    retry: mutationConfig.RETRY,
+  return useMutation<
+    authenticationResponseType,
+    Error,
+    loginParamsType,
+    unknown
+  >({
+    mutationFn: authService.login,
   });
 };
 
-// /**
-//  * Use this mutation to register
-//  */
-// export const useRegisterMutation = () => {
-//   return useMutation(authService.register, {
-//     retry: mutationConfig.RETRY,
-//   });
-// };
-
-/**
- * Use this mutation to refresh token
- */
 export const useRefreshTokenMutation = () => {
-  return useMutation(authService.refreshToken, {
+  return useMutation<refreshTokenResponseType, Error, string, unknown>({
+    mutationFn: authService.refreshToken,
     retry: mutationConfig.RETRY,
   });
 };
 
-/**
- * Use this mutation to google login update account on server
- */
 export const useUpdateAccountMutation = () => {
-  return useMutation(socialService.updateAccount, {
+  return useMutation<
+    updateAccountResponseType,
+    Error,
+    updateAccountParamsType,
+    unknown
+  >({
+    mutationFn: socialService.updateAccount,
     retry: mutationConfig.RETRY,
   });
 };
 
-/**
- * Use this mutation to facebook login get access token
- */
 export const useGetFBAccessTokenMutation = () => {
-  return useMutation(socialService.getFBAccessToken, {
+  return useMutation<
+    getFBAccessTokenResponseType,
+    Error,
+    getFBAccessTokenParamsType,
+    unknown
+  >({
+    mutationFn: socialService.getFBAccessToken,
     retry: mutationConfig.RETRY,
   });
 };
 
-/**
- * Use this mutation to facebook login get fb user info
- */
 export const useGetFBUserInfoMutation = () => {
-  return useMutation(socialService.getFBUserInfo, {
+  return useMutation<getUserInfoResponseType, Error, string, unknown>({
+    mutationFn: socialService.getFBUserInfo,
+    retry: mutationConfig.RETRY,
+  });
+};
+
+export const useGetGithubAccessTokenMutation = () => {
+  return useMutation<
+    getGithubAccessTokenResponseType,
+    Error,
+    getGithubAccessTokenParamsType,
+    unknown
+  >({
+    mutationFn: socialService.getGithubAccessToken,
+    retry: mutationConfig.RETRY,
+  });
+};
+
+export const useGetGithubUserInfoMutation = () => {
+  return useMutation<getGithubUserInfoResponseType, Error, string, unknown>({
+    mutationFn: socialService.getGithubUserInfo,
     retry: mutationConfig.RETRY,
   });
 };

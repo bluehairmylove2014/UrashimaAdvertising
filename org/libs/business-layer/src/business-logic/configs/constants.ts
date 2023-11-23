@@ -1,21 +1,10 @@
 import { generateSecureHash } from '../helper';
 
-export const LOCAL_STORAGE_KEYS = {
-  WISHLIST: generateSecureHash('WISHLIST'),
-  IS_REMEMBER: generateSecureHash('LOCAL_IS_REMEMBER'),
-  IS_POPUP_OPEN: generateSecureHash('LOCAL_IS_POPUP_OPEN'),
-  CART_ADDRESS: generateSecureHash('LOCAL_STORAGE_KEY_CART_ADDRESS'),
-  ORDER: generateSecureHash('LOCAL_STORAGE_KEY_ORDER'),
-  CAN_SUCCESS_ORDER: generateSecureHash('CAN_SUCCESS_ORDER'),
-  SEARCH_HISTORY: generateSecureHash('SEARCH_HISTORY'),
-};
-export const SESSION_STORAGE_KEY = {
-  ACCESS_TOKEN: generateSecureHash('SESSION_ACCESS_TOKEN'),
-  REFRESH_TOKEN: generateSecureHash('SESSION_REFRESH_TOKEN'),
-};
-export const COOKIE_KEY = {
+export const LOCAL_STORAGE_KEYS = {};
+export const COOKIE_KEYS = {
   ACCESS_TOKEN: generateSecureHash('COOKIE_ACCESS_TOKEN'),
   REFRESH_TOKEN: generateSecureHash('COOKIE_REFRESH_TOKEN'),
-  CURRENCY_RATE: generateSecureHash('CURRENCY_RATE'),
-  CURRENCY_FORMAT: generateSecureHash('CURRENCY_FORMAT'),
 };
+export enum QUERY_N_MUTATION_KEYS {
+  GET_ALL_PRODUCTS,
+}

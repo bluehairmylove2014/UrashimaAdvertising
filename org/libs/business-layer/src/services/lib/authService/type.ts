@@ -1,15 +1,18 @@
-import { IAccount } from "../../entities";
+import { IAccount } from '../../entities';
 
-export type Token = string;
-export type RegisterParams = Pick<IAccount, "email" | "fullName" | "password">;
-export type LoginParams = Pick<IAccount, "email" | "password">;
+export type tokenType = string;
+export type registerParamsType = Pick<
+  IAccount,
+  'email' | 'fullName' | 'password'
+>;
+export type loginParamsType = Pick<IAccount, 'email' | 'password'>;
 
-export type AuthenticationResponse = {
+export type authenticationResponseType = {
   message: string;
-  token: Token;
-  refreshToken: Token;
+  token: tokenType;
+  refreshToken: tokenType;
 };
-export type RefreshTokenResponse = {
+export type refreshTokenResponseType = {
   message: string;
-  token: Token;
+  token: tokenType;
 };

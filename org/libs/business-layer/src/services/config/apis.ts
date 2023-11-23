@@ -1,3 +1,6 @@
+// PROXY_URL
+const herokuappProxyUrl = 'https://cors-anywhere.herokuapp.com/';
+
 // AUTH
 export const loginUrl = '/v1/auth/login';
 export const refreshTokenUrl = '/v1/auth/refresh-token';
@@ -13,6 +16,11 @@ export const facebookGetFBAccessTokenUrl =
   'https://graph.facebook.com/v17.0/oauth/access_token';
 export const facebookGetFBUserInfoUrl =
   'https://graph.facebook.com/me?fields=first_name,last_name,email';
+// GITHUB
+export const githubGetAccessTokenUrl =
+  herokuappProxyUrl + 'https://github.com/login/oauth/access_token';
+export const githubValidateTokenUrl = 'https://api.github.com/authorizations/';
+export const githubGetUserInfoUrl = 'https://api.github.com/user';
 
 export const exchangeratesapi = 'http://api.exchangeratesapi.io/v1';
 export const exchangeratesGetLatestPath = '/latest';

@@ -1,74 +1,81 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-// Importing necessary libraries and services
+import { SocialService } from '@business-layer/services';
 import { useMemo } from 'react';
-import { facebookConfig } from '../../../../configs';
+import { githubConfig } from '../../../../configs';
 import { BROADCAST_MESSAGE } from '../../constants';
 import {
-  useGetFBAccessTokenMutation,
-  useGetFBUserInfoMutation,
+  useGetGithubUserInfoMutation,
   useUpdateAccountMutation,
 } from '../../fetching/mutation';
 import { getRedirectUri } from '../helper/uriHelper';
-import { getCodeFromUrl } from '../helper/urlSearchParamsHelper';
+import {
+  getCodeFromUrl,
+  getTokenFromUrl,
+} from '../helper/urlSearchParamsHelper';
 import { useAccessToken } from './useAccessToken';
+import { useAuthBroadcastChannel } from './useAuthBroadcastChannel';
 import { useHandleRefreshToken } from './useHandleRefreshToken';
+import { useGetGithubAccessTokenMutation } from './../../fetching/mutation';
 
 const failedMessage = 'Login failed';
-
-const fbAppId = process.env.NEXT_PUBLIC_FACEBOOK_APP_ID ?? '';
-const fbAppSecret = process.env.NEXT_PUBLIC_FACEBOOK_APP_SECRET ?? '';
+const githubClientId = process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID ?? '';
+const githubClientSecret = process.env.NEXT_PUBLIC_GITHUB_CLIENT_SECRET ?? '';
 
 /**
  * ---HOW TO USE---
- * 1. button onClick={onFacebookLogin()} in your login with facebook button
- * 2. Call onCheckFacebookLogin().then(msg => ...).catch(err => ...) in
- * your redirect page (login page => facebook api page => redirect page)
+ * 1. button onClick={onGithubLogin()} in your login with Github button
+ * 2. Call onCheckGithubLogin().then(msg => ...).catch(err => ...) in
+ * your redirect page (login page => Github api page => redirect page)
  * 3. You should change your redirect page url in /auth/config/index.ts
  */
-export const useFacebookLogin = () => {
+
+export const useGithubLogin = () => {
+  // Configure auth url
   const redirectUri = useMemo(
-    () => getRedirectUri() + facebookConfig.REDIRECT_URI_PATH,
+    () => getRedirectUri() + githubConfig.REDIRECT_URI_PATH,
     []
   );
-  const facebookAuthUrl = useMemo(
+  const githubAuthUrl = useMemo(
     () =>
-      facebookConfig.AUTH_URI +
-      `?client_id=${fbAppId}` +
-      `&redirect_uri=${getRedirectUri() + facebookConfig.REDIRECT_URI_PATH}` +
-      `&scope=${facebookConfig.SCOPE}` +
-      `&response_type=code` +
-      `&state={"${facebookConfig.STATE}"}`,
+      `${githubConfig.AUTH_URI}` +
+      `?client_id=${githubClientId}` +
+      `&redirect_uri=${encodeURIComponent(redirectUri)}` +
+      `&scope=${encodeURIComponent(githubConfig.SCOPE)}` +
+      `&state=1983gr7fwbkd2014dat28dep08trai1987rdb`,
     []
   );
-  const getFBAccessTokenMutation = useGetFBAccessTokenMutation();
-  const getFBUserInfoMutation = useGetFBUserInfoMutation();
+
+  const { postMessage } = useAuthBroadcastChannel();
+  const socialService = new SocialService();
+  const getGitAccessTokenMutation = useGetGithubAccessTokenMutation();
+  const getGitUserInfoMutation = useGetGithubUserInfoMutation();
   const updateAccountMutation = useUpdateAccountMutation();
 
   // Get the setToken function from useAccessToken
   const { setToken } = useAccessToken();
   const { setRefreshToken } = useHandleRefreshToken();
 
-  const onCheckFacebookLogin = () => {
+  const onCheckGithubLogin = (): Promise<string> => {
     return new Promise((resolve, reject) => {
       const code = getCodeFromUrl();
       if (code) {
         // get token by 'code'
-        getFBAccessTokenMutation
+        getGitAccessTokenMutation
           .mutateAsync({
-            clientId: fbAppId,
-            clientSecret: fbAppSecret,
+            clientId: githubClientId,
+            clientSecret: githubClientSecret,
             redirectUri: redirectUri,
             code: code,
           })
           .then((data) => {
-            getFBUserInfoMutation
+            getGitUserInfoMutation
               .mutateAsync(data.access_token)
               .then((res) => {
                 // Update account on server
                 updateAccountMutation
                   .mutateAsync({
-                    email: res.email,
-                    fullName: res.firstName + ' ' + res.lastName,
+                    email: res.email ? res.email : res.login + '@gmail.com',
+                    fullName: res.name,
                   })
                   .then((res) => {
                     setToken(res.token);
@@ -100,12 +107,13 @@ export const useFacebookLogin = () => {
     });
   };
 
-  const onFacebookLogin = () => {
+  const onGithubLogin = () => {
     if (typeof window !== 'undefined') {
-      window.location.href = facebookAuthUrl;
+      window.location.href = githubAuthUrl;
     } else {
       console.error('ERROR initialize window');
     }
   };
-  return { onFacebookLogin, onCheckFacebookLogin };
+
+  return { onGithubLogin, onCheckGithubLogin };
 };

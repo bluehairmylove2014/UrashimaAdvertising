@@ -5,22 +5,24 @@ import {
   refreshTokenResponseSchema,
 } from './schema';
 import {
-  LoginParams,
-  Token,
-  AuthenticationResponse,
-  RefreshTokenResponse,
+  loginParamsType,
+  tokenType,
+  authenticationResponseType,
+  refreshTokenResponseType,
 } from './type';
 
 export * from './type';
 export class AuthService extends Services {
   abortController?: AbortController;
 
-  login = async (data: LoginParams): Promise<AuthenticationResponse> => {
+  login = async (
+    data: loginParamsType
+  ): Promise<authenticationResponseType> => {
     this.abortController = new AbortController();
     try {
       const response = await this.fetchApi<
         typeof authenticationResponseSchema,
-        AuthenticationResponse
+        authenticationResponseType
       >({
         method: 'POST',
         url: loginUrl,
@@ -34,12 +36,14 @@ export class AuthService extends Services {
       throw this.handleError(error);
     }
   };
-  refreshToken = async (refreshToken: Token): Promise<RefreshTokenResponse> => {
+  refreshToken = async (
+    refreshToken: tokenType
+  ): Promise<refreshTokenResponseType> => {
     this.abortController = new AbortController();
     try {
       const response = await this.fetchApi<
         typeof refreshTokenResponseSchema,
-        RefreshTokenResponse
+        refreshTokenResponseType
       >({
         method: 'POST',
         url: refreshTokenUrl,

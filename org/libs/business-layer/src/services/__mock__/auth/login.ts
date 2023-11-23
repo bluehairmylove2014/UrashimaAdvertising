@@ -20,6 +20,7 @@ axiosMockAdapterInstance
         {
           message: 'Login success',
           token: 'This is new login access token :>',
+          refreshToken: 'This is new login access token :>',
         },
       ];
     } else {

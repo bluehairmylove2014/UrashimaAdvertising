@@ -1,21 +1,21 @@
 export function setCookie(name: string, value: string, hours: number): void {
-  if (typeof document !== "undefined") {
-    let expires = "";
+  if (typeof document !== 'undefined') {
+    let expires = '';
     if (hours) {
       const date = new Date();
 
       // hours * 60 * 60 * 1000: convert to milisecond
       date.setTime(date.getTime() + hours * 60 * 60 * 1000);
-      expires = "; expires=" + date.toUTCString();
+      expires = '; expires=' + date.toUTCString();
     }
-    document.cookie = name + "=" + (value || "") + expires;
+    document.cookie = name + '=' + (value ?? '') + expires;
   }
 }
 
 export function getCookie(name: string): string | null {
-  if (typeof document !== "undefined") {
-    const nameEQ = name + "=";
-    const cookieArr = document.cookie.split(";");
+  if (typeof document !== 'undefined') {
+    const nameEQ = name + '=';
+    const cookieArr = document.cookie.split(';');
     let result = null;
     cookieArr.forEach((cookie) => {
       const c = cookie.trim();
@@ -30,5 +30,5 @@ export function getCookie(name: string): string | null {
 }
 
 export function deleteCookie(name: string): void {
-  setCookie(name, "", -1);
+  setCookie(name, '', -1);
 }

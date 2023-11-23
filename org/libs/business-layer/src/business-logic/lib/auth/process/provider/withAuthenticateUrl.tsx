@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
-import { Loader, authUrls } from "../../config";
-import { useAuthContext } from "../context";
-import { getWindowInstance } from "../helper/windowHelper";
-import { useAccessToken } from "../hooks/useAccessToken";
+import { useEffect, useState } from 'react';
+import { Loader, authUrls } from '../../config';
+import { useAuthContext } from '../context';
+import { getWindowInstance } from '../helper/windowHelper';
+import { useAccessToken } from '../hooks/useAccessToken';
 
 type WrappedComponentProps = {
   children: React.ReactNode;

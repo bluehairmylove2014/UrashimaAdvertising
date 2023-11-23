@@ -60,11 +60,9 @@ function CustomButton({
       }`}
       onClick={onClick}
       disabled={disabled || loading}
-      type={type || defaultType}
+      type={type ?? defaultType}
     >
-      <div className="loader">
-        {loading ? <ButtonLoader label="Signing in..." /> : <>{children}</>}
-      </div>
+      {loading ? <ButtonLoader label="Signing in..." /> : <>{children}</>}
     </button>
   );
 }
