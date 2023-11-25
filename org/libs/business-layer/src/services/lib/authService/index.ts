@@ -13,8 +13,6 @@ import {
 
 export * from './type';
 export class AuthService extends Services {
-  abortController?: AbortController;
-
   login = async (
     data: loginParamsType
   ): Promise<authenticationResponseType> => {

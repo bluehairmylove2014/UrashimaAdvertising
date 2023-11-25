@@ -28,8 +28,6 @@ import {
 } from './type';
 
 export class SocialService extends Services {
-  abortController?: AbortController;
-
   updateAccount = async (
     data: updateAccountParamsType
   ): Promise<updateAccountResponseType> => {
@@ -175,6 +173,7 @@ export class SocialService extends Services {
             },
           }
         );
+      console.log('response: ', response);
       const dataInObj = response.data.split('&').reduce((acc: any, pair) => {
         const [key, value] = pair.split('=');
         acc[key] = decodeURIComponent(value);

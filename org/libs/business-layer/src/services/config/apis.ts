@@ -1,5 +1,5 @@
 // PROXY_URL
-const herokuappProxyUrl = 'https://cors-anywhere.herokuapp.com/';
+const herokuappProxyUrl = 'http://localhost:80/';
 
 // AUTH
 export const loginUrl = '/v1/auth/login';

@@ -1,6 +1,6 @@
 'use client';
 import { useCallback, useRef, useState } from 'react';
-import Map, {
+import ReactMapGL, {
   Source,
   Layer,
   ViewStateChangeEvent,
@@ -651,16 +651,24 @@ function Home() {
     setCursor('pointer');
   }, []);
   return (
-    <Map
+    <ReactMapGL
       mapboxAccessToken={ACCESS_TOKEN}
       initialViewState={MAP_DEFAULT_VIEW_PORT}
       onZoom={handleZoom}
       onClick={handleClick}
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
+      dragRotate={false}
+      minZoom={10}
+      maxZoom={18}
+      maxBounds={[
+        [106.317521, 10.321631], // Tọa độ góc dưới cùng bên trái của hình chữ nhật giới hạn
+        [107.042629, 11.210448], // Tọa độ góc trên cùng bên phải của hình chữ nhật giới hạn
+      ]}
+      // maxBounds={bounds}
       ref={mapRef}
       cursor={cursor}
-      style={{ width: '90vw', height: '100vh' }}
+      style={{ width: '100vw', height: '100vh' }}
       mapStyle={MAP_STYLE}
     >
       {isShowCluster ? (
@@ -686,7 +694,7 @@ function Home() {
       ) : (
         <></>
       )}
-    </Map>
+    </ReactMapGL>
   );
 }
 

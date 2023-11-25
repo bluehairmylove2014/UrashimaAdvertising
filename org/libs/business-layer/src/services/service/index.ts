@@ -6,31 +6,18 @@ import {
   isCancel,
 } from '../config/axios';
 import { getApiUrl } from '../config/url';
-
+console.log('GENERATE');
 const unknownError: string = 'Unexpected error occurred';
 export class Services {
   abortController?: AbortController;
-  axios: any;
-  productionAxios: any;
-
-  constructor() {
-    this.axios = axios;
-    this.productionAxios = getAxiosNormalInstance();
-  }
-
-  isCancel(error: any): boolean {
-    return isCancel(error);
-  }
 
   cancelRequest(): void {
-    if (this.abortController) {
-      this.abortController.abort();
-    }
+    this.abortController && this.abortController.abort();
   }
 
   handleError(error: any): Error {
     console.error('service error: ', error);
-    if (this.isCancel(error)) {
+    if (isCancel(error)) {
       this.cancelRequest();
       return error;
     }
@@ -73,11 +60,12 @@ export class Services {
       signal,
       withCredentials,
     };
+    window && window.addEventListener('beforeunload', this.cancelRequest);
     const response = await (!isProduction
-      ? this.axios(mockParams)
-      : this.productionAxios(mockParams));
-
+      ? axios(mockParams)
+      : getAxiosNormalInstance()(mockParams));
     const dataResponse = schema.parse(response.data);
+    window && window.removeEventListener('beforeunload', this.cancelRequest);
     return transformResponse ? transformResponse(dataResponse) : dataResponse;
   }
 }
