@@ -1,5 +1,6 @@
 // PROXY_URL
-const herokuappProxyUrl = 'http://localhost:80/';
+const proxyUrl = 'https://ura-ads.phucdat4102.workers.dev/cors-proxy/';
+// 'https://cors-anywhere.herokuapp.com/';
 
 // AUTH
 export const loginUrl = '/v1/auth/login';
@@ -18,7 +19,7 @@ export const facebookGetFBUserInfoUrl =
   'https://graph.facebook.com/me?fields=first_name,last_name,email';
 // GITHUB
 export const githubGetAccessTokenUrl =
-  herokuappProxyUrl + 'https://github.com/login/oauth/access_token';
+  proxyUrl + 'https://github.com/login/oauth/access_token';
 export const githubValidateTokenUrl = 'https://api.github.com/authorizations/';
 export const githubGetUserInfoUrl = 'https://api.github.com/user';
 
