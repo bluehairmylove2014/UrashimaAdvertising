@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace UrashimaServer.Models
 {
@@ -6,11 +7,13 @@ namespace UrashimaServer.Models
     {
         [Key]
         public int Id { get; set; }
-        [Key]
         public int AdsPointId { get; set; }
         public string AdsType { get; set; } = string.Empty;
         public int Size { get; set; }
         public string Image { get; set; } = string.Empty;
         public DateTime ExpiredDate { get; set; }
+
+        public AdsPoint? AdsPoint { set; get; }
+        public ICollection<Report>? Reports { set; get; }
     }
 }
