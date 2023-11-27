@@ -27,8 +27,6 @@ Thay `mylib` bằng tên của thư viện của bạn.
 
 ## Cài đặt Dependencies
 
-Dựa vào các dependencies, bạn có thể sử dụng câu lệnh sau để cài đặt chúng:
-
 ```dependency
 npm install @flaticon/flaticon-uicons@latest @reduxjs/toolkit@^1.9.7 @tanstack/react-query@^5.8.4 axios@^1.6.2 react-hook-form@^7.48.2 crypto-js@^4.2.0 react-redux@^8.1.3 sonner@^1.2.2 zod@^3.22.4 yup@^1.3.2 sharp@latest --save
 

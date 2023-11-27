@@ -1,4 +1,5 @@
 import { AuthProvider } from '../lib/auth/process/provider';
+import { AdsProvider } from '../lib/ads/process/provider';
 
 export const reactQueryDevtoolsConfig = {
   isActive: process.env.NODE_ENV === 'development',
@@ -9,13 +10,19 @@ export const authConfig = {
   isNeedBroadcast: true,
 };
 export const mutationConfig = {
-  RETRY: 0,
+  MUTATION_RETRY: 0,
+  USE_QUERY_RETRY: 1,
 };
 
 export const providerConfig = [
   {
     key: 'auth',
     provider: AuthProvider,
+    isActive: true,
+  },
+  {
+    key: 'ads',
+    provider: AdsProvider,
     isActive: true,
   },
 ];
