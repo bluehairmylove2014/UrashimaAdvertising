@@ -16,8 +16,8 @@
     "baseUrl": ".",
     "paths": {
       "@assets/*": ["libs/presentational/assets*"],
-      "@constants/*": ["libs/constants/*"],
       "@business-layer/*": ["libs/business-layer/src/*"],
+      "@constants/*": ["libs/constants/*"],
       "@presentational/*": ["libs/presentational/src/*"],
       "@storages/*": ["libs/storages/*"],
       "@utils/*": ["libs/utils/*"]

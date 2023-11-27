@@ -5,6 +5,7 @@ import {
   useLogin,
   useGoogleLogin,
   useFacebookLogin,
+  useGithubLogin,
 } from '@business-layer/business-logic/lib/auth';
 import { useNotification } from '@presentational/atoms/Notification';
 import CustomButton from '@presentational/atoms/CustomButton';
@@ -15,6 +16,7 @@ import { PAGE_URLS } from './../../../constants/pages';
 import IconButton from '@presentational/atoms/IconButton';
 import FBIcon from '@presentational/assets/facebook.png';
 import GGIcon from '@presentational/assets/google.png';
+import GITIcon from '@presentational/assets/github.png';
 import Image from 'next/image';
 
 const iconButtonSize = 40;
@@ -44,6 +46,7 @@ function LoginForm() {
   const { onLogin, isLoading: isLoginLoading } = useLogin();
   const { onGoogleLogin } = useGoogleLogin();
   const { onFacebookLogin } = useFacebookLogin();
+  const { onGithubLogin } = useGithubLogin();
   const { control, handleSubmit } = useForm<loginFormData>({
     defaultValues: Object.fromEntries(
       authInputList.map(({ name }) => [name, ''])
@@ -55,13 +58,6 @@ function LoginForm() {
     onLogin({ email, password })
       .then((msg) => showSuccess(msg))
       .catch((error) => showError(error.message));
-  };
-  const handleGoogleLogin = () => {
-    console.log('CLICK');
-    onGoogleLogin();
-  };
-  const handleFacebookLogin = () => {
-    onFacebookLogin();
   };
 
   return (
@@ -105,7 +101,7 @@ function LoginForm() {
         <IconButton
           type="button"
           shape="circle"
-          callback={handleGoogleLogin}
+          callback={onGoogleLogin}
           customSize={`${iconButtonSize}px`}
         >
           <Image
@@ -118,12 +114,25 @@ function LoginForm() {
         <IconButton
           type="button"
           shape="circle"
-          callback={handleFacebookLogin}
+          callback={onFacebookLogin}
           customSize={`${iconButtonSize}px`}
         >
           <Image
             src={FBIcon}
             alt="facebook login"
+            width={iconButtonSize}
+            height={iconButtonSize}
+          />
+        </IconButton>
+        <IconButton
+          type="button"
+          shape="circle"
+          callback={onGithubLogin}
+          customSize={`${iconButtonSize}px`}
+        >
+          <Image
+            src={GITIcon}
+            alt="github login"
             width={iconButtonSize}
             height={iconButtonSize}
           />

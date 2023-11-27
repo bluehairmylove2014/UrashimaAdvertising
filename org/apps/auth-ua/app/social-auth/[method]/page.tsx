@@ -3,6 +3,7 @@
 import ButtonLoader from '@presentational/atoms/ButtonLoader';
 import {
   useFacebookLogin,
+  useGithubLogin,
   useGoogleLogin,
 } from '@business-layer/business-logic/lib/auth';
 import { useEffect, useState } from 'react';
@@ -37,6 +38,7 @@ function SocialAuth() {
   const socialLoginMethod = useParams().method;
   const { onCheckGoogleLogin } = useGoogleLogin();
   const { onCheckFacebookLogin } = useFacebookLogin();
+  const { onCheckGithubLogin } = useGithubLogin();
 
   useEffect(() => {
     if (socialLoginMethod && SOCIAL_LOGIN_METHODS.includes(socialLoginMethod)) {
@@ -47,6 +49,9 @@ function SocialAuth() {
           break;
         case 'fb':
           checkingMethod = onCheckFacebookLogin;
+          break;
+        case 'git':
+          checkingMethod = onCheckGithubLogin;
           break;
       }
       checkingMethod &&

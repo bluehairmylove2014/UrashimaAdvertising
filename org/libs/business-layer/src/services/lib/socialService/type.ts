@@ -1,12 +1,12 @@
 import { IAccount } from '../../entities';
 
-export type Token = string;
-export type ValidateTokenResponse = {
+export type tokenType = string;
+export type validateTokenResponseType = {
   email?: string;
   email_verified?: string;
   expires_in?: string;
 };
-export type GoogleValidateTokenResponse = {
+export type googleValidateTokenResponseType = {
   azp: string;
   aud: string;
   sub: string;
@@ -17,13 +17,13 @@ export type GoogleValidateTokenResponse = {
   email_verified: string; // "true"
   access_type: string; // "online"
 };
-export type UpdateAccountParams = Pick<IAccount, 'email' | 'fullName'>;
-export type UpdateAccountResponse = {
+export type updateAccountParamsType = Pick<IAccount, 'email' | 'fullName'>;
+export type updateAccountResponseType = {
   message: string;
-  token: Token;
-  refreshToken: Token;
+  token: tokenType;
+  refreshToken: tokenType;
 };
-export type GoogleGetUserInfoResponse = {
+export type googleGetUserInfoResponseType = {
   names: [
     {
       displayName: string;
@@ -40,26 +40,43 @@ export type GoogleGetUserInfoResponse = {
   ];
 };
 
-export type GetFBAccessTokenParams = {
+export type getFBAccessTokenParamsType = {
   clientId: string;
   clientSecret: string;
   redirectUri: string;
   code: string;
 };
-export type GetFBAccessTokenResponse = {
+export type getFBAccessTokenResponseType = {
   access_token: string;
   token_type: string;
   expires_in: string;
 };
-export type GetFBUserInfoResponse = {
+export type getFBUserInfoResponseType = {
   email: string;
   first_name: string;
   id: string;
   last_name: string;
 };
 
-export type GetUserInfoResponse = {
+export type getUserInfoResponseType = {
   email: string;
   firstName: string;
   lastName: string;
+};
+export type getGithubAccessTokenParamsType = {
+  clientId: string;
+  clientSecret: string;
+  redirectUri: string;
+  code: string;
+};
+export type getGithubAccessTokenResponseType = {
+  access_token: string;
+  scope: string;
+  token_type: string;
+};
+export type getGithubUserInfoResponseType = {
+  avatar_url: string;
+  email: string | null;
+  login: string;
+  name: string;
 };

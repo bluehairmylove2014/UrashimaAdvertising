@@ -9,12 +9,10 @@ import { getTokenFromUrl } from '../helper/urlSearchParamsHelper';
 import { useAccessToken } from './useAccessToken';
 import { useAuthBroadcastChannel } from './useAuthBroadcastChannel';
 import { useHandleRefreshToken } from './useHandleRefreshToken';
-import { googleRedirectUriPath } from '../../config';
 
 const failedMessage = 'Login failed';
 
-const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '';
-const redirectUri = getRedirectUri() + googleRedirectUriPath;
+const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ?? '';
 
 /**
  * ---HOW TO USE---
@@ -30,7 +28,9 @@ export const useGoogleLogin = () => {
     () =>
       `${googleConfig.AUTH_URI}` +
       `?client_id=${googleClientId}` +
-      `&redirect_uri=${encodeURIComponent(redirectUri)}` +
+      `&redirect_uri=${encodeURIComponent(
+        getRedirectUri() + googleConfig.REDIRECT_URI_PATH
+      )}` +
       `&response_type=token` +
       `&scope=${encodeURIComponent(googleConfig.SCOPE)}`,
     []
