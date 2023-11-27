@@ -12,5 +12,7 @@ namespace UrashimaServer.Models
         public string LocationType { get; set; } = string.Empty;
         public string AdsForm { get; set; } = string.Empty;
         public bool Planned { get; set; }
+        public ICollection<AdsPointImage>? Images { get; set; }
+        public ICollection<AdsBoard>? AdsBoards { get; set; }
     }
 }
