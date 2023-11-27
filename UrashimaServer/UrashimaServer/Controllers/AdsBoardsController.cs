@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -15,10 +16,12 @@ namespace UrashimaServer.Controllers
     public class AdsBoardsController : ControllerBase
     {
         private readonly DataContext _context;
+        readonly IMapper _mapper;
 
-        public AdsBoardsController(DataContext context)
+        public AdsBoardsController(DataContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         // GET: api/AdsBoards
@@ -29,8 +32,19 @@ namespace UrashimaServer.Controllers
             {
                 return NotFound();
             }
+           
+            var rawBoards = await _context.AdsBoards.Include(s => s.AdsPoint).ToListAsync();
 
-            return await _context.AdsBoards.Include(s => s.AdsPoint).ToListAsync();
+            // map each element
+            var boardDtoList = new List<GetAdsBoardDto>();
+
+            foreach(var item in rawBoards)
+            {
+                var boardDto = _mapper.Map<GetAdsBoardDto>(item);
+                boardDtoList.Add(boardDto);
+            }
+
+            return Ok(boardDtoList);
         }
 
         // GET: api/AdsBoards/5
