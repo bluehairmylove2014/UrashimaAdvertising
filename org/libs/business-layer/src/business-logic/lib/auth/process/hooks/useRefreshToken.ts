@@ -1,5 +1,5 @@
 // Importing necessary modules and functions
-import { RefreshTokenResponse } from '../../../../../services';
+import { refreshTokenResponseType } from '../../../../../services';
 import { BROADCAST_MESSAGE } from '../../constants';
 import { useRefreshTokenMutation } from '../../fetching/mutation';
 import { useAccessToken } from './useAccessToken';
@@ -7,7 +7,7 @@ import { useAuthBroadcastChannel } from './useAuthBroadcastChannel';
 import { useHandleRefreshToken } from './useHandleRefreshToken';
 
 type UseRefreshTokenType = {
-  onRefreshToken: (oldToken: string) => Promise<RefreshTokenResponse>;
+  onRefreshToken: (oldToken: string) => Promise<refreshTokenResponseType>;
   isLoading: boolean;
 };
 // The useLogin hook
@@ -21,7 +21,9 @@ export const useRefreshToken = (): UseRefreshTokenType => {
   const { deleteRefreshToken } = useHandleRefreshToken();
 
   // Defining the onLogin function
-  const onRefreshToken = (oldToken: string): Promise<RefreshTokenResponse> => {
+  const onRefreshToken = (
+    oldToken: string
+  ): Promise<refreshTokenResponseType> => {
     return new Promise((resolve, reject) => {
       refreshTokenMutation
         .mutateAsync(oldToken)
@@ -51,6 +53,6 @@ export const useRefreshToken = (): UseRefreshTokenType => {
   // Returning the onLogin function and the loading state
   return {
     onRefreshToken,
-    isLoading: refreshTokenMutation.isLoading,
+    isLoading: refreshTokenMutation.isPending,
   };
 };

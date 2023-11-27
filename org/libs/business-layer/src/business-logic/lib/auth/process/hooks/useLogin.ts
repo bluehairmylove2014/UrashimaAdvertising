@@ -1,13 +1,16 @@
 // Importing necessary modules and functions
-import { AuthenticationResponse, LoginParams } from "../../../../../services";
-import { BROADCAST_MESSAGE } from "../../constants";
-import { useLoginMutation } from "../../fetching/mutation";
-import { useAccessToken } from "./useAccessToken";
-import { useAuthBroadcastChannel } from "./useAuthBroadcastChannel";
-import { useHandleRefreshToken } from "./useHandleRefreshToken";
+import {
+  authenticationResponseType,
+  loginParamsType,
+} from '../../../../../services';
+import { BROADCAST_MESSAGE } from '../../constants';
+import { useLoginMutation } from '../../fetching/mutation';
+import { useAccessToken } from './useAccessToken';
+import { useAuthBroadcastChannel } from './useAuthBroadcastChannel';
+import { useHandleRefreshToken } from './useHandleRefreshToken';
 
 type UseLoginType = {
-  onLogin: (params: LoginParams) => Promise<string>;
+  onLogin: (params: loginParamsType) => Promise<string>;
   isLoading: boolean;
 };
 export const useLogin = (): UseLoginType => {
@@ -19,11 +22,11 @@ export const useLogin = (): UseLoginType => {
   const { setToken } = useAccessToken();
   const { setRefreshToken } = useHandleRefreshToken();
 
-  const onLogin = ({ email, password }: LoginParams): Promise<string> => {
+  const onLogin = ({ email, password }: loginParamsType): Promise<string> => {
     return new Promise((resolve, reject) => {
       loginMutation
         .mutateAsync({ email, password })
-        .then((response: AuthenticationResponse) => {
+        .then((response: authenticationResponseType) => {
           if (response.token) {
             setToken(response.token);
             setRefreshToken(response.refreshToken);
@@ -49,6 +52,6 @@ export const useLogin = (): UseLoginType => {
   // Returning the onLogin function and the loading state
   return {
     onLogin,
-    isLoading: loginMutation.isLoading,
+    isLoading: loginMutation.isPending,
   };
 };

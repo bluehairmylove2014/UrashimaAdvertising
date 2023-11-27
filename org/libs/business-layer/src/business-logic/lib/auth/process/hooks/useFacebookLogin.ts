@@ -1,8 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 // Importing necessary libraries and services
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { facebookConfig } from '../../../../configs';
-import { BROADCAST_MESSAGE, FACEBOOK_MESSAGE } from '../../constants';
+import { BROADCAST_MESSAGE } from '../../constants';
 import {
   useGetFBAccessTokenMutation,
   useGetFBUserInfoMutation,
@@ -12,13 +12,11 @@ import { getRedirectUri } from '../helper/uriHelper';
 import { getCodeFromUrl } from '../helper/urlSearchParamsHelper';
 import { useAccessToken } from './useAccessToken';
 import { useHandleRefreshToken } from './useHandleRefreshToken';
-import { facebookRedirectUriPath } from '../../config';
 
 const failedMessage = 'Login failed';
 
-const fbAppId = process.env.NEXT_PUBLIC_FACEBOOK_APP_ID || '';
-const fbAppSecret = process.env.NEXT_PUBLIC_FACEBOOK_APP_SECRET || '';
-const redirectUri = getRedirectUri() + facebookRedirectUriPath;
+const fbAppId = process.env.NEXT_PUBLIC_FACEBOOK_APP_ID ?? '';
+const fbAppSecret = process.env.NEXT_PUBLIC_FACEBOOK_APP_SECRET ?? '';
 
 /**
  * ---HOW TO USE---
@@ -28,11 +26,15 @@ const redirectUri = getRedirectUri() + facebookRedirectUriPath;
  * 3. You should change your redirect page url in /auth/config/index.ts
  */
 export const useFacebookLogin = () => {
+  const redirectUri = useMemo(
+    () => getRedirectUri() + facebookConfig.REDIRECT_URI_PATH,
+    []
+  );
   const facebookAuthUrl = useMemo(
     () =>
       facebookConfig.AUTH_URI +
       `?client_id=${fbAppId}` +
-      `&redirect_uri=${redirectUri}` +
+      `&redirect_uri=${getRedirectUri() + facebookConfig.REDIRECT_URI_PATH}` +
       `&scope=${facebookConfig.SCOPE}` +
       `&response_type=code` +
       `&state={"${facebookConfig.STATE}"}`,

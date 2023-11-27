@@ -2,6 +2,8 @@ import { AxiosResponse } from 'axios';
 import {
   facebookGetFBAccessTokenUrl,
   facebookGetFBUserInfoUrl,
+  githubGetAccessTokenUrl,
+  githubGetUserInfoUrl,
   googleGetUserInfoUrl,
   googleValidateTokenUrl,
   updateAccountUrl,
@@ -10,26 +12,49 @@ import { getAxiosNormalInstance } from '../../config/axios';
 import { Services } from '../../service';
 import { updateAccountResponseSchema } from './schema';
 import {
-  GetFBAccessTokenParams,
-  GetFBAccessTokenResponse,
-  GetFBUserInfoResponse,
-  GetUserInfoResponse,
-  GoogleGetUserInfoResponse,
-  GoogleValidateTokenResponse,
-  Token,
-  UpdateAccountParams,
-  UpdateAccountResponse,
-  ValidateTokenResponse,
+  getFBAccessTokenParamsType,
+  getFBAccessTokenResponseType,
+  getFBUserInfoResponseType,
+  getGithubAccessTokenParamsType,
+  getGithubAccessTokenResponseType,
+  getGithubUserInfoResponseType,
+  getUserInfoResponseType,
+  googleGetUserInfoResponseType,
+  googleValidateTokenResponseType,
+  tokenType,
+  updateAccountParamsType,
+  updateAccountResponseType,
+  validateTokenResponseType,
 } from './type';
 
 export class SocialService extends Services {
-  abortController?: AbortController;
-
-  // GOOGLE LOGIN
-  validateToken = async (token: string): Promise<ValidateTokenResponse> => {
+  updateAccount = async (
+    data: updateAccountParamsType
+  ): Promise<updateAccountResponseType> => {
     this.abortController = new AbortController();
     try {
-      const response: AxiosResponse<GoogleValidateTokenResponse> =
+      const response = await this.fetchApi<
+        typeof updateAccountResponseSchema,
+        updateAccountResponseType
+      >({
+        method: 'POST',
+        url: updateAccountUrl,
+        schema: updateAccountResponseSchema,
+        data,
+        signal: this.abortController.signal,
+        transformResponse: (res) => res,
+      });
+      return response;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  };
+
+  // GOOGLE LOGIN
+  validateToken = async (token: string): Promise<validateTokenResponseType> => {
+    this.abortController = new AbortController();
+    try {
+      const response: AxiosResponse<googleValidateTokenResponseType> =
         await getAxiosNormalInstance().get(
           googleValidateTokenUrl + `?access_token=${token}`,
           {
@@ -50,10 +75,10 @@ export class SocialService extends Services {
       throw this.handleError(error);
     }
   };
-  getAccountInfo = async (token: string): Promise<GetUserInfoResponse> => {
+  getAccountInfo = async (token: string): Promise<getUserInfoResponseType> => {
     this.abortController = new AbortController();
     try {
-      const response: AxiosResponse<GoogleGetUserInfoResponse> =
+      const response: AxiosResponse<googleGetUserInfoResponseType> =
         await getAxiosNormalInstance().get(googleGetUserInfoUrl, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -74,35 +99,14 @@ export class SocialService extends Services {
       throw this.handleError(error);
     }
   };
-  updateAccount = async (
-    data: UpdateAccountParams
-  ): Promise<UpdateAccountResponse> => {
-    this.abortController = new AbortController();
-    try {
-      const response = await this.fetchApi<
-        typeof updateAccountResponseSchema,
-        UpdateAccountResponse
-      >({
-        method: 'POST',
-        url: updateAccountUrl,
-        schema: updateAccountResponseSchema,
-        data,
-        signal: this.abortController.signal,
-        transformResponse: (res) => res,
-      });
-      return response;
-    } catch (error) {
-      throw this.handleError(error);
-    }
-  };
 
   // FACEBOOK LOGIN
   getFBAccessToken = async (
-    params: GetFBAccessTokenParams
-  ): Promise<GetFBAccessTokenResponse> => {
+    params: getFBAccessTokenParamsType
+  ): Promise<getFBAccessTokenResponseType> => {
     this.abortController = new AbortController();
     try {
-      const response: AxiosResponse<GetFBAccessTokenResponse> =
+      const response: AxiosResponse<getFBAccessTokenResponseType> =
         await getAxiosNormalInstance().get(
           facebookGetFBAccessTokenUrl +
             `?client_id=${params.clientId}` +
@@ -122,10 +126,12 @@ export class SocialService extends Services {
       throw this.handleError(error);
     }
   };
-  getFBUserInfo = async (token: Token): Promise<GetUserInfoResponse> => {
+  getFBUserInfo = async (
+    token: tokenType
+  ): Promise<getUserInfoResponseType> => {
     this.abortController = new AbortController();
     try {
-      const response: AxiosResponse<GetFBUserInfoResponse> =
+      const response: AxiosResponse<getFBUserInfoResponseType> =
         await getAxiosNormalInstance().get(
           facebookGetFBUserInfoUrl + `&access_token=${token}`,
           {
@@ -142,6 +148,77 @@ export class SocialService extends Services {
       } else {
         throw new Error('Error get facebook user infor response.status');
       }
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  };
+
+  // GITHUB LOGIN
+  getGithubAccessToken = async (
+    params: getGithubAccessTokenParamsType
+  ): Promise<getGithubAccessTokenResponseType> => {
+    this.abortController = new AbortController();
+    try {
+      console.log(
+        'POST: ',
+        githubGetAccessTokenUrl +
+          `?client_id=${params.clientId}` +
+          `&client_secret=${params.clientSecret}` +
+          `&redirect_uri=${params.redirectUri}` +
+          `&code=${params.code}`
+      );
+      const response: AxiosResponse<string> =
+        await getAxiosNormalInstance().post(
+          githubGetAccessTokenUrl +
+            `?client_id=${params.clientId}` +
+            `&client_secret=${params.clientSecret}` +
+            `&redirect_uri=${params.redirectUri}` +
+            `&code=${params.code}`,
+          {
+            signal: this.abortController.signal,
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        );
+      console.log('response: ', response);
+
+      const dataInObj = response.data.split('&').reduce((acc: any, pair) => {
+        const [key, value] = pair.split('=');
+        acc[key] = decodeURIComponent(value);
+        return acc;
+      }, {});
+
+      if (!dataInObj.access_token) {
+        throw new Error(dataInObj.error);
+      } else {
+        return dataInObj;
+      }
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  };
+  getGithubUserInfo = async (
+    token: tokenType
+  ): Promise<getGithubUserInfoResponseType> => {
+    this.abortController = new AbortController();
+    try {
+      const response: AxiosResponse<any> = await getAxiosNormalInstance().get(
+        githubGetUserInfoUrl,
+        {
+          signal: this.abortController.signal,
+          headers: {
+            Authorization: `bearer ${token}`,
+          },
+        }
+      );
+      console.log('USER DATA: ', response.data);
+      return {
+        avatar_url: response.data.avatar_url,
+        email: response.data.email,
+        login: response.data.login,
+        name: response.data.name,
+      };
     } catch (error) {
       throw this.handleError(error);
     }

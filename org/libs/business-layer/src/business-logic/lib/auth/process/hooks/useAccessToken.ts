@@ -1,10 +1,10 @@
 // Importing necessary constants
-import { COOKIE_KEY } from "../../../../configs/constants";
-import { TOKEN_EXPIRY_DAYS } from "../../constants";
+import { COOKIE_KEYS } from '../../../../configs/constants';
+import { TOKEN_EXPIRY_DAYS } from '../../constants';
 // Importing authentication context
-import { useAuthContext } from "../context";
+import { useAuthContext } from '../context';
 // Importing cookie helper functions
-import { deleteCookie, getCookie, setCookie } from "../helper/cookieHelper";
+import { deleteCookie, getCookie, setCookie } from '../helper/cookieHelper';
 
 type AccessTokenHook = {
   getToken: () => string | null;
@@ -14,7 +14,7 @@ type AccessTokenHook = {
 
 // Function to get the token
 export const getToken = (): string | null => {
-  return getCookie(COOKIE_KEY.ACCESS_TOKEN);
+  return getCookie(COOKIE_KEYS.ACCESS_TOKEN);
 };
 
 export const useAccessToken = (): AccessTokenHook => {
@@ -23,20 +23,20 @@ export const useAccessToken = (): AccessTokenHook => {
 
   // Function to set the token
   const setToken = (newToken: string): void => {
-    setCookie(COOKIE_KEY.ACCESS_TOKEN, newToken, TOKEN_EXPIRY_DAYS.REMEMBER);
+    setCookie(COOKIE_KEYS.ACCESS_TOKEN, newToken, TOKEN_EXPIRY_DAYS.REMEMBER);
     // Dispatch the new token to the context
     dispatch({
-      type: "SET_ACTION",
+      type: 'SET_ACTION',
       payload: newToken,
     });
   };
 
   // Function to delete the token
   const deleteToken = (): void => {
-    deleteCookie(COOKIE_KEY.ACCESS_TOKEN);
+    deleteCookie(COOKIE_KEYS.ACCESS_TOKEN);
     // Remove the token from the context
     dispatch({
-      type: "SET_ACTION",
+      type: 'SET_ACTION',
       payload: null,
     });
   };
