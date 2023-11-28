@@ -32,7 +32,7 @@ export const clusterCountLayout = {
 };
 export const unclusteredPointPaint = {
   'circle-color': '#11b4da',
-  'circle-radius': 4,
+  'circle-radius': 8,
   'circle-stroke-width': 1,
   'circle-stroke-color': '#fff',
 };

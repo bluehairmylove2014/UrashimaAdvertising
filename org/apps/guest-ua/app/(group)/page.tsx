@@ -6,6 +6,7 @@ import ReactMapGL, {
   ViewStateChangeEvent,
   MapLayerMouseEvent,
   MapRef,
+  Popup
 } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import {
@@ -15,6 +16,9 @@ import {
 } from '../../config/layer';
 import { MAP_DEFAULT_VIEW_PORT } from '../../constants/map';
 import { ACCESS_TOKEN, MAP_STYLE } from '../../constants/mapbox_key';
+import InfoAds from '@presentational/molecules/InfoAds';
+import CustomButtonIcon from '@presentational/atoms/CustomButtonIcon';
+
 
 const adsData = [
   {
@@ -619,9 +623,25 @@ const adsData = [
   },
 ];
 
+interface AdsPoint {
+  hinhThuc: string,
+  phanLoat: string,
+  diaChi: string,
+  daQuyHoach: boolean,
+  long: number,
+  lat: number
+}
+
 function Home() {
   const mapRef = useRef<MapRef>(null);
   const [isShowCluster, setIsShowCluster] = useState<boolean>(true);
+
+  //Đặt biến state kiểm tra vị trí con trỏ trỏ đến có là điểm đặt quảng cáo hay không
+  const [isAdsPoint, setIsAdsPoint] = useState<boolean>(false);
+
+  //Đặt biến state lưu thông tin sơ bộ địa điểm quảng cáo
+  const [infoHoverAdsPoint, setInfoHoverAdsPoint] = useState<AdsPoint>();
+
   const [cursor, setCursor] = useState('pointer');
   const handleZoom = useCallback(
     (e: ViewStateChangeEvent) => {
@@ -633,68 +653,130 @@ function Home() {
     },
     [isShowCluster]
   );
+
+  //Bắt sự kiện click chuột
   const handleClick = useCallback((event: MapLayerMouseEvent) => {
     if (!mapRef.current) return;
-    const features = mapRef.current.queryRenderedFeatures(event.point, {
-      layers: ['clusters'],
-    });
+
+    // const features = mapRef.current.queryRenderedFeatures(event.point, {
+    //   layers: ['clusters'],
+    // });
+
+    const features = mapRef.current.queryRenderedFeatures(event.point);
+
     const feature = features.find((f) => f.layer.id === 'clusters');
     if (feature && feature.geometry.type === 'Point') {
       const [long, lat] = feature.geometry.coordinates;
       mapRef.current.flyTo({ zoom: 16, center: [long, lat], duration: 1500 });
+      return;
     }
+
+    //Điểm click chuột là điểm đặt các bảng quảng cáo
+    const unclusteredPoint = features.find((f) => f.layer.id === 'unclustered-point');
+    if (unclusteredPoint && unclusteredPoint.geometry.type === 'Point') {
+      setIsAdsPoint(true);
+    }
+    else
+      setIsAdsPoint(false);
   }, []);
+
+  //Bắt sự kiện chuột nhấn xuống
   const handleMouseDown = useCallback((event: MapLayerMouseEvent) => {
     setCursor('grabbing');
   }, []);
+
+  //Bắt sự kiện chuột nhất lên
   const handleMouseUp = useCallback((event: MapLayerMouseEvent) => {
     setCursor('pointer');
   }, []);
+
+  const [hoverInfo, setHoverInfo] = useState(null);
+
+  interface AdsPosition {
+    long: number;
+    lat: number;
+  }
+
+  //Bắt sự kiện chuột di chuyển đến các điểm quảng cáo
+  const handleMouseMove = useCallback((event: MapLayerMouseEvent) => {
+    if (!mapRef.current) return;
+
+    const features = mapRef.current.queryRenderedFeatures(event.point);
+
+    const unclusteredPoint = features.find((f) => f.layer.id === 'unclustered-point');
+    let [long, lat] = [0, 0]
+    if (unclusteredPoint && unclusteredPoint.geometry.type === 'Point') {
+      [long, lat] = [event.point.x, event.point.y];
+    }
+
+    setInfoHoverAdsPoint(unclusteredPoint && {
+      hinhThuc: 'string',
+      phanLoat: 'string',
+      diaChi: 'string',
+      daQuyHoach: true,
+      long: long,
+      lat: lat
+    });
+
+  }, []);
+
+
   return (
-    <ReactMapGL
-      mapboxAccessToken={ACCESS_TOKEN}
-      initialViewState={MAP_DEFAULT_VIEW_PORT}
-      onZoom={handleZoom}
-      onClick={handleClick}
-      onMouseDown={handleMouseDown}
-      onMouseUp={handleMouseUp}
-      dragRotate={false}
-      minZoom={10}
-      maxZoom={18}
-      maxBounds={[
-        [106.317521, 10.321631], // Tọa độ góc dưới cùng bên trái của hình chữ nhật giới hạn
-        [107.042629, 11.210448], // Tọa độ góc trên cùng bên phải của hình chữ nhật giới hạn
-      ]}
-      // maxBounds={bounds}
-      ref={mapRef}
-      cursor={cursor}
-      style={{ width: '100vw', height: '100vh' }}
-      mapStyle={MAP_STYLE}
-    >
-      {isShowCluster ? (
-        <Source
-          id="earthquakes"
-          type="geojson"
-          data={{
-            type: 'FeatureCollection',
-            features: adsData.map((m) => ({
-              type: 'Feature',
-              properties: { cluster: false, name: m.name },
-              geometry: { type: 'Point', coordinates: [m.long, m.lat] },
-            })),
-          }}
-          cluster={true}
-          clusterMaxZoom={14}
-          clusterRadius={40}
-        >
-          <Layer {...clusterLayer} />
-          <Layer {...clusterCountLayer} />
-          <Layer {...unclusteredPointLayer} />
-        </Source>
-      ) : (
-        <></>
-      )}
-    </ReactMapGL>
+    <div>
+      <ReactMapGL
+        mapboxAccessToken={ACCESS_TOKEN}
+        initialViewState={MAP_DEFAULT_VIEW_PORT}
+        onZoom={handleZoom}
+        onClick={handleClick}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        dragRotate={false}
+        minZoom={10}
+        maxZoom={18}
+        maxBounds={[
+          [106.317521, 10.321631], // Tọa độ góc dưới cùng bên trái của hình chữ nhật giới hạn
+          [107.042629, 11.210448], // Tọa độ góc trên cùng bên phải của hình chữ nhật giới hạn
+        ]}
+        // maxBounds={bounds}
+        ref={mapRef}
+        cursor={cursor}
+        style={{ width: '100vw', height: '100vh' }}
+        mapStyle={MAP_STYLE}
+      >
+
+        {isShowCluster ? (
+          <Source
+            id="earthquakes"
+            type="geojson"
+            data={{
+              type: 'FeatureCollection',
+              features: adsData.map((m) => ({
+                type: 'Feature',
+                properties: { cluster: false, name: m.name },
+                geometry: { type: 'Point', coordinates: [m.long, m.lat] },
+              })),
+            }}
+            cluster={true}
+            clusterMaxZoom={14}
+            clusterRadius={40}
+          >
+            <Layer {...clusterLayer} />
+            <Layer {...clusterCountLayer} />
+            <Layer {...unclusteredPointLayer} />
+          </Source>
+
+        ) : (
+          <></>
+        )}
+        {infoHoverAdsPoint && (
+          <div className='max-w-[45vh] bg-white rounded-[5px] shadow-[1px_1px_3px_-2px] p-[0.4rem] absolute' style={{ left: infoHoverAdsPoint.long, top: infoHoverAdsPoint.lat }}>
+            <InfoAds />
+          </div>
+        )}
+
+      </ReactMapGL >
+    </div >
   );
 }
 
