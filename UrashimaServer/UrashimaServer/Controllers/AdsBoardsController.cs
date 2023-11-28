@@ -11,7 +11,7 @@ using UrashimaServer.Models;
 
 namespace UrashimaServer.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/ads-board")]
     [ApiController]
     public class AdsBoardsController : ControllerBase
     {
@@ -47,14 +47,35 @@ namespace UrashimaServer.Controllers
             return Ok(boardDtoList);
         }
 
+        // GET: api/ads-board/detail
+        [HttpGet("detail")]
+        public async Task<ActionResult<AdsBoardBasicDto>> GetAdsBoardDetail([FromQuery] int id)
+        {
+            if (_context.AdsBoards == null)
+            {
+                return NotFound();
+            }
+
+            var adsBoard = await _context.AdsBoards.FindAsync(id);
+
+            if (adsBoard == null)
+            {
+                return NotFound();
+            }
+
+            var res = _mapper.Map<AdsBoardBasicDto>(adsBoard);
+
+            return res;
+        }
+
         // GET: api/AdsBoards/5
         [HttpGet("{id}")]
         public async Task<ActionResult<AdsBoard>> GetAdsBoard(int id)
         {
-          if (_context.AdsBoards == null)
-          {
-              return NotFound();
-          }
+            if (_context.AdsBoards == null)
+            {
+                return NotFound();
+            }
             var adsBoard = await _context.AdsBoards.FindAsync(id);
 
             if (adsBoard == null)
