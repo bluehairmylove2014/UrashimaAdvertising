@@ -55,9 +55,8 @@ function CustomButton({
 
   return (
     <button
-      className={`${commonStyle} shadow-sm w-full py-2 font-semibold text-xs ${
-        loading ? disabledStyle : normalStyle
-      }`}
+      className={`${commonStyle} shadow-sm w-full py-2 font-semibold text-xs ${loading ? disabledStyle : normalStyle
+        }`}
       onClick={onClick}
       disabled={disabled || loading}
       type={type ?? defaultType}

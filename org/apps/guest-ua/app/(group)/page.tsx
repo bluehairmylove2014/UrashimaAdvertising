@@ -10,6 +10,7 @@ import ReactMapGL, {
   GeolocateControl,
   NavigationControl,
   FullscreenControl,
+  Popup
 } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import {
@@ -22,6 +23,9 @@ import {
 } from '../../mapgl/layers';
 import { MAP_DEFAULT_VIEW_PORT } from '../../mapgl/viewPort';
 import { ACCESS_TOKEN, MAP_STYLE } from '../../constants/mapbox_key';
+import InfoAds from '@presentational/molecules/InfoAds';
+import CustomButtonIcon from '@presentational/atoms/CustomButtonIcon';
+
 import {
   useGetAdDetail,
   useGetAllAds,
@@ -31,15 +35,31 @@ import CustomImage from '@presentational/atoms/CustomImage';
 
 type locationType =
   | {
-      lat: number;
-      lon: number;
-    }
+    lat: number;
+    lon: number;
+  }
   | undefined;
+
+interface AdsPoint {
+  hinhThuc: string,
+  phanLoat: string,
+  diaChi: string,
+  daQuyHoach: boolean,
+  long: number,
+  lat: number
+}
 
 function Home() {
   const adsData = useGetAllAds();
   const mapRef = useRef<MapRef>(null);
   const [isShowCluster, setIsShowCluster] = useState<boolean>(true);
+
+  //Đặt biến state kiểm tra vị trí con trỏ trỏ đến có là điểm đặt quảng cáo hay không
+  const [isAdsPoint, setIsAdsPoint] = useState<boolean>(false);
+
+  //Đặt biến state lưu thông tin sơ bộ địa điểm quảng cáo
+  const [infoHoverAdsPoint, setInfoHoverAdsPoint] = useState<AdsPoint>();
+
   const [cursor, setCursor] = useState('pointer');
   const [currentLocation, setCurrentLocation] =
     useState<locationType>(undefined);
@@ -76,23 +96,68 @@ function Home() {
     },
     [isShowCluster]
   );
+
+  //Bắt sự kiện click chuột
   const handleClick = useCallback((event: MapLayerMouseEvent) => {
     if (!mapRef.current) return;
-    const features = mapRef.current.queryRenderedFeatures(event.point, {
-      layers: ['clusters'],
-    });
+
+    // const features = mapRef.current.queryRenderedFeatures(event.point, {
+    //   layers: ['clusters'],
+    // });
+
+    const features = mapRef.current.queryRenderedFeatures(event.point);
+
     const feature = features.find((f) => f.layer.id === 'clusters');
     if (feature && feature.geometry.type === 'Point') {
       const [long, lat] = feature.geometry.coordinates;
       mapRef.current.flyTo({ zoom: 16, center: [long, lat], duration: 1500 });
+      return;
     }
+
+    //Điểm click chuột là điểm đặt các bảng quảng cáo
+    const unclusteredPoint = features.find((f) => f.layer.id === 'unclustered-point');
+    if (unclusteredPoint && unclusteredPoint.geometry.type === 'Point') {
+      setIsAdsPoint(true);
+    }
+    else
+      setIsAdsPoint(false);
   }, []);
+
+  //Bắt sự kiện chuột nhấn xuống
   const handleMouseDown = useCallback((event: MapLayerMouseEvent) => {
     setCursor('grabbing');
   }, []);
+
+  //Bắt sự kiện chuột nhất lên
   const handleMouseUp = useCallback((event: MapLayerMouseEvent) => {
     setCursor('pointer');
   }, []);
+
+
+  //Bắt sự kiện chuột di chuyển đến các điểm quảng cáo
+  const handleMouseMove = useCallback((event: MapLayerMouseEvent) => {
+    if (!mapRef.current) return;
+
+    const features = mapRef.current.queryRenderedFeatures(event.point);
+
+    const unclusteredPoint = features.find((f) => f.layer.id === 'unclustered-point');
+    let [long, lat] = [0, 0]
+    if (unclusteredPoint && unclusteredPoint.geometry.type === 'Point') {
+      [long, lat] = [event.point.x, event.point.y];
+    }
+
+    setInfoHoverAdsPoint(unclusteredPoint && {
+      hinhThuc: 'string',
+      phanLoat: 'string',
+      diaChi: 'string',
+      daQuyHoach: true,
+      long: long,
+      lat: lat
+    });
+
+  }, []);
+
+
   return (
     <ReactMapGL
       mapboxAccessToken={ACCESS_TOKEN}
