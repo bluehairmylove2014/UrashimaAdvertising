@@ -2,19 +2,39 @@
 import Image from 'next/image';
 
 type buttonType = 'button' | 'submit';
+const colorType = {
+    rose: "border-rose-600",
+    black: "border-black-500",
+    gray: "border-gray-500"
+}
+
+const borderSize = {
+    0: "border-0",
+    1: "border-2",
+    2: "border-4",
+    3: "border-8"
+}
+
+const roundedSize = {
+    0: "rounded-none",
+    1: "rounded-sm",
+    2: "rounded",
+    3: "rounded-md"
+
+}
 
 type customButtonIconType = {
     widthIcon: string;
     heightIcon: string;
-    round?: string;
-    border?: string;
-    colorBorder?: string;
+    round?: 0 | 1 | 2 | 3;
+    border?: 0 | 1 | 2 | 3;
+    colorBorder?: 'rose' | 'black' | 'gray';
     type?: buttonType;
     onClick?: (arg0: any) => void;
-    pathIcon?: string;
-    content: string;
     pathImage: string;
-    alt: string
+    alt: string;
+    children: React.ReactNode;
+
 };
 
 const defaultType = 'button';
@@ -27,23 +47,17 @@ function CustomButtonIcon({
     colorBorder,
     type,
     onClick,
-    pathIcon,
-    content,
     pathImage,
-    alt
+    alt,
+    children
 }: customButtonIconType): JSX.Element {
 
     return (
         <button
-            className={`border-${colorBorder ?? "black"}-500 border-solid border-${border ?? "0"} p-1 rounded-[${round ?? "0px"}] inline-flex items-center`}
+            className={`${borderSize[border || 0]} border-solid ${colorType[colorBorder || "black"]} p-1 ${roundedSize[round || 0]} inline-flex items-center`}
             onClick={onClick}
-            type={type ?? defaultType}
+            type={type || defaultType}
         >
-            {/* <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" className={`fill - [#0E8D14] w - [${ widthIcon }] h - [${ heightIcon }]`}>
-                <path d={`${ pathIcon } `}>
-                </path>
-            </svg> */}
-
             <div className="relative w-full h-full overflow-hidden" style={{ width: widthIcon, height: heightIcon }}>
                 <Image
                     className='object-cover'
@@ -55,7 +69,7 @@ function CustomButtonIcon({
                 >
                 </Image>
             </div>
-            <span className={`text-[0.7rem] ml-1 text-rose-700`}>{content}</span>
+            {children}
         </button >
     );
 }

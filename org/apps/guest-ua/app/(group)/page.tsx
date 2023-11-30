@@ -23,8 +23,6 @@ import {
 } from '../../mapgl/layers';
 import { MAP_DEFAULT_VIEW_PORT } from '../../mapgl/viewPort';
 import { ACCESS_TOKEN, MAP_STYLE } from '../../constants/mapbox_key';
-import InfoAds from '@presentational/molecules/InfoAds';
-import CustomButtonIcon from '@presentational/atoms/CustomButtonIcon';
 
 import {
   useGetAdDetail,
@@ -52,13 +50,14 @@ interface AdsPoint {
 function Home() {
   const adsData = useGetAllAds();
   const mapRef = useRef<MapRef>(null);
+
   const [isShowCluster, setIsShowCluster] = useState<boolean>(true);
 
-  //Đặt biến state kiểm tra vị trí con trỏ trỏ đến có là điểm đặt quảng cáo hay không
+  //Create state for checking if the cursor is pointing to an advertisement point or not
   const [isAdsPoint, setIsAdsPoint] = useState<boolean>(false);
 
-  //Đặt biến state lưu thông tin sơ bộ địa điểm quảng cáo
-  const [infoHoverAdsPoint, setInfoHoverAdsPoint] = useState<AdsPoint>();
+  //Create state for saving information advertisement point 
+  const [infoHoverAdsPoint, setInfoHoverAdsPoint] = useState<IAdsPoint>();
 
   const [cursor, setCursor] = useState('pointer');
   const [currentLocation, setCurrentLocation] =
@@ -97,13 +96,9 @@ function Home() {
     [isShowCluster]
   );
 
-  //Bắt sự kiện click chuột
+  //Catch click mouse event
   const handleClick = useCallback((event: MapLayerMouseEvent) => {
     if (!mapRef.current) return;
-
-    // const features = mapRef.current.queryRenderedFeatures(event.point, {
-    //   layers: ['clusters'],
-    // });
 
     const features = mapRef.current.queryRenderedFeatures(event.point);
 
@@ -114,21 +109,23 @@ function Home() {
       return;
     }
 
-    //Điểm click chuột là điểm đặt các bảng quảng cáo
+    //Find clicked Point is advertisement point
     const unclusteredPoint = features.find((f) => f.layer.id === 'unclustered-point');
     if (unclusteredPoint && unclusteredPoint.geometry.type === 'Point') {
+      const [long, lat] = unclusteredPoint.geometry.coordinates;
+      mapRef.current.flyTo({ zoom: 16, center: [long, lat], duration: 1500 });
       setIsAdsPoint(true);
     }
     else
       setIsAdsPoint(false);
   }, []);
 
-  //Bắt sự kiện chuột nhấn xuống
+  //Catch Mouse Douwn
   const handleMouseDown = useCallback((event: MapLayerMouseEvent) => {
     setCursor('grabbing');
   }, []);
 
-  //Bắt sự kiện chuột nhất lên
+  //Catch Mouse Up
   const handleMouseUp = useCallback((event: MapLayerMouseEvent) => {
     setCursor('pointer');
   }, []);
@@ -146,15 +143,20 @@ function Home() {
       [long, lat] = [event.point.x, event.point.y];
     }
 
-    setInfoHoverAdsPoint(unclusteredPoint && {
-      hinhThuc: 'string',
-      phanLoat: 'string',
-      diaChi: 'string',
-      daQuyHoach: true,
-      long: long,
-      lat: lat
-    });
-
+    if (!unclusteredPoint) {
+      setInfoHoverAdsPoint(undefined);
+    }
+    else {
+      setInfoHoverAdsPoint({
+        id: 1,
+        adsForm: 'Cổ phần chính trị',
+        locationType: 'Đất công/Công viên/Hành lang an toàn giao thông',
+        address: 'Đồng Khởi - Nguyễn Huệ (Sở Văn hóa và Thể thao), Phường Bến Nghé, Quận 1',
+        planned: true,
+        longtitude: long,
+        latitude: lat
+      });
+    }
   }, []);
 
 
