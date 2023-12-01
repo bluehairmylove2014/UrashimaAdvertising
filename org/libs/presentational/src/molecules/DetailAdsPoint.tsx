@@ -11,7 +11,7 @@ const dataTest = [
         adsType: "Trụ, cụm pano",
         width: 15,
         height: 10,
-        image: "/assets/billboardExample.png",
+        image: ["/assets/billboardExample.png", "/assets/billboardSub.png"],
         adsForm: "Cổ động chính trị",
         locationType: "Đất công/Công viên/Hành lang an toàn giao thông",
         address: "Đồng Khởi - Nguyễn Du (Sở Văn hóa và Thể thao), Phường Bến Nghé, Quận 1"
@@ -21,7 +21,7 @@ const dataTest = [
         adsType: "Trụ, cụm pano",
         width: 15,
         height: 10,
-        image: "/assets/billboardSub.png",
+        image: ["/assets/billboardSub.png"],
         adsForm: "Cổ động chính trị",
         locationType: "Đất công/Công viên/Hành lang an toàn giao thông",
         address: "Đồng Khởi - Nguyễn Du (Sở Văn hóa và Thể thao), Phường Bến Nghé, Quận 1"
@@ -31,7 +31,7 @@ const dataTest = [
         adsType: "Trụ, cụm pano",
         width: 15,
         height: 10,
-        image: "/assets/billboardSub.png",
+        image: ["/assets/billboardSub.png"],
         adsForm: "Cổ động chính trị",
         locationType: "Đất công/Công viên/Hành lang an toàn giao thông",
         address: "Đồng Khởi - Nguyễn Du (Sở Văn hóa và Thể thao), Phường Bến Nghé, Quận 1"
@@ -45,15 +45,15 @@ function DetailAdsPoint() {
             <div className='h-[100%] w-[100%] overflow-x-hidden scrollbar-thin bg-white relative overflow-y-scroll scrollbar'>
                 {/* Image for ads point */}
                 <Carousel showStatus={false} showArrows={false}>
-                    {dataTest.map(({ id, image }) => (
-                        <div key={id} className='w-[100%] h-[30vh]'>
+                    {dataTest[0].image.map((data) => (
+                        <div className='w-[100%] h-[30vh]'>
                             {/* <CustomImage
                                 src={image}
                                 alt="location"
                                 width="100%"
                                 height="30vh"
                             /> */}
-                            <img src={image} object-cover className="transition-all h-[100%] w-[100%]"></img>
+                            <img src={data} object-cover className="transition-all h-[100%] w-[100%]"></img>
                         </div>
                     ))}
                 </Carousel>
@@ -92,9 +92,15 @@ function DetailAdsPoint() {
                 <hr className='my-4 mx-2'></hr>
                 {/* Information advertisement point */}
                 <div className="mx-5">
-                    <span className="text-[0.8rem] font-semibold text-sky-500">Tổng quan</span>
+                    <div className='flex justify-between items-center text-[0.8rem]'>
+                        <p className="font-semibold text-sky-500">Tổng quan</p>
+                        {/* isPlanned */}
+                        <p className='font-bold text-green-600 italic'> ĐÃ QUY HOẠCH
+                        </p>
+                    </div>
+
                     {/* Ads Form */}
-                    <div className='flex mt-2 items-center'>
+                    <div className='flex mt-3 items-center'>
                         <CustomImage
                             src="/assets/adsForm.png"
                             alt="Ads Form"
@@ -102,13 +108,13 @@ function DetailAdsPoint() {
                             height="0.8rem"
                         />
 
-                        <p className='text-[0.7rem] text-neutral-500 ml-1'>
-                            Cổ động chính trị
+                        <p className='text-[0.7rem] text-neutral-500 ml-2'> Hình thức:
+                            <span className='font-semibold'> Cổ động chính trị</span>
                         </p>
                     </div>
 
                     {/* Address */}
-                    <div className='flex mt-2 items-center'>
+                    <div className='flex mt-3 items-center'>
                         <div className='h-[100%]'>
                             <CustomImage
                                 src="/assets/addressAdsPoint.png"
@@ -117,14 +123,14 @@ function DetailAdsPoint() {
                                 height="0.8rem"
                             />
                         </div>
-
-                        <p className='text-[0.7rem] text-neutral-500 ml-1'>
-                            Đồng Khởi - Nguyễn Du (Sở Văn hóa và Thể thao), Phường Bến Nghé, Quận 1
+                        <p className='text-[0.7rem] text-neutral-500 ml-2'> Hình thức:
+                            <span className='font-semibold'> Đồng Khởi - Nguyễn Du (Sở Văn hóa và Thể thao), Phường Bến Nghé, Quận 1</span>
                         </p>
+
                     </div>
 
                     {/* Location Type */}
-                    <div className='flex mt-2 items-center'>
+                    <div className='flex mt-3 items-center'>
                         <CustomImage
                             src="/assets/locationType.png"
                             alt="location"
@@ -132,14 +138,13 @@ function DetailAdsPoint() {
                             height="0.8rem"
                         />
 
-                        <p className='text-[0.7rem] text-neutral-500 ml-2'>
-                            Đất công/Công viên/Hành lang an toàn giao thông
+                        <p className='text-[0.7rem] text-neutral-500 ml-2'> Phân loại:
+                            <span className='font-semibold'> Đất công/Công viên/Hành lang an toàn giao thông</span>
                         </p>
+
                     </div>
 
-                    {/* isPlanned */}
-                    <p className='text-[0.75rem] italic font-bold text-rose-600 mt-2'> ĐÃ QUY HOẠCH
-                    </p>
+
                 </div>
 
 
