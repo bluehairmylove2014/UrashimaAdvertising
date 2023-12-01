@@ -27,17 +27,23 @@ import { useGetAllAds } from '@business-layer/business-logic/lib/ads';
 import ScreenLoader from '@presentational/atoms/ScreenLoader';
 import CustomImage from '@presentational/atoms/CustomImage';
 
+import DetailAdsPoint from '@presentational/molecules/DetailAdsPoint';
+import 'mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
+
 type locationType =
   | {
-      lat: number;
-      lon: number;
-    }
+    lat: number;
+    lon: number;
+  }
   | undefined;
 
 function Home() {
   const adsData = useGetAllAds();
   const mapRef = useRef<MapRef>(null);
   const [isShowCluster, setIsShowCluster] = useState<boolean>(true);
+  const [isClickAdsPoint, setIsClickAdsPoint] = useState<boolean>(false);
+
+
   const [cursor, setCursor] = useState('pointer');
   const [currentLocation, setCurrentLocation] =
     useState<locationType>(undefined);
@@ -79,17 +85,39 @@ function Home() {
     },
     [isShowCluster]
   );
+
   const handleClick = useCallback((event: MapLayerMouseEvent) => {
     if (!mapRef.current) return;
+
+    //Check the point is cluster?
     const features = mapRef.current.queryRenderedFeatures(event.point, {
       layers: ['clusters'],
     });
-    const feature = features.find((f) => f.layer.id === 'clusters');
-    if (feature && feature.geometry.type === 'Point') {
-      const [long, lat] = feature.geometry.coordinates;
+    const cluster = features.find((f) => f.layer.id === 'clusters');
+    if (cluster && cluster.geometry.type === 'Point') {
+      const [long, lat] = cluster.geometry.coordinates;
       mapRef.current.flyTo({ zoom: 16, center: [long, lat], duration: 1500 });
+      return;
     }
+
+    //Check the point is ads point
+    const featuresAllPoint = mapRef.current.queryRenderedFeatures(event.point);
+    const adsPoint = featuresAllPoint.find((f) => f.layer.id === 'unclustered-point-planned' || f.layer.id === 'unclustered-point-unplanned');
+    if (adsPoint && adsPoint.geometry.type === 'Point') {
+      const [long, lat] = adsPoint.geometry.coordinates;
+      setIsClickAdsPoint(true);
+      setCurrentLocation({
+        lat: lat,
+        lon: long,
+      });
+      return;
+    }
+    else
+      setIsClickAdsPoint(false);
+
   }, []);
+
+
   const handleMouseDown = useCallback((event: MapLayerMouseEvent) => {
     setCursor('grabbing');
   }, []);
@@ -165,6 +193,13 @@ function Home() {
       ) : (
         <></>
       )}
+
+      {isClickAdsPoint ? (
+        <DetailAdsPoint />
+      )
+        :
+        <></>}
+
       <ScaleControl
         position="bottom-left"
         maxWidth={200}
@@ -188,6 +223,7 @@ function Home() {
           });
         }}
       />
+
     </ReactMapGL>
   );
 }
