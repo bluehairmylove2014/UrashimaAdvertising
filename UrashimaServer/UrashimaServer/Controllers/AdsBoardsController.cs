@@ -24,29 +24,6 @@ namespace UrashimaServer.Controllers
             _mapper = mapper;
         }
 
-        // GET: api/AdsBoards
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<AdsBoard>>> GetAdsBoards()
-        {
-            if (_context.AdsBoards == null)
-            {
-                return NotFound();
-            }
-           
-            var rawBoards = await _context.AdsBoards.Include(s => s.AdsPoint).ToListAsync();
-
-            // map each element
-            var boardDtoList = new List<GetAdsBoardDto>();
-
-            foreach(var item in rawBoards)
-            {
-                var boardDto = _mapper.Map<GetAdsBoardDto>(item);
-                boardDtoList.Add(boardDto);
-            }
-
-            return Ok(boardDtoList);
-        }
-
         // GET: api/ads-board/detail
         [HttpGet("detail")]
         public async Task<ActionResult<AdsBoardBasicDto>> GetAdsBoardDetail([FromQuery] int id)
@@ -66,6 +43,34 @@ namespace UrashimaServer.Controllers
             var res = _mapper.Map<AdsBoardBasicDto>(adsBoard);
 
             return res;
+        }
+
+        // -----------------------------------
+
+        // GET: api/AdsBoards
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<AdsBoard>>> GetAdsBoards()
+        {
+            if (_context.AdsBoards == null)
+            {
+                return NotFound();
+            }
+
+            var rawBoards = await _context.AdsBoards
+                .Include(s => s.AdsPoint)
+                .Include(s => s.Reports)
+                .ToListAsync();
+
+            // map each element
+            var boardDtoList = new List<GetAdsBoardDto>();
+
+            foreach (var item in rawBoards)
+            {
+                var boardDto = _mapper.Map<GetAdsBoardDto>(item);
+                boardDtoList.Add(boardDto);
+            }
+
+            return Ok(boardDtoList);
         }
 
         // GET: api/AdsBoards/5

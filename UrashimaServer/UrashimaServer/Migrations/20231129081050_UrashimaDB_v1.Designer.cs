@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UrashimaServer.Database;
 
@@ -11,9 +12,11 @@ using UrashimaServer.Database;
 namespace UrashimaServer.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20231129081050_UrashimaDB_v1")]
+    partial class UrashimaDB_v1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -38,7 +41,7 @@ namespace UrashimaServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ReportLocs");
+                    b.ToTable("ReportLoc");
                 });
 
             modelBuilder.Entity("UrashimaServer.Models.AdsBoard", b =>
@@ -59,14 +62,11 @@ namespace UrashimaServer.Migrations
                     b.Property<DateTime>("ExpiredDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Height")
-                        .HasColumnType("int");
-
                     b.Property<string>("Image")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Width")
+                    b.Property<int>("Size")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -134,6 +134,9 @@ namespace UrashimaServer.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int?>("AdsBoardId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("AdsPointId")
                         .HasColumnType("int");
 
                     b.Property<string>("Content")

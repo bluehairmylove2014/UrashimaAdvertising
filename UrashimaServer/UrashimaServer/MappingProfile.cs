@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using UrashimaServer.Database.Dtos;
+using UrashimaServer.Database.Models;
 using UrashimaServer.Models;
 
 namespace UrashimaServer
@@ -23,6 +24,11 @@ namespace UrashimaServer
             // Map Ads_Board
             CreateMap<AdsBoardBasicDto, AdsBoard>().ReverseMap();
 
+            // Map Report
+            CreateMap<ReportAdsBoardDto, Report>().ReverseMap();
+            CreateMap<ReportImageDto, ReportImage>().ReverseMap();
+            CreateMap<ReportLocationDto, Report>().ReverseMap();
+            CreateMap<LocationDto, ReportLoc>().ReverseMap();
 
         }
     }

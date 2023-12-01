@@ -1,5 +1,6 @@
 ﻿
 using System.Collections;
+using UrashimaServer.Database.Dtos;
 
 namespace UrashimaServer.Models
 {
@@ -8,12 +9,13 @@ namespace UrashimaServer.Models
         public int Id { get; set; }
         public int AdsPointId { get; set; }
         public string AdsType { get; set; } = string.Empty;
-        public int Size { get; set; }
+        public int Width { get; set; }
+        public int Height { get; set; }
         public string Image { get; set; } = string.Empty;
         public DateTime ExpiredDate { get; set; }
 
         public GetAdsPointDto? AdsPoint { set; get; }
-        public ICollection<Report>? Reports { set; get; }
+        public ICollection<ReportAdsBoardDto>? Reports { set; get; }
     }
 
     public class AdsBoardBasicDto
@@ -21,7 +23,8 @@ namespace UrashimaServer.Models
         public int Id { get; set; }
         public int AdsPointId { get; set; }
         public string AdsType { get; set; } = string.Empty;
-        public int Size { get; set; }
+        public int Width { get; set; }
+        public int Height { get; set; }
         public string Image { get; set; } = string.Empty;
         public DateTime ExpiredDate { get; set; }
     }
