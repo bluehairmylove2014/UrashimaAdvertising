@@ -1,27 +1,13 @@
-// import {
-//   AuthService,
-//   authenticationResponseType,
-//   loginParamsType,
-// } from '@business-layer/services';
-// import { useMutation } from '@tanstack/react-query';
-// import { mutationConfig } from '@business-layer/business-logic/configs';
-// import {
-//   getFBAccessTokenParamsType,
-// } from '@business-layer/services/lib/socialService/type';
+import { useMutation } from '@tanstack/react-query';
+import {
+  AdsService,
+  getAdDetailResponseType,
+} from '@business-layer/services/lib/adsService';
 
-// // Initialize the AuthService
-// const authService = new AuthService();
+const adService = new AdsService();
 
-// /**
-//  * Use this mutation to login
-//  */
-// export const useLoginMutation = () => {
-//   return useMutation<
-//     authenticationResponseType,
-//     Error,
-//     loginParamsType,
-//     unknown
-//   >({
-//     mutationFn: authService.login,
-//   });
-// };
+export const useGetAdDetailMutation = () => {
+  return useMutation<getAdDetailResponseType, Error, number, unknown>({
+    mutationFn: adService.getAdDetail,
+  });
+};

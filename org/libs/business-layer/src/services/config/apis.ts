@@ -1,9 +1,6 @@
 // PROXY_URL
 const workerUrl = 'https://ura-ads.phucdat4102.workers.dev';
-// const ipLocationProxyUrl = workerUrl + '/ip-location' + `?ipaddress=`;
-const ipLocationProxyUrl = 'http://ip-api.com/json';
 const corsProxyUrl = workerUrl + '/cors-proxy/';
-// 'https://cors-anywhere.herokuapp.com/';
 
 // AUTH
 export const loginUrl = '/v1/auth/login';
@@ -11,10 +8,8 @@ export const refreshTokenUrl = '/v1/auth/refresh-token';
 export const updateAccountUrl = '/v1/auth/login-social';
 
 // ADS
-export const getAllAdsUrl = '/api/ads-points';
-
-// IP LOCATION
-export const getCurrentLocationUrl = ipLocationProxyUrl;
+export const getAllAdsUrl = '/api/ad-points';
+export const getAdDetailsUrl = '/api/ad-point';
 
 // GOOGLE
 export const googleGetUserInfoUrl =
