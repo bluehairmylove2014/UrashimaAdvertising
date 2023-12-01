@@ -11,7 +11,7 @@ namespace UrashimaServer.Database
         public DbSet<AdsPointImage> AdsPointImages { get; set; }
         public DbSet<Report> Reports { get; set; }
         public DbSet<ReportImage> ReportImages { get; set; }
-        public DbSet<ReportLoc> ReportLoc { get; set; }
+        public DbSet<ReportLoc> ReportLocs { get; set; }
 
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         { }
@@ -41,16 +41,16 @@ namespace UrashimaServer.Database
             {
                 entity.HasOne<AdsBoard>(e => e.AdsBoard)
                     .WithMany(adsBoard => adsBoard.Reports)
-                    .HasForeignKey(e => e.AdsBoardId);
+                    .HasForeignKey(e => e.AdsBoardId );
 
                 entity.HasOne<ReportLoc>(e => e.ReportLoc)
                     .WithMany(reportLoc => reportLoc.Reports)
-                    .HasForeignKey(e => e.ReportLocId);
+                    .HasForeignKey(e => e.LocationId);
             });
-
+            
             modelBuilder.Entity<ReportImage>()
                 .HasOne<Report>(e => e.Report)
-                .WithMany(report => report.ReportImages)
+                .WithMany(report => report.Images)
                 .HasForeignKey(e => e.ReportId)
                 .IsRequired();
         }
