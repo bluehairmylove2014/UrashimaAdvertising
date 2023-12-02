@@ -1,4 +1,3 @@
-import { IAds, IAdsDetail } from '../../entities';
+import { IAds } from '../../entities';
 
 export type getAllAdsResponseType = IAds[];
-export type getAdDetailResponseType = IAdsDetail;

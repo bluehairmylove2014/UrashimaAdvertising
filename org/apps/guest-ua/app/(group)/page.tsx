@@ -11,6 +11,7 @@ import ReactMapGL, {
   NavigationControl,
   FullscreenControl,
   Popup
+  ScaleControl
 } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import {
@@ -62,13 +63,18 @@ function Home() {
   const [cursor, setCursor] = useState('pointer');
   const [currentLocation, setCurrentLocation] =
     useState<locationType>(undefined);
-  const { onGetAdDetail, isLoading } = useGetAdDetail();
 
-  useEffect(() => {
-    onGetAdDetail(13)
-      .then((data) => console.log(data))
-      .catch((error) => console.log(error));
-  }, []);
+  // useEffect(() => {
+  //   if (navigator.geolocation) {
+  //     navigator.geolocation.getCurrentPosition((position) => {
+  //       const latitude = position.coords.latitude;
+  //       const longitude = position.coords.longitude;
+  //       console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
+  //     });
+  //   } else {
+  //     console.log('Geolocation is not supported by this browser.');
+  //   }
+  // }, []);
 
   useEffect(() => {
     if (
@@ -229,6 +235,13 @@ function Home() {
       ) : (
         <></>
       )}
+      <ScaleControl
+        position="bottom-left"
+        maxWidth={200}
+        style={{
+          marginBottom: '2rem',
+        }}
+      />
       <FullscreenControl position="bottom-right" />
       <NavigationControl position="bottom-right" />
       <GeolocateControl
