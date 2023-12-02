@@ -10,7 +10,7 @@ import ReactMapGL, {
   GeolocateControl,
   NavigationControl,
   FullscreenControl,
-  ScaleControl,
+  ScaleControl
 } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import {
@@ -23,7 +23,10 @@ import {
 } from '../../mapgl/layers';
 import { MAP_DEFAULT_VIEW_PORT } from '../../mapgl/viewPort';
 import { ACCESS_TOKEN, MAP_STYLE } from '../../constants/mapbox_key';
-import { useGetAllAds } from '@business-layer/business-logic/lib/ads';
+import {
+  useGetAdDetail,
+  useGetAllAds,
+} from '@business-layer/business-logic/lib/ads';
 import ScreenLoader from '@presentational/atoms/ScreenLoader';
 import CustomImage from '@presentational/atoms/CustomImage';
 
@@ -47,18 +50,13 @@ function Home() {
   const [cursor, setCursor] = useState('pointer');
   const [currentLocation, setCurrentLocation] =
     useState<locationType>(undefined);
+  const { onGetAdDetail, isLoading } = useGetAdDetail();
 
-  // useEffect(() => {
-  //   if (navigator.geolocation) {
-  //     navigator.geolocation.getCurrentPosition((position) => {
-  //       const latitude = position.coords.latitude;
-  //       const longitude = position.coords.longitude;
-  //       console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
-  //     });
-  //   } else {
-  //     console.log('Geolocation is not supported by this browser.');
-  //   }
-  // }, []);
+  useEffect(() => {
+    onGetAdDetail(13)
+      .then((data) => console.log(data))
+      .catch((error) => console.log(error));
+  }, []);
 
   useEffect(() => {
     if (
@@ -207,6 +205,7 @@ function Home() {
           marginBottom: '2rem',
         }}
       />
+
       <FullscreenControl position="bottom-right" />
       <NavigationControl position="bottom-right" />
       <GeolocateControl

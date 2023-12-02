@@ -6,7 +6,6 @@ import {
   isCancel,
 } from '../config/axios';
 import { getApiUrl } from '../config/url';
-console.log('GENERATE');
 const unknownError: string = 'Unexpected error occurred';
 export class Services {
   abortController?: AbortController;
