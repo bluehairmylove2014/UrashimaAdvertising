@@ -39,7 +39,7 @@ export const useLoginMutation = () => {
 export const useRefreshTokenMutation = () => {
   return useMutation<refreshTokenResponseType, Error, string, unknown>({
     mutationFn: authService.refreshToken,
-    retry: mutationConfig.RETRY,
+    retry: mutationConfig.MUTATION_RETRY,
   });
 };
 
@@ -51,7 +51,7 @@ export const useUpdateAccountMutation = () => {
     unknown
   >({
     mutationFn: socialService.updateAccount,
-    retry: mutationConfig.RETRY,
+    retry: mutationConfig.MUTATION_RETRY,
   });
 };
 
@@ -63,14 +63,14 @@ export const useGetFBAccessTokenMutation = () => {
     unknown
   >({
     mutationFn: socialService.getFBAccessToken,
-    retry: mutationConfig.RETRY,
+    retry: mutationConfig.MUTATION_RETRY,
   });
 };
 
 export const useGetFBUserInfoMutation = () => {
   return useMutation<getUserInfoResponseType, Error, string, unknown>({
     mutationFn: socialService.getFBUserInfo,
-    retry: mutationConfig.RETRY,
+    retry: mutationConfig.MUTATION_RETRY,
   });
 };
 
@@ -82,13 +82,13 @@ export const useGetGithubAccessTokenMutation = () => {
     unknown
   >({
     mutationFn: socialService.getGithubAccessToken,
-    retry: mutationConfig.RETRY,
+    retry: mutationConfig.MUTATION_RETRY,
   });
 };
 
 export const useGetGithubUserInfoMutation = () => {
   return useMutation<getGithubUserInfoResponseType, Error, string, unknown>({
     mutationFn: socialService.getGithubUserInfo,
-    retry: mutationConfig.RETRY,
+    retry: mutationConfig.MUTATION_RETRY,
   });
 };

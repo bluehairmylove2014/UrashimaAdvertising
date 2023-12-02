@@ -38,6 +38,7 @@ export class Services {
     signal,
     transformResponse,
     isProduction,
+    isUseProxy,
     withCredentials = false,
   }: {
     method: string;
@@ -49,11 +50,12 @@ export class Services {
     signal: AbortSignal;
     transformResponse: (res: T) => void;
     isProduction?: boolean;
+    isUseProxy?: boolean;
     withCredentials?: boolean;
   }): Promise<any> {
     const mockParams = {
       method,
-      url: getApiUrl(isProduction) + url,
+      url: isUseProxy ? url : getApiUrl(isProduction) + url,
       data,
       params,
       headers,

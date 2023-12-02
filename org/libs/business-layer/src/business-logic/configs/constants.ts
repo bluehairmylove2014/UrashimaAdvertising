@@ -7,4 +7,6 @@ export const COOKIE_KEYS = {
 };
 export enum QUERY_N_MUTATION_KEYS {
   GET_ALL_PRODUCTS,
+  GET_ALL_ADS,
+  GET_IP_LOCATION,
 }
