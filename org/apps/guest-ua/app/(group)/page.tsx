@@ -31,6 +31,8 @@ import {
 } from '@business-layer/business-logic/lib/ads';
 import ScreenLoader from '@presentational/atoms/ScreenLoader';
 import CustomImage from '@presentational/atoms/CustomImage';
+import { IAdsPoint } from '@business-layer/services/entities/IAdsPoint'
+import InfoAdsPoint from '@presentational/molecules/InfoAdsPoint'
 
 type locationType =
   | {
@@ -136,8 +138,7 @@ function Home() {
     setCursor('pointer');
   }, []);
 
-
-  //Bắt sự kiện chuột di chuyển đến các điểm quảng cáo
+  //Catch Mouse Move
   const handleMouseMove = useCallback((event: MapLayerMouseEvent) => {
     if (!mapRef.current) return;
 
