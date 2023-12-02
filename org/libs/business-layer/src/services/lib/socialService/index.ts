@@ -159,14 +159,6 @@ export class SocialService extends Services {
   ): Promise<getGithubAccessTokenResponseType> => {
     this.abortController = new AbortController();
     try {
-      console.log(
-        'POST: ',
-        githubGetAccessTokenUrl +
-          `?client_id=${params.clientId}` +
-          `&client_secret=${params.clientSecret}` +
-          `&redirect_uri=${params.redirectUri}` +
-          `&code=${params.code}`
-      );
       const response: AxiosResponse<string> =
         await getAxiosNormalInstance().post(
           githubGetAccessTokenUrl +
@@ -181,7 +173,6 @@ export class SocialService extends Services {
             },
           }
         );
-      console.log('response: ', response);
 
       const dataInObj = response.data.split('&').reduce((acc: any, pair) => {
         const [key, value] = pair.split('=');
@@ -212,7 +203,6 @@ export class SocialService extends Services {
           },
         }
       );
-      console.log('USER DATA: ', response.data);
       return {
         avatar_url: response.data.avatar_url,
         email: response.data.email,
