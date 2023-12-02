@@ -1,13 +1,12 @@
 import CustomButtonIcon from '@presentational/atoms/CustomButtonIcon';
 import { IAdsDetail } from '@business-layer/services/entities/ads'
+import { useCallback } from 'react';
 
-//Create IProps to get info advertisement from parent
-interface IProps {
-    info: IAdsDetail
+function handleDetailAdsPoint() {
+
 }
 
-function InfoAds(props: IProps) {
-    const { info } = props
+function InfoAds({ info }: { info: IAdsDetail }) {
     return (
         <>
             <div className="flex justify-between">
@@ -32,7 +31,7 @@ function InfoAds(props: IProps) {
                     type='button'
                     pathImage='/assets/detail.png'
                     alt=''
-                >
+                    onClick={handleDetailAdsPoint}>
                     <>
                     </>
                 </CustomButtonIcon>

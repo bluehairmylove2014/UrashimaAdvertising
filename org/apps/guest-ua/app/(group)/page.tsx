@@ -266,7 +266,7 @@ function Home() {
             </>)
             :
             (
-              // Loading Fail
+              // Loading Finish
               <> {infoHoverAdsPoint ?
                 <Popup
                   longitude={infoHoverAdsPoint.longitude}
