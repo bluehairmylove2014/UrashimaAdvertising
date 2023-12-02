@@ -1,5 +1,6 @@
 import { AuthProvider } from '../lib/auth/process/provider';
 import { AdsProvider } from '../lib/ads/process/provider';
+import { ReportProvider } from '../lib/report/process/provider';
 
 export const reactQueryDevtoolsConfig = {
   isActive: process.env.NODE_ENV === 'development',
@@ -23,6 +24,11 @@ export const providerConfig = [
   {
     key: 'ads',
     provider: AdsProvider,
+    isActive: true,
+  },
+  {
+    key: 'report',
+    provider: ReportProvider,
     isActive: true,
   },
 ];

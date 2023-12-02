@@ -26,7 +26,7 @@
     "../../apps/guest-ua/.next/types/**/*.ts",
     "../../dist/apps/guest-ua/.next/types/**/*.ts",
     "next-env.d.ts"
-  ],
+, "app/(group)/geocoder-control.tss"  ],
   "exclude": [
     "node_modules",
     "jest.config.ts",

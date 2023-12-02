@@ -1,8 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import {
-  AdsService,
-  getAdDetailResponseType,
-} from '@business-layer/services/lib/adsService';
+import { AdsService, getAdDetailResponseType } from '@business-layer/services';
 
 const adService = new AdsService();
 
