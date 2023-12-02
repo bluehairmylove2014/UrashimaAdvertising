@@ -22,12 +22,10 @@ import {
 } from '../../mapgl/layers';
 import { MAP_DEFAULT_VIEW_PORT } from '../../mapgl/viewPort';
 import { ACCESS_TOKEN, MAP_STYLE } from '../../constants/mapbox_key';
-import {
-  useGetAdDetail,
-  useGetAllAds,
-} from '@business-layer/business-logic/lib/ads';
+import { useGetAllAds } from '@business-layer/business-logic/lib/ads';
 import ScreenLoader from '@presentational/atoms/ScreenLoader';
 import CustomImage from '@presentational/atoms/CustomImage';
+import { SearchBox } from '@mapbox/search-js-react';
 
 type locationType =
   | {
@@ -36,6 +34,12 @@ type locationType =
     }
   | undefined;
 
+type markerParamsType =
+  | {
+      latitude: number;
+      longitude: number;
+    }
+  | undefined;
 function Home() {
   const adsData = useGetAllAds();
   const mapRef = useRef<MapRef>(null);
@@ -43,14 +47,8 @@ function Home() {
   const [cursor, setCursor] = useState('pointer');
   const [currentLocation, setCurrentLocation] =
     useState<locationType>(undefined);
-  const { onGetAdDetail, isLoading } = useGetAdDetail();
-
-  useEffect(() => {
-    onGetAdDetail(13)
-      .then((data) => console.log(data))
-      .catch((error) => console.log(error));
-  }, []);
-
+  const [searchKey, setSearchKey] = useState<string>('');
+  const [marker, setMarker] = useState<markerParamsType>(undefined);
   useEffect(() => {
     if (
       currentLocation &&
@@ -78,6 +76,7 @@ function Home() {
   );
   const handleClick = useCallback((event: MapLayerMouseEvent) => {
     if (!mapRef.current) return;
+    console.log(event);
     const features = mapRef.current.queryRenderedFeatures(event.point, {
       layers: ['clusters'],
     });
@@ -94,91 +93,135 @@ function Home() {
     setCursor('pointer');
   }, []);
   return (
-    <ReactMapGL
-      mapboxAccessToken={ACCESS_TOKEN}
-      initialViewState={MAP_DEFAULT_VIEW_PORT}
-      onZoom={handleZoom}
-      onClick={handleClick}
-      onMouseDown={handleMouseDown}
-      onMouseUp={handleMouseUp}
-      dragRotate={false}
-      minZoom={10}
-      maxZoom={18}
-      // maxBounds={[
-      //   [106.317521, 10.321631], // Tọa độ góc dưới cùng bên trái của hình chữ nhật giới hạn
-      //   [107.042629, 11.210448], // Tọa độ góc trên cùng bên phải của hình chữ nhật giới hạn
-      // ]}
-      ref={mapRef}
-      cursor={cursor}
-      style={{ width: '100vw', height: '100vh' }}
-      mapStyle={MAP_STYLE}
-    >
-      {!Array.isArray(adsData) ? (
-        <ScreenLoader />
-      ) : isShowCluster ? (
-        <Source
-          id="earthquakes"
-          type="geojson"
-          data={{
-            type: 'FeatureCollection',
-            features: adsData.map((m) => ({
-              type: 'Feature',
-              properties: {
-                cluster: false,
-                name: m.address,
-                planned: m.planned,
-                reported: false,
-              },
-              geometry: {
-                type: 'Point',
-                coordinates: [m.longitude, m.latitude],
-              },
-            })),
-          }}
-          cluster={true}
-          clusterMaxZoom={14}
-          clusterRadius={40}
-        >
-          <Layer {...clusterLayer} />
-          <Layer {...clusterCountLayer} />
-          <Layer {...nonClusteredPlannedPointLayer} />
-          <Layer {...nonclusteredUnplannedPointLayer} />
-          <Layer {...nonclusteredReportedPointLayer} />
-          <Layer {...nonClusteredReportedPointSymbolLayer} />
-        </Source>
-      ) : (
-        <></>
-      )}
-
-      {currentLocation ? (
-        <Marker latitude={currentLocation.lat} longitude={currentLocation.lon}>
-          <CustomImage
-            src="/assets/location.png"
-            alt="location"
-            width="30px"
-            height="30px"
+    <>
+      <ReactMapGL
+        mapboxAccessToken={ACCESS_TOKEN}
+        initialViewState={MAP_DEFAULT_VIEW_PORT}
+        onZoom={handleZoom}
+        onClick={handleClick}
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
+        dragRotate={false}
+        maxZoom={18}
+        // maxBounds={[
+        //   [106.317521, 10.321631], // Tọa độ góc dưới cùng bên trái của hình chữ nhật giới hạn
+        //   [107.042629, 11.210448], // Tọa độ góc trên cùng bên phải của hình chữ nhật giới hạn
+        // ]}
+        ref={mapRef}
+        cursor={cursor}
+        style={{ width: '100vw', height: '100vh' }}
+        mapStyle={MAP_STYLE}
+      >
+        <form className=" w-1/2 m-4">
+          <SearchBox
+            marker={true}
+            accessToken={ACCESS_TOKEN}
+            placeholder="Tìm kiếm ở đây..."
+            value={searchKey}
+            onChange={(value) => {
+              setSearchKey(value);
+            }}
+            onRetrieve={(retrieve) => {
+              const coord = retrieve?.features[0]?.geometry?.coordinates;
+              if (Array.isArray(coord)) {
+                setMarker({ longitude: coord[0], latitude: coord[1] });
+                mapRef.current &&
+                  mapRef.current.flyTo({
+                    zoom: 14,
+                    center: {
+                      lng: coord[0],
+                      lat: coord[1],
+                    },
+                    duration: 5000,
+                  });
+              }
+            }}
           />
-        </Marker>
-      ) : (
-        <></>
-      )}
-      <FullscreenControl position="bottom-right" />
-      <NavigationControl position="bottom-right" />
-      <GeolocateControl
-        positionOptions={{ enableHighAccuracy: true }}
-        trackUserLocation={true}
-        showAccuracyCircle={false}
-        showUserLocation={false}
-        showUserHeading={false}
-        position="bottom-right"
-        onGeolocate={(e) => {
-          setCurrentLocation({
-            lat: e.coords.latitude,
-            lon: e.coords.longitude,
-          });
-        }}
-      />
-    </ReactMapGL>
+
+          {marker ? (
+            <Marker {...marker}>
+              <CustomImage
+                src="/assets/placeholder.png"
+                alt="placeholder"
+                width="40px"
+                height="40px"
+              />
+            </Marker>
+          ) : (
+            <></>
+          )}
+        </form>
+        {!Array.isArray(adsData) ? (
+          <ScreenLoader />
+        ) : isShowCluster ? (
+          <Source
+            id="earthquakes"
+            type="geojson"
+            data={{
+              type: 'FeatureCollection',
+              features: adsData.map((m) => ({
+                type: 'Feature',
+                properties: {
+                  cluster: false,
+                  name: m.address,
+                  planned: m.planned,
+                  reported: false,
+                },
+                geometry: {
+                  type: 'Point',
+                  coordinates: [m.longitude, m.latitude],
+                },
+              })),
+            }}
+            cluster={true}
+            clusterMaxZoom={14}
+            clusterRadius={40}
+          >
+            <Layer {...clusterLayer} />
+            <Layer {...clusterCountLayer} />
+            <Layer {...nonClusteredPlannedPointLayer} />
+            <Layer {...nonclusteredUnplannedPointLayer} />
+            <Layer {...nonclusteredReportedPointLayer} />
+            <Layer {...nonClusteredReportedPointSymbolLayer} />
+          </Source>
+        ) : (
+          <></>
+        )}
+
+        {currentLocation ? (
+          <Marker
+            latitude={currentLocation.lat}
+            longitude={currentLocation.lon}
+          >
+            <CustomImage
+              src="/assets/location.png"
+              alt="location"
+              width="30px"
+              height="30px"
+            />
+          </Marker>
+        ) : (
+          <></>
+        )}
+        <FullscreenControl position="bottom-right" />
+        <NavigationControl position="bottom-right" />
+        <GeolocateControl
+          positionOptions={{ enableHighAccuracy: true }}
+          trackUserLocation={true}
+          showAccuracyCircle={false}
+          showUserLocation={false}
+          showUserHeading={false}
+          position="bottom-right"
+          onGeolocate={(e) => {
+            setCurrentLocation({
+              lat: e.coords.latitude,
+              lon: e.coords.longitude,
+            });
+          }}
+        />
+      </ReactMapGL>
+      {/* <Geocoder onSelect={() => {}} mapboxApiAccessToken={ACCESS_TOKEN} /> */}
+    </>
   );
 }
 
