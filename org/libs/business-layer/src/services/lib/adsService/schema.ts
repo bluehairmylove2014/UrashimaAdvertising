@@ -11,29 +11,5 @@ const getAllAdsResponseSchema = z.array(
     planned: z.boolean(),
   })
 );
-const getAdDetailResponseSchema = z.object({
-  id: z.number(),
-  latitude: z.number(),
-  longitude: z.number(),
-  address: z.string(),
-  locationType: z.string(),
-  adsForm: z.string(),
-  planned: z.boolean(),
-  images: z.array(
-    z.object({
-      image: z.string(),
-    })
-  ),
-  adsBoard: z.array(
-    z.object({
-      id: z.number(),
-      adsType: z.string(),
-      height: z.number(),
-      width: z.number(),
-      image: z.string(),
-      expiredDate: z.string(),
-    })
-  ),
-});
 
-export { getAllAdsResponseSchema, getAdDetailResponseSchema };
+export { getAllAdsResponseSchema };
