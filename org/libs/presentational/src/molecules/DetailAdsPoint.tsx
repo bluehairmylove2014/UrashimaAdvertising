@@ -11,7 +11,7 @@ const dataTest = [
         adsType: "Trụ, cụm pano",
         width: 15,
         height: 10,
-        image: ["/assets/billboardExample.png", "/assets/billboardSub.png"],
+        image: ["/assets/billboardExample.png", "/assets/billboardSub.png", "/assets/billboardSub.png", "/assets/billboardSub.png", "/assets/billboardSub.png", "/assets/billboardSub.png", "/assets/billboardSub.png"],
         adsForm: "Cổ động chính trị",
         locationType: "Đất công/Công viên/Hành lang an toàn giao thông",
         address: "Đồng Khởi - Nguyễn Du (Sở Văn hóa và Thể thao), Phường Bến Nghé, Quận 1"
@@ -44,7 +44,7 @@ function DetailAdsPoint() {
             style={{ left: 0, top: 0 }}>
             <div className='h-[100%] w-[100%] overflow-x-hidden scrollbar-thin bg-white relative overflow-y-scroll scrollbar'>
                 {/* Image for ads point */}
-                <Carousel showStatus={false} showArrows={false}>
+                <Carousel showStatus={false} >
                     {dataTest[0].image.map((data) => (
                         <div className='w-[100%] h-[30vh]'>
                             {/* <CustomImage

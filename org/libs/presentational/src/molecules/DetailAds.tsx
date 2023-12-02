@@ -46,7 +46,7 @@ function DetailAdsPoint() {
                     </div>
                 </div>
 
-                <Carousel showStatus={false} showArrows={false} showThumbs={false}>
+                {/* <Carousel showStatus={false} showArrows={false} showThumbs={false}>
                     {dataTest.image.map(value => (
                         <div className='w-[100%] h-[30vh]'>
                             <CustomImage
@@ -57,7 +57,7 @@ function DetailAdsPoint() {
                             />
                         </div>
                     ))}
-                </Carousel>
+                </Carousel> */}
 
                 {/* advertisement type */}
                 <h3 className='my-4 mx-3'>{dataTest.adsType}</h3>

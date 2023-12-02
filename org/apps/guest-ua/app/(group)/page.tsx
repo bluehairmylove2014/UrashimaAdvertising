@@ -30,7 +30,7 @@ import {
 import ScreenLoader from '@presentational/atoms/ScreenLoader';
 import CustomImage from '@presentational/atoms/CustomImage';
 
-import DetailAdsPoint from '@presentational/molecules/DetailAdsPoint';
+import DetailAds from '@presentational/molecules/DetailAds';
 import 'mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 
 type locationType =
@@ -193,7 +193,7 @@ function Home() {
       )}
 
       {isClickAdsPoint ? (
-        <DetailAdsPoint />
+        <DetailAds />
       )
         :
         <></>}
