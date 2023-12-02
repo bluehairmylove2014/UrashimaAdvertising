@@ -143,18 +143,14 @@ function Home() {
 
     const features = mapRef.current.queryRenderedFeatures(event.point);
 
-    const unclusteredPoint = features.find((f) => f.layer.id === 'unclustered-point');
-    let [long, lat] = [0, 0]
-    if (unclusteredPoint && unclusteredPoint.geometry.type === 'Point') {
-      [long, lat] = [event.point.x, event.point.y];
-    }
-
-    if (!unclusteredPoint) {
+    const adsPoint = features.find((f) => f.layer.id === 'unclustered-point-planned' || f.layer.id === 'unclustered-point-unplanned   ');
+    if (!adsPoint) {
       setInfoHoverAdsPoint(undefined);
     }
-    else {
+    if (adsPoint && adsPoint.geometry.type === 'Point') {
+      const [long, lat] = adsPoint.geometry.coordinates;
       setInfoHoverAdsPoint({
-        id: 1,
+        id: adsPoint.id,
         adsForm: 'Cổ phần chính trị',
         locationType: 'Đất công/Công viên/Hành lang an toàn giao thông',
         address: 'Đồng Khởi - Nguyễn Huệ (Sở Văn hóa và Thể thao), Phường Bến Nghé, Quận 1',
@@ -174,6 +170,7 @@ function Home() {
       onClick={handleClick}
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
+      onMouseMove={handleMouseMove}
       dragRotate={false}
       minZoom={10}
       maxZoom={18}
@@ -235,6 +232,18 @@ function Home() {
       ) : (
         <></>
       )}
+
+      {infoHoverAdsPoint ? (
+        <Popup
+          longitude={infoHoverAdsPoint.longtitude}
+          latitude={infoHoverAdsPoint.latitude}
+          closeButton={false}
+          closeOnClick={false}
+          maxWidth='45vh'>
+          <InfoAdsPoint info={infoHoverAdsPoint} />
+        </Popup>
+      ) : <></>}
+
       <ScaleControl
         position="bottom-left"
         maxWidth={200}

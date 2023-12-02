@@ -9,7 +9,7 @@ interface IProps {
 function InfoAds(props: IProps) {
     const { info } = props
     return (
-        <div className='w-[45vh] bg-white rounded-[5px] shadow-[1px_1px_3px_-2px] p-2 absolute' style={{ left: info.longtitude + 2, top: info.latitude + 2 }}>
+        <div className=''>
             <div className="flex justify-between mb-1">
                 <p className='text-sm font-bold'>{info.adsForm}</p>
                 <CustomButtonIcon
