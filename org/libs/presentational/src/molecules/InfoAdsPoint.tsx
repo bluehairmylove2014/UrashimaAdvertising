@@ -1,12 +1,8 @@
 import CustomButtonIcon from '@presentational/atoms/CustomButtonIcon';
-import { IAdsDetail } from '@business-layer/services/entities/ads'
+import { IAds } from '@business-layer/services/entities/ads'
 import { useCallback } from 'react';
 
-function handleDetailAdsPoint() {
-
-}
-
-function InfoAds({ info }: { info: IAdsDetail }) {
+function InfoAds({ info, onClick }: { info: IAds, onClick: (id: number) => void }) {
     return (
         <>
             <div className="flex justify-between">
@@ -31,9 +27,7 @@ function InfoAds({ info }: { info: IAdsDetail }) {
                     type='button'
                     pathImage='/assets/detail.png'
                     alt=''
-                    onClick={handleDetailAdsPoint}>
-                    <>
-                    </>
+                    onClick={() => onClick(info.id)}><></>
                 </CustomButtonIcon>
                 <CustomButtonIcon
                     widthIcon='0.9rem'

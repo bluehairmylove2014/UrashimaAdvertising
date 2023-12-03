@@ -7,7 +7,7 @@ import { IAdsDetail } from '@business-layer/services/entities/ads'
 import "react-responsive-carousel/lib/styles/carousel.min.css"
 import { Carousel } from 'react-responsive-carousel';
 
-function DetailAdsPoint({ detailAdsPoint }: { detailAdsPoint: IAdsDetail }) {
+function DetailAdsPoint({ detailAdsPoint, onClick }: { detailAdsPoint: IAdsDetail, onClick: (id: number) => void }) {
     return (
         <div className='h-[100%] w-[25%] shadow-md min-w-[45vh] fixed'
             style={{ left: 0, top: 0 }}>
@@ -125,11 +125,11 @@ function DetailAdsPoint({ detailAdsPoint }: { detailAdsPoint: IAdsDetail }) {
                 </div>
 
                 {/* Design box for each ads */}
-                {detailAdsPoint.adsBoard.map(({ id, adsType, width, height, image, expiredDate }) => (
-                    <div className=" mx-5 mb-3 cursor-pointer" key={id}>
+                {detailAdsPoint.adsBoard.map((ads) => (
+                    <div className=" mx-5 mb-3 cursor-pointer" onClick={() => onClick(ads.id)} key={ads.id}>
                         <div className='w-[100%]  p-2 mb-4 border border-1 border-gray-300 rounded-lg hover:shadow-lg focus:shadow-lg'>
                             <div className="flex justify-between">
-                                <p className='text-sm font-bold text-neutral-800'>{adsType}</p>
+                                <p className='text-sm font-bold text-neutral-800'>{ads.adsType} {ads.id}</p>
                                 <CustomButtonIcon
                                     widthIcon='1rem'
                                     heightIcon='1rem'
@@ -151,7 +151,7 @@ function DetailAdsPoint({ detailAdsPoint }: { detailAdsPoint: IAdsDetail }) {
 
                                 <span className='ml-2 font-medium'>
                                     <p className='text-[0.65rem] text-neutral-700'>Kích thước:
-                                        <span className='font-bold'> {width}m x {height}m</span>
+                                        <span className='font-bold'> {ads.width}m x {ads.height}m</span>
                                     </p>
 
                                     <p className=' text-[0.65rem] text-neutral-700'>Hình thức:
@@ -172,6 +172,7 @@ function DetailAdsPoint({ detailAdsPoint }: { detailAdsPoint: IAdsDetail }) {
                                     type='button'
                                     pathImage='/assets/detail.png'
                                     alt=''
+                                    onClick={() => onClick(ads.id)}
                                 > </CustomButtonIcon>
                                 <CustomButtonIcon
                                     widthIcon='0.8rem'
