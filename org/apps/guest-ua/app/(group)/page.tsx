@@ -10,7 +10,7 @@ import ReactMapGL, {
   GeolocateControl,
   NavigationControl,
   FullscreenControl,
-  Popup
+  Popup,
 } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import {
@@ -29,27 +29,32 @@ import {
 } from '@business-layer/business-logic/lib/ads';
 import ScreenLoader from '@presentational/atoms/ScreenLoader';
 import CustomImage from '@presentational/atoms/CustomImage';
-import DetailAdsPoint from '@presentational/molecules/DetailAdsPoint'
-import ReportForm from '@presentational/molecules/ReportForm';
+import DetailAdsPoint from '@presentational/molecules/DetailAdsPoint';
+import ReportForm, {
+  reportAdditionDataType,
+  reportTargetType,
+} from '@presentational/molecules/ReportForm';
+import { SearchBox } from '@mapbox/search-js-react';
 
-import { IAdsDetail } from '@business-layer/services/entities/ads'
-import InfoAdsPoint from '@presentational/molecules/InfoAdsPoint'
+import { IAds, IAdsDetail } from '@business-layer/services/entities/ads';
+import InfoAdsPoint from '@presentational/molecules/InfoAdsPoint';
 
 import DetailAds from '@presentational/molecules/DetailAds';
 import 'mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
+import { useGetReportForm } from '@business-layer/business-logic/lib/reportForm';
 
 type locationType =
   | {
-    lat: number;
-    lon: number;
-  }
+      lat: number;
+      lon: number;
+    }
   | undefined;
 
 type markerParamsType =
   | {
-    latitude: number;
-    longitude: number;
-  }
+      latitude: number;
+      longitude: number;
+    }
   | undefined;
 function Home() {
   const adsData = useGetAllAds();
@@ -57,56 +62,49 @@ function Home() {
   const [isShowCluster, setIsShowCluster] = useState<boolean>(true);
 
   const [isClickAdsPoint, setIsClickAdsPoint] = useState<boolean>(false);
+  const [isActiveAdsBoard, setIsActiveAdsBoard] = useState<boolean>(false);
+  const [idAdsBoard, setIdAdsBoard] = useState(-1);
+
   const [infoClickAdsPoint, setInfoClickAdsPoint] = useState<IAdsDetail>();
   const [idAdsPointClick, setIdAdsPointClick] = useState(-1);
-
 
   //Create state for getting id advertisement point
   const [idAdsPoint, setIdAdsPoint] = useState(-1);
   //Create state for getting info advertisement point
-  const [infoHoverAdsPoint, setInfoHoverAdsPoint] = useState<IAdsDetail>();
+  const [infoHoverAdsPoint, setInfoHoverAdsPoint] = useState<IAds>();
   //Create state for getting position Advertisement Point
   const [posAdsHover, setPosAdsHover] = useState<locationType>(undefined);
 
   const [cursor, setCursor] = useState('pointer');
   const { onGetAdDetail, isLoading } = useGetAdDetail();
-
-  useEffect(() => {
-    if (idAdsPoint > -1) {
-      if (!infoClickAdsPoint && isClickAdsPoint)
-        setInfoHoverAdsPoint(undefined)
-
-      onGetAdDetail(idAdsPoint)
-        .then((data) => {
-          setInfoHoverAdsPoint(data)
-        })
-        .catch((error) => console.log(error))
-    }
-  }, [idAdsPoint]);
-
-  useEffect(() => {
-    if (idAdsPointClick > -1) {
-
-      onGetAdDetail(idAdsPoint)
-        .then((data) => {
-          if (!infoClickAdsPoint && isClickAdsPoint) {
-            setInfoHoverAdsPoint(undefined)
-            setInfoClickAdsPoint(data);
-          }
-        })
-        .catch((error) => console.log(error))
-
-      if (!infoClickAdsPoint && isClickAdsPoint)
-        setInfoHoverAdsPoint(undefined)
-    }
-  }, [idAdsPointClick]);
-
-
-
   const [currentLocation, setCurrentLocation] =
     useState<locationType>(undefined);
   const [searchKey, setSearchKey] = useState<string>('');
   const [marker, setMarker] = useState<markerParamsType>(undefined);
+
+  // Report controller
+  const { isReportFormActive, reportTarget, reportAdditionData } =
+    useGetReportForm();
+
+  useEffect(() => {
+    if (idAdsPoint > -1) {
+      if (!infoClickAdsPoint && isClickAdsPoint)
+        setInfoHoverAdsPoint(undefined);
+      else setInfoHoverAdsPoint(adsData?.find((ads) => ads.id === idAdsPoint));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [idAdsPoint]);
+
+  useEffect(() => {
+    if (idAdsPointClick > -1) {
+      onGetAdDetail(idAdsPointClick)
+        .then((data) => {
+          setInfoClickAdsPoint(data);
+        })
+        .catch((error) => console.log(error));
+    }
+  }, [idAdsPointClick]);
+
   useEffect(() => {
     if (
       currentLocation &&
@@ -137,8 +135,7 @@ function Home() {
   const handleClick = useCallback((event: MapLayerMouseEvent) => {
     if (!mapRef.current) return;
 
-    //When moving click will undefined
-    setInfoClickAdsPoint(undefined)
+    setIsActiveAdsBoard(false);
 
     //Check the point is cluster?
     const features = mapRef.current.queryRenderedFeatures(event.point, {
@@ -153,22 +150,24 @@ function Home() {
 
     //Check the point is ads point
     const featuresAllPoint = mapRef.current.queryRenderedFeatures(event.point);
-    const adsPoint = featuresAllPoint.find((f) => f.layer.id === 'unclustered-point-planned' || f.layer.id === 'unclustered-point-unplanned');
+    const adsPoint = featuresAllPoint.find(
+      (f) =>
+        f.layer.id === 'unclustered-point-planned' ||
+        f.layer.id === 'unclustered-point-unplanned'
+    );
     if (adsPoint && adsPoint.geometry.type === 'Point') {
       const [long, lat] = adsPoint.geometry.coordinates;
-      setIdAdsPointClick(adsPoint.properties?.id)
+      setIdAdsPointClick(adsPoint.properties?.id);
       setIsClickAdsPoint(true);
       setCurrentLocation({
         lat: lat,
         lon: long,
       });
-    }
-    else {
+    } else {
       setIdAdsPointClick(-1);
       setIsClickAdsPoint(false);
     }
     return;
-
   }, []);
 
   //Catch Mouse Down
@@ -186,21 +185,23 @@ function Home() {
     if (!mapRef.current) return;
 
     const features = mapRef.current.queryRenderedFeatures(event.point);
-    const adsPoint = features.find((f) => f.layer.id === 'unclustered-point-planned' || f.layer.id === 'unclustered-point-unplanned');
+    const adsPoint = features.find(
+      (f) =>
+        f.layer.id === 'unclustered-point-planned' ||
+        f.layer.id === 'unclustered-point-unplanned'
+    );
     if (!adsPoint) {
-      setInfoHoverAdsPoint(undefined)
+      setInfoHoverAdsPoint(undefined);
       setIdAdsPoint(-1);
     }
     if (adsPoint && adsPoint.geometry.type === 'Point') {
-
-      const [long, lat] = adsPoint.geometry.coordinates
-      setIdAdsPoint(adsPoint.properties?.id)
+      const [long, lat] = adsPoint.geometry.coordinates;
+      setIdAdsPoint(adsPoint.properties?.id);
       setPosAdsHover({
         lat: lat,
         lon: long,
       });
     }
-
   }, []);
   return (
     <div className="relative w-screen h-screen">
@@ -224,7 +225,7 @@ function Home() {
           style={{ width: '100vw', height: '100vh' }}
           mapStyle={MAP_STYLE}
         >
-          {/* <div className=" w-1/2 m-4">
+          <div className=" w-1/2 m-4">
             <SearchBox
               marker={true}
               accessToken={ACCESS_TOKEN}
@@ -262,7 +263,7 @@ function Home() {
             ) : (
               <></>
             )}
-          </div> */}
+          </div>
 
           {!Array.isArray(adsData) ? (
             <ScreenLoader />
@@ -302,8 +303,29 @@ function Home() {
             <></>
           )}
 
+          {infoHoverAdsPoint ? (
+            <Popup
+              longitude={infoHoverAdsPoint.longitude}
+              latitude={infoHoverAdsPoint.latitude}
+              closeButton={false}
+              closeOnClick={false}
+              maxWidth="50vh"
+            >
+              <InfoAdsPoint
+                info={infoHoverAdsPoint}
+                onClick={(id) => {
+                  setIsActiveAdsBoard(false);
+                  setIdAdsPointClick(id);
+                  setIsClickAdsPoint(true);
+                }}
+              />
+            </Popup>
+          ) : (
+            <></>
+          )}
+
           {/* Check Loading Ads Point*/}
-          {isLoading ? (
+          {/* {isLoading ? (
             // Loading success
             <> {posAdsHover ?
               <Popup
@@ -330,16 +352,43 @@ function Home() {
                   closeButton={false}
                   closeOnClick={false}
                   maxWidth='50vh'>
-                  <InfoAdsPoint info={infoHoverAdsPoint} />
+                  <InfoAdsPoint info={infoHoverAdsPoint} onClick={(id) => {
+                    setIdAdsPointClick(id)
+                    setIsClickAdsPoint(true)
+                  }} />
                 </Popup> : <></>}
               </>)
-          }
+          } */}
 
-          {isClickAdsPoint ? (infoClickAdsPoint ?
-            <DetailAdsPoint detailAdsPoint={infoClickAdsPoint} /> : <></>)
-            // <DetailAds adsBoard={infoClickAdsPoint} /> : <></>)
-            :
-            <></>}
+          {isClickAdsPoint ? (
+            infoClickAdsPoint ? (
+              <DetailAdsPoint
+                detailAdsPoint={infoClickAdsPoint}
+                onClick={(id) => {
+                  setIdAdsBoard(id);
+                  setIsActiveAdsBoard(true);
+                  setIsClickAdsPoint(false);
+                }}
+              />
+            ) : (
+              <></>
+            )
+          ) : (
+            <></>
+          )}
+
+          {isActiveAdsBoard ? (
+            infoClickAdsPoint ? (
+              <DetailAds
+                adsPoint={infoClickAdsPoint}
+                id={idAdsBoard}
+              ></DetailAds>
+            ) : (
+              <></>
+            )
+          ) : (
+            <></>
+          )}
 
           {currentLocation ? (
             <Marker
@@ -373,9 +422,13 @@ function Home() {
             }}
           />
         </ReactMapGL>
-      </div >
-      <ReportForm />
-    </div >
+      </div>
+      <ReportForm
+        isActive={isReportFormActive}
+        reportTarget={reportTarget}
+        reportAdditionData={reportAdditionData}
+      />
+    </div>
   );
 }
 

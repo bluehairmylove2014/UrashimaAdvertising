@@ -5,14 +5,16 @@ import "react-responsive-carousel/lib/styles/carousel.min.css"
 import { Carousel } from 'react-responsive-carousel';
 import { IAdsDetail } from '@business-layer/services/entities/ads'
 
-const convertDate = (date: string) => {
+const convertDate = (date?: string) => {
+    if (!date)
+        return 'Error'
     const dateConvert = date.split("-")
     return dateConvert[2] + "/" + dateConvert[1] + "/" + dateConvert[0]
 }
-function DetailAdsPoint({ adsBoard }: { adsBoard: IAdsDetail }) {
-    const adsBoardDetail = adsBoard.adsBoard[0]
+function DetailAdsPoint({ adsPoint, id }: { adsPoint: IAdsDetail, id: number }) {
+    const adsBoardDetail = adsPoint.adsBoard.find((ads) => ads.id = id)
     return (
-        <div className='h-[100%] w-[25%] shadow-md min-w-[45vh]'
+        <div className='h-[100%] w-[25%] shadow-md min-w-[45vh] fixed'
             style={{ left: 0, top: 0 }}>
             <div className='h-[100%] w-[100%] bg-white relative'>
                 {/* <div className='w-[99%] h-[29%] absolute'>
@@ -53,7 +55,7 @@ function DetailAdsPoint({ adsBoard }: { adsBoard: IAdsDetail }) {
                 // </Carousel> */}
 
                 {/* advertisement type */}
-                <h3 className='my-3 mx-3'>{adsBoardDetail.adsType}</h3>
+                <h3 className='my-3 mx-3'>{adsBoardDetail?.adsType}</h3>
 
                 {/* two button for adspoint */}
                 <div className="flex my-3 mx-3">
@@ -100,7 +102,7 @@ function DetailAdsPoint({ adsBoard }: { adsBoard: IAdsDetail }) {
                         </div>
 
                         <p className='text-[0.7rem] text-neutral-700 ml-2'> Địa điểm:
-                            <span className='font-semibold'> {adsBoard.address}</span>
+                            <span className='font-semibold'> {adsPoint.address}</span>
                         </p>
                     </div>
 
@@ -116,7 +118,7 @@ function DetailAdsPoint({ adsBoard }: { adsBoard: IAdsDetail }) {
                         </div>
 
                         <p className='text-[0.7rem] text-neutral-700 ml-2'> Kích thước:
-                            <span className='font-semibold'> {adsBoardDetail.width}m x {adsBoardDetail.height}m</span>
+                            <span className='font-semibold'> {adsBoardDetail?.width}m x {adsBoardDetail?.height}m</span>
                         </p>
                     </div>
 
@@ -130,7 +132,7 @@ function DetailAdsPoint({ adsBoard }: { adsBoard: IAdsDetail }) {
                         />
 
                         <p className='text-[0.7rem] text-neutral-700 ml-2'> Hình thức:
-                            <span className='font-semibold'> {adsBoard.adsForm}</span>
+                            <span className='font-semibold'> {adsPoint.adsForm}</span>
                         </p>
                     </div>
 
@@ -145,7 +147,7 @@ function DetailAdsPoint({ adsBoard }: { adsBoard: IAdsDetail }) {
                             height="0.8rem"
                         />
                         <p className='text-[0.7rem] text-neutral-700 ml-2'> Phân loại:
-                            <span className='font-semibold'> {adsBoard.locationType}</span>
+                            <span className='font-semibold'> {adsPoint.locationType}</span>
                         </p>
                     </div>
                 </div>
@@ -153,12 +155,12 @@ function DetailAdsPoint({ adsBoard }: { adsBoard: IAdsDetail }) {
                 <hr className='mx-2 '></hr>
                 <div className='mx-3 mt-4'>
                     <p className='text-[0.8rem] text-neutral-600'>
-                        {adsBoard.planned ?
+                        {adsPoint.planned ?
                             <span className='font-bold text-green-700'>ĐÃ QUY HOẠCH</span>
                             : <span className='font-bold text-rose-600'>CHƯA QUY HOẠCH</span>}
                     </p>
                     <p className='text-[0.8rem] text-neutral-700 mt-2'> Ngày hết hạn hợp đồng:
-                        <span className='font-bold text-rose-600'> {convertDate(adsBoardDetail.expiredDate)}</span>
+                        <span className='font-bold text-rose-600'> {convertDate(adsBoardDetail?.expiredDate)}</span>
                     </p>
                 </div>
             </div >
