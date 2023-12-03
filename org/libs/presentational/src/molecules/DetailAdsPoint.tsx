@@ -26,9 +26,8 @@ function DetailAdsPoint({ detailAdsPoint }: { detailAdsPoint: IAdsDetail }) {
                     ))}
                 </Carousel>
 
-                <hr className='mb-2 mx-2'></hr>
                 {/* two button for adspoint */}
-                <div className="flex m-2 mx-5">
+                <div className="flex my-4 mx-5">
                     <CustomButtonIcon
                         widthIcon='0.9rem'
                         heightIcon='0.9rem'
