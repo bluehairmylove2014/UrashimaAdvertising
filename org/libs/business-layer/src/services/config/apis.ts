@@ -1,6 +1,6 @@
 // PROXY_URL
-const proxyUrl = 'https://ura-ads.phucdat4102.workers.dev/cors-proxy/';
-// 'https://cors-anywhere.herokuapp.com/';
+const workerUrl = 'https://ura-ads.phucdat4102.workers.dev';
+const corsProxyUrl = workerUrl + '/cors-proxy/';
 
 // AUTH
 export const loginUrl = '/v1/auth/login';
@@ -8,22 +8,29 @@ export const refreshTokenUrl = '/v1/auth/refresh-token';
 export const updateAccountUrl = '/v1/auth/login-social';
 
 // ADS
-export const getAllAdsUrl = '/api/ads-points';
+export const getAllAdsUrl = '/api/ad-points';
+export const getAdDetailsUrl = '/api/ad-point';
+
+// REPORT
+export const reportAdUrl = '/api/report/ad-board';
+export const reportLocationUrl = '/api/report/location';
 
 // GOOGLE
 export const googleGetUserInfoUrl =
-  proxyUrl +
+  corsProxyUrl +
   'https://people.googleapis.com/v1/people/me?personFields=names,emailAddresses';
 export const googleValidateTokenUrl =
-  proxyUrl + 'https://www.googleapis.com/oauth2/v3/tokeninfo';
+  corsProxyUrl + 'https://www.googleapis.com/oauth2/v3/tokeninfo';
 // FACEBOOK
 export const facebookGetFBAccessTokenUrl =
-  proxyUrl + 'https://graph.facebook.com/v17.0/oauth/access_token';
+  corsProxyUrl + 'https://graph.facebook.com/v17.0/oauth/access_token';
 export const facebookGetFBUserInfoUrl =
-  proxyUrl + 'https://graph.facebook.com/me?fields=first_name,last_name,email';
+  corsProxyUrl +
+  'https://graph.facebook.com/me?fields=first_name,last_name,email';
 // GITHUB
 export const githubGetAccessTokenUrl =
-  proxyUrl + 'https://github.com/login/oauth/access_token';
+  corsProxyUrl + 'https://github.com/login/oauth/access_token';
 export const githubValidateTokenUrl =
-  proxyUrl + 'https://api.github.com/authorizations/';
-export const githubGetUserInfoUrl = proxyUrl + 'https://api.github.com/user';
+  corsProxyUrl + 'https://api.github.com/authorizations/';
+export const githubGetUserInfoUrl =
+  corsProxyUrl + 'https://api.github.com/user';
