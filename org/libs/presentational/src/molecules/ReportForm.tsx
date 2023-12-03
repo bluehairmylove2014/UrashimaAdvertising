@@ -9,10 +9,28 @@ import {
 } from '@utils/validators/yup';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import {
+  useReportAd,
+  useReportLocation,
+} from '@business-layer/business-logic/lib/report';
+import {
+  reportTargetType,
+  reportAdditionDataType,
+  useSetReportFormActive,
+} from '@business-layer/business-logic/lib/reportForm';
 
-function ReportForm() {
+function ReportForm({
+  isActive,
+  reportTarget,
+  reportAdditionData,
+}: {
+  isActive: boolean;
+  reportTarget: reportTargetType;
+  reportAdditionData: reportAdditionDataType;
+}) {
+  const { unActivateForm } = useSetReportFormActive();
   const formResolver = useYupValidationResolver(userReportSchema);
-  const { control, handleSubmit, reset } = useForm({
+  const { control, handleSubmit, reset, formState } = useForm({
     defaultValues: {
       name: '',
       email: '',
@@ -21,19 +39,51 @@ function ReportForm() {
     },
     resolver: formResolver,
   });
-  const { showReactHookFormError } = useNotification();
+  const { showReactHookFormError, showError, showSuccess } = useNotification();
   const reportsType = [
     'Tố giác sai phạm',
     'Đăng ký nội dung',
     'Đóng góp ý kiến',
     'Giải đáp thắc mắc',
   ];
-  const [selectedReportType, setSelectedReportType] = useState<string>(
-    reportsType[0]
+  const [selectedReportType, setSelectedReportType] = useState<string | null>(
+    null
   );
+  const { onReportAd, isLoading: isReportingAd } = useReportAd();
+  const { onReportLocation, isLoading: isReportingLocation } =
+    useReportLocation();
+
+  // Methods
+  const getReportFunc = (target: reportTargetType) => {
+    switch (target) {
+      case 'AD':
+        return onReportAd;
+      case 'LOCATION':
+        return onReportLocation;
+      default:
+        return undefined;
+    }
+  };
 
   const onSuccessSubmit = (data: any) => {
-    console.log(data);
+    if (!selectedReportType) {
+      showError('Bạn chưa chọn kiểu báo cáo!');
+      return;
+    }
+
+    const reportFuncAsync = getReportFunc(reportTarget);
+    reportFuncAsync &&
+      reportFuncAsync({
+        ...data,
+        ...reportAdditionData,
+        reportType: selectedReportType,
+      })
+        .then((msg) => {
+          showSuccess(msg);
+          unActivateForm();
+          reset();
+        })
+        .catch((error) => showError(error.message));
   };
 
   const onSelectReportType = (type: string) => {
@@ -41,53 +91,85 @@ function ReportForm() {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit(onSuccessSubmit, showReactHookFormError)}
-      className=" fixed w-1/2 h-fit top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-md z-30"
-      noValidate
+    <div
+      className={`${
+        isActive ? 'block' : 'hidden'
+      } fixed w-screen h-screen top-0 left-0 bg-black/60 p-6 rounded-md z-30 grid place-items-center`}
     >
-      <h3 className=" text-center mb-3">BÁO CÁO</h3>
-      <ReportInput name={'name'} type="TEXT" control={control} label="Họ tên" />
-      <ReportInput
-        name={'email'}
-        type="EMAIL"
-        control={control}
-        label="Email"
-      />
-      <ReportInput
-        name={'phone'}
-        type="PHONE_NUMBER"
-        control={control}
-        label="Điện thoại liên lạc"
-      />
-      <div className=" w-full flex flex-row justify-start items-center gap-2 flex-wrap my-3">
-        <p className="text-xs font-semibold whitespace-nowrap select-none">
-          Hình thức báo cáo:{' '}
-        </p>
-        {reportsType.map((r) => (
+      <form
+        onSubmit={handleSubmit(onSuccessSubmit, showReactHookFormError)}
+        className={`w-1/2 h-fit bg-white p-6 rounded-md`}
+        noValidate
+      >
+        <div className="flex flex-row justify-between text-center mb-3">
+          <div></div>
+          <h3>BÁO CÁO</h3>
           <button
-            className={`text-[0.6rem] font-medium ${
-              selectedReportType === r
-                ? 'bg-cyan-400'
-                : 'bg-cyan-100 hover:bg-cyan-200'
-            } transition-colors rounded-lg px-3 py-2 whitespace-nowrap`}
             type="button"
-            onClick={() => onSelectReportType(r)}
+            onClick={() => {
+              unActivateForm();
+            }}
           >
-            {r}
+            x
           </button>
-        ))}
-      </div>
-      <ReportInput
-        name={'content'}
-        type="LONG_TEXT"
-        control={control}
-        label="Nội dung báo cáo"
-      />
-      <CustomButton style="fill-primary" type="submit">
-        Gửi báo cáo
-      </CustomButton>
-    </form>
+        </div>
+
+        <ReportInput
+          name={'name'}
+          type="TEXT"
+          control={control}
+          label="Họ tên"
+          formState={formState}
+        />
+        <ReportInput
+          name={'email'}
+          type="EMAIL"
+          control={control}
+          label="Email"
+          formState={formState}
+        />
+        <ReportInput
+          name={'phone'}
+          type="PHONE_NUMBER"
+          control={control}
+          label="Điện thoại liên lạc"
+          formState={formState}
+        />
+        <div className=" w-full flex flex-row justify-start items-center gap-2 flex-wrap my-3">
+          <p className="text-xs font-semibold whitespace-nowrap select-none">
+            Hình thức báo cáo:{' '}
+          </p>
+          {reportsType.map((r) => (
+            <button
+              key={r}
+              className={`text-[0.6rem] font-medium ${
+                selectedReportType === r
+                  ? 'bg-cyan-400'
+                  : 'bg-cyan-100 hover:bg-cyan-200'
+              } transition-colors rounded-lg px-3 py-2 whitespace-nowrap`}
+              type="button"
+              onClick={() => onSelectReportType(r)}
+            >
+              {r}
+            </button>
+          ))}
+        </div>
+        <ReportInput
+          name={'content'}
+          type="LONG_TEXT"
+          control={control}
+          label="Nội dung báo cáo"
+          formState={formState}
+        />
+        <CustomButton
+          style="fill-primary"
+          type="submit"
+          loading={isReportingAd || isReportingLocation}
+        >
+          Gửi báo cáo
+        </CustomButton>
+      </form>
+    </div>
   );
 }
 

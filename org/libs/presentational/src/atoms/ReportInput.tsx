@@ -1,15 +1,15 @@
 import { addClass, removeClass } from '@utils/helpers';
-import { loginSchema } from '@utils/validators/yup';
-import { FocusEventHandler, useRef } from 'react';
-import { Controller } from 'react-hook-form';
+import { useEffect, useRef } from 'react';
+import { Control, Controller, FieldValues, FormState } from 'react-hook-form';
 
 type authInputParams = {
   name: string;
   label: string;
   type: 'EMAIL' | 'PHONE_NUMBER' | 'TEXT' | 'LONG_TEXT';
-  control: any;
+  control: Control<FieldValues>;
   disabled?: boolean;
   onChange?: (value: string) => void;
+  formState: FormState<any>;
 };
 
 const inputConfig = {
@@ -26,8 +26,20 @@ function ReportInput({
   control,
   disabled,
   onChange,
+  formState,
 }: authInputParams) {
   const labelRef = useRef<HTMLLabelElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    inputRef.current &&
+      inputRef.current.value.trim().length === 0 &&
+      removeClass(labelRef.current, '!opacity-0');
+    textareaRef.current &&
+      textareaRef.current.value.trim().length === 0 &&
+      removeClass(labelRef.current, '!opacity-0');
+  }, [formState]);
 
   return (
     <div className="relative flex flex-row justify-start items-center border-[1px] border-solid border-zinc-200 rounded overflow-hidden px-4 h-fit w-full mb-3">
@@ -58,6 +70,7 @@ function ReportInput({
                 }
               }}
               autoComplete="off"
+              ref={textareaRef}
             />
           ) : (
             <input
@@ -75,6 +88,7 @@ function ReportInput({
                 }
               }}
               autoComplete="off"
+              ref={inputRef}
             />
           )
         }
