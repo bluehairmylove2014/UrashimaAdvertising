@@ -36,7 +36,6 @@ type customButtonIconType = {
     pathImage: string;
     alt: string;
     children: React.ReactNode;
-
 };
 
 const defaultType = 'button';

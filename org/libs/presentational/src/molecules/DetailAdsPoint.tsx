@@ -1,79 +1,47 @@
 'use-client'
 import CustomImage from '@presentational/atoms/CustomImage';
 import CustomButtonIcon from '@presentational/atoms/CustomButtonIcon';
+import { IAdsDetail } from '@business-layer/services/entities/ads'
+
 
 import "react-responsive-carousel/lib/styles/carousel.min.css"
 import { Carousel } from 'react-responsive-carousel';
 
-const dataTest = [
-    {
-        id: 1,
-        adsType: "Trụ, cụm pano",
-        width: 15,
-        height: 10,
-        image: ["/assets/billboardExample.png", "/assets/billboardSub.png", "/assets/billboardSub.png", "/assets/billboardSub.png", "/assets/billboardSub.png", "/assets/billboardSub.png", "/assets/billboardSub.png"],
-        adsForm: "Cổ động chính trị",
-        locationType: "Đất công/Công viên/Hành lang an toàn giao thông",
-        address: "Đồng Khởi - Nguyễn Du (Sở Văn hóa và Thể thao), Phường Bến Nghé, Quận 1"
-    },
-    {
-        id: 2,
-        adsType: "Trụ, cụm pano",
-        width: 15,
-        height: 10,
-        image: ["/assets/billboardSub.png"],
-        adsForm: "Cổ động chính trị",
-        locationType: "Đất công/Công viên/Hành lang an toàn giao thông",
-        address: "Đồng Khởi - Nguyễn Du (Sở Văn hóa và Thể thao), Phường Bến Nghé, Quận 1"
-    },
-    {
-        id: 3,
-        adsType: "Trụ, cụm pano",
-        width: 15,
-        height: 10,
-        image: ["/assets/billboardSub.png"],
-        adsForm: "Cổ động chính trị",
-        locationType: "Đất công/Công viên/Hành lang an toàn giao thông",
-        address: "Đồng Khởi - Nguyễn Du (Sở Văn hóa và Thể thao), Phường Bến Nghé, Quận 1"
-    }
-]
-
-function DetailAdsPoint() {
+function DetailAdsPoint({ detailAdsPoint }: { detailAdsPoint: IAdsDetail }) {
     return (
         <div className='h-[100%] w-[25%] shadow-md min-w-[45vh] fixed'
             style={{ left: 0, top: 0 }}>
-            <div className='h-[100%] w-[100%] overflow-x-hidden scrollbar-thin bg-white relative overflow-y-scroll scrollbar'>
+            <div className='h-[100%] w-[100%] bg-white relative overflow-y-scroll scrollbar'>
                 {/* Image for ads point */}
-                <Carousel showStatus={false} >
-                    {dataTest[0].image.map((data) => (
+                <Carousel showStatus={false} showThumbs={false}>
+                    {detailAdsPoint.images.map((data) => (
                         <div className='w-[100%] h-[30vh]'>
-                            {/* <CustomImage
-                                src={image}
+                            <CustomImage
+                                src='/assets/billboardExample.png'
                                 alt="location"
                                 width="100%"
                                 height="30vh"
-                            /> */}
-                            <img src={data} object-cover className="transition-all h-[100%] w-[100%]"></img>
+                            />
                         </div>
                     ))}
                 </Carousel>
 
-                <hr className='mb-4 mx-2'></hr>
+                <hr className='mb-2 mx-2'></hr>
                 {/* two button for adspoint */}
-                <div className="flex my-4 mx-5">
+                <div className="flex m-2 mx-5">
                     <CustomButtonIcon
                         widthIcon='0.9rem'
                         heightIcon='0.9rem'
                         type='button'
-                        pathImage='/images/icons/save.png'
+                        pathImage='/assets/save.png'
                         border={1}
                         round={2}
                         colorBorder='green'
                         alt=''
                     >
                         <span className="text-green-600 text-[0.6rem] text-bold ml-1">LƯU</span>
-
                     </CustomButtonIcon>
+
                     <span className="ml-2"></span>
                     <CustomButtonIcon
                         widthIcon='0.8rem'
@@ -82,7 +50,7 @@ function DetailAdsPoint() {
                         type='button'
                         border={1}
                         colorBorder='rose'
-                        pathImage='/images/icons/report.png'
+                        pathImage='/assets/report.png'
                         alt=''
                     >
                         <span className="text-rose-600 text-[0.6rem] text-bold ml-1">BÁO CÁO VI PHẠM</span>
@@ -95,12 +63,12 @@ function DetailAdsPoint() {
                     <div className='flex justify-between items-center text-[0.8rem]'>
                         <p className="font-semibold text-sky-500">Tổng quan</p>
                         {/* isPlanned */}
-                        <p className='font-bold text-green-600 italic'> ĐÃ QUY HOẠCH
+                        <p className='font-bold text-green-600 italic'> {detailAdsPoint.planned}
                         </p>
                     </div>
 
                     {/* Ads Form */}
-                    <div className='flex mt-3 items-center'>
+                    <div className='flex mt-3 flex-row items-start'>
                         <CustomImage
                             src="/assets/adsForm.png"
                             alt="Ads Form"
@@ -109,12 +77,12 @@ function DetailAdsPoint() {
                         />
 
                         <p className='text-[0.7rem] text-neutral-500 ml-2'> Hình thức:
-                            <span className='font-semibold'> Cổ động chính trị</span>
+                            <span className='font-semibold'> {detailAdsPoint.adsForm} </span>
                         </p>
                     </div>
 
                     {/* Address */}
-                    <div className='flex mt-3 items-center'>
+                    <div className='flex mt-3 flex-row items-start'>
                         <div className='h-[100%]'>
                             <CustomImage
                                 src="/assets/addressAdsPoint.png"
@@ -123,14 +91,14 @@ function DetailAdsPoint() {
                                 height="0.8rem"
                             />
                         </div>
-                        <p className='text-[0.7rem] text-neutral-500 ml-2'> Hình thức:
-                            <span className='font-semibold'> Đồng Khởi - Nguyễn Du (Sở Văn hóa và Thể thao), Phường Bến Nghé, Quận 1</span>
+                        <p className='text-[0.7rem] text-neutral-500 ml-2'> Địa điểm:
+                            <span className='font-semibold'> {detailAdsPoint.address}</span>
                         </p>
 
                     </div>
 
                     {/* Location Type */}
-                    <div className='flex mt-3 items-center'>
+                    <div className='flex mt-3 flex-row items-start'>
                         <CustomImage
                             src="/assets/locationType.png"
                             alt="location"
@@ -139,7 +107,7 @@ function DetailAdsPoint() {
                         />
 
                         <p className='text-[0.7rem] text-neutral-500 ml-2'> Phân loại:
-                            <span className='font-semibold'> Đất công/Công viên/Hành lang an toàn giao thông</span>
+                            <span className='font-semibold'> {detailAdsPoint.locationType}</span>
                         </p>
 
                     </div>
@@ -151,24 +119,15 @@ function DetailAdsPoint() {
 
                 <hr className='mx-2 my-4'></hr>
                 {/* Title and filter for ads list */}
-                <div className="flex justify-between mx-5 mb-2">
+                <div className="flex justify-between mx-5 mb-3">
                     <div className='flex justify-center items-center'>
                         <span className="ml-1 text-[0.8rem] font-semibold text-sky-500">Danh sách bảng quảng cáo</span>
                     </div>
-
-
-                    <CustomButtonIcon
-                        widthIcon='1rem'
-                        heightIcon='1rem'
-                        type='button'
-                        pathImage='/assets/filterAds.png'
-                        alt=''
-                    > </CustomButtonIcon>
                 </div>
 
                 {/* Design box for each ads */}
-                {dataTest.map(({ id, adsType, width, height, adsForm, locationType, address }) => (
-                    <div className=" mx-5 mb-3" key={id}>
+                {detailAdsPoint.adsBoard.map(({ id, adsType, width, height, image, expiredDate }) => (
+                    <div className=" mx-5 mb-3 cursor-pointer" key={id}>
                         <div className='w-[100%]  p-2 mb-4 border border-1 border-gray-300 rounded-lg hover:shadow-lg focus:shadow-lg'>
                             <div className="flex justify-between">
                                 <p className='text-sm font-bold text-neutral-800'>{adsType}</p>
@@ -176,15 +135,15 @@ function DetailAdsPoint() {
                                     widthIcon='1rem'
                                     heightIcon='1rem'
                                     type='button'
-                                    pathImage='/images/icons/save.png'
+                                    pathImage='/assets/save.png'
                                     alt=''
                                 > </CustomButtonIcon>
                             </div>
-                            <p className='text-[0.6rem] font-medium text-gray-500'>{address}</p>
+                            <p className='text-[0.6rem] font-medium text-gray-500'>{detailAdsPoint.address}</p>
                             <div className='flex'>
                                 <div>
                                     <CustomImage
-                                        src="/assets/billboardExample.png"
+                                        src='/assets/billboardExample.png'
                                         alt="ads"
                                         width="12vh"
                                         height="100%"
@@ -197,10 +156,10 @@ function DetailAdsPoint() {
                                     </p>
 
                                     <p className=' text-[0.6rem] text-neutral-700'>Hình thức:
-                                        <span className='font-bold'> {adsForm}</span>
+                                        <span className='font-bold'> {detailAdsPoint.adsForm}</span>
                                     </p>
                                     <p className='text-[0.6rem] text-neutral-700'>Phân loại:
-                                        <span className='font-bold '> {locationType}</span>
+                                        <span className='font-bold '> {detailAdsPoint.locationType}</span>
                                     </p>
                                 </span>
                             </div>
@@ -212,7 +171,7 @@ function DetailAdsPoint() {
                                     widthIcon='0.9rem'
                                     heightIcon='0.9rem'
                                     type='button'
-                                    pathImage='/images/icons/detail.png'
+                                    pathImage='/assets/detail.png'
                                     alt=''
                                 > </CustomButtonIcon>
                                 <CustomButtonIcon
@@ -222,7 +181,7 @@ function DetailAdsPoint() {
                                     type='button'
                                     border={1}
                                     colorBorder='rose'
-                                    pathImage='/images/icons/report.png'
+                                    pathImage='/assets/report.png'
                                     alt=''
                                 >
                                     <span className="text-rose-600 text-[0.6rem] text-bold ml-1">BÁO CÁO VI PHẠM</span>

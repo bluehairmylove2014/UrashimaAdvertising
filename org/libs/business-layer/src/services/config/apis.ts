@@ -11,6 +11,10 @@ export const updateAccountUrl = '/v1/auth/login-social';
 export const getAllAdsUrl = '/api/ad-points';
 export const getAdDetailsUrl = '/api/ad-point';
 
+// REPORT
+export const reportAdUrl = '/api/report/ad-board';
+export const reportLocationUrl = '/api/report/location';
+
 // GOOGLE
 export const googleGetUserInfoUrl =
   corsProxyUrl +

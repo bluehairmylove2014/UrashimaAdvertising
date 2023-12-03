@@ -9,6 +9,5 @@ const adsDetailData: IAdsDetail[] = adsRawData;
 axiosMockAdapterInstance
   .onGet(getApiUrl(false) + getAdDetailsUrl)
   .reply((config: any) => {
-    console.log('SEND AD DETAIL ID: ', config.params);
     return [200, adsDetailData.find((ad) => ad.id === config.params.id)];
   });

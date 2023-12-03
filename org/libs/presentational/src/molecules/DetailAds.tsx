@@ -3,6 +3,8 @@ import CustomImage from '@presentational/atoms/CustomImage';
 import CustomButtonIcon from '@presentational/atoms/CustomButtonIcon';
 import "react-responsive-carousel/lib/styles/carousel.min.css"
 import { Carousel } from 'react-responsive-carousel';
+import { IAdsDetail } from '@business-layer/services/entities/ads'
+
 
 const dataTest = {
     adsType: "Trụ, cụm pano",
@@ -17,12 +19,13 @@ const dataTest = {
 }
 
 
-function DetailAdsPoint() {
+function DetailAdsPoint({ adsBoard }: { adsBoard: IAdsDetail }) {
+    const adsBoardDetail = adsBoard.adsBoard[0]
     return (
         <div className='h-[100%] w-[25%] shadow-md min-w-[45vh]'
             style={{ left: 0, top: 0 }}>
             <div className='h-[100%] w-[100%] bg-white relative'>
-                <div className='w-[99%] h-[29%] absolute'>
+                {/* <div className='w-[99%] h-[29%] absolute'>
                     <div className="absolute z-10 top-0 right-0 mt-2">
                         <CustomButtonIcon
                             widthIcon='0.7rem'
@@ -44,31 +47,31 @@ function DetailAdsPoint() {
                             round={4}
                         > </CustomButtonIcon>
                     </div>
-                </div>
+                </div> */}
 
                 {/* <Carousel showStatus={false} showArrows={false} showThumbs={false}>
-                    {dataTest.image.map(value => (
-                        <div className='w-[100%] h-[30vh]'>
-                            <CustomImage
-                                src={value}
-                                alt="location"
-                                width="100%"
-                                height="100%"
-                            />
-                        </div>
-                    ))}
-                </Carousel> */}
+                    {adsBoard.image.map(value => ( */}
+                <div className='w-[100%] h-[30vh]'>
+                    <CustomImage
+                        src='/assets/billboardExample.png'
+                        alt="location"
+                        width="100%"
+                        height="100%"
+                    />
+                </div>
+                {/* //     ))}
+                // </Carousel> */}
 
                 {/* advertisement type */}
-                <h3 className='my-4 mx-3'>{dataTest.adsType}</h3>
+                <h3 className='my-3 mx-3'>{adsBoardDetail.adsType}</h3>
 
                 {/* two button for adspoint */}
-                <div className="flex my-4 mx-3">
+                <div className="flex my-3 mx-3">
                     <CustomButtonIcon
                         widthIcon='0.9rem'
                         heightIcon='0.9rem'
                         type='button'
-                        pathImage='/images/icons/save.png'
+                        pathImage='/assets/save.png'
                         border={1}
                         round={2}
                         colorBorder='green'
@@ -85,7 +88,7 @@ function DetailAdsPoint() {
                         type='button'
                         border={1}
                         colorBorder='rose'
-                        pathImage='/images/icons/report.png'
+                        pathImage='/assets/report.png'
                         alt=''
                     >
                         <span className="text-rose-600 text-[0.6rem] text-bold ml-1">BÁO CÁO VI PHẠM</span>
@@ -96,7 +99,7 @@ function DetailAdsPoint() {
                 {/* Information advertisement point */}
                 <div className="mx-3 my-4">
                     {/* Address */}
-                    <div className='flex items-center'>
+                    <div className='flex flex-row items-start'>
                         <div className='h-[100%]'>
                             <CustomImage
                                 src="/assets/addressAdsPoint.png"
@@ -107,12 +110,12 @@ function DetailAdsPoint() {
                         </div>
 
                         <p className='text-[0.7rem] text-neutral-700 ml-2'> Địa điểm:
-                            <span className='font-semibold'> {dataTest.address}</span>
+                            <span className='font-semibold'> {adsBoard.address}</span>
                         </p>
                     </div>
 
                     {/* Size */}
-                    <div className='flex mt-3 items-center'>
+                    <div className='flex mt-3 flex-row items-start'>
                         <div className='h-[100%]'>
                             <CustomImage
                                 src="/assets/size.png"
@@ -123,12 +126,12 @@ function DetailAdsPoint() {
                         </div>
 
                         <p className='text-[0.7rem] text-neutral-700 ml-2'> Kích thước:
-                            <span className='font-semibold'> {dataTest.width}m x {dataTest.height}m</span>
+                            <span className='font-semibold'> {adsBoardDetail.width}m x {adsBoardDetail.height}m</span>
                         </p>
                     </div>
 
                     {/* Ads Form */}
-                    <div className='flex mt-3 items-center'>
+                    <div className='flex mt-3 flex-row items-start'>
                         <CustomImage
                             src="/assets/adsForm.png"
                             alt="Ads Form"
@@ -137,14 +140,14 @@ function DetailAdsPoint() {
                         />
 
                         <p className='text-[0.7rem] text-neutral-700 ml-2'> Hình thức:
-                            <span className='font-semibold'> {dataTest.adsForm}</span>
+                            <span className='font-semibold'> {adsBoard.adsForm}</span>
                         </p>
                     </div>
 
 
 
                     {/* Location Type */}
-                    <div className='flex mt-3 items-center'>
+                    <div className='flex mt-3 flex-row items-start'>
                         <CustomImage
                             src="/assets/locationType.png"
                             alt="location"
@@ -152,7 +155,7 @@ function DetailAdsPoint() {
                             height="0.8rem"
                         />
                         <p className='text-[0.7rem] text-neutral-700 ml-2'> Phân loại:
-                            <span className='font-semibold'> {dataTest.locationType}</span>
+                            <span className='font-semibold'> {adsBoard.locationType}</span>
                         </p>
                     </div>
                 </div>
@@ -165,7 +168,7 @@ function DetailAdsPoint() {
                             : <span>CHƯA QUY HOẠCH</span>}
                     </p>
                     <p className='text-[0.75rem] text-neutral-700 mt-2'> Ngày hết hạn hợp đồng:
-                        <span className='font-bold text-rose-600'> {dataTest.expiredDate}</span>
+                        <span className='font-bold text-rose-600'> {adsBoardDetail.expiredDate}</span>
                     </p>
                 </div>
             </div >
