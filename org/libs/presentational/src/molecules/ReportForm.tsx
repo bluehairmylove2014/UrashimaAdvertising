@@ -1,89 +1,93 @@
 'use client';
 
+import CustomButton from '@presentational/atoms/CustomButton';
+import { useNotification } from '@presentational/atoms/Notification';
+import ReportInput from '@presentational/atoms/ReportInput';
+import {
+  useYupValidationResolver,
+  userReportSchema,
+} from '@utils/validators/yup';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+
 function ReportForm() {
+  const formResolver = useYupValidationResolver(userReportSchema);
+  const { control, handleSubmit, reset } = useForm({
+    defaultValues: {
+      name: '',
+      email: '',
+      phone: '',
+      content: '',
+    },
+    resolver: formResolver,
+  });
+  const { showReactHookFormError } = useNotification();
+  const reportsType = [
+    'Tố giác sai phạm',
+    'Đăng ký nội dung',
+    'Đóng góp ý kiến',
+    'Giải đáp thắc mắc',
+  ];
+  const [selectedReportType, setSelectedReportType] = useState<string>(
+    reportsType[0]
+  );
+
+  const onSuccessSubmit = (data: any) => {
+    console.log(data);
+  };
+
+  const onSelectReportType = (type: string) => {
+    setSelectedReportType(type);
+  };
+
   return (
-    <div className=" fixed w-1/2 h-fit top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-md z-30 hidden">
+    <form
+      onSubmit={handleSubmit(onSuccessSubmit, showReactHookFormError)}
+      className=" fixed w-1/2 h-fit top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-md z-30"
+      noValidate
+    >
       <h3 className=" text-center mb-3">BÁO CÁO</h3>
-      <div className="relative flex flex-row justify-start items-center border-[1px] border-solid border-zinc-200 rounded px-4 h-9 mb-3">
-        <label
-          htmlFor="name"
-          className="text-xs font-semibold whitespace-nowrap opacity-60 relative z-20"
-        >
-          Họ tên
-        </label>
-        <input
-          type="text"
-          id="name"
-          className="outline-none absolute top-0 left-0 w-full h-full z-10 bg-transparent px-4"
-        />
+      <ReportInput name={'name'} type="TEXT" control={control} label="Họ tên" />
+      <ReportInput
+        name={'email'}
+        type="EMAIL"
+        control={control}
+        label="Email"
+      />
+      <ReportInput
+        name={'phone'}
+        type="PHONE_NUMBER"
+        control={control}
+        label="Điện thoại liên lạc"
+      />
+      <div className=" w-full flex flex-row justify-start items-center gap-2 flex-wrap my-3">
+        <p className="text-xs font-semibold whitespace-nowrap select-none">
+          Hình thức báo cáo:{' '}
+        </p>
+        {reportsType.map((r) => (
+          <button
+            className={`text-[0.6rem] font-medium ${
+              selectedReportType === r
+                ? 'bg-cyan-400'
+                : 'bg-cyan-100 hover:bg-cyan-200'
+            } transition-colors rounded-lg px-3 py-2 whitespace-nowrap`}
+            type="button"
+            onClick={() => onSelectReportType(r)}
+          >
+            {r}
+          </button>
+        ))}
       </div>
-
-      <div className="relative flex flex-row justify-start items-center border-[1px] border-solid border-zinc-200 rounded px-4 h-9 mb-3">
-        <label
-          htmlFor="email"
-          className="text-xs font-semibold whitespace-nowrap opacity-60 relative z-20"
-        >
-          Email
-        </label>
-        <input
-          type="email"
-          id="email"
-          className="outline-none absolute top-0 left-0 w-full h-full z-10 bg-transparent px-4"
-        />
-      </div>
-
-      <div className="relative flex flex-row justify-start items-center border-[1px] border-solid border-zinc-200 rounded px-4 h-9 mb-3">
-        <label
-          htmlFor="phone"
-          className="text-xs font-semibold whitespace-nowrap opacity-60 relative z-20"
-        >
-          Điện thoại liên lạc
-        </label>
-        <input
-          type="email"
-          id="phone"
-          className="outline-none absolute top-0 left-0 w-full h-full z-10 bg-transparent px-4"
-        />
-      </div>
-
-      <div className="relative flex flex-row justify-start items-start border-[1px] border-solid border-zinc-200 rounded px-4 py-2 h-16 mb-3">
-        <label
-          htmlFor="content"
-          className="text-xs font-semibold whitespace-nowrap opacity-60 relative z-20"
-        >
-          Nội dung báo cáo
-        </label>
-        <textarea
-          name="content"
-          id="content"
-          className="outline-none absolute top-0 left-0 w-full h-full z-10 bg-transparent px-4 resize-none"
-        ></textarea>
-      </div>
-
-      <div>
-        <label htmlFor="report-type" className="text-sm font-semibold">
-          Hình thức báo cáo
-        </label>
-        <select
-          name="reportType"
-          id="report-type"
-          className=" outline-none ml-2"
-        >
-          <option value="" defaultChecked>
-            Tố giác sai phạm
-          </option>
-          <option value="" defaultChecked>
-            Đăng ký nội dung
-          </option>
-          <option value="" defaultChecked>
-            Đóng góp ý kiến
-          </option>
-          <option value="" defaultChecked>
-            Giải đáp thắc mắc
-          </option>
-        </select>
-      </div>
-    </div>
+      <ReportInput
+        name={'content'}
+        type="LONG_TEXT"
+        control={control}
+        label="Nội dung báo cáo"
+      />
+      <CustomButton style="fill-primary" type="submit">
+        Gửi báo cáo
+      </CustomButton>
+    </form>
   );
 }
 
