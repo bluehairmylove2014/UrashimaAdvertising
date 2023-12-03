@@ -92,6 +92,7 @@ function Home() {
   const handleMouseUp = useCallback((event: MapLayerMouseEvent) => {
     setCursor('pointer');
   }, []);
+
   return (
     <div className="relative w-screen h-screen">
       <div className="relative z-0">
