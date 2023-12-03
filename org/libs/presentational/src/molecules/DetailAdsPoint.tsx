@@ -139,7 +139,7 @@ function DetailAdsPoint({ detailAdsPoint }: { detailAdsPoint: IAdsDetail }) {
                                     alt=''
                                 > </CustomButtonIcon>
                             </div>
-                            <p className='text-[0.6rem] font-medium text-gray-500'>{detailAdsPoint.address}</p>
+                            <p className='text-[0.65rem] font-medium text-gray-500'>{detailAdsPoint.address}</p>
                             <div className='flex'>
                                 <div>
                                     <CustomImage
@@ -151,14 +151,14 @@ function DetailAdsPoint({ detailAdsPoint }: { detailAdsPoint: IAdsDetail }) {
                                 </div>
 
                                 <span className='ml-2 font-medium'>
-                                    <p className='text-[0.6rem] text-neutral-700'>Kích thước:
+                                    <p className='text-[0.65rem] text-neutral-700'>Kích thước:
                                         <span className='font-bold'> {width}m x {height}m</span>
                                     </p>
 
-                                    <p className=' text-[0.6rem] text-neutral-700'>Hình thức:
+                                    <p className=' text-[0.65rem] text-neutral-700'>Hình thức:
                                         <span className='font-bold'> {detailAdsPoint.adsForm}</span>
                                     </p>
-                                    <p className='text-[0.6rem] text-neutral-700'>Phân loại:
+                                    <p className='text-[0.65rem] text-neutral-700'>Phân loại:
                                         <span className='font-bold '> {detailAdsPoint.locationType}</span>
                                     </p>
                                 </span>

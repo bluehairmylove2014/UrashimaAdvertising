@@ -336,8 +336,8 @@ function Home() {
           }
 
           {isClickAdsPoint ? (infoClickAdsPoint ?
-            <DetailAdsPoint detailAdsPoint={infoClickAdsPoint} /> : <></>)
-            // <DetailAds adsBoard={infoClickAdsPoint} /> : <></>)
+            // <DetailAdsPoint detailAdsPoint={infoClickAdsPoint} /> : <></>)
+            <DetailAds adsBoard={infoClickAdsPoint} /> : <></>)
             :
             <></>}
 

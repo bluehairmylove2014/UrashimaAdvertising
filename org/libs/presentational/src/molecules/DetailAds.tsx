@@ -5,20 +5,10 @@ import "react-responsive-carousel/lib/styles/carousel.min.css"
 import { Carousel } from 'react-responsive-carousel';
 import { IAdsDetail } from '@business-layer/services/entities/ads'
 
-
-const dataTest = {
-    adsType: "Trụ, cụm pano",
-    width: 15,
-    height: 10,
-    image: ["/assets/billboardExample.png", "/assets/billboardSub.png"],
-    adsForm: "Cổ động chính trị",
-    locationType: "Đất công/Công viên/Hành lang an toàn giao thông",
-    address: "Đồng Khởi - Nguyễn Du (Sở Văn hóa và Thể thao), Phường Bến Nghé, Quận 1",
-    planned: true,
-    expiredDate: '01/01/2024'
+const convertDate = (date: string) => {
+    const dateConvert = date.split("-")
+    return dateConvert[2] + "/" + dateConvert[1] + "/" + dateConvert[0]
 }
-
-
 function DetailAdsPoint({ adsBoard }: { adsBoard: IAdsDetail }) {
     const adsBoardDetail = adsBoard.adsBoard[0]
     return (
@@ -162,13 +152,13 @@ function DetailAdsPoint({ adsBoard }: { adsBoard: IAdsDetail }) {
 
                 <hr className='mx-2 '></hr>
                 <div className='mx-3 mt-4'>
-                    <p className='text-[0.75rem] text-neutral-600'>
-                        {dataTest.planned ?
-                            <span className='font-bold'>ĐÃ QUY HOẠCH</span>
-                            : <span>CHƯA QUY HOẠCH</span>}
+                    <p className='text-[0.8rem] text-neutral-600'>
+                        {adsBoard.planned ?
+                            <span className='font-bold text-green-700'>ĐÃ QUY HOẠCH</span>
+                            : <span className='font-bold text-rose-600'>CHƯA QUY HOẠCH</span>}
                     </p>
-                    <p className='text-[0.75rem] text-neutral-700 mt-2'> Ngày hết hạn hợp đồng:
-                        <span className='font-bold text-rose-600'> {adsBoardDetail.expiredDate}</span>
+                    <p className='text-[0.8rem] text-neutral-700 mt-2'> Ngày hết hạn hợp đồng:
+                        <span className='font-bold text-rose-600'> {convertDate(adsBoardDetail.expiredDate)}</span>
                     </p>
                 </div>
             </div >
