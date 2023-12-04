@@ -23,8 +23,8 @@ function DetailAdsPoint({
       <div className="h-[100%] w-[100%] bg-white relative overflow-y-scroll scrollbar">
         {/* Image for ads point */}
         <Carousel showStatus={false} showThumbs={false}>
-          {detailAdsPoint.images.map((data) => (
-            <div className="w-[100%] h-[30vh]">
+          {detailAdsPoint.images.map((data, index) => (
+            <div className="w-[100%] h-[30vh]" key={`carousel@${index}`}>
               <CustomImage
                 src="/assets/billboardExample.png"
                 alt="location"
