@@ -12,6 +12,7 @@ namespace UrashimaServer.Database
         public DbSet<Report> Reports { get; set; }
         public DbSet<ReportImage> ReportImages { get; set; }
         public DbSet<ReportLoc> ReportLocs { get; set; }
+        public DbSet<Account> Accounts { get; set; }
 
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         { }
@@ -53,6 +54,8 @@ namespace UrashimaServer.Database
                 .WithMany(report => report.Images)
                 .HasForeignKey(e => e.ReportId)
                 .IsRequired();
+
+            modelBuilder.Entity<Account>();
         }
     }
 }
