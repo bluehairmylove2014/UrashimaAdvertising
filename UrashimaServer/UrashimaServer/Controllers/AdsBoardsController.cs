@@ -68,107 +68,91 @@ namespace UrashimaServer.Controllers
             return Ok(boardDtoList);
         }
 
-        // GET: api/AdsBoards/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<AdsBoard>> GetAdsBoard(int id)
-        {
-            if (_context.AdsBoards == null)
-            {
-                return NotFound();
-            }
-            var adsBoard = await _context.AdsBoards.FindAsync(id);
-
-            if (adsBoard == null)
-            {
-                return NotFound();
-            }
-
-            return adsBoard;
-        }
+       
 
         // PUT: api/AdsBoards/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutAdsBoard(int id, AdsBoard adsBoard)
-        {
-            if (id != adsBoard.Id)
-            {
-                return BadRequest();
-            }
+        //[HttpPut("{id}")]
+        //public async Task<IActionResult> PutAdsBoard(int id, AdsBoard adsBoard)
+        //{
+        //    if (id != adsBoard.Id)
+        //    {
+        //        return BadRequest();
+        //    }
 
-            _context.Entry(adsBoard).State = EntityState.Modified;
+        //    _context.Entry(adsBoard).State = EntityState.Modified;
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!AdsBoardExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+        //    try
+        //    {
+        //        await _context.SaveChangesAsync();
+        //    }
+        //    catch (DbUpdateConcurrencyException)
+        //    {
+        //        if (!AdsBoardExists(id))
+        //        {
+        //            return NotFound();
+        //        }
+        //        else
+        //        {
+        //            throw;
+        //        }
+        //    }
 
-            return NoContent();
-        }
+        //    return NoContent();
+        //}
 
         // POST: api/AdsBoards
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<AdsBoard>> PostAdsBoard(AdsBoard adsBoard)
-        {
-          if (_context.AdsBoards == null)
-          {
-              return Problem("Entity set 'DataContext.AdsBoards'  is null.");
-          }
-            _context.AdsBoards.Add(adsBoard);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (AdsBoardExists(adsBoard.Id))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+        //[HttpPost]
+        //public async Task<ActionResult<AdsBoard>> PostAdsBoard(AdsBoard adsBoard)
+        //{
+        //  if (_context.AdsBoards == null)
+        //  {
+        //      return Problem("Entity set 'DataContext.AdsBoards'  is null.");
+        //  }
+        //    _context.AdsBoards.Add(adsBoard);
+        //    try
+        //    {
+        //        await _context.SaveChangesAsync();
+        //    }
+        //    catch (DbUpdateException)
+        //    {
+        //        if (AdsBoardExists(adsBoard.Id))
+        //        {
+        //            return Conflict();
+        //        }
+        //        else
+        //        {
+        //            throw;
+        //        }
+        //    }
 
-            return CreatedAtAction("GetAdsBoard", new { id = adsBoard.Id }, adsBoard);
-        }
+        //    return CreatedAtAction("GetAdsBoard", new { id = adsBoard.Id }, adsBoard);
+        //}
 
         // DELETE: api/AdsBoards/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAdsBoard(int id)
-        {
-            if (_context.AdsBoards == null)
-            {
-                return NotFound();
-            }
-            var adsBoard = await _context.AdsBoards.FindAsync(id);
-            if (adsBoard == null)
-            {
-                return NotFound();
-            }
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> DeleteAdsBoard(int id)
+        //{
+        //    if (_context.AdsBoards == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    var adsBoard = await _context.AdsBoards.FindAsync(id);
+        //    if (adsBoard == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            _context.AdsBoards.Remove(adsBoard);
-            await _context.SaveChangesAsync();
+        //    _context.AdsBoards.Remove(adsBoard);
+        //    await _context.SaveChangesAsync();
 
-            return NoContent();
-        }
+        //    return NoContent();
+        //}
 
-        private bool AdsBoardExists(int id)
-        {
-            return (_context.AdsBoards?.Any(e => e.Id == id)).GetValueOrDefault();
-        }
+        //private bool AdsBoardExists(int id)
+        //{
+        //    return (_context.AdsBoards?.Any(e => e.Id == id)).GetValueOrDefault();
+        //}
     }
 }

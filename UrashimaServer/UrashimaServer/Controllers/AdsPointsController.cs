@@ -65,34 +65,34 @@ namespace UrashimaServer.Controllers
 
         // PUT: api/AdsPoints/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutAdsPoint(int id, AdsPoint adsPoint)
-        {
-            if (id != adsPoint.Id)
-            {
-                return BadRequest();
-            }
+        //[HttpPut("{id}")]
+        //public async Task<IActionResult> PutAdsPoint(int id, AdsPoint adsPoint)
+        //{
+        //    if (id != adsPoint.Id)
+        //    {
+        //        return BadRequest();
+        //    }
 
-            _context.Entry(adsPoint).State = EntityState.Modified;
+        //    _context.Entry(adsPoint).State = EntityState.Modified;
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!AdsPointExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+        //    try
+        //    {
+        //        await _context.SaveChangesAsync();
+        //    }
+        //    catch (DbUpdateConcurrencyException)
+        //    {
+        //        if (!AdsPointExists(id))
+        //        {
+        //            return NotFound();
+        //        }
+        //        else
+        //        {
+        //            throw;
+        //        }
+        //    }
 
-            return NoContent();
-        }
+        //    return NoContent();
+        //}
 
         // POST: api/AdsPoints
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -109,29 +109,29 @@ namespace UrashimaServer.Controllers
             return CreatedAtAction("GetAdsPoint", new { id = adsPoint.Id }, adsPoint);
         }
 
-        // DELETE: api/AdsPoints/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAdsPoint(int id)
-        {
-            if (_context.AdsPoints == null)
-            {
-                return NotFound();
-            }
-            var adsPoint = await _context.AdsPoints.FindAsync(id);
-            if (adsPoint == null)
-            {
-                return NotFound();
-            }
+        //// DELETE: api/AdsPoints/5
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> DeleteAdsPoint(int id)
+        //{
+        //    if (_context.AdsPoints == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    var adsPoint = await _context.AdsPoints.FindAsync(id);
+        //    if (adsPoint == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            _context.AdsPoints.Remove(adsPoint);
-            await _context.SaveChangesAsync();
+        //    _context.AdsPoints.Remove(adsPoint);
+        //    await _context.SaveChangesAsync();
 
-            return NoContent();
-        }
+        //    return NoContent();
+        //}
 
-        private bool AdsPointExists(int id)
-        {
-            return (_context.AdsPoints?.Any(e => e.Id == id)).GetValueOrDefault();
-        }
+        //private bool AdsPointExists(int id)
+        //{
+        //    return (_context.AdsPoints?.Any(e => e.Id == id)).GetValueOrDefault();
+        //}
     }
 }
