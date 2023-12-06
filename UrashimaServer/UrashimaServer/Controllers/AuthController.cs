@@ -1,12 +1,12 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
-using System.Text;
 using UrashimaServer.Common.Constant;
+using UrashimaServer.Common.Enum;
+using UrashimaServer.Common.Helper;
 using UrashimaServer.Database;
 using UrashimaServer.Dtos;
 using UrashimaServer.Models;
@@ -43,8 +43,8 @@ namespace UrashimaServer.Controllers
             return acc;
         }
 
-        [HttpPost("register-ward")]
-        public async Task<ActionResult<Account>> RegisterWardOfficer(RegisterDto request)
+        [HttpPost("register")]
+        public async Task<ActionResult<Account>> Register(RegisterDto request)
         {
             if (request.Password.Length < 6)
                 return BadRequest(new {
@@ -60,15 +60,23 @@ namespace UrashimaServer.Controllers
                 });
             }
 
+            if (!GlobalConstant.Roles.Contains(request.Role))
+            {
+                return BadRequest(new
+                {
+                    message = "Unsupported role!"
+                });
+            }
+
             CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
             acc = new Account()
             {
                 Email = request.Email,
                 FullName = request.FullName,
-                PasswordHash = Encoding.UTF8.GetString(passwordHash),
-                PasswordSalt = Encoding.UTF8.GetString(passwordSalt),
-                Role = GlobalConstant.WardOfficer
+                PasswordHash = Helper.ByteArrayToString(passwordHash),
+                PasswordSalt = Helper.ByteArrayToString(passwordSalt),
+                Role = request.Role
             };
 
             var token = CreateToken(acc, GlobalConstant.WardOfficer);
@@ -92,10 +100,10 @@ namespace UrashimaServer.Controllers
                 });
             }
 
-            if (!VerifyPasswordHash(request.Password, Encoding.UTF8.GetBytes(account.PasswordHash), Encoding.UTF8.GetBytes(account.PasswordSalt)))
+            if (!VerifyPasswordHash(request.Password, Helper.StringToByteArray(account.PasswordHash), Helper.StringToByteArray(account.PasswordSalt)))
             {
                 return BadRequest(new {
-                    message = "Wrong credentials",
+                    message = "Wrong credentials!",
                 });
             }
 
@@ -107,7 +115,7 @@ namespace UrashimaServer.Controllers
             return Ok(new
             {
                 accountId = account.Id,
-                message = "Login successfully",
+                message = "Login successfully!",
                 token,
                 refreshToken = refreshToken.Token,
                 role = account.Role
@@ -117,6 +125,14 @@ namespace UrashimaServer.Controllers
         [HttpPost("login-social")]
         public async Task<ActionResult<string>> LoginSocial(RegisterSocialDto request)
         {
+            if (!GlobalConstant.Roles.Contains(request.Role))
+            {
+                return BadRequest(new
+                {
+                    message = "Unsupported role!"
+                });
+            }
+
             var acc = await _dbContext.Accounts.FirstOrDefaultAsync(acc => acc.Email.Equals(request.Email));
 
             Account newAcc = acc ?? new Account ()
@@ -133,11 +149,12 @@ namespace UrashimaServer.Controllers
             if (acc is null)
             {
                 await _dbContext.Accounts.AddAsync(newAcc);
+                await _dbContext.SaveChangesAsync();
             }
 
             return Ok(new {
                 accountId = newAcc.Id,
-                message = "Đăng nhập thành công",
+                message = "Login successfully!",
                 token,
                 refreshToken = refreshToken.Token,
                 role = request.Role
@@ -151,9 +168,10 @@ namespace UrashimaServer.Controllers
             {
                 return BadRequest(new
                 {
-                    message = "Invalid efresh token!"
+                    message = "Invalid refresh token!"
                 });
             }
+
             var acc = await _dbContext.Accounts.FirstOrDefaultAsync(acc => acc.RefreshToken == refreshToken);
 
             if (acc == null)
@@ -175,7 +193,7 @@ namespace UrashimaServer.Controllers
             var newRefreshToken = GenerateRefreshToken();
             SetRefreshToken(newRefreshToken, acc);
             return Ok(new {
-                message = "Refresh token thành công",
+                message = "Refresh token successfully",
                 token,
                 refreshToken = newRefreshToken.Token,
             });
