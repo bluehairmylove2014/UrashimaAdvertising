@@ -28,6 +28,7 @@ import {
   useGetAllAds,
 } from '@business-layer/business-logic/lib/ads';
 import ScreenLoader from '@presentational/atoms/ScreenLoader';
+import DetaiLoader from '@presentational/atoms/DetailLoader';
 import CustomImage from '@presentational/atoms/CustomImage';
 
 import ReportForm, {
@@ -370,7 +371,10 @@ function Home() {
           )}
 
           {/* <ReportHistory /> */}
-          <ReportDetail />
+          {/* <ReportDetail /> */}
+
+          {isLoading ?
+            (<DetaiLoader />) : <></>}
 
           {currentLocation ? (
             <Marker
