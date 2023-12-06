@@ -37,7 +37,7 @@ function CustomImage({
         placeholder={placeholder}
         quality={quality}
         loading={loading}
-        // onError={() => console.error(`Cannot load image src: '${src}'`)}
+      // onError={() => console.error(`Cannot load image src: '${src}'`)}
       />
     </div>
   );
