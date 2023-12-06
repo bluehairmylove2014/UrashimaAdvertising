@@ -29,8 +29,6 @@ import {
 } from '@business-layer/business-logic/lib/ads';
 import ScreenLoader from '@presentational/atoms/ScreenLoader';
 import CustomImage from '@presentational/atoms/CustomImage';
-import DetailAdsPoint from '@presentational/molecules/DetailAdsPoint';
-import DetailReport from '@presentational/molecules/DetailReport';
 
 import ReportForm, {
   reportAdditionDataType,
@@ -40,8 +38,12 @@ import { SearchBox } from '@mapbox/search-js-react';
 
 import { IAds, IAdsDetail } from '@business-layer/services/entities/ads';
 import InfoAdsPoint from '@presentational/molecules/InfoAdsPoint';
-
 import DetailAds from '@presentational/molecules/DetailAds';
+import DetailAdsPoint from '@presentational/molecules/DetailAdsPoint';
+
+import ReportHistory from '@presentational/molecules/ReportHistory';
+import ReportDetail from '@presentational/molecules/ReportDetail';
+
 import 'mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import { useGetReportForm } from '@business-layer/business-logic/lib/reportForm';
 
@@ -367,7 +369,8 @@ function Home() {
             <></>
           )}
 
-          <DetailReport />
+          {/* <ReportHistory /> */}
+          <ReportDetail />
 
           {currentLocation ? (
             <Marker
