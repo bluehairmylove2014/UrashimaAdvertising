@@ -11,7 +11,6 @@ namespace UrashimaServer
         {
             // Map order
             // Ex: CreateMap<OrderItemDto, Order>().ReverseMap();
-            CreateMap<Account, AccountDto>().ReverseMap();
             CreateMap<AdsBoard, GetAdsBoardDto>().ReverseMap();
             CreateMap<GetAdsPointDto, AdsPoint>().ReverseMap();
 

@@ -16,7 +16,7 @@ builder.Services.AddSwaggerGen();
 // Auto Mapper
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
-builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("local_cuong")));  
+builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("local")));  
 
 var app = builder.Build();
 
