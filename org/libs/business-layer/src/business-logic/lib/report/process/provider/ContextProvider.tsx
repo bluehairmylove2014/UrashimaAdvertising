@@ -2,6 +2,7 @@
 import React, { useReducer } from 'react';
 import { ReportContext } from '../context/reportContext';
 import { reportReducer } from '../context/reducer';
+import { LOCAL_STORAGE_KEYS } from './../../../../configs/constants';
 
 type ContextProviderType = {
   children: React.ReactNode;
@@ -9,9 +10,15 @@ type ContextProviderType = {
 export const ContextProvider: React.FC<ContextProviderType> = ({
   children,
 }) => {
+  const adReportRaw = localStorage.getItem(LOCAL_STORAGE_KEYS.AD_REPORT);
+  const locationReportRaw = localStorage.getItem(
+    LOCAL_STORAGE_KEYS.LOCATION_REPORT
+  );
   const [state, dispatch] = useReducer(reportReducer, {
-    adReportData: null,
-    locationReportData: null,
+    adReportData: adReportRaw ? JSON.parse(adReportRaw) : null,
+    locationReportData: locationReportRaw
+      ? JSON.parse(locationReportRaw)
+      : null,
   });
 
   return (

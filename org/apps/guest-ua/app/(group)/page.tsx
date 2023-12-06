@@ -50,16 +50,16 @@ import { useGetReportForm } from '@business-layer/business-logic/lib/reportForm'
 
 type locationType =
   | {
-    lat: number;
-    lon: number;
-  }
+      lat: number;
+      lon: number;
+    }
   | undefined;
 
 type markerParamsType =
   | {
-    latitude: number;
-    longitude: number;
-  }
+      latitude: number;
+      longitude: number;
+    }
   | undefined;
 function Home() {
   const adsData = useGetAllAds();
@@ -169,7 +169,6 @@ function Home() {
         lon: long,
       });
       setInfoHoverAdsPoint(undefined);
-
     } else {
       setIdAdsPointClick(-1);
       setIsClickAdsPoint(false);
@@ -204,7 +203,11 @@ function Home() {
     if (adsPoint && adsPoint.geometry.type === 'Point') {
       const [long, lat] = adsPoint.geometry.coordinates;
 
-      if (posPrevMouse && posPrevMouse.lon === Math.abs(long) && posPrevMouse.lat === lat) {
+      if (
+        posPrevMouse &&
+        posPrevMouse.lon === Math.abs(long) &&
+        posPrevMouse.lat === lat
+      ) {
         return;
       }
 
@@ -212,7 +215,7 @@ function Home() {
       setPosPrevMouse({
         lat: lat,
         lon: long,
-      })
+      });
     }
   }, []);
   return (
@@ -341,7 +344,6 @@ function Home() {
 
           {isClickAdsPoint ? (
             infoClickAdsPoint ? (
-
               <DetailAdsPoint
                 detailAdsPoint={infoClickAdsPoint}
                 onClick={(id) => {
@@ -373,8 +375,7 @@ function Home() {
           {/* <ReportHistory /> */}
           {/* <ReportDetail /> */}
 
-          {isLoading ?
-            (<DetaiLoader />) : <></>}
+          {isLoading ? <DetaiLoader /> : <></>}
 
           {currentLocation ? (
             <Marker
