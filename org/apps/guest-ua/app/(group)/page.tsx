@@ -47,6 +47,10 @@ import ReportDetail from '@presentational/molecules/ReportDetail';
 
 import 'mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import { useGetReportForm } from '@business-layer/business-logic/lib/reportForm';
+import {
+  useGetAdReports,
+  useGetLocationReports,
+} from '@business-layer/business-logic/lib/report';
 
 type locationType =
   | {
@@ -87,6 +91,8 @@ function Home() {
   const [searchKey, setSearchKey] = useState<string>('');
   const [marker, setMarker] = useState<markerParamsType>(undefined);
 
+  const locationReportList = useGetLocationReports();
+
   // Report controller
   const { isReportFormActive, reportTarget, reportAdditionData } =
     useGetReportForm();
@@ -108,6 +114,7 @@ function Home() {
         })
         .catch((error) => console.log(error));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [idAdsPointClick]);
 
   useEffect(() => {
@@ -217,6 +224,7 @@ function Home() {
         lon: long,
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <div className="relative w-screen h-screen">
@@ -295,7 +303,13 @@ function Home() {
                     cluster: false,
                     name: m.address,
                     planned: m.planned,
-                    reported: false,
+                    reported: locationReportList
+                      ? locationReportList.findIndex(
+                          (lr) =>
+                            lr.latitude === m.latitude &&
+                            lr.longitude === m.longitude
+                        ) !== -1
+                      : false,
                   },
                   geometry: {
                     type: 'Point',
