@@ -23,9 +23,6 @@ function DetailReport() {
   const adReportsData = useGetAdReports();
   const locationReportData = useGetLocationReports();
 
-  console.log(adReportsData);
-  console.log(locationReportData);
-
   return (
     <div
       className="h-[100%] w-[25%] bg-white shadow-md min-w-[45vh] fixed overflow-y-scroll scrollbar"

@@ -1,3 +1,5 @@
+import { IAdsBoard } from './adsBoard';
+
 export interface IAds {
   id: number;
   latitude: number;
@@ -12,12 +14,5 @@ export interface IAdsDetail extends IAds {
   images: {
     image: string;
   }[];
-  adsBoard: {
-    id: number;
-    adsType: string;
-    height: number;
-    width: number;
-    image: string;
-    expiredDate: string;
-  }[];
+  adsBoard: IAdsBoard[];
 }

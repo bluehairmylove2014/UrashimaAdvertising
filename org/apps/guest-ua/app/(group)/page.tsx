@@ -28,13 +28,10 @@ import {
   useGetAllAds,
 } from '@business-layer/business-logic/lib/ads';
 import ScreenLoader from '@presentational/atoms/ScreenLoader';
-import DetaiLoader from '@presentational/atoms/DetailLoader';
+import DetailLoader from '@presentational/atoms/DetailLoader';
 import CustomImage from '@presentational/atoms/CustomImage';
 
-import ReportForm, {
-  reportAdditionDataType,
-  reportTargetType,
-} from '@presentational/molecules/ReportForm';
+import ReportForm from '@presentational/molecules/ReportForm';
 import { SearchBox } from '@mapbox/search-js-react';
 
 import { IAds, IAdsDetail } from '@business-layer/services/entities/ads';
@@ -42,15 +39,14 @@ import InfoAdsPoint from '@presentational/molecules/InfoAdsPoint';
 import DetailAds from '@presentational/molecules/DetailAds';
 import DetailAdsPoint from '@presentational/molecules/DetailAdsPoint';
 
-import ReportHistory from '@presentational/molecules/ReportHistory';
-import ReportDetail from '@presentational/molecules/ReportDetail';
-
 import 'mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import { useGetReportForm } from '@business-layer/business-logic/lib/reportForm';
-import {
-  useGetAdReports,
-  useGetLocationReports,
-} from '@business-layer/business-logic/lib/report';
+import { useGetLocationReports } from '@business-layer/business-logic/lib/report';
+import { useGetLocationDetail } from '@business-layer/business-logic/lib/geocode';
+import { useNotification } from '@presentational/atoms/Notification';
+
+import LocationDetail from '@presentational/molecules/LocationDetail';
+import { ILocation } from '@business-layer/services/entities';
 
 type locationType =
   | {
@@ -66,6 +62,7 @@ type markerParamsType =
     }
   | undefined;
 function Home() {
+  const { showError } = useNotification();
   const adsData = useGetAllAds();
   const mapRef = useRef<MapRef>(null);
   const [isShowCluster, setIsShowCluster] = useState<boolean>(true);
@@ -90,8 +87,18 @@ function Home() {
     useState<locationType>(undefined);
   const [searchKey, setSearchKey] = useState<string>('');
   const [marker, setMarker] = useState<markerParamsType>(undefined);
+  const [userLocationMarker, setUserLocationMarker] =
+    useState<markerParamsType>(undefined);
+  const [userClickMarker, setUserClickMarker] =
+    useState<markerParamsType>(undefined);
+  const [locationOnClickDetail, setLocationOnClickDetail] = useState<
+    ILocation | undefined
+  >(undefined);
+  const [isLocationOnClickPopupActive, setIsLocationOnClickPopupActive] =
+    useState<boolean>(false);
 
   const locationReportList = useGetLocationReports();
+  const { onGetLocationDetail } = useGetLocationDetail();
 
   // Report controller
   const { isReportFormActive, reportTarget, reportAdditionData } =
@@ -124,6 +131,10 @@ function Home() {
       currentLocation.lon &&
       mapRef.current
     ) {
+      setUserLocationMarker({
+        latitude: currentLocation.lat,
+        longitude: currentLocation.lon,
+      });
       mapRef.current.flyTo({
         zoom: 14,
         center: [currentLocation.lon, currentLocation.lat],
@@ -146,41 +157,58 @@ function Home() {
   //Catch click mouse event
   const handleClick = useCallback((event: MapLayerMouseEvent) => {
     if (!mapRef.current) return;
-
     setIsActiveAdsBoard(false);
 
-    //Check the point is cluster?
+    //Check the point is cluster? Move and zoom
     const features = mapRef.current.queryRenderedFeatures(event.point, {
       layers: ['clusters'],
     });
-    const cluster = features.find((f) => f.layer.id === 'clusters');
-    if (cluster && cluster.geometry.type === 'Point') {
-      const [long, lat] = cluster.geometry.coordinates;
+    if (features[0] && features[0].geometry.type === 'Point') {
+      setIsLocationOnClickPopupActive(false);
+      const [long, lat] = features[0].geometry.coordinates;
       mapRef.current.flyTo({ zoom: 16, center: [long, lat], duration: 1500 });
       return;
     }
 
     //Check the point is ads point
-    const featuresAllPoint = mapRef.current.queryRenderedFeatures(event.point);
-    const adsPoint = featuresAllPoint.find(
-      (f) =>
-        f.layer.id === 'unclustered-point-planned' ||
-        f.layer.id === 'unclustered-point-unplanned'
-    );
-    if (adsPoint && adsPoint.geometry.type === 'Point') {
-      const [long, lat] = adsPoint.geometry.coordinates;
-      setIdAdsPointClick(adsPoint.properties?.id);
+    const featuresAllPoint = mapRef.current.queryRenderedFeatures(event.point, {
+      layers: [
+        'unclustered-point-planned',
+        'unclustered-point-unplanned',
+        'unclustered-point-reported',
+      ],
+    });
+    if (featuresAllPoint[0] && featuresAllPoint[0].geometry.type === 'Point') {
+      setIsLocationOnClickPopupActive(false);
+      const [long, lat] = featuresAllPoint[0].geometry.coordinates;
+      setIdAdsPointClick(featuresAllPoint[0].properties?.id);
       setIsClickAdsPoint(true);
       setCurrentLocation({
         lat: lat,
         lon: long,
       });
       setInfoHoverAdsPoint(undefined);
+      return;
     } else {
       setIdAdsPointClick(-1);
       setIsClickAdsPoint(false);
     }
-    return;
+
+    // Click to normal location
+    const { lng, lat } = event.lngLat;
+    setUserClickMarker({
+      latitude: lat,
+      longitude: lng,
+    });
+    setIsLocationOnClickPopupActive(true);
+    onGetLocationDetail({ latitude: lat, longitude: lng })
+      .then((data) => {
+        setLocationOnClickDetail(data);
+      })
+      .catch((error) => {
+        showError('Lỗi lấy dữ liệu địa điểm');
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   //Catch Mouse Down
@@ -273,20 +301,43 @@ function Home() {
                 }
               }}
             />
-
-            {marker ? (
-              <Marker {...marker}>
-                <CustomImage
-                  src="/assets/placeholder.png"
-                  alt="placeholder"
-                  width="40px"
-                  height="40px"
-                />
-              </Marker>
-            ) : (
-              <></>
-            )}
           </div>
+          {marker ? (
+            <Marker {...marker}>
+              <CustomImage
+                src="/assets/placeholder.png"
+                alt="placeholder"
+                width="30px"
+                height="30px"
+              />
+            </Marker>
+          ) : (
+            <></>
+          )}
+          {userLocationMarker ? (
+            <Marker {...userLocationMarker}>
+              <CustomImage
+                src="/assets/location.png"
+                alt="location"
+                width="30px"
+                height="30px"
+              />
+            </Marker>
+          ) : (
+            <></>
+          )}
+          {userClickMarker ? (
+            <Marker {...userClickMarker}>
+              <CustomImage
+                src="/assets/gps.png"
+                alt="location"
+                width="20px"
+                height="20px"
+              />
+            </Marker>
+          ) : (
+            <></>
+          )}
 
           {!Array.isArray(adsData) ? (
             <ScreenLoader />
@@ -389,23 +440,8 @@ function Home() {
           {/* <ReportHistory /> */}
           {/* <ReportDetail /> */}
 
-          {isLoading ? <DetaiLoader /> : <></>}
+          {isLoading ? <DetailLoader /> : <></>}
 
-          {currentLocation ? (
-            <Marker
-              latitude={currentLocation.lat}
-              longitude={currentLocation.lon}
-            >
-              <CustomImage
-                src="/assets/location.png"
-                alt="location"
-                width="30px"
-                height="30px"
-              />
-            </Marker>
-          ) : (
-            <></>
-          )}
           <FullscreenControl position="bottom-right" />
           <NavigationControl position="bottom-right" />
           <GeolocateControl
@@ -424,6 +460,14 @@ function Home() {
           />
         </ReactMapGL>
       </div>
+      <LocationDetail
+        locationData={locationOnClickDetail}
+        isActive={isLocationOnClickPopupActive}
+        handleClose={() => {
+          setIsLocationOnClickPopupActive(false);
+          setUserClickMarker(undefined);
+        }}
+      />
       <ReportForm
         isActive={isReportFormActive}
         reportTarget={reportTarget}

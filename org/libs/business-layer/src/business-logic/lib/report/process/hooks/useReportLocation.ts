@@ -45,7 +45,6 @@ export const useReportLocation = (): useReportLocationReturnType => {
             type: 'ADD_LOCATION_REPORT_ACTION',
             payload: reportData,
           });
-          console.log('SET LOCAL: ', reportData);
           addLocationReportToLS(reportData);
           resolve(data.message);
         })

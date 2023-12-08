@@ -15,6 +15,9 @@ export const getAdDetailsUrl = '/api/ad-point';
 export const reportAdUrl = '/api/report/ad-board';
 export const reportLocationUrl = '/api/report/location';
 
+// LOCATION
+export const getLocationGeocoderUrl = '/api/location/geo-code';
+
 // SIRV
 export const sirvBaseUrlTemplate = 'https://api.sirv.com/v2';
 export const connectSirvUrl = sirvBaseUrlTemplate + '/token';

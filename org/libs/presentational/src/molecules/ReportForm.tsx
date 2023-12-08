@@ -87,7 +87,10 @@ function ReportForm({
           setImagesPreview(null);
           setSelectedReportType(null);
         })
-        .catch((error) => showError(error.message));
+        .catch((error) => showError(error.message))
+        .finally(() => {
+          setIsUploading(false);
+        });
   };
 
   const onSuccessSubmit = (data: any) => {
@@ -112,9 +115,6 @@ function ReportForm({
         })
         .catch((error) => {
           showError(error.message);
-        })
-        .finally(() => {
-          setIsUploading(false);
         });
     } else {
       handleReport({
