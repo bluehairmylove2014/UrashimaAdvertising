@@ -15,6 +15,12 @@ export const getAdDetailsUrl = '/api/ad-point';
 export const reportAdUrl = '/api/report/ad-board';
 export const reportLocationUrl = '/api/report/location';
 
+// SIRV
+export const sirvBaseUrlTemplate = 'https://api.sirv.com/v2';
+export const connectSirvUrl = sirvBaseUrlTemplate + '/token';
+export const uploadImageUrl = sirvBaseUrlTemplate + '/files/upload';
+export const deleteImageUrl = sirvBaseUrlTemplate + '/files/delete';
+
 // GOOGLE
 export const googleGetUserInfoUrl =
   corsProxyUrl +

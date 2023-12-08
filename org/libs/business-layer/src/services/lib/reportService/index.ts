@@ -12,12 +12,6 @@ export class ReportService extends Services {
   reportAd = async (data: reportAdParamsType): Promise<reportResponseType> => {
     this.abortController = new AbortController();
     try {
-      console.log('SEND TO: ', {
-        method: 'POST',
-        url: reportAdUrl,
-        schema: reportResponseSchema,
-        data,
-      });
       const response = await this.fetchApi<
         typeof reportResponseSchema,
         reportResponseType

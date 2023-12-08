@@ -2,6 +2,8 @@
 import React, { useReducer } from 'react';
 import { ReportContext } from '../context/reportContext';
 import { reportReducer } from '../context/reducer';
+import { getAdReportFromLS } from '../helpers/adReportLocalstorage';
+import { getLocationReportFromLS } from '../helpers/locationReportLocalstorage';
 
 type ContextProviderType = {
   children: React.ReactNode;
@@ -10,8 +12,8 @@ export const ContextProvider: React.FC<ContextProviderType> = ({
   children,
 }) => {
   const [state, dispatch] = useReducer(reportReducer, {
-    adReportData: null,
-    locationReportData: null,
+    adReportData: getAdReportFromLS(),
+    locationReportData: getLocationReportFromLS(),
   });
 
   return (

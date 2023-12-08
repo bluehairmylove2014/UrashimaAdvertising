@@ -53,12 +53,12 @@ function ReportInput({
       <Controller
         name={name}
         control={control}
+        disabled={disabled}
         rules={{ required: true }}
         render={({ field }) =>
           type === 'LONG_TEXT' ? (
             <textarea
               id={name}
-              disabled={disabled}
               className="relative outline-none w-full h-20 z-10 bg-transparent px-2 py-1 resize-none text-xs"
               onFocus={(e) => {
                 addClass(labelRef.current, '!opacity-0');
@@ -76,7 +76,6 @@ function ReportInput({
             <input
               type={inputConfig[type].inputType}
               id={name}
-              disabled={disabled}
               className="relative outline-none w-full h-9 z-10 bg-transparent px-2 text-xs"
               onFocus={(e) => {
                 addClass(labelRef.current, '!opacity-0');
