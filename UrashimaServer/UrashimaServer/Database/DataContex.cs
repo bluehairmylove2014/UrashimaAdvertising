@@ -16,7 +16,7 @@ namespace UrashimaServer.Database
         public DbSet<RequestAdsBoard> RequestAdsBoards { get; set; }
         public DbSet<BoardModify> BoardModifies { get; set; }
         public DbSet<PointModify> PointModifies { get; set; }
-
+        public DbSet<Account> Accounts { get; set; }
 
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         { }
@@ -58,6 +58,8 @@ namespace UrashimaServer.Database
                 .WithMany(report => report.Images)
                 .HasForeignKey(e => e.ReportId)
                 .IsRequired();
+
+            modelBuilder.Entity<Account>();
         }
     }
 }

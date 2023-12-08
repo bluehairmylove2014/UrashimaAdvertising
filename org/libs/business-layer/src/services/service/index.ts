@@ -6,7 +6,6 @@ import {
   isCancel,
 } from '../config/axios';
 import { getApiUrl } from '../config/url';
-console.log('GENERATE');
 const unknownError: string = 'Unexpected error occurred';
 export class Services {
   abortController?: AbortController;
@@ -38,6 +37,7 @@ export class Services {
     signal,
     transformResponse,
     isProduction,
+    isUseProxy,
     withCredentials = false,
   }: {
     method: string;
@@ -49,11 +49,12 @@ export class Services {
     signal: AbortSignal;
     transformResponse: (res: T) => void;
     isProduction?: boolean;
+    isUseProxy?: boolean;
     withCredentials?: boolean;
   }): Promise<any> {
     const mockParams = {
       method,
-      url: getApiUrl(isProduction) + url,
+      url: isUseProxy ? url : getApiUrl(isProduction) + url,
       data,
       params,
       headers,

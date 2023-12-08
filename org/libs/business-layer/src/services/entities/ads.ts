@@ -7,3 +7,17 @@ export interface IAds {
   adsForm: string; // 'Cổ động chính trị' or 'Quảng cáo thương mại' or 'Xã hội hoá'
   planned: boolean;
 }
+
+export interface IAdsDetail extends IAds {
+  images: {
+    image: string;
+  }[];
+  adsBoard: {
+    id: number;
+    adsType: string;
+    height: number;
+    width: number;
+    image: string;
+    expiredDate: string;
+  }[];
+}
