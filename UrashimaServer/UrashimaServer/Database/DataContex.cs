@@ -12,6 +12,10 @@ namespace UrashimaServer.Database
         public DbSet<Report> Reports { get; set; }
         public DbSet<ReportImage> ReportImages { get; set; }
         public DbSet<ReportLoc> ReportLocs { get; set; }
+        public DbSet<AdsCreationRequest> AdsCreationRequests { get; set; }
+        public DbSet<RequestAdsBoard> RequestAdsBoards { get; set; }
+        public DbSet<BoardModify> BoardModifies { get; set; }
+        public DbSet<PointModify> PointModifies { get; set; }
         public DbSet<Account> Accounts { get; set; }
 
         public DataContext(DbContextOptions<DataContext> options) : base(options)
