@@ -161,13 +161,12 @@ function Home() {
         f.layer.id === 'unclustered-point-unplanned'
     );
     if (adsPoint && adsPoint.geometry.type === 'Point') {
-      const [long, lat] = adsPoint.geometry.coordinates;
       setIdAdsPointClick(adsPoint.properties?.id);
       setIsClickAdsPoint(true);
-      setCurrentLocation({
-        lat: lat,
-        lon: long,
-      });
+      // setCurrentLocation({
+      //   lat: lat,
+      //   lon: long,
+      // });
       setInfoHoverAdsPoint(undefined);
 
     } else {
@@ -204,8 +203,9 @@ function Home() {
     if (adsPoint && adsPoint.geometry.type === 'Point') {
       const [long, lat] = adsPoint.geometry.coordinates;
 
-      if (posPrevMouse && posPrevMouse.lon === Math.abs(long) && posPrevMouse.lat === lat) {
-        return;
+      if (posPrevMouse && event.lngLat.lng < posPrevMouse.lon + 5 && event.lngLat.lng > posPrevMouse.lon - 5) {
+        if (event.lngLat.lat < posPrevMouse.lat + 5 && event.lngLat.lng > posPrevMouse.lat - 5)
+          return;
       }
 
       setIdAdsPoint(adsPoint.properties?.id);
