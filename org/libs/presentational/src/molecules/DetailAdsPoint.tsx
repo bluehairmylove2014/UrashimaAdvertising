@@ -36,8 +36,8 @@ function DetailAdsPoint({
         </Carousel>
 
         {/* two button for adspoint */}
-        <div className="flex my-4 mx-5">
-          <CustomButtonIcon
+        <div className="flex my-4 mx-2">
+          {/* <CustomButtonIcon
             widthIcon="0.9rem"
             heightIcon="0.9rem"
             type="button"
@@ -50,7 +50,7 @@ function DetailAdsPoint({
             <span className="text-green-600 text-[0.6rem] text-bold ml-1">
               LƯU
             </span>
-          </CustomButtonIcon>
+          </CustomButtonIcon> */}
 
           <span className="ml-2"></span>
           <CustomButtonIcon
@@ -161,12 +161,12 @@ function DetailAdsPoint({
             onClick={() => onClick(ads.id)}
             key={ads.id}
           >
-            <div className="w-[100%]  p-2 mb-4 border border-1 border-gray-300 rounded-lg hover:shadow-lg focus:shadow-lg">
+            <div className="w-[100%]  p-2 mb-4 border border-1 border-gray-300 rounded-lg hover:shadow-md transition-shadow">
               <div className="flex justify-between">
                 <p className="text-sm font-bold text-neutral-800">
                   {ads.adsType} {ads.id}
                 </p>
-                <CustomButtonIcon
+                {/* <CustomButtonIcon
                   widthIcon="1rem"
                   heightIcon="1rem"
                   type="button"
@@ -174,13 +174,29 @@ function DetailAdsPoint({
                   alt=""
                 >
                   {' '}
-                </CustomButtonIcon>
+                </CustomButtonIcon> */}
+                <button
+                  className="border-solid border-red-500 border-[1px] text-red-500 rounded text-[0.65rem] w-5 h-5 bg-white overflow-hidden hover:bg-red-500 hover:text-white transition-colors"
+                  onClick={() => {
+                    setForm({
+                      isReportFormActive: true,
+                      reportTarget: 'AD',
+                      reportAdditionData: {
+                        adsBoardID: ads.id,
+                        adsPointID: detailAdsPoint.id,
+                      },
+                    });
+                  }}
+                >
+                  <i className="fi fi-ss-triangle-warning"></i>
+                </button>
               </div>
               <p className="text-[0.65rem] font-medium text-gray-500">
                 {detailAdsPoint.address}
               </p>
-              <div className="flex">
-                <div>
+              <hr />
+              <div className="flex my-3">
+                <div className="rounded overflow-hidden">
                   <CustomImage
                     src="/assets/billboardExample.png"
                     alt="ads"
@@ -214,7 +230,7 @@ function DetailAdsPoint({
 
               {/* Two button */}
               <div className="flex justify-between mt-2">
-                <CustomButtonIcon
+                {/* <CustomButtonIcon
                   widthIcon="0.9rem"
                   heightIcon="0.9rem"
                   type="button"
@@ -223,8 +239,10 @@ function DetailAdsPoint({
                   onClick={() => onClick(ads.id)}
                 >
                   {' '}
-                </CustomButtonIcon>
-                <CustomButtonIcon
+                </CustomButtonIcon> */}
+                <div></div>
+
+                {/* <CustomButtonIcon
                   widthIcon="0.8rem"
                   heightIcon="0.8rem"
                   round={2}
@@ -247,7 +265,7 @@ function DetailAdsPoint({
                   <span className="text-rose-600 text-[0.6rem] text-bold ml-1">
                     BÁO CÁO VI PHẠM
                   </span>
-                </CustomButtonIcon>
+                </CustomButtonIcon> */}
               </div>
             </div>
           </div>

@@ -183,10 +183,10 @@ function Home() {
       const [long, lat] = featuresAllPoint[0].geometry.coordinates;
       setIdAdsPointClick(featuresAllPoint[0].properties?.id);
       setIsClickAdsPoint(true);
-      setCurrentLocation({
-        lat: lat,
-        lon: long,
-      });
+      // setCurrentLocation({
+      //   lat: lat,
+      //   lon: long,
+      // });
       setInfoHoverAdsPoint(undefined);
       return;
     } else {
@@ -240,10 +240,14 @@ function Home() {
 
       if (
         posPrevMouse &&
-        posPrevMouse.lon === Math.abs(long) &&
-        posPrevMouse.lat === lat
+        event.lngLat.lng < posPrevMouse.lon + 5 &&
+        event.lngLat.lng > posPrevMouse.lon - 5
       ) {
-        return;
+        if (
+          event.lngLat.lat < posPrevMouse.lat + 5 &&
+          event.lngLat.lng > posPrevMouse.lat - 5
+        )
+          return;
       }
 
       setIdAdsPoint(adsPoint.properties?.id);

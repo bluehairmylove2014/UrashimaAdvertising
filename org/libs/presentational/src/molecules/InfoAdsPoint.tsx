@@ -15,7 +15,7 @@ function InfoAds({
     <>
       <div className="flex justify-between">
         <p className="text-sm font-bold">{info.adsForm}</p>
-        <CustomButtonIcon
+        {/* <CustomButtonIcon
           widthIcon="1.1rem"
           heightIcon="1.1rem"
           type="button"
@@ -23,7 +23,7 @@ function InfoAds({
           alt=""
         >
           <></>
-        </CustomButtonIcon>
+        </CustomButtonIcon> */}
       </div>
       <p className="text-[0.7rem] font-medium mb-1 text-neutral-600">
         {info.locationType}

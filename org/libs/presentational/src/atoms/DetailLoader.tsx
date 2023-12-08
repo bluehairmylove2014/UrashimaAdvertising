@@ -1,6 +1,6 @@
 function DetailLoader() {
   return (
-    <div className="w-[25%] min-w-[45vh] h-screen fixed top-0 left-0 bg-white/60 z-50 cursor-wait">
+    <div className="w-[25%] min-w-[45vh] h-screen fixed top-0 left-0 bg-white z-50 cursor-wait">
       <div role="status" className="h-screen flex justify-center items-center">
         <svg
           aria-hidden="true"
