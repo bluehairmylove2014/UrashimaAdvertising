@@ -1,7 +1,6 @@
-import CustomButtonIcon from '@presentational/atoms/CustomButtonIcon';
+// import CustomButtonIcon from '@presentational/atoms/CustomButtonIcon';
 import { IAds } from '@business-layer/services/entities/ads';
-import { useCallback } from 'react';
-import { useSetReportForm } from '@business-layer/business-logic/lib/reportForm';
+// import { useSetReportForm } from '@business-layer/business-logic/lib/reportForm';
 
 function InfoAds({
   info,
@@ -12,7 +11,7 @@ function InfoAds({
   isReported: boolean;
   onClick: (id: number) => void;
 }) {
-  const { setForm } = useSetReportForm();
+  // const { setForm } = useSetReportForm();
   return (
     <>
       <div className="flex justify-between">
@@ -37,15 +36,15 @@ function InfoAds({
         {' '}
         {info.planned ? 'ĐÃ QUY HOẠCH' : 'CHƯA QUY HOẠCH'}
       </p>
-      {isReported ?
-        <p className='font-bold text-rose-600 text-sm'>Bạn đã báo cáo điểm này</p>
-        :
+      {isReported ? (
+        <p className="font-bold text-rose-600 text-sm">
+          Bạn đã báo cáo điểm này
+        </p>
+      ) : (
         <></>
-      }
+      )}
 
-
-      <div className="flex justify-between mt-2">
-
+      {/* <div className="flex justify-between mt-2">
         <CustomButtonIcon
           widthIcon="0.9rem"
           heightIcon="0.9rem"
@@ -57,8 +56,7 @@ function InfoAds({
           <></>
         </CustomButtonIcon>
 
-
-        {isReported ?
+        {isReported ? (
           <CustomButtonIcon
             widthIcon="0.7rem"
             heightIcon="0.7rem"
@@ -73,7 +71,7 @@ function InfoAds({
               CHI TIẾT BÁO CÁO
             </span>
           </CustomButtonIcon>
-          :
+        ) : (
           <CustomButtonIcon
             widthIcon="0.9rem"
             heightIcon="0.9rem"
@@ -87,7 +85,8 @@ function InfoAds({
               setForm({
                 isReportFormActive: true,
                 reportTarget: 'LOCATION',
-                reportAdditionData: {
+                reportData: info,
+                reportIdentificationData: {
                   latitude: info.latitude,
                   longitude: info.longitude,
                 },
@@ -98,8 +97,8 @@ function InfoAds({
               BÁO CÁO VI PHẠM
             </span>
           </CustomButtonIcon>
-        }
-      </div>
+        )}
+      </div> */}
     </>
   );
 }

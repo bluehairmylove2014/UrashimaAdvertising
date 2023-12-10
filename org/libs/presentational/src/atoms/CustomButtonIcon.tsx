@@ -23,15 +23,18 @@ const roundedSize = {
   2: 'rounded',
   3: 'rounded-md',
   4: 'rounded-[50%]',
+  5: 'rounded-full',
 };
 
 type customButtonIconType = {
   widthIcon: string;
   heightIcon: string;
-  round?: 0 | 1 | 2 | 3 | 4;
+  round?: 0 | 1 | 2 | 3 | 4 | 5;
   border?: 0 | 1 | 2 | 3;
   colorBorder?: 'rose' | 'black' | 'gray' | 'green' | 'blue';
   type?: buttonType;
+  bgColor?: string;
+  padding?: number;
   onClick?: (arg0: any) => void;
   pathImage: string;
   alt: string;
@@ -47,6 +50,8 @@ function CustomButtonIcon({
   border,
   colorBorder,
   type,
+  bgColor,
+  padding,
   onClick,
   pathImage,
   alt,
@@ -54,11 +59,14 @@ function CustomButtonIcon({
 }: customButtonIconType): JSX.Element {
   return (
     <button
-      className={`${borderSize[border || 0]} w-fit border-solid ${
-        colorType[colorBorder || 'black']
-      } p-1 ${roundedSize[round || 0]} inline-flex items-center`}
+      className={`${borderSize[border || 0]} ${
+        bgColor ? bgColor : ''
+      } w-fit border-solid ${colorType[colorBorder || 'black']} p-1 ${
+        roundedSize[round || 0]
+      } inline-flex items-center`}
       onClick={onClick}
       type={type || defaultType}
+      style={{ padding: `${padding}px` }}
     >
       <div
         className="relative w-full h-full overflow-hidden"

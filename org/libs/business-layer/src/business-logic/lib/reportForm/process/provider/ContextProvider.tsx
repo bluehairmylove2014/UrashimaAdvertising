@@ -12,7 +12,7 @@ export const ContextProvider: React.FC<ContextProviderType> = ({
   const [state, dispatch] = useReducer(reportFormReducer, {
     isReportFormActive: false,
     reportTarget: 'AD',
-    reportAdditionData: null,
+    reportIdentificationData: null,
   });
 
   return (

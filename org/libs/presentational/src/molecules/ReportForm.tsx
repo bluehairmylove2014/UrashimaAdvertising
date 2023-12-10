@@ -7,7 +7,7 @@ import {
   useYupValidationResolver,
   userReportSchema,
 } from '@utils/validators/yup';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import {
   useReportAd,
@@ -15,23 +15,32 @@ import {
 } from '@business-layer/business-logic/lib/report';
 import {
   reportTargetType,
-  reportAdditionDataType,
+  reportDataType,
   useSetReportFormActive,
+  reportIdentificationDataType,
 } from '@business-layer/business-logic/lib/reportForm';
 import ImageInput from '@presentational/atoms/ImageInput';
 import PreviewImage from '@presentational/atoms/PreviewImage';
 import { useUpload } from '@business-layer/business-logic/lib/sirv';
 
 const PREVIEW_HEIGHT = 80;
+type formDataType = {
+  name: string;
+  email: string;
+  phone: string;
+  content: string;
+};
 
 function ReportForm({
   isActive,
   reportTarget,
-  reportAdditionData,
+  reportData,
+  reportIdentificationData,
 }: {
   isActive: boolean;
   reportTarget: reportTargetType;
-  reportAdditionData: reportAdditionDataType;
+  reportData: reportDataType;
+  reportIdentificationData: reportIdentificationDataType;
 }) {
   const { unActivateForm } = useSetReportFormActive();
   const formResolver = useYupValidationResolver(userReportSchema);
@@ -93,7 +102,7 @@ function ReportForm({
         });
   };
 
-  const onSuccessSubmit = (data: any) => {
+  const onSuccessSubmit = async (data: formDataType) => {
     if (!selectedReportType) {
       showError('Bạn chưa chọn kiểu báo cáo!');
       return;
@@ -101,25 +110,38 @@ function ReportForm({
     // UPLOAD TO CDN
     setIsUploading(true);
     if (imagesPreview) {
-      const uploadPromises = Array.from(imagesPreview).map((img) =>
-        onUpload({ imgFile: img })
-      );
-      Promise.all(uploadPromises)
-        .then((data) => {
-          handleReport({
-            ...data,
-            ...reportAdditionData,
-            images: data.map((d) => ({ image: d.path })),
-            reportType: selectedReportType,
-          });
-        })
-        .catch((error) => {
-          showError(error.message);
+      try {
+        const { name, phone, email, content } = data;
+        const imgPathData = await Promise.all(
+          Array.from(imagesPreview).map((img) => onUpload({ imgFile: img }))
+        );
+        handleReport({
+          ...{ name, phone, email, content },
+          reportTarget,
+          reportData,
+          ...reportIdentificationData,
+          images: imgPathData.map((d) => ({ image: d.path })),
+          reportType: selectedReportType,
         });
+        setImagesPreview(null);
+      } catch (error: any) {
+        showError(error.message);
+      }
     } else {
+      console.log('REPORT: ', {
+        ...data,
+        reportTarget,
+        reportData,
+        ...reportIdentificationData,
+        images: [],
+        reportType: selectedReportType,
+      });
+      console.log('reportData: ', reportData);
       handleReport({
         ...data,
-        ...reportAdditionData,
+        reportTarget,
+        reportData,
+        ...reportIdentificationData,
         images: [],
         reportType: selectedReportType,
       });

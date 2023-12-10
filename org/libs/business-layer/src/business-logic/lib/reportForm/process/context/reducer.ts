@@ -10,9 +10,10 @@ export const reportFormReducer = (
         return { ...state, isReportFormActive: action.payload };
       case 'SET_REPORT_TARGET_ACTION':
         return { ...state, reportTarget: action.payload };
-      case 'SET_ADDITION_DATA_ACTION':
-        return { ...state, reportAdditionData: action.payload };
+      case 'SET_IDENTIFICATION_DATA_ACTION':
+        return { ...state, reportIdentificationData: action.payload };
       case 'SET_ALL_ACTION':
+        console.log('SET FORM: ', action.payload);
         return action.payload;
       default:
         return state;

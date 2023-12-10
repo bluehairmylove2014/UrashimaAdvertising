@@ -25,7 +25,7 @@ function DetailReport() {
 
   return (
     <div
-      className="h-[100%] w-[25%] bg-white shadow-md min-w-[45vh] fixed overflow-y-scroll scrollbar"
+      className="h-[100%] w-[25%] bg-white shadow-md min-w-[45vh] fixed overflow-y-scroll scrollbar z-40"
       style={{ left: 0, top: 0 }}
     >
       {/* Title history report */}
@@ -138,15 +138,15 @@ function DetailReport() {
           {/* List report */}
           <Tab.Panels>
             <Tab.Panel>
-              <div className="mx-3 bg-white p-2 border border-1 font-bold cursor-pointer hover:shadow-lg focus:shadow-lg mt-3">
+              <div className="mx-3 bg-white p-2 border border-1 font-bold cursor-pointer hover:shadow focus:shadow mt-3">
                 <div className="flex justify-between ">
                   <p className="text-neutral-600">Tố giác sai phạm</p>
-                  <CustomImage
+                  {/* <CustomImage
                     src="/assets/bin_report.png"
                     alt="Ads Form"
                     width="0.8rem"
                     height="0.8rem"
-                  />
+                  /> */}
                 </div>
                 <div className="mt-2 flex ">
                   <div className="w-[50%] h-[12vh] z-1">
@@ -184,15 +184,15 @@ function DetailReport() {
                   ĐÃ XÉT DUYỆT
                 </p>
               </div>
-              <div className="mx-3 bg-white p-2 border border-1 font-bold cursor-pointer hover:shadow-lg focus:shadow-lg mt-3">
+              <div className="mx-3 bg-white p-2 border border-1 font-bold cursor-pointer hover:shadow focus:shadow mt-3">
                 <div className="flex justify-between ">
                   <p className="text-neutral-600">Tố giác sai phạm</p>
-                  <CustomImage
+                  {/* <CustomImage
                     src="/assets/bin_report.png"
                     alt="Ads Form"
                     width="0.8rem"
                     height="0.8rem"
-                  />
+                  /> */}
                 </div>
                 <div className="mt-2 flex ">
                   <div className="w-[50%] h-[12vh]">

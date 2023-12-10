@@ -12,7 +12,8 @@ export const useSetReportForm = (): useSetReportFormReturnType => {
       payload: {
         isReportFormActive: formData.isReportFormActive,
         reportTarget: formData.reportTarget,
-        reportAdditionData: formData.reportAdditionData,
+        reportData: formData.reportData,
+        reportIdentificationData: formData.reportIdentificationData,
       },
     });
   };

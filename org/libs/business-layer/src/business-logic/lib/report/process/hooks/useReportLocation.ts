@@ -1,8 +1,8 @@
 // Import necessary modules and functions
-import { reportLocationParamsType } from '@business-layer/services';
 import { useReportContext } from '../context';
 import { useReportLocationMutation } from '../../fetching/mutation';
 import { addLocationReportToLS } from '../helpers/locationReportLocalstorage';
+import { ILocationReport } from '@business-layer/services/entities';
 
 type useReportLocationReturnType = {
   onReportLocation: ({
@@ -14,7 +14,7 @@ type useReportLocationReturnType = {
     phone,
     content,
     images,
-  }: reportLocationParamsType) => Promise<string>;
+  }: ILocationReport) => Promise<string>;
   isLoading: boolean;
 };
 export const useReportLocation = (): useReportLocationReturnType => {
@@ -34,12 +34,14 @@ export const useReportLocation = (): useReportLocationReturnType => {
     images,
   }
    */
-  const onReportLocation = (
-    reportData: reportLocationParamsType
-  ): Promise<string> => {
+  const onReportLocation = (reportData: ILocationReport): Promise<string> => {
     return new Promise((resolve, reject) => {
+      const { reportData: reportTargetData, ...reportWithoutTargetData } =
+        reportData;
+      console.log(reportData);
+      console.log(reportWithoutTargetData);
       reportLocationMutation
-        .mutateAsync(reportData)
+        .mutateAsync(reportWithoutTargetData)
         .then((data) => {
           dispatch({
             type: 'ADD_LOCATION_REPORT_ACTION',

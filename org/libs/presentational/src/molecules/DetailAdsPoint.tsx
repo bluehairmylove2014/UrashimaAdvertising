@@ -7,7 +7,7 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { Carousel } from 'react-responsive-carousel';
 import { useSetReportForm } from '@business-layer/business-logic/lib/reportForm';
 
-import { useState } from 'react'
+import { useState } from 'react';
 
 function DetailAdsPoint({
   detailAdsPoint,
@@ -24,20 +24,25 @@ function DetailAdsPoint({
 
   return (
     <div
-      className="h-[100%] w-[25%] shadow-md min-w-[45vh] fixed"
+      className="h-[100%] w-[25%] shadow-md min-w-[45vh] fixed z-40"
       style={{ left: 0, top: 0 }}
     >
       <div className="h-[100%] w-[100%] bg-white relative overflow-y-scroll scrollbar">
         {/* Close button */}
         <div className="absolute z-10 top-0 right-0 mt-2 mx-1">
           <CustomButtonIcon
-            widthIcon='0.7rem'
-            heightIcon='0.7rem'
-            type='button'
-            pathImage='/assets/close.png'
-            alt=''
+            widthIcon="0.6rem"
+            heightIcon="0.6rem"
+            type="button"
+            bgColor="bg-black/70"
+            round={5}
+            padding={8}
+            pathImage="/assets/close.png"
+            alt=""
             onClick={handleClose}
-          > </CustomButtonIcon>
+          >
+            {' '}
+          </CustomButtonIcon>
         </div>
 
         {/* Image for ads point */}
@@ -56,9 +61,11 @@ function DetailAdsPoint({
 
         {/* two button for adspoint */}
         <div className="mt-4 mx-5">
-          {isReported ?
+          {isReported ? (
             <>
-              <p className='mb-1 text-rose-600 font-bold text-sm'>Bạn đã báo cáo điểm này</p>
+              <p className="mb-1 text-rose-600 font-bold text-sm">
+                Bạn đã báo cáo điểm này
+              </p>
               <CustomButtonIcon
                 widthIcon="0.7rem"
                 heightIcon="0.7rem"
@@ -74,8 +81,7 @@ function DetailAdsPoint({
                 </span>
               </CustomButtonIcon>
             </>
-
-            :
+          ) : (
             <CustomButtonIcon
               widthIcon="0.8rem"
               heightIcon="0.8rem"
@@ -89,7 +95,8 @@ function DetailAdsPoint({
                 setForm({
                   isReportFormActive: true,
                   reportTarget: 'LOCATION',
-                  reportAdditionData: {
+                  reportData: detailAdsPoint,
+                  reportIdentificationData: {
                     latitude: detailAdsPoint.latitude,
                     longitude: detailAdsPoint.longitude,
                   },
@@ -100,7 +107,7 @@ function DetailAdsPoint({
                 BÁO CÁO VI PHẠM
               </span>
             </CustomButtonIcon>
-          }
+          )}
         </div>
 
         <hr className="my-4 mx-2"></hr>
@@ -201,11 +208,13 @@ function DetailAdsPoint({
                 </CustomButtonIcon> */}
                 <button
                   className="border-solid border-red-500 border-[1px] text-red-500 rounded text-[0.65rem] w-5 h-5 bg-white overflow-hidden hover:bg-red-500 hover:text-white transition-colors"
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.stopPropagation();
                     setForm({
                       isReportFormActive: true,
                       reportTarget: 'AD',
-                      reportAdditionData: {
+                      reportData: ads,
+                      reportIdentificationData: {
                         adsBoardID: ads.id,
                         adsPointID: detailAdsPoint.id,
                       },
@@ -298,7 +307,7 @@ function DetailAdsPoint({
         <hr className="mx-2 mb-4 mt-1"></hr>
       </div>
     </div>
-  )
+  );
 }
 
 export default DetailAdsPoint;

@@ -1,8 +1,8 @@
 // Import necessary modules and functions
-import { reportAdParamsType } from '@business-layer/services';
 import { useReportContext } from '../context';
 import { useReportAdMutation } from '../../fetching/mutation';
 import { addAdReportToLS } from '../helpers/adReportLocalstorage';
+import { IAdReport } from '@business-layer/services/entities';
 
 type useReportAdReturnType = {
   onReportAd: ({
@@ -14,7 +14,7 @@ type useReportAdReturnType = {
     phone,
     content,
     images,
-  }: reportAdParamsType) => Promise<string>;
+  }: IAdReport) => Promise<string>;
   isLoading: boolean;
 };
 export const useReportAd = (): useReportAdReturnType => {
@@ -34,10 +34,12 @@ export const useReportAd = (): useReportAdReturnType => {
     images,
   }
    */
-  const onReportAd = (reportData: reportAdParamsType): Promise<string> => {
+  const onReportAd = (reportData: IAdReport): Promise<string> => {
     return new Promise((resolve, reject) => {
+      const { reportData: reportTargetData, ...reportWithoutTargetData } =
+        reportData;
       reportAdMutation
-        .mutateAsync(reportData)
+        .mutateAsync(reportWithoutTargetData)
         .then((data) => {
           dispatch({
             type: 'ADD_AD_REPORT_ACTION',

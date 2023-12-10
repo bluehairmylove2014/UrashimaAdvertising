@@ -1,5 +1,8 @@
+import { IAdsBoard, IAdsDetail } from '@business-layer/services/entities';
+
 export type reportTargetType = 'LOCATION' | 'AD';
-export type reportAdditionDataType =
+export type reportDataType = IAdsDetail | IAdsBoard | null;
+export type reportIdentificationDataType =
   | {
       adsBoardID: number;
       adsPointID: number;
@@ -13,7 +16,8 @@ export type reportAdditionDataType =
 export interface ReportFormState {
   isReportFormActive: boolean;
   reportTarget: reportTargetType;
-  reportAdditionData: reportAdditionDataType;
+  reportData: reportDataType;
+  reportIdentificationData: reportIdentificationDataType;
 }
 
 export type ReportFormAction =
@@ -26,8 +30,8 @@ export type ReportFormAction =
       payload: ReportFormState['reportTarget'];
     }
   | {
-      type: 'SET_ADDITION_DATA_ACTION';
-      payload: ReportFormState['reportAdditionData'];
+      type: 'SET_IDENTIFICATION_DATA_ACTION';
+      payload: ReportFormState['reportIdentificationData'];
     }
   | {
       type: 'SET_ALL_ACTION';

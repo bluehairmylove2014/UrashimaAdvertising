@@ -47,19 +47,21 @@ import { useNotification } from '@presentational/atoms/Notification';
 
 import LocationDetail from '@presentational/molecules/LocationDetail';
 import { ILocation } from '@business-layer/services/entities';
+// import ReportDetail from '@presentational/molecules/ReportDetail';
+import ReportHistory from '@presentational/molecules/ReportHistory';
 
 type locationType =
   | {
-    lat: number;
-    lon: number;
-  }
+      lat: number;
+      lon: number;
+    }
   | undefined;
 
 type markerParamsType =
   | {
-    latitude: number;
-    longitude: number;
-  }
+      latitude: number;
+      longitude: number;
+    }
   | undefined;
 function Home() {
   const { showError } = useNotification();
@@ -85,7 +87,6 @@ function Home() {
   const [isReported, setIsReported] = useState(false);
   const [isClickReported, setIsClickReported] = useState(false);
 
-
   const [cursor, setCursor] = useState('pointer');
   const { onGetAdDetail, isLoading } = useGetAdDetail();
   const [currentLocation, setCurrentLocation] =
@@ -104,10 +105,16 @@ function Home() {
 
   const locationReportList = useGetLocationReports();
   const { onGetLocationDetail } = useGetLocationDetail();
+  const [isReportHistoryActive, setIsReportHistoryActive] =
+    useState<boolean>(false);
 
   // Report controller
-  const { isReportFormActive, reportTarget, reportAdditionData } =
-    useGetReportForm();
+  const {
+    isReportFormActive,
+    reportTarget,
+    reportData,
+    reportIdentificationData,
+  } = useGetReportForm();
 
   useEffect(() => {
     if (idAdsPoint > -1) {
@@ -188,9 +195,8 @@ function Home() {
     if (featuresAllPoint[0] && featuresAllPoint[0].geometry.type === 'Point') {
       //Check ADS Point is reported
       if (featuresAllPoint[0].layer.id === 'unclustered-point-reported')
-        setIsClickReported(true)
-      else
-        setIsClickReported(false)
+        setIsClickReported(true);
+      else setIsClickReported(false);
 
       mapRef.current.flyTo({
         zoom: 14,
@@ -257,9 +263,8 @@ function Home() {
     if (adsPoint && adsPoint.geometry.type === 'Point') {
       //Check ADS Point is reported
       if (adsPoint.layer.id === 'unclustered-point-reported')
-        setIsReported(true)
-      else
-        setIsReported(false)
+        setIsReported(true);
+      else setIsReported(false);
 
       const [long, lat] = adsPoint.geometry.coordinates;
 
@@ -285,15 +290,14 @@ function Home() {
     }
 
     //Handle hover ads report point
-    const adsReportPoint = features.find(
-      (f) =>
-        f.layer.id === 'non-clustered-reported-point-symbol' ||
-        f.layer.id === 'unclustered-point-reported'
-    );
-    if (!adsReportPoint) {
+    // const adsReportPoint = features.find(
+    //   (f) =>
+    //     f.layer.id === 'non-clustered-reported-point-symbol' ||
+    //     f.layer.id === 'unclustered-point-reported'
+    // );
+    // if (!adsReportPoint) {
 
-    }
-
+    // }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -319,31 +323,46 @@ function Home() {
           style={{ width: '100vw', height: '100vh' }}
           mapStyle={MAP_STYLE}
         >
-          <div className=" w-1/2 m-4">
-            <SearchBox
-              marker={true}
-              accessToken={ACCESS_TOKEN}
-              placeholder="Tìm kiếm ở đây..."
-              value={searchKey}
-              onChange={(value) => {
-                setSearchKey(value);
-              }}
-              onRetrieve={(retrieve) => {
-                const coord = retrieve?.features[0]?.geometry?.coordinates;
-                if (Array.isArray(coord)) {
-                  setMarker({ longitude: coord[0], latitude: coord[1] });
-                  mapRef.current &&
-                    mapRef.current.flyTo({
-                      zoom: 14,
-                      center: {
-                        lng: coord[0],
-                        lat: coord[1],
-                      },
-                      duration: 5000,
-                    });
-                }
-              }}
-            />
+          <div className="flex flex-row justify-between w-full my-4 z-40 relative gap-3 overflow-hidden">
+            <div className="w-1/2 h-fit pl-4">
+              <SearchBox
+                marker={true}
+                accessToken={ACCESS_TOKEN}
+                placeholder="Tìm kiếm ở đây..."
+                value={searchKey}
+                onChange={(value) => {
+                  setSearchKey(value);
+                }}
+                onRetrieve={(retrieve) => {
+                  const coord = retrieve?.features[0]?.geometry?.coordinates;
+                  if (Array.isArray(coord)) {
+                    setMarker({ longitude: coord[0], latitude: coord[1] });
+                    mapRef.current &&
+                      mapRef.current.flyTo({
+                        zoom: 14,
+                        center: {
+                          lng: coord[0],
+                          lat: coord[1],
+                        },
+                        duration: 5000,
+                      });
+                  }
+                }}
+              />
+            </div>
+
+            <div className="pr-4">
+              <button
+                onClick={() => setIsReportHistoryActive(true)}
+                className=" bg-white rounded px-4 py-0 h-[36px] text-xs font-medium shadow-black hover:bg-gray-300 hover:shadow-lg transition-colors"
+              >
+                <i className="fi fi-ss-triangle-warning mr-1"></i> Báo cáo của
+                bạn
+              </button>
+              <button className="bg-white rounded px-2 py-0 h-[36px] text-xs font-medium ml-2">
+                <i className="fi fi-ss-bell"></i>
+              </button>
+            </div>
           </div>
           {marker ? (
             <Marker {...marker}>
@@ -399,10 +418,10 @@ function Home() {
                     planned: m.planned,
                     reported: locationReportList
                       ? locationReportList.findIndex(
-                        (lr) =>
-                          lr.latitude === m.latitude &&
-                          lr.longitude === m.longitude
-                      ) !== -1
+                          (lr) =>
+                            lr.latitude === m.latitude &&
+                            lr.longitude === m.longitude
+                        ) !== -1
                       : false,
                   },
                   geometry: {
@@ -443,7 +462,6 @@ function Home() {
                   setIsClickAdsPoint(true);
                   setInfoHoverAdsPoint(undefined);
                 }}
-
               />
             </Popup>
           ) : (
@@ -478,11 +496,11 @@ function Home() {
                 adsPoint={infoClickAdsPoint}
                 id={idAdsBoard}
                 handleClose={() => {
-                  setIsActiveAdsBoard(false)
-                  setIsClickAdsPoint(false)
+                  setIsActiveAdsBoard(false);
+                  setIsClickAdsPoint(false);
                 }}
                 handleBack={() => {
-                  setIsActiveAdsBoard(false)
+                  setIsActiveAdsBoard(false);
                 }}
               ></DetailAds>
             ) : (
@@ -492,7 +510,8 @@ function Home() {
             <></>
           )}
 
-          {/* <ReportHistory /> */}
+          {isReportHistoryActive ? <ReportHistory /> : <></>}
+
           {/* <ReportDetail /> */}
 
           {isLoading ? <DetailLoader /> : <></>}
@@ -526,9 +545,10 @@ function Home() {
       <ReportForm
         isActive={isReportFormActive}
         reportTarget={reportTarget}
-        reportAdditionData={reportAdditionData}
+        reportData={reportData}
+        reportIdentificationData={reportIdentificationData}
       />
-    </div >
+    </div>
   );
 }
 

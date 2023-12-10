@@ -1,3 +1,6 @@
+import { IAdsDetail } from './ads';
+import { IAdsBoard } from './adsBoard';
+
 interface IReport {
   reportType: string;
   name: string;
@@ -7,6 +10,7 @@ interface IReport {
   images: {
     image: string;
   }[];
+  reportData: IAdsDetail | IAdsBoard;
 }
 
 export interface IAdReport extends IReport {

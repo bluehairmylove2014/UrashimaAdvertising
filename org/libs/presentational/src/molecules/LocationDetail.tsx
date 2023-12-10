@@ -16,14 +16,19 @@ function LocationDetail({
   isActive: boolean;
   handleClose: () => void;
 }) {
-  const { isReportFormActive, reportTarget, reportAdditionData } =
-    useGetReportForm();
+  const {
+    isReportFormActive,
+    reportTarget,
+    reportData,
+    reportIdentificationData,
+  } = useGetReportForm();
   const { setForm } = useSetReportForm();
   const handleActivateReport = (lat: number, long: number) => {
     setForm({
       isReportFormActive: true,
       reportTarget: 'LOCATION',
-      reportAdditionData: { latitude: lat, longitude: long },
+      reportData: null,
+      reportIdentificationData: { latitude: lat, longitude: long },
     });
   };
   const iconSize = 21;
@@ -87,7 +92,8 @@ function LocationDetail({
       <ReportForm
         isActive={isReportFormActive}
         reportTarget={reportTarget}
-        reportAdditionData={reportAdditionData}
+        reportData={reportData}
+        reportIdentificationData={reportIdentificationData}
       />
     </>
   );

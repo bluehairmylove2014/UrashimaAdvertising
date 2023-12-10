@@ -6,7 +6,7 @@ export const ReportFormContext = React.createContext<ReportFormContextType>({
   state: {
     isReportFormActive: false,
     reportTarget: 'AD',
-    reportAdditionData: null,
+    reportIdentificationData: null,
   },
   dispatch: () => undefined,
 });

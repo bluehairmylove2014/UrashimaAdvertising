@@ -14,7 +14,7 @@ function DetailAdsPoint({
   adsPoint,
   id,
   handleClose,
-  handleBack
+  handleBack,
 }: {
   adsPoint: IAdsDetail;
   id: number;
@@ -24,32 +24,36 @@ function DetailAdsPoint({
   const adsBoardDetail = adsPoint.adsBoard.find((ads) => (ads.id = id));
   return (
     <div
-      className="h-[100%] w-[25%] shadow-md min-w-[45vh] fixed"
+      className="h-[100%] w-[25%] shadow-md min-w-[45vh] fixed z-40"
       style={{ left: 0, top: 0 }}
     >
       <div className="h-[100%] w-[100%] bg-white relative overflow-y-scroll scrollbar">
         <div className="absolute z-10 top-0 right-0 mt-2 mx-1">
           <CustomButtonIcon
-            widthIcon='0.7rem'
-            heightIcon='0.7rem'
-            type='button'
-            pathImage='/assets/close.png'
-            alt=''
+            widthIcon="0.7rem"
+            heightIcon="0.7rem"
+            type="button"
+            pathImage="/assets/close.png"
+            alt=""
             onClick={handleClose}
-          > </CustomButtonIcon>
+          >
+            {' '}
+          </CustomButtonIcon>
         </div>
         <div className="absolute top-0 left-0 z-10 mt-2 mx-1">
           <CustomButtonIcon
-            widthIcon='0.7rem'
-            heightIcon='0.7rem'
-            type='button'
-            pathImage='/assets/undo.png'
-            alt=''
+            widthIcon="0.7rem"
+            heightIcon="0.7rem"
+            type="button"
+            pathImage="/assets/undo.png"
+            alt=""
             border={1}
-            colorBorder='blue'
+            colorBorder="blue"
             round={4}
             onClick={handleBack}
-          > </CustomButtonIcon>
+          >
+            {' '}
+          </CustomButtonIcon>
         </div>
 
         {/* <Carousel showStatus={false} showArrows={false} showThumbs={false}>
