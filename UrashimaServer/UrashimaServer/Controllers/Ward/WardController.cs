@@ -1,23 +1,19 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using UrashimaServer.Common.Constant;
 using UrashimaServer.Database;
 using UrashimaServer.Database.Models;
-using UrashimaServer.Models;
 
 namespace UrashimaServer.Controllers.Ward
 {
     [Route("api/ward")]
     [ApiController]
-    public class AdsModifyController : ControllerBase
+    public class WardController : ControllerBase
     {
         private readonly DataContext _context;
         private readonly IMapper _mapper;
 
-        public AdsModifyController(DataContext context, IMapper mapper)
+        public WardController(DataContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
@@ -41,6 +37,26 @@ namespace UrashimaServer.Controllers.Ward
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("BoardModify", new { id = BoardModifyRequest.Id }, BoardModifyRequest);
+        }
+
+        // GET: api/ward/ad-request
+        [HttpGet("ad-request")]
+        public async Task<ActionResult<AdsCreationRequest>> GetAdsBoardRequestDetail([FromQuery] int id)
+        {
+            if (_context.AdsCreationRequests == null)
+            {
+                return NotFound();
+            }
+
+            var middle = await _context.RequestAdsBoards.Where(r => r.BoardID == id).FirstOrDefaultAsync();
+
+            if (middle == null)
+            {
+                return NotFound();
+            }
+
+            var request = await _context.AdsCreationRequests.Where(r => r.PointID == middle.PointID).FirstOrDefaultAsync();
+            return request;
         }
     }
 }
