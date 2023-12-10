@@ -1,8 +1,9 @@
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace UrashimaServer.Common.Helper
 {
-    public class Helper
+    public static class Helper
     {
         public static string ByteArrayToString(byte[] ba)
         {
@@ -20,5 +21,8 @@ namespace UrashimaServer.Common.Helper
                 bytes[i / 2] = Convert.ToByte(hex.Substring(i, 2), 16);
             return bytes;
         }
+
+        public static bool IsUnderAuthority(string address, string managementUnit)
+        => Regex.IsMatch(address, $@"\b(?i){managementUnit}\b");
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using UrashimaServer.Database.Models;
 using UrashimaServer.Models;
 
 namespace UrashimaServer.Database.Dtos
@@ -37,11 +38,51 @@ namespace UrashimaServer.Database.Dtos
         public double Longitude { get; set; }
     }
 
+    public class PostReportAdsBoardDto
+    {
+        public int AdsBoardID { get; set; }
+        public int AdsPointID { get; set; }
+        public string ReportType { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string Phone { get; set; } = string.Empty;
+        public string Content { get; set; } = string.Empty;
+        public ICollection<ReportImageDto>? Images { get; set; }
+    }
+
     public class PostReportLocationDto
     {
         public double Latitude { get; set; }
         public double Longitude { get; set; }
+        public string Address { get; set; }
         public string ReportType { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string Phone { get; set; } = string.Empty;
+        public string Content { get; set; } = string.Empty;
+        public ICollection<ReportImageDto>? Images { get; set; }
+    }
+
+    public class GetReportDto
+    {
+        public int Id { get; set; }
+        public string ReportType { get; set; } = string.Empty;
+        public string Address { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string Phone { get; set; } = string.Empty;
+        public string Content { get; set; } = string.Empty;
+        public string ReportStatus { get; set; } = string.Empty;
+        public string TreatmentProcess { get; set; } = string.Empty;
+        public DateTime SubmissionDate { get; set; }
+        public ICollection<ReportImageDto>? Images { get; set; }
+    }
+
+    public class PostReportDto
+    {
+        public int AdsId { get; set; }
+        public string ReportType { get; set; } = string.Empty;
+        public string Address { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string Phone { get; set; } = string.Empty;

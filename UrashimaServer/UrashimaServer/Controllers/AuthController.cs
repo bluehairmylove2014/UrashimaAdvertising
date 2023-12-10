@@ -84,7 +84,12 @@ namespace UrashimaServer.Controllers
             SetRefreshToken(refreshToken, acc);
             await _dbContext.Accounts.AddAsync(acc);
             await _dbContext.SaveChangesAsync();
-            return CreatedAtAction("GetAccount", new { id = acc.Id }, acc);
+            return Ok(new
+            {
+                message = "Register successfully!",
+                token,
+                refreshToken = refreshToken.Token,
+            });
         }
 
         [HttpPost("login")]
