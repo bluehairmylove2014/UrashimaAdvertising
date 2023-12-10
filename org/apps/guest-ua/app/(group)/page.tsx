@@ -50,16 +50,16 @@ import { ILocation } from '@business-layer/services/entities';
 
 type locationType =
   | {
-      lat: number;
-      lon: number;
-    }
+    lat: number;
+    lon: number;
+  }
   | undefined;
 
 type markerParamsType =
   | {
-      latitude: number;
-      longitude: number;
-    }
+    latitude: number;
+    longitude: number;
+  }
   | undefined;
 function Home() {
   const { showError } = useNotification();
@@ -67,10 +67,10 @@ function Home() {
   const mapRef = useRef<MapRef>(null);
   const [isShowCluster, setIsShowCluster] = useState<boolean>(true);
 
-  const [isClickAdsPoint, setIsClickAdsPoint] = useState<boolean>(false);
   const [isActiveAdsBoard, setIsActiveAdsBoard] = useState<boolean>(false);
   const [idAdsBoard, setIdAdsBoard] = useState(-1);
 
+  const [isClickAdsPoint, setIsClickAdsPoint] = useState<boolean>(false);
   const [infoClickAdsPoint, setInfoClickAdsPoint] = useState<IAdsDetail>();
   const [idAdsPointClick, setIdAdsPointClick] = useState(-1);
 
@@ -80,6 +80,11 @@ function Home() {
   const [infoHoverAdsPoint, setInfoHoverAdsPoint] = useState<IAds>();
   //Create state for getting position mouse previous
   const [posPrevMouse, setPosPrevMouse] = useState<locationType>(undefined);
+
+  //Create state for checking ads is reported
+  const [isReported, setIsReported] = useState(false);
+  const [isClickReported, setIsClickReported] = useState(false);
+
 
   const [cursor, setCursor] = useState('pointer');
   const { onGetAdDetail, isLoading } = useGetAdDetail();
@@ -157,7 +162,9 @@ function Home() {
   //Catch click mouse event
   const handleClick = useCallback((event: MapLayerMouseEvent) => {
     if (!mapRef.current) return;
+
     setIsActiveAdsBoard(false);
+    setIsClickAdsPoint(false);
 
     //Check the point is cluster? Move and zoom
     const features = mapRef.current.queryRenderedFeatures(event.point, {
@@ -170,7 +177,7 @@ function Home() {
       return;
     }
 
-    //Check the point is ads point
+    //Click ads point
     const featuresAllPoint = mapRef.current.queryRenderedFeatures(event.point, {
       layers: [
         'unclustered-point-planned',
@@ -179,14 +186,22 @@ function Home() {
       ],
     });
     if (featuresAllPoint[0] && featuresAllPoint[0].geometry.type === 'Point') {
+      //Check ADS Point is reported
+      if (featuresAllPoint[0].layer.id === 'unclustered-point-reported')
+        setIsClickReported(true)
+      else
+        setIsClickReported(false)
+
+      mapRef.current.flyTo({
+        zoom: 14,
+        center: [event.lngLat.lng, event.lngLat.lat],
+        duration: 1500,
+      });
+
       setIsLocationOnClickPopupActive(false);
-      const [long, lat] = featuresAllPoint[0].geometry.coordinates;
       setIdAdsPointClick(featuresAllPoint[0].properties?.id);
       setIsClickAdsPoint(true);
-      // setCurrentLocation({
-      //   lat: lat,
-      //   lon: long,
-      // });
+
       setInfoHoverAdsPoint(undefined);
       return;
     } else {
@@ -226,16 +241,26 @@ function Home() {
     if (!mapRef.current) return;
 
     const features = mapRef.current.queryRenderedFeatures(event.point);
+
+    //Handle hover ads point
     const adsPoint = features.find(
       (f) =>
         f.layer.id === 'unclustered-point-planned' ||
-        f.layer.id === 'unclustered-point-unplanned'
+        f.layer.id === 'unclustered-point-unplanned' ||
+        f.layer.id === 'unclustered-point-reported'
     );
+
     if (!adsPoint) {
       setInfoHoverAdsPoint(undefined);
       setIdAdsPoint(-1);
     }
     if (adsPoint && adsPoint.geometry.type === 'Point') {
+      //Check ADS Point is reported
+      if (adsPoint.layer.id === 'unclustered-point-reported')
+        setIsReported(true)
+      else
+        setIsReported(false)
+
       const [long, lat] = adsPoint.geometry.coordinates;
 
       if (
@@ -255,7 +280,21 @@ function Home() {
         lat: lat,
         lon: long,
       });
+
+      return;
     }
+
+    //Handle hover ads report point
+    const adsReportPoint = features.find(
+      (f) =>
+        f.layer.id === 'non-clustered-reported-point-symbol' ||
+        f.layer.id === 'unclustered-point-reported'
+    );
+    if (!adsReportPoint) {
+
+    }
+
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
@@ -360,10 +399,10 @@ function Home() {
                     planned: m.planned,
                     reported: locationReportList
                       ? locationReportList.findIndex(
-                          (lr) =>
-                            lr.latitude === m.latitude &&
-                            lr.longitude === m.longitude
-                        ) !== -1
+                        (lr) =>
+                          lr.latitude === m.latitude &&
+                          lr.longitude === m.longitude
+                      ) !== -1
                       : false,
                   },
                   geometry: {
@@ -397,12 +436,14 @@ function Home() {
             >
               <InfoAdsPoint
                 info={infoHoverAdsPoint}
+                isReported={isReported}
                 onClick={(id) => {
                   setIsActiveAdsBoard(false);
                   setIdAdsPointClick(id);
                   setIsClickAdsPoint(true);
                   setInfoHoverAdsPoint(undefined);
                 }}
+
               />
             </Popup>
           ) : (
@@ -415,9 +456,12 @@ function Home() {
             infoClickAdsPoint ? (
               <DetailAdsPoint
                 detailAdsPoint={infoClickAdsPoint}
+                isReported={isClickReported}
                 onClick={(id) => {
                   setIdAdsBoard(id);
                   setIsActiveAdsBoard(true);
+                }}
+                handleClose={() => {
                   setIsClickAdsPoint(false);
                 }}
               />
@@ -433,6 +477,13 @@ function Home() {
               <DetailAds
                 adsPoint={infoClickAdsPoint}
                 id={idAdsBoard}
+                handleClose={() => {
+                  setIsActiveAdsBoard(false)
+                  setIsClickAdsPoint(false)
+                }}
+                handleBack={() => {
+                  setIsActiveAdsBoard(false)
+                }}
               ></DetailAds>
             ) : (
               <></>
@@ -477,7 +528,7 @@ function Home() {
         reportTarget={reportTarget}
         reportAdditionData={reportAdditionData}
       />
-    </div>
+    </div >
   );
 }
 

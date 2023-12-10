@@ -7,20 +7,39 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { Carousel } from 'react-responsive-carousel';
 import { useSetReportForm } from '@business-layer/business-logic/lib/reportForm';
 
+import { useState } from 'react'
+
 function DetailAdsPoint({
   detailAdsPoint,
+  isReported,
   onClick,
+  handleClose,
 }: {
   detailAdsPoint: IAdsDetail;
+  isReported: boolean;
   onClick: (id: number) => void;
+  handleClose: () => void;
 }) {
   const { setForm } = useSetReportForm();
+
   return (
     <div
       className="h-[100%] w-[25%] shadow-md min-w-[45vh] fixed"
       style={{ left: 0, top: 0 }}
     >
       <div className="h-[100%] w-[100%] bg-white relative overflow-y-scroll scrollbar">
+        {/* Close button */}
+        <div className="absolute z-10 top-0 right-0 mt-2 mx-1">
+          <CustomButtonIcon
+            widthIcon='0.7rem'
+            heightIcon='0.7rem'
+            type='button'
+            pathImage='/assets/close.png'
+            alt=''
+            onClick={handleClose}
+          > </CustomButtonIcon>
+        </div>
+
         {/* Image for ads point */}
         <Carousel showStatus={false} showThumbs={false}>
           {detailAdsPoint.images.map((data, index) => (
@@ -36,47 +55,52 @@ function DetailAdsPoint({
         </Carousel>
 
         {/* two button for adspoint */}
-        <div className="flex my-4 mx-2">
-          {/* <CustomButtonIcon
-            widthIcon="0.9rem"
-            heightIcon="0.9rem"
-            type="button"
-            pathImage="/assets/save.png"
-            border={1}
-            round={2}
-            colorBorder="green"
-            alt=""
-          >
-            <span className="text-green-600 text-[0.6rem] text-bold ml-1">
-              LƯU
-            </span>
-          </CustomButtonIcon> */}
+        <div className="mt-4 mx-5">
+          {isReported ?
+            <>
+              <p className='mb-1 text-rose-600 font-bold text-sm'>Bạn đã báo cáo điểm này</p>
+              <CustomButtonIcon
+                widthIcon="0.7rem"
+                heightIcon="0.7rem"
+                round={2}
+                type="button"
+                border={1}
+                colorBorder="green"
+                pathImage="/assets/detailReport.png"
+                alt=""
+              >
+                <span className="text-green-600 text-[0.65rem] text-medium ml-1">
+                  CHI TIẾT BÁO CÁO
+                </span>
+              </CustomButtonIcon>
+            </>
 
-          <span className="ml-2"></span>
-          <CustomButtonIcon
-            widthIcon="0.8rem"
-            heightIcon="0.8rem"
-            round={2}
-            type="button"
-            border={1}
-            colorBorder="rose"
-            pathImage="/assets/report.png"
-            alt=""
-            onClick={() => {
-              setForm({
-                isReportFormActive: true,
-                reportTarget: 'LOCATION',
-                reportAdditionData: {
-                  latitude: detailAdsPoint.latitude,
-                  longitude: detailAdsPoint.longitude,
-                },
-              });
-            }}
-          >
-            <span className="text-rose-600 text-[0.6rem] text-bold ml-1">
-              BÁO CÁO VI PHẠM
-            </span>
-          </CustomButtonIcon>
+            :
+            <CustomButtonIcon
+              widthIcon="0.8rem"
+              heightIcon="0.8rem"
+              round={2}
+              type="button"
+              border={1}
+              colorBorder="rose"
+              pathImage="/assets/report.png"
+              alt=""
+              onClick={() => {
+                setForm({
+                  isReportFormActive: true,
+                  reportTarget: 'LOCATION',
+                  reportAdditionData: {
+                    latitude: detailAdsPoint.latitude,
+                    longitude: detailAdsPoint.longitude,
+                  },
+                });
+              }}
+            >
+              <span className="text-rose-600 text-[0.6rem] text-bold ml-1">
+                BÁO CÁO VI PHẠM
+              </span>
+            </CustomButtonIcon>
+          }
         </div>
 
         <hr className="my-4 mx-2"></hr>
@@ -274,7 +298,7 @@ function DetailAdsPoint({
         <hr className="mx-2 mb-4 mt-1"></hr>
       </div>
     </div>
-  );
+  )
 }
 
 export default DetailAdsPoint;
