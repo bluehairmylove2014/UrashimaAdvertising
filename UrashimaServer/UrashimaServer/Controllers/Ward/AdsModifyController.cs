@@ -42,24 +42,5 @@ namespace UrashimaServer.Controllers.Ward
 
             return CreatedAtAction("BoardModify", new { id = BoardModifyRequest.Id }, BoardModifyRequest);
         }
-
-        // POST: api/ward/board-modification, , Authorize(Roles = GlobalConstant.WardOfficer)
-        [HttpGet("reports")]
-        public async Task<ActionResult<List<Report>>> GetWardReports()
-        {
-            //Account? currentAcc = await _context.Accounts.FirstOrDefaultAsync((a) => a.FullName == User.Identity.Name);
-
-            //if (currentAcc is null)
-            //{
-            //    return BadRequest(new
-            //    {
-            //        Message = "Account error!"
-            //    });
-            //}
-
-            var results = await _context.Reports.ToListAsync() ?? new List<Report>();
-
-            return results;
-        }
     }
 }
