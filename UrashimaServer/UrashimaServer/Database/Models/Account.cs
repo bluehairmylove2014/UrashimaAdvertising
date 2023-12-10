@@ -11,6 +11,7 @@ namespace UrashimaServer.Models
         public DateTime DateOfBirth { get; set; }
         public string Phone { get; set; } = string.Empty;
         public string Role { get; set; } = string.Empty;
+        public string UnitUnderManagement { get; set; } = string.Empty;
         public string PasswordHash { get; set; } = string.Empty;
         public string PasswordSalt { get; set; } = string.Empty;
         public string RefreshToken { get; set; } = string.Empty;
