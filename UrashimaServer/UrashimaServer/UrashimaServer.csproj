@@ -28,4 +28,8 @@
     <Folder Include="Common\Helper\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Common\Helper\" />
+  </ItemGroup>
+
 </Project>

@@ -109,25 +109,25 @@ namespace UrashimaServer.Controllers
             return CreatedAtAction("GetAdsPoint", new { id = adsPoint.Id }, adsPoint);
         }
 
-        //// DELETE: api/AdsPoints/5
-        //[HttpDelete("{id}")]
-        //public async Task<IActionResult> DeleteAdsPoint(int id)
-        //{
-        //    if (_context.AdsPoints == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    var adsPoint = await _context.AdsPoints.FindAsync(id);
-        //    if (adsPoint == null)
-        //    {
-        //        return NotFound();
-        //    }
+        // DELETE: api/AdsPoints/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAdsPoint(int id)
+        {
+            if (_context.AdsPoints == null)
+            {
+                return NotFound();
+            }
+            var adsPoint = await _context.AdsPoints.FindAsync(id);
+            if (adsPoint == null)
+            {
+                return NotFound();
+            }
 
-        //    _context.AdsPoints.Remove(adsPoint);
-        //    await _context.SaveChangesAsync();
+            _context.AdsPoints.Remove(adsPoint);
+            await _context.SaveChangesAsync();
 
-        //    return NoContent();
-        //}
+            return NoContent();
+        }
 
         //private bool AdsPointExists(int id)
         //{

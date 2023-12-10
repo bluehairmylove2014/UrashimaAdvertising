@@ -38,6 +38,9 @@ namespace UrashimaServer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("AdsPointId")
+                        .HasColumnType("int");
+
                     b.Property<string>("CompanyName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -56,9 +59,6 @@ namespace UrashimaServer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PointID")
-                        .HasColumnType("int");
-
                     b.Property<string>("RequestStatus")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -76,14 +76,11 @@ namespace UrashimaServer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AdsPointId")
-                        .HasColumnType("int");
-
                     b.Property<string>("AdsType")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("BoardID")
+                    b.Property<int>("BoardId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("ExpiredDate")
@@ -96,35 +93,15 @@ namespace UrashimaServer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("PointId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Width")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.ToTable("BoardModifies");
-                });
-
-            modelBuilder.Entity("UrashimaServer.Database.Models.Location", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("Latitude")
-                        .HasColumnType("float");
-
-                    b.Property<double>("Longitude")
-                        .HasColumnType("float");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Locations");
                 });
 
             modelBuilder.Entity("UrashimaServer.Database.Models.PointModify", b =>
@@ -159,7 +136,7 @@ namespace UrashimaServer.Migrations
                     b.Property<bool>("Planned")
                         .HasColumnType("bit");
 
-                    b.Property<int>("PointID")
+                    b.Property<int>("PointId")
                         .HasColumnType("int");
 
                     b.Property<string>("Reason")
@@ -169,6 +146,29 @@ namespace UrashimaServer.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("PointModifies");
+                });
+
+            modelBuilder.Entity("UrashimaServer.Database.Models.ReportLoc", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Latitude")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Longitude")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ReportLocs");
                 });
 
             modelBuilder.Entity("UrashimaServer.Database.Models.RequestAdsBoard", b =>
@@ -259,6 +259,9 @@ namespace UrashimaServer.Migrations
                     b.Property<int?>("AdsCreateRequestId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("AdsCreateRequestId")
+                        .HasColumnType("int");
+
                     b.Property<int>("AdsPointId")
                         .HasColumnType("int");
 
@@ -280,6 +283,8 @@ namespace UrashimaServer.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AdsCreateRequestId");
 
                     b.HasIndex("AdsCreateRequestId");
 
@@ -421,11 +426,17 @@ namespace UrashimaServer.Migrations
                         .WithMany("AdsBoards")
                         .HasForeignKey("AdsCreateRequestId");
 
+                    b.HasOne("UrashimaServer.Database.Models.AdsCreationRequest", "AdsCreateRequest")
+                        .WithMany("AdsBoards")
+                        .HasForeignKey("AdsCreateRequestId");
+
                     b.HasOne("UrashimaServer.Models.AdsPoint", "AdsPoint")
                         .WithMany("AdsBoards")
                         .HasForeignKey("AdsPointId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("AdsCreateRequest");
 
                     b.Navigation("AdsCreateRequest");
 
@@ -475,7 +486,12 @@ namespace UrashimaServer.Migrations
                     b.Navigation("Report");
                 });
 
-            modelBuilder.Entity("UrashimaServer.Database.Models.Location", b =>
+            modelBuilder.Entity("UrashimaServer.Database.Models.AdsCreationRequest", b =>
+                {
+                    b.Navigation("AdsBoards");
+                });
+
+            modelBuilder.Entity("UrashimaServer.Database.Models.ReportLoc", b =>
                 {
                     b.Navigation("Reports");
                 });
