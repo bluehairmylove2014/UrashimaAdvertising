@@ -6,8 +6,8 @@ namespace UrashimaServer.Database.Models
     {
         [Key]
         public int Id { get; set; }
-        public int BoardID { get; set; }
-        public int AdsPointId { get; set; }
+        public int BoardId { get; set; }
+        public int PointId { get; set; }
         public string AdsType { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }

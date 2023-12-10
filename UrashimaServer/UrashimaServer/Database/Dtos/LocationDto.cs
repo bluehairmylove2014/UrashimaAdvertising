@@ -6,25 +6,38 @@
         public double Longitude { get; set; }
     }
 
+    public class AddressResultDto
+    {
+        public string? Amenity { get; set; }
+        public string? House_number { get; set; }
+        public string? Road { get; set; }
+        public string? Suburb { get; set; }
+        public string? Town { get; set; }
+        public int? Postcode { get; set; }
+        public string? Country { get; set; }
+        public string? Country_code { get; set; }
+    }
+
+    public class GeoCodeResult
+    {
+        public double? Lat { get; set; }
+        public double? Lon { get; set; }
+        public string? Display_name { get; set; }
+        public AddressResultDto? Address { get; set; }
+    }
 
     public class GeoCodeResultDto
     {
-        public string? Distance { get; set; }
-        public int Elevation { get; set; }
-        public string? State { get; set; }
-        public double Latt { get; set; }
-        public string? City { get; set; }
-        public string? Prov { get; set; }
-        public string? Geocode { get; set; }
-        public string? Geonumber { get; set; }
+        public double? Latt { get; set; }
+        public double? Longt { get; set; }
+        public string? Display_name { get; set; }
+        public string? Amenity { get; set; }
+        public string? House_number { get; set; }
+        public string? Road { get; set; }
+        public string? Suburb { get; set; }
+        public string? Town { get; set; }
+        public int? Postcode { get; set; }
         public string? Country { get; set; }
-        public int Stnumber { get; set; }
-        public string? Staddress { get; set; }
-        public string? Timezone { get; set; }
-        public string? Region { get; set; }
-        public double Postal { get; set; }
-        public double Longt { get; set; }
-        public int Remaining_credits { get; set; }
-        public double Confidence { get; set; }
+        public string? Country_code { get; set; }
     }
 }

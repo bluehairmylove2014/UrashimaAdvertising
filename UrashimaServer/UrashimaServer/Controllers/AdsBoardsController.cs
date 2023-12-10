@@ -53,8 +53,11 @@ namespace UrashimaServer.Controllers
 
             var rawBoards = await _context.AdsBoards
                 .Include(s => s.AdsPoint)
+                .Include(s => s.AdsCreateRequest)
                 .Include(s => s.Reports)
                 .ToListAsync();
+
+            var result = rawBoards.Select(board => board.AdsCreateRequest?.RequestStatus != "Unconfirmed");
 
             // map each element
             var boardDtoList = new List<GetAdsBoardDto>();

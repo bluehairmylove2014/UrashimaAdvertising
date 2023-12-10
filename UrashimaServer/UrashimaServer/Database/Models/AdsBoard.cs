@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using UrashimaServer.Database.Models;
 
 namespace UrashimaServer.Models
 {
@@ -16,5 +17,8 @@ namespace UrashimaServer.Models
 
         public AdsPoint? AdsPoint { set; get; }
         public ICollection<Report>? Reports { set; get; }
+
+        public int? AdsCreateRequestId { set; get; }
+        public AdsCreationRequest? AdsCreateRequest { set; get; }
     }
 }

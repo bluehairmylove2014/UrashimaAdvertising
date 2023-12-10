@@ -37,7 +37,19 @@ namespace UrashimaServer.Database
                 .IsRequired();
 
             modelBuilder.Entity<AdsBoard>()
-                .HasOne(e => e.AdsPoint)
+                .HasOne<AdsCreationRequest>(e => e.AdsCreateRequest)
+                .WithMany(creationReq => creationReq.AdsBoards)
+                .HasForeignKey(e => e.AdsCreateRequestId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<AdsBoard>()
+                .HasOne<AdsCreationRequest>(e => e.AdsCreateRequest)
+                .WithMany(creationReq => creationReq.AdsBoards)
+                .HasForeignKey(e => e.AdsCreateRequestId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<AdsBoard>()
+                .HasOne<AdsPoint>(e => e.AdsPoint)
                 .WithMany(adsPoint => adsPoint.AdsBoards)
                 .HasForeignKey(e => e.AdsPointId)
                 .IsRequired();

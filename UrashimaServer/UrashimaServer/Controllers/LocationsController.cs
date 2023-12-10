@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Net;
@@ -12,10 +14,21 @@ namespace UrashimaServer.Controllers
     [ApiController]
     public class LocationsController : ControllerBase
     {
-        [HttpPost("geo-code")]
-        public async Task<IActionResult> GetRevGeoCodeInfo(InputGeoCodeDto input)
+        private readonly IMapper _mapper;
+
+        public LocationsController(IMapper mapper)
         {
-            object? result = null;
+            _mapper = mapper;
+        }
+
+        [HttpGet("geo-code")]
+        public async Task<IActionResult> GetRevGeoCodeInfo(
+            [FromQuery] double latitude = 10.7627917,
+            [FromQuery] double longitude = 106.6813989
+        )
+        {
+            GeoCodeResult? rawResult = null;
+            GeoCodeResultDto? result = null;
             var handler = new HttpClientHandler();
 
             handler.ServerCertificateCustomValidationCallback +=
@@ -24,22 +37,11 @@ namespace UrashimaServer.Controllers
                     return true;
                 };
 
-            var builder = new UriBuilder($"https://geocode.xyz/{input.Latitude},{input.Longitude}")
-            {
-                Port = -1
-            };
-
-            var query = HttpUtility.ParseQueryString(builder.Query);
-            //query["locate"] = $"{input.Latitude},{input.Longitude}";
-            query["json"] = "1";
-            query["auth"] = "11385978580054795929x126638";
-            builder.Query = query.ToString();
-
             using (var httpClient = new HttpClient(handler))
             {
                 var httpRequestMessage = new HttpRequestMessage
                 {
-                    RequestUri = builder.Uri,
+                    RequestUri = new Uri($"https://geocode.maps.co/reverse?lat={latitude}&lon={longitude}"),
                     Method = HttpMethod.Get,
                     Headers = {
                         { HttpRequestHeader.Accept.ToString(), "application/json" },
@@ -52,7 +54,11 @@ namespace UrashimaServer.Controllers
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     string apiResponse = await response.Content.ReadAsStringAsync();
-                    result = JsonConvert.DeserializeObject<GeoCodeResultDto>(apiResponse);        
+                    rawResult = JsonConvert.DeserializeObject<GeoCodeResult>(apiResponse);
+                    result = _mapper.Map<GeoCodeResultDto>(rawResult?.Address);
+                    result.Display_name = rawResult?.Display_name;
+                    result.Latt = rawResult?.Lat;
+                    result.Longt = rawResult?.Lon;
                 }
             }
 

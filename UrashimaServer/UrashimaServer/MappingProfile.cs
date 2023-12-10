@@ -29,6 +29,13 @@ namespace UrashimaServer
             CreateMap<Report, GetReportDto>().ReverseMap();
             CreateMap<Report, PostReportDto>().ReverseMap();
             CreateMap<Report, PostReportLocationDto>().ReverseMap();
+            // Map Location
+            CreateMap<AddressResultDto, GeoCodeResultDto>().ReverseMap();
+            CreateMap<GeoCodeResult, GeoCodeResultDto>().ReverseMap();
+
+            // Map create request
+            CreateMap<AdsCreateRequestDto, AdsCreationRequest>().ReverseMap();
+            CreateMap<AdsCreateRequestBoardDto, AdsBoard>().ReverseMap();
         }
     }
 }
