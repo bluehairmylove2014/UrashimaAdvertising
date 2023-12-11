@@ -12,27 +12,20 @@ export function middleware(request: NextRequest) {
   const token = cookie.get(COOKIE_KEYS.ACCESS_TOKEN);
   const pathName = request.nextUrl.clone().pathname;
 
-  console.log(pathName === OFFICER_PAGES.AUTH);
-  console.log(pathName);
-
   if (
     pathName === OFFICER_PAGES.AUTH ||
     pathName.startsWith(OFFICER_PAGES.SOCIAL_AUTH)
   ) {
     if (isTokenValid(token)) {
-      console.log('VALID TOKEN HERE: ');
       return NextResponse.redirect(
         new URL(OFFICER_PAGES.DASHBOARD, request.url)
       );
     }
-    console.log('INVALID TOKEN HERE: ');
     return NextResponse.next();
   } else if (pathName.startsWith(OFFICER_PAGES.DASHBOARD)) {
     if (isTokenValid(token)) {
-      console.log('VALID TOKEN: ');
       return NextResponse.next();
     }
-    console.log('INVALID TOKEN: ');
     return NextResponse.redirect(new URL(OFFICER_PAGES.AUTH, request.url));
   }
   return NextResponse.next();
