@@ -58,6 +58,7 @@ function SocialAuth() {
         checkingMethod()
           .then((msg) => {
             setCurAuthState(authState.REDIRECT_STATE);
+            console.log('SUCCESS, REDIRECT TO :', OFFICER_PAGES.DASHBOARD);
             // Handle get redirect url here
             setTimeout(() => {
               router.push(OFFICER_PAGES.DASHBOARD);
@@ -69,7 +70,7 @@ function SocialAuth() {
     } else {
       setErrorMsg('Unexpected error! Redirecting...');
       setTimeout(() => {
-        // router.push(OFFICER_PAGES.DASHBOARD);
+        router.push(OFFICER_PAGES.AUTH);
       }, 4000);
     }
 
@@ -77,8 +78,15 @@ function SocialAuth() {
   }, []);
 
   return (
-    <main className="w-screen h-screen bg-[url('/assets/images/bgs/dark-bg.png')] bg-cover bg-no-repeat grid place-items-center">
-      <div className="container mx-auto max-w-xs">
+    <main className="w-screen h-screen grid place-items-center relative">
+      <Image
+        src={'/assets/images/bgs/dark-bg.png'}
+        alt="dark-bg"
+        fill
+        sizes="100vw"
+        className="z-10"
+      />
+      <div className="container mx-auto max-w-xs relative z-20">
         <div className="w-full h-fit bg-white overflow-hidden rounded px-4 py-10">
           {errorMsg ? (
             <div className="flex flex-row flex-nowrap justify-center items-center gap-3">

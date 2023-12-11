@@ -5,8 +5,8 @@ export const LOCAL_STORAGE_KEYS = {
   LOCATION_REPORT: generateSecureHash('LOCATION_REPORT_LOCAL'),
 };
 export const COOKIE_KEYS = {
-  ACCESS_TOKEN: generateSecureHash('COOKIE_ACCESS_TOKEN'),
-  REFRESH_TOKEN: generateSecureHash('COOKIE_REFRESH_TOKEN'),
+  ACCESS_TOKEN: 'token',
+  REFRESH_TOKEN: 'refresh_token',
 };
 export enum QUERY_N_MUTATION_KEYS {
   GET_ALL_PRODUCTS,
