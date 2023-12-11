@@ -11,7 +11,6 @@ namespace UrashimaServer
         {
             // Map order
             // Ex: CreateMap<OrderItemDto, Order>().ReverseMap();
-            CreateMap<Account, AccountDto>().ReverseMap();
             CreateMap<AdsBoard, GetAdsBoardDto>().ReverseMap();
             CreateMap<GetAdsPointDto, AdsPoint>().ReverseMap();
 
@@ -27,9 +26,9 @@ namespace UrashimaServer
             // Map Report
             CreateMap<ReportAdsBoardDto, Report>().ReverseMap();
             CreateMap<ReportImageDto, ReportImage>().ReverseMap();
-            CreateMap<ReportLocationDto, Report>().ReverseMap();
-            CreateMap<LocationDto, ReportLoc>().ReverseMap();
-
+            CreateMap<Report, GetReportDto>().ReverseMap();
+            CreateMap<Report, PostReportDto>().ReverseMap();
+            CreateMap<Report, PostReportLocationDto>().ReverseMap();
         }
     }
 }
