@@ -1,5 +1,5 @@
 'use client';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { ReactElement, useCallback, useEffect, useRef, useState } from 'react';
 import ReactMapGL, {
   Source,
   Layer,
@@ -23,14 +23,12 @@ import {
 } from '../../../mapgl/layers';
 import { MAP_DEFAULT_VIEW_PORT } from '../../../mapgl/viewPort';
 import {
+  useFetchAllAds,
   useGetAdDetail,
-  useFetchAllOfficerAds,
 } from '@business-layer/business-logic/lib/ads';
 import ScreenLoader from '@presentational/atoms/ScreenLoader';
 import DetailLoader from '@presentational/atoms/DetailLoader';
 import CustomImage from '@presentational/atoms/CustomImage';
-
-import CustomSearchBox from '@presentational/atoms/CustomSearchBox';
 
 import {
   IAdLocation,
@@ -47,6 +45,7 @@ import { useNotification } from '@presentational/atoms/Notification';
 
 import LocationDetail from '@presentational/molecules/LocationDetail';
 import { ILocation } from '@business-layer/services/entities';
+import CustomSearchBox from '@presentational/atoms/CustomSearchBox';
 
 const MAP_STYLE = process.env.NEXT_PUBLIC_MAPBOX_MAP_STYLE || '';
 const ACCESS_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN || '';
@@ -64,9 +63,9 @@ type markerParamsType =
       longitude: number;
     }
   | undefined;
-function Dashboard() {
+function Home(): ReactElement {
   const { showError } = useNotification();
-  const { data: adsData } = useFetchAllOfficerAds();
+  const { data: adsData } = useFetchAllAds();
   const mapRef = useRef<MapRef>(null);
   const [isShowCluster, setIsShowCluster] = useState<boolean>(true);
 
@@ -164,6 +163,7 @@ function Dashboard() {
 
     setIsActiveAdsBoard(false);
     setIsClickAdsPoint(false);
+    setIsClickReported(false);
 
     //Check the point is cluster? Move and zoom
     const features = mapRef.current.queryRenderedFeatures(event.point, {
@@ -184,6 +184,7 @@ function Dashboard() {
         'unclustered-point-reported',
       ],
     });
+
     if (featuresAllPoint[0] && featuresAllPoint[0].geometry.type === 'Point') {
       //Check ADS Point is reported
       if (featuresAllPoint[0].layer.id === 'unclustered-point-reported')
@@ -199,7 +200,6 @@ function Dashboard() {
       setIsLocationOnClickPopupActive(false);
       setIdAdsPointClick(featuresAllPoint[0].properties?.id);
       setIsClickAdsPoint(true);
-
       setInfoHoverAdsPoint(undefined);
       return;
     } else {
@@ -305,7 +305,7 @@ function Dashboard() {
           mapStyle={MAP_STYLE}
         >
           <div className="flex flex-row justify-between w-full my-4 z-40 relative gap-3 overflow-hidden">
-            <div className="w-1/2 h-fit pl-4">
+            <form className="w-1/2 h-fit pl-4">
               <CustomSearchBox
                 marker={true}
                 accessToken={ACCESS_TOKEN}
@@ -330,7 +330,9 @@ function Dashboard() {
                   }
                 }}
               />
-            </div>
+            </form>
+
+            <div className="pr-4">{/*  */}</div>
           </div>
           {marker ? (
             <Marker {...marker}>
@@ -450,6 +452,7 @@ function Dashboard() {
                 handleClose={() => {
                   setIsClickAdsPoint(false);
                 }}
+                handleDetailReport={() => {}}
               />
             ) : (
               <></>
@@ -469,6 +472,7 @@ function Dashboard() {
                 }}
                 handleBack={() => {
                   setIsActiveAdsBoard(false);
+                  setIsClickAdsPoint(true);
                 }}
               ></DetailAds>
             ) : (
@@ -510,4 +514,4 @@ function Dashboard() {
   );
 }
 
-export default Dashboard;
+export default Home;

@@ -98,7 +98,8 @@ function Home(): ReactElement {
   const [adsBoardReportedDetail, setAdsBoardReportedDetail] =
     useState<IAdReport>();
   const [isClickReportedAdsBoard, setIsClickReportedAdsBoard] = useState(false);
-  const [infoAdsPointOfAdsBoard, setInfoAdsPointOfAdsBoard] = useState<IAds>();
+  const [infoAdsPointOfAdsBoard, setInfoAdsPointOfAdsBoard] =
+    useState<IAdLocation>();
 
   //Create state for checking point is click detail
   const [adsPointReportedDetail, setAdsPointReportedDetail] =
@@ -311,6 +312,7 @@ function Home(): ReactElement {
 
       return;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <div className="relative w-screen h-screen">

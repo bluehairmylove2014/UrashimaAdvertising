@@ -13,7 +13,6 @@ export const reportFormReducer = (
       case 'SET_IDENTIFICATION_DATA_ACTION':
         return { ...state, reportIdentificationData: action.payload };
       case 'SET_ALL_ACTION':
-        console.log('SET FORM: ', action.payload);
         return action.payload;
       default:
         return state;

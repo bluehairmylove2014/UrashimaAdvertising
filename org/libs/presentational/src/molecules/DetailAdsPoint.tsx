@@ -24,7 +24,7 @@ function DetailAdsPoint({
 
   return (
     <div
-      className="h-[100%] w-[25%] shadow-md min-w-[45vh] fixed z-20"
+      className="h-[100%] w-[25%] shadow-md min-w-[45vh] fixed z-40"
       style={{ left: 0, top: 0 }}
     >
       <div className="h-[100%] w-[100%] bg-white relative overflow-y-scroll scrollbar">
