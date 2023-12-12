@@ -1,13 +1,11 @@
 'use-client';
 import CustomImage from '@presentational/atoms/CustomImage';
 import CustomButtonIcon from '@presentational/atoms/CustomButtonIcon';
-import { IAdsDetail } from '@business-layer/services/entities/ads';
+import { IAdLocationDetail } from '@business-layer/services/entities/ads';
 
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { Carousel } from 'react-responsive-carousel';
-import { useSetReportForm } from '@business-layer/business-logic/lib/reportForm';
-
-import { useState } from 'react';
+import { useSetReportForm } from '@business-layer/business-logic/non-service-lib/reportForm';
 
 function DetailAdsPoint({
   detailAdsPoint,
@@ -15,7 +13,7 @@ function DetailAdsPoint({
   onClick,
   handleClose,
 }: {
-  detailAdsPoint: IAdsDetail;
+  detailAdsPoint: IAdLocationDetail;
   isReported: boolean;
   onClick: (id: number) => void;
   handleClose: () => void;

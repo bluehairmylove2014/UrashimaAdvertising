@@ -1,38 +1,62 @@
-import { AuthProvider } from '../lib/auth/process/provider';
+import { AuthProvider, AuthProviderType } from '../lib/auth/process/provider';
 import { ReportProvider } from '../lib/report/process/provider';
-import { ReportFormProvider } from '../lib/reportForm/process/provider';
+import { reportProviderType } from '../lib/report/process/provider/ReportProvider';
+import { ReportFormProvider } from '../non-service-lib/reportForm';
+import { reportFormProviderType } from '../non-service-lib/reportForm/process/provider/ReportProvider';
 
+/**
+ * REACT-QUERY-DEVTOOLS
+ */
 export const reactQueryDevtoolsConfig = {
   isActive: process.env.NODE_ENV === 'development',
 };
 
+/**
+ * CONFIG FOR AUTH MODULES
+ */
 export const authConfig = {
   isNeedRefreshToken: true,
   isNeedBroadcast: true,
 };
+
+/**
+ * MUTATION CONFIG FOR REACT-QUERY
+ */
 export const mutationConfig = {
   MUTATION_RETRY: 0,
   USE_QUERY_RETRY: 1,
 };
 
-export const providerConfig = [
+/**
+ * If you add 1 more module to providerConfig, you must
+ * add to moduleKeyList and providerList as well
+ */
+export type moduleKeyList = 'auth' | 'report' | 'report-form';
+export type providerList = React.FC<
+  AuthProviderType | reportProviderType | reportFormProviderType
+>;
+export const providerConfig: {
+  key: moduleKeyList;
+  provider: providerList;
+}[] = [
   {
     key: 'auth',
     provider: AuthProvider,
-    isActive: true,
   },
   {
     key: 'report',
     provider: ReportProvider,
-    isActive: true,
   },
   {
     key: 'report-form',
     provider: ReportFormProvider,
-    isActive: true,
   },
 ];
 
+/**
+ * SOCIAL CONFIG
+ * DO NOT put .env keys here (Id, Secret, ....)
+ */
 export const googleConfig = {
   REDIRECT_URI_PATH: '/social-auth/gg',
   AUTH_URI: 'https://accounts.google.com/o/oauth2/auth',

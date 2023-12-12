@@ -30,16 +30,17 @@ import ScreenLoader from '@presentational/atoms/ScreenLoader';
 import DetailLoader from '@presentational/atoms/DetailLoader';
 import CustomImage from '@presentational/atoms/CustomImage';
 
-import ReportForm from '@presentational/molecules/ReportForm';
-import { SearchBox } from '@mapbox/search-js-react';
+import CustomSearchBox from '@presentational/atoms/CustomSearchBox';
 
-import { IAds, IAdsDetail } from '@business-layer/services/entities/ads';
+import {
+  IAdLocation,
+  IAdLocationDetail,
+} from '@business-layer/services/entities/ads';
 import InfoAdsPoint from '@presentational/molecules/InfoAdsPoint';
 import DetailAds from '@presentational/molecules/DetailAds';
 import DetailAdsPoint from '@presentational/molecules/DetailAdsPoint';
 
 import 'mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
-import { useGetReportForm } from '@business-layer/business-logic/lib/reportForm';
 import { useGetLocationReports } from '@business-layer/business-logic/lib/report';
 import { useGetLocationDetail } from '@business-layer/business-logic/lib/geocode';
 import { useNotification } from '@presentational/atoms/Notification';
@@ -73,13 +74,14 @@ function Dashboard() {
   const [idAdsBoard, setIdAdsBoard] = useState(-1);
 
   const [isClickAdsPoint, setIsClickAdsPoint] = useState<boolean>(false);
-  const [infoClickAdsPoint, setInfoClickAdsPoint] = useState<IAdsDetail>();
+  const [infoClickAdsPoint, setInfoClickAdsPoint] =
+    useState<IAdLocationDetail>();
   const [idAdsPointClick, setIdAdsPointClick] = useState(-1);
 
   //Create state for getting id advertisement point
   const [idAdsPoint, setIdAdsPoint] = useState(-1);
   //Create state for getting info advertisement point
-  const [infoHoverAdsPoint, setInfoHoverAdsPoint] = useState<IAds>();
+  const [infoHoverAdsPoint, setInfoHoverAdsPoint] = useState<IAdLocation>();
   //Create state for getting position mouse previous
   const [posPrevMouse, setPosPrevMouse] = useState<locationType>(undefined);
 
@@ -105,16 +107,6 @@ function Dashboard() {
 
   const locationReportList = useGetLocationReports();
   const { onGetLocationDetail } = useGetLocationDetail();
-  const [isReportHistoryActive, setIsReportHistoryActive] =
-    useState<boolean>(false);
-
-  // Report controller
-  const {
-    isReportFormActive,
-    reportTarget,
-    reportData,
-    reportIdentificationData,
-  } = useGetReportForm();
 
   useEffect(() => {
     if (idAdsPoint > -1) {
@@ -314,7 +306,7 @@ function Dashboard() {
         >
           <div className="flex flex-row justify-between w-full my-4 z-40 relative gap-3 overflow-hidden">
             <div className="w-1/2 h-fit pl-4">
-              <SearchBox
+              <CustomSearchBox
                 marker={true}
                 accessToken={ACCESS_TOKEN}
                 placeholder="Tìm kiếm ở đây..."
@@ -513,12 +505,6 @@ function Dashboard() {
           setIsLocationOnClickPopupActive(false);
           setUserClickMarker(undefined);
         }}
-      />
-      <ReportForm
-        isActive={isReportFormActive}
-        reportTarget={reportTarget}
-        reportData={reportData}
-        reportIdentificationData={reportIdentificationData}
       />
     </div>
   );

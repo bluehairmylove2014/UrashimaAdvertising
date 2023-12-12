@@ -1,7 +1,10 @@
-import { IAdsBoard, IAdsDetail } from '@business-layer/services/entities';
+import {
+  IAdsBoard,
+  IAdLocationDetail,
+} from '@business-layer/services/entities';
 
 export type reportTargetType = 'LOCATION' | 'AD';
-export type reportDataType = IAdsDetail | IAdsBoard | null;
+export type reportDataType = IAdLocationDetail | IAdsBoard | null;
 export type reportIdentificationDataType =
   | {
       adsBoardID: number;

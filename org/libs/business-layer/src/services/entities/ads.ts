@@ -1,6 +1,4 @@
-import { IAdsBoard } from './adsBoard';
-
-export interface IAds {
+export interface IAdLocation {
   id: number;
   latitude: number;
   longitude: number;
@@ -10,7 +8,16 @@ export interface IAds {
   planned: boolean;
 }
 
-export interface IAdsDetail extends IAds {
+export interface IAdsBoard {
+  id: number;
+  adsPointId: number;
+  adsType: string;
+  height: number;
+  width: number;
+  image: string;
+  expiredDate: string;
+}
+export interface IAdLocationDetail extends IAdLocation {
   images: {
     image: string;
   }[];

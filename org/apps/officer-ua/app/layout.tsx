@@ -2,6 +2,7 @@ import './global.scss';
 import { Montserrat } from 'next/font/google';
 import { BusinessLogicProvider } from '@business-layer/business-logic/provider';
 import Notification from '@presentational/atoms/Notification';
+import { activeModuleConfig } from '../constants/modules';
 
 export const metadata = {
   title: 'Urashima Ads',
@@ -19,7 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={montserrat.className}>
-        <BusinessLogicProvider>
+        <BusinessLogicProvider activeModules={activeModuleConfig}>
           <Notification />
           {children}
         </BusinessLogicProvider>

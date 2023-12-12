@@ -6,10 +6,12 @@ function handleClickOutside(
   const target = event.target as HTMLElement;
   if (!focusArea.contains(target)) {
     focusArea.classList.remove(className);
-    document.removeEventListener(
-      'click',
-      (focusArea as any)._handleClickOutside
-    );
+    if (typeof window !== 'undefined') {
+      window.removeEventListener(
+        'click',
+        (focusArea as any)._handleClickOutside
+      );
+    }
   }
 }
 
@@ -25,12 +27,16 @@ function toggleClass(
 
   if (element.classList.contains(className)) {
     element.classList.remove(className);
-    document.removeEventListener('click', (element as any)._handleClickOutside);
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('click', (element as any)._handleClickOutside);
+    }
   } else {
     element.classList.add(className);
     (element as any)._handleClickOutside = boundHandleClickOutside;
     setTimeout(() => {
-      document.addEventListener('click', (element as any)._handleClickOutside);
+      if (typeof window !== 'undefined') {
+        window.addEventListener('click', (element as any)._handleClickOutside);
+      }
     }, 100);
   }
 }

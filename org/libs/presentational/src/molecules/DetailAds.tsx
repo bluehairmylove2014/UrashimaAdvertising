@@ -2,8 +2,7 @@
 import CustomImage from '@presentational/atoms/CustomImage';
 import CustomButtonIcon from '@presentational/atoms/CustomButtonIcon';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
-import { Carousel } from 'react-responsive-carousel';
-import { IAdsDetail } from '@business-layer/services/entities/ads';
+import { IAdLocationDetail } from '@business-layer/services/entities/ads';
 
 const convertDate = (date?: string) => {
   if (!date) return 'Error';
@@ -16,7 +15,7 @@ function DetailAdsPoint({
   handleClose,
   handleBack,
 }: {
-  adsPoint: IAdsDetail;
+  adsPoint: IAdLocationDetail;
   id: number;
   handleClose: () => void;
   handleBack: () => void;
