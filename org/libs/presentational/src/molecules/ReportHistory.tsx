@@ -144,7 +144,7 @@ function DetailReport({
           </Tab.List>
 
           {/* Listbox form report */}
-          <Listbox value={selectedFormReport} onChange={setSelectedFormReport}>
+          <Listbox value={selectedFormReport} onChange={setSelectedFormReport} >
             <div className="relative m-3">
               <Listbox.Button className="relative text-[0.7rem] w-[100%] cursor-default rounded-sm bg-white border-solid border-[0.6px] border-gray-200 py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-blue-500 focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-blue-300">
                 <span className="block truncate">{selectedFormReport}</span>
@@ -173,16 +173,11 @@ function DetailReport({
                       }
                       value={form}
                     >
-                      {({ selectedFormReport }) => (
-                        <>
-                          <span
-                            className={`block truncate ${selectedFormReport ? 'font-medium' : 'font-normal'
-                              }`}
-                          >
-                            {form}
-                          </span>
-                        </>
-                      )}
+                      <span
+                        className={`block truncate ${selectedFormReport ? 'font-medium' : 'font-normal'}`}
+                      >
+                        {form}
+                      </span>
                     </Listbox.Option>
                   ))}
                 </Listbox.Options>
