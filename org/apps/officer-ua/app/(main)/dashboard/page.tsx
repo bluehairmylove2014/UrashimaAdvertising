@@ -20,12 +20,11 @@ import {
   nonClusteredReportedPointSymbolLayer,
   nonclusteredReportedPointLayer,
   nonclusteredUnplannedPointLayer,
-} from '../../mapgl/layers';
-import { MAP_DEFAULT_VIEW_PORT } from '../../mapgl/viewPort';
-import { ACCESS_TOKEN, MAP_STYLE } from '../../constants/mapbox_key';
+} from '../../../mapgl/layers';
+import { MAP_DEFAULT_VIEW_PORT } from '../../../mapgl/viewPort';
 import {
-  useFetchAllAds,
   useGetAdDetail,
+  useFetchAllOfficerAds,
 } from '@business-layer/business-logic/lib/ads';
 import ScreenLoader from '@presentational/atoms/ScreenLoader';
 import DetailLoader from '@presentational/atoms/DetailLoader';
@@ -47,8 +46,9 @@ import { useNotification } from '@presentational/atoms/Notification';
 
 import LocationDetail from '@presentational/molecules/LocationDetail';
 import { ILocation } from '@business-layer/services/entities';
-// import ReportDetail from '@presentational/molecules/ReportDetail';
-import ReportHistory from '@presentational/molecules/ReportHistory';
+
+const MAP_STYLE = process.env.NEXT_PUBLIC_MAPBOX_MAP_STYLE || '';
+const ACCESS_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN || '';
 
 type locationType =
   | {
@@ -63,9 +63,9 @@ type markerParamsType =
       longitude: number;
     }
   | undefined;
-function Home() {
+function Dashboard() {
   const { showError } = useNotification();
-  const { data: adsData } = useFetchAllAds();
+  const { data: adsData } = useFetchAllOfficerAds();
   const mapRef = useRef<MapRef>(null);
   const [isShowCluster, setIsShowCluster] = useState<boolean>(true);
 
@@ -288,17 +288,6 @@ function Home() {
 
       return;
     }
-
-    //Handle hover ads report point
-    // const adsReportPoint = features.find(
-    //   (f) =>
-    //     f.layer.id === 'non-clustered-reported-point-symbol' ||
-    //     f.layer.id === 'unclustered-point-reported'
-    // );
-    // if (!adsReportPoint) {
-
-    // }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
@@ -349,19 +338,6 @@ function Home() {
                   }
                 }}
               />
-            </div>
-
-            <div className="pr-4">
-              <button
-                onClick={() => setIsReportHistoryActive(true)}
-                className=" bg-white rounded px-4 py-0 h-[36px] text-xs font-medium shadow-black hover:bg-gray-300 hover:shadow-lg transition-colors"
-              >
-                <i className="fi fi-ss-triangle-warning mr-1"></i> Báo cáo của
-                bạn
-              </button>
-              <button className="bg-white rounded px-2 py-0 h-[36px] text-xs font-medium ml-2">
-                <i className="fi fi-ss-bell"></i>
-              </button>
             </div>
           </div>
           {marker ? (
@@ -510,10 +486,6 @@ function Home() {
             <></>
           )}
 
-          {isReportHistoryActive ? <ReportHistory /> : <></>}
-
-          {/* <ReportDetail /> */}
-
           {isLoading ? <DetailLoader /> : <></>}
 
           <FullscreenControl position="bottom-right" />
@@ -552,4 +524,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default Dashboard;

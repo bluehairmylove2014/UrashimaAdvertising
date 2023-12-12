@@ -12,6 +12,16 @@ const nextConfig = {
     // See: https://github.com/gregberge/svgr
     svgr: false,
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        port: '',
+        hostname: 'urashima.sirv.com',
+        pathname: '/UrashimaAds%20Hub/*',
+      },
+    ],
+  },
 };
 
 const plugins = [

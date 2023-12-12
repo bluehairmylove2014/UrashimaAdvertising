@@ -10,7 +10,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { OFFICER_PAGES } from '@constants/officerPages';
 import Image from 'next/image';
-import { SOCIAL_LOGIN_METHODS } from '../../../constants/social';
+import { SOCIAL_LOGIN_METHODS } from '../../../../constants/social';
 
 type authStateType = {
   order: number;

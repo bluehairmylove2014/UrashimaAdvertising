@@ -1,5 +1,4 @@
 import { AuthProvider } from '../lib/auth/process/provider';
-import { AdsProvider } from '../lib/ads/process/provider';
 import { ReportProvider } from '../lib/report/process/provider';
 import { ReportFormProvider } from '../lib/reportForm/process/provider';
 
@@ -20,11 +19,6 @@ export const providerConfig = [
   {
     key: 'auth',
     provider: AuthProvider,
-    isActive: true,
-  },
-  {
-    key: 'ads',
-    provider: AdsProvider,
     isActive: true,
   },
   {

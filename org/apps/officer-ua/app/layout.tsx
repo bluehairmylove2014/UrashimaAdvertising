@@ -1,7 +1,7 @@
 import './global.scss';
-import AccessPageTemplate from '@presentational/templates/AccessPageTemplate';
 import { Montserrat } from 'next/font/google';
 import { BusinessLogicProvider } from '@business-layer/business-logic/provider';
+import Notification from '@presentational/atoms/Notification';
 
 export const metadata = {
   title: 'Urashima Ads',
@@ -20,7 +20,8 @@ export default function RootLayout({
     <html lang="en">
       <body className={montserrat.className}>
         <BusinessLogicProvider>
-          <AccessPageTemplate>{children}</AccessPageTemplate>
+          <Notification />
+          {children}
         </BusinessLogicProvider>
       </body>
     </html>

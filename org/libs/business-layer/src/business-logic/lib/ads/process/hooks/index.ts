@@ -1,3 +1,4 @@
 export * from './useFetchAllAds';
-export * from './useGetAllAds';
 export * from './useGetAdDetail';
+export * from './useFetchAllOfficerAds';
+export * from './useGetOfficerAdDetail';

@@ -1,1 +1,0 @@
-export { AdsProvider } from './AdsProvider';
