@@ -13,7 +13,36 @@
             "DistrictOfficer",
             "HeadQuater"
         };
+    }
 
+    public static class OriginConstant
+    {
+        private const string MyOrg = "https://localhost:7053";
+        private const string MyOrg1 = "https://localhost:3000";
 
+        public static readonly List<string> WardOfficer = new() {
+            "http://officer.urashima-advertising.com",
+            MyOrg,
+            "http://localhost:2016"
+        };
+        public static readonly List<string> DistrictOfficer = new() {
+            "http://officer.urashima-advertising.com",
+            MyOrg,
+            "http://localhost:2016"
+        };
+        public static readonly List<string> HeadQuater = new() {
+            "http://hq.urashima-advertising.com",
+            MyOrg,
+            "http://localhost:2021"
+        };
+
+        private static readonly List<(List<string>, string)> list = new()
+        {
+            (WardOfficer, GlobalConstant.WardOfficer),
+            (DistrictOfficer, GlobalConstant.DistrictOfficer),
+            (HeadQuater , GlobalConstant.HeadQuater)
+        };
+
+        public static List<(List<string>, string)> CheckList = list;
     }
 }

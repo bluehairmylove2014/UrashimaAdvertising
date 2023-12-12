@@ -12,30 +12,34 @@ namespace UrashimaServer
             // Map order
             // Ex: CreateMap<OrderItemDto, Order>().ReverseMap();
             CreateMap<AdsBoard, GetAdsBoardDto>().ReverseMap();
-            CreateMap<GetAdsPointDto, AdsPoint>().ReverseMap();
+            CreateMap<AdsPoint, GetAdsPointDto>().ReverseMap();
 
             // Map Ads_Point
-            CreateMap<UserAdsPointBasicDto, AdsPoint>().ReverseMap();
-            CreateMap<PointImageDto, AdsPointImage>().ReverseMap();
-            CreateMap<GetPointAdsBoardDto, AdsBoard>().ReverseMap();
-            CreateMap<UserAdsPointDetailDto, AdsPoint>().ReverseMap();
+            CreateMap<AdsPoint, UserAdsPointBasicDto>().ReverseMap();
+            CreateMap<AdsPointImage, PointImageDto>().ReverseMap();
+            CreateMap<AdsBoard, GetPointAdsBoardDto>().ReverseMap();
+            CreateMap<AdsPoint, UserAdsPointDetailDto>().ReverseMap();
 
             // Map Ads_Board
-            CreateMap<AdsBoardBasicDto, AdsBoard>().ReverseMap();
+            CreateMap<AdsBoard, AdsBoardBasicDto>().ReverseMap();
 
             // Map Report
-            CreateMap<ReportAdsBoardDto, Report>().ReverseMap();
-            CreateMap<ReportImageDto, ReportImage>().ReverseMap();
+            CreateMap<Report, ReportAdsBoardDto>().ReverseMap();
+            CreateMap<ReportImage, ReportImageDto>().ReverseMap();
             CreateMap<Report, GetReportDto>().ReverseMap();
             CreateMap<Report, PostReportDto>().ReverseMap();
             CreateMap<Report, PostReportLocationDto>().ReverseMap();
+
             // Map Location
-            CreateMap<AddressResultDto, GeoCodeResultDto>().ReverseMap();
-            CreateMap<GeoCodeResult, GeoCodeResultDto>().ReverseMap();
+            CreateMap<GeoCodeResultDto, AddressResultDto>().ReverseMap();
+            CreateMap<GeoCodeResultDto, GeoCodeResult>().ReverseMap();
 
             // Map create request
-            CreateMap<AdsCreateRequestDto, AdsCreationRequest>().ReverseMap();
-            CreateMap<AdsCreateRequestBoardDto, AdsBoard>().ReverseMap();
+            CreateMap<AdsCreationRequest, AdsCreateRequestDto>().ReverseMap();
+            CreateMap<AdsBoard, AdsCreateRequestBoardDto>().ReverseMap();
+
+            // Map Account
+            CreateMap<Account, AccountBasicInfoDto>().ReverseMap();
         }
     }
 }

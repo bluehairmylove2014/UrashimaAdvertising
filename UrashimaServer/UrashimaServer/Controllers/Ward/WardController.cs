@@ -31,14 +31,14 @@ namespace UrashimaServer.Controllers.Ward
         }
 
         // POST: api/ward/board-modification
-        [HttpPost("board-modification")]
-        public async Task<ActionResult<BoardModify>> BoardModify(BoardModify BoardModifyRequest)
-        {
-            _context.BoardModifies.Add(BoardModifyRequest);
-            await _context.SaveChangesAsync();
+        // [HttpPost("board-modification")]
+        // public async Task<ActionResult<BoardModify>> BoardModify(BoardModify BoardModifyRequest)
+        // {
+        //     _context.BoardModifies.Add(BoardModifyRequest);
+        //     await _context.SaveChangesAsync();
 
-            return CreatedAtAction("BoardModify", new { id = BoardModifyRequest.Id }, BoardModifyRequest);
-        }
+        //     return CreatedAtAction("BoardModify", new { id = BoardModifyRequest.Id }, BoardModifyRequest);
+        // }
 
         // GET: api/ward/ad-request
         [HttpGet("ad-request")]
