@@ -12,17 +12,19 @@ function DetailAdsPoint({
   isReported,
   onClick,
   handleClose,
+  handleDetailReport,
 }: {
   detailAdsPoint: IAdLocationDetail;
   isReported: boolean;
   onClick: (id: number) => void;
   handleClose: () => void;
+  handleDetailReport: () => void;
 }) {
   const { setForm } = useSetReportForm();
 
   return (
     <div
-      className="h-[100%] w-[25%] shadow-md min-w-[45vh] fixed z-40"
+      className="h-[100%] w-[25%] shadow-md min-w-[45vh] fixed z-20"
       style={{ left: 0, top: 0 }}
     >
       <div className="h-[100%] w-[100%] bg-white relative overflow-y-scroll scrollbar">
@@ -73,6 +75,7 @@ function DetailAdsPoint({
                 colorBorder="green"
                 pathImage="/assets/detailReport.png"
                 alt=""
+                onClick={handleDetailReport}
               >
                 <span className="text-green-600 text-[0.65rem] text-medium ml-1">
                   CHI TIẾT BÁO CÁO
@@ -190,7 +193,7 @@ function DetailAdsPoint({
             onClick={() => onClick(ads.id)}
             key={ads.id}
           >
-            <div className="w-[100%]  p-2 mb-4 border border-1 border-gray-300 rounded-lg hover:shadow-md transition-shadow">
+            <div className="w-[100%] p-2 mb-4 border border-1 border-gray-300 rounded-lg hover:shadow-md transition-shadow">
               <div className="flex justify-between">
                 <p className="text-sm font-bold text-neutral-800">
                   {ads.adsType} {ads.id}

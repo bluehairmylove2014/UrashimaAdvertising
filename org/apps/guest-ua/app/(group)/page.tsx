@@ -51,6 +51,10 @@ import LocationDetail from '@presentational/molecules/LocationDetail';
 import { ILocation } from '@business-layer/services/entities';
 import ReportHistory from '@presentational/molecules/ReportHistory';
 import CustomSearchBox from '@presentational/atoms/CustomSearchBox';
+import ReportDetailAdsBoard from '@presentational/molecules/ReportDetailAdsBoard';
+import ReportDetailPoint from '@presentational/molecules/ReportDetailPoint';
+
+import { IAdReport, ILocationReport } from '@business-layer/services/entities';
 
 type locationType =
   | {
@@ -89,6 +93,17 @@ function Home(): ReactElement {
   //Create state for checking ads is reported
   const [isReported, setIsReported] = useState(false);
   const [isClickReported, setIsClickReported] = useState(false);
+
+  //Create state for checking ads board is click detail
+  const [adsBoardReportedDetail, setAdsBoardReportedDetail] =
+    useState<IAdReport>();
+  const [isClickReportedAdsBoard, setIsClickReportedAdsBoard] = useState(false);
+  const [infoAdsPointOfAdsBoard, setInfoAdsPointOfAdsBoard] = useState<IAds>();
+
+  //Create state for checking point is click detail
+  const [adsPointReportedDetail, setAdsPointReportedDetail] =
+    useState<ILocationReport>();
+  const [isClickReportedPoint, setIsClickReportedPoint] = useState(false);
 
   const [cursor, setCursor] = useState('pointer');
   const { onGetAdDetail, isLoading } = useGetAdDetail();
@@ -175,6 +190,10 @@ function Home(): ReactElement {
 
     setIsActiveAdsBoard(false);
     setIsClickAdsPoint(false);
+    setIsReportHistoryActive(false);
+    setIsClickReported(false);
+    setIsClickReportedAdsBoard(false);
+    setIsClickReportedPoint(false);
 
     //Check the point is cluster? Move and zoom
     const features = mapRef.current.queryRenderedFeatures(event.point, {
@@ -195,7 +214,9 @@ function Home(): ReactElement {
         'unclustered-point-reported',
       ],
     });
+
     if (featuresAllPoint[0] && featuresAllPoint[0].geometry.type === 'Point') {
+      setIsReportHistoryActive(false);
       //Check ADS Point is reported
       if (featuresAllPoint[0].layer.id === 'unclustered-point-reported')
         setIsClickReported(true);
@@ -210,7 +231,6 @@ function Home(): ReactElement {
       setIsLocationOnClickPopupActive(false);
       setIdAdsPointClick(featuresAllPoint[0].properties?.id);
       setIsClickAdsPoint(true);
-
       setInfoHoverAdsPoint(undefined);
       return;
     } else {
@@ -291,18 +311,6 @@ function Home(): ReactElement {
 
       return;
     }
-
-    //Handle hover ads report point
-    // const adsReportPoint = features.find(
-    //   (f) =>
-    //     f.layer.id === 'non-clustered-reported-point-symbol' ||
-    //     f.layer.id === 'unclustered-point-reported'
-    // );
-    // if (!adsReportPoint) {
-
-    // }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <div className="relative w-screen h-screen">
@@ -356,7 +364,13 @@ function Home(): ReactElement {
 
             <div className="pr-4">
               <button
-                onClick={() => setIsReportHistoryActive(true)}
+                onClick={() => {
+                  setIsClickAdsPoint(false);
+                  setIsReportHistoryActive(true);
+                  setIsClickReported(false);
+                  setIsClickReportedAdsBoard(false);
+                  setIsClickReportedPoint(false);
+                }}
                 className=" bg-white rounded px-4 py-0 h-[36px] text-xs font-medium shadow-black hover:bg-gray-300 hover:shadow-lg transition-colors"
               >
                 <i className="fi fi-ss-triangle-warning mr-1"></i> Báo cáo của
@@ -483,7 +497,22 @@ function Home(): ReactElement {
                   setIsActiveAdsBoard(true);
                 }}
                 handleClose={() => {
+                  console.log(infoClickAdsPoint);
                   setIsClickAdsPoint(false);
+                }}
+                handleDetailReport={() => {
+                  setIsClickReportedPoint(true);
+
+                  console.log(locationReportList);
+                  const pos = adsData?.find(
+                    (ads) => ads.id === infoClickAdsPoint.id
+                  );
+                  const reportData = locationReportList?.find(
+                    (lr) =>
+                      lr.latitude === pos?.latitude &&
+                      lr.longitude === pos.longitude
+                  );
+                  setAdsPointReportedDetail(reportData);
                 }}
               />
             ) : (
@@ -504,6 +533,7 @@ function Home(): ReactElement {
                 }}
                 handleBack={() => {
                   setIsActiveAdsBoard(false);
+                  setIsClickAdsPoint(true);
                 }}
               ></DetailAds>
             ) : (
@@ -513,9 +543,71 @@ function Home(): ReactElement {
             <></>
           )}
 
-          {isReportHistoryActive ? <ReportHistory /> : <></>}
+          {isReportHistoryActive ? (
+            <ReportHistory
+              handleClose={() => {
+                setIsReportHistoryActive(false);
+              }}
+              handleDetailAdsBoard={(adsBoard) => {
+                setAdsBoardReportedDetail(adsBoard);
+                setIsClickReportedAdsBoard(true);
+                setInfoAdsPointOfAdsBoard(
+                  adsData?.find((ads) => ads.id === adsBoard.adsBoardID)
+                );
+              }}
+              handleDetailAdsPoint={(point) => {
+                setAdsPointReportedDetail(point);
+                setIsClickReportedPoint(true);
+              }}
+            />
+          ) : (
+            <></>
+          )}
 
-          {/* <ReportDetail /> */}
+          {isClickReportedAdsBoard ? (
+            adsBoardReportedDetail ? (
+              infoAdsPointOfAdsBoard ? (
+                <ReportDetailAdsBoard
+                  infoAdsBoardReport={adsBoardReportedDetail}
+                  infoAdsPoint={infoAdsPointOfAdsBoard}
+                  handleClose={() => {
+                    setIsClickReportedAdsBoard(false);
+                    setIsReportHistoryActive(false);
+                    setIsClickAdsPoint(false);
+                  }}
+                  handleBack={() => {
+                    setIsClickReportedAdsBoard(false);
+                  }}
+                />
+              ) : (
+                <></>
+              )
+            ) : (
+              <></>
+            )
+          ) : (
+            <></>
+          )}
+
+          {isClickReportedPoint ? (
+            adsPointReportedDetail ? (
+              <ReportDetailPoint
+                infoPointReport={adsPointReportedDetail}
+                handleClose={() => {
+                  setIsClickReportedPoint(false);
+                  setIsReportHistoryActive(false);
+                  setIsClickAdsPoint(false);
+                }}
+                handleBack={() => {
+                  setIsClickReportedPoint(false);
+                }}
+              />
+            ) : (
+              <></>
+            )
+          ) : (
+            <></>
+          )}
 
           {isLoading ? <DetailLoader /> : <></>}
 

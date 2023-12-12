@@ -9,14 +9,15 @@ interface IReport {
   images: {
     image: string;
   }[];
-  reportData: IAdLocationDetail | IAdsBoard;
 }
 
 export interface IAdReport extends IReport {
   adsBoardID: number;
   adsPointID: number;
+  reportData: IAdsBoard;
 }
 export interface ILocationReport extends IReport {
   latitude: number;
   longitude: number;
+  reportData: IAdLocationDetail;
 }
