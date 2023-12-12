@@ -33,7 +33,7 @@ function OfficerNavDropdown({
     >
       {children}
       <div
-        className={`flex flex-col h-fit opacity-0 w-44 bg-white rounded absolute top-[140%] overflow-hidden shadow-md ${
+        className={`flex flex-col h-fit opacity-0 w-44 bg-white rounded absolute top-[140%] z-30 overflow-hidden shadow-md ${
           position ? positionStyles[position] : ''
         }`}
         ref={dropdownRef}
