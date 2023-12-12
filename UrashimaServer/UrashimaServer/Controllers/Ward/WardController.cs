@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using UrashimaServer.Database;
 using UrashimaServer.Database.Models;
 
@@ -48,15 +49,25 @@ namespace UrashimaServer.Controllers.Ward
                 return NotFound();
             }
 
-            var middle = await _context.RequestAdsBoards.Where(r => r.BoardID == id).FirstOrDefaultAsync();
+            AdsCreationRequest? result = null;
+            var rawRequest = await _context.AdsCreationRequests
+                .Include(s => s.AdsBoards)
+                .ToListAsync();
 
-            if (middle == null)
+            foreach (var req in rawRequest)
             {
-                return NotFound();
+                var value = req.AdsBoards?.AsQueryable().Where(b => b.Id == id);
+                if (!value.IsNullOrEmpty()) {
+                    result = req;
+                    break;
+                }
             }
 
-            var request = await _context.AdsCreationRequests.Where(r => r.PointID == middle.PointID).FirstOrDefaultAsync();
-            return request;
+            if (result == null) {
+                return NotFound();
+            }
+            
+            return result;
         }
     }
 }

@@ -92,7 +92,7 @@ namespace UrashimaServer.Controllers
 
         // DELETE: api/ads-request
         [HttpDelete("")]
-        public async Task<IActionResult> DeleteAdsBoard([FromQuery, Required] int id)
+        public async Task<IActionResult> DeleteRequest([FromQuery, Required] int id)
         {
             var role = "Ward";
 
