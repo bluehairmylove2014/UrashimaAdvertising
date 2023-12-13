@@ -185,6 +185,31 @@ namespace UrashimaServer.Controllers
             return Ok(_mapper.Map<GetReportDto>(updatedItem));
         }
 
+        [HttpDelete("role-based/{id}"), AuthorizeRoles(GlobalConstant.WardOfficer, GlobalConstant.DistrictOfficer, GlobalConstant.HeadQuater)]
+        public async Task<ActionResult<GetReportDto>> DeleteReportBasedOnRole(int id)
+        {
+            var acc = await _context.Accounts.FirstOrDefaultAsync(acc => acc.Email == User.Identity!.Name);
+
+            if (acc is null)
+            {
+                return BadRequest(new
+                {
+                    Message = "Something went wrong with your account. Please login again!",
+                });
+            }
+
+            var entity = _context.Reports.FirstOrDefault(e => e.Id == id);
+            if (entity == null)
+            {
+                return NotFound();
+            }
+
+            _context.Reports.Remove(entity);
+            _context.SaveChanges();
+
+            return Ok();
+        }
+
 
         private bool ReportExists(int id)
         {
