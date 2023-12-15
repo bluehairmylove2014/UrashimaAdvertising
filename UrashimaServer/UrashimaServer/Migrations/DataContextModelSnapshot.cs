@@ -38,6 +38,9 @@ namespace UrashimaServer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("AdsPointId")
+                        .HasColumnType("int");
+
                     b.Property<string>("CompanyName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -56,9 +59,6 @@ namespace UrashimaServer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PointID")
-                        .HasColumnType("int");
-
                     b.Property<string>("RequestStatus")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -66,42 +66,6 @@ namespace UrashimaServer.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("AdsCreationRequests");
-                });
-
-            modelBuilder.Entity("UrashimaServer.Database.Models.BoardModify", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AdsPointId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("AdsType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("BoardID")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("ExpiredDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("Height")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Image")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Width")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("BoardModifies");
                 });
 
             modelBuilder.Entity("UrashimaServer.Database.Models.Location", b =>
@@ -159,7 +123,7 @@ namespace UrashimaServer.Migrations
                     b.Property<bool>("Planned")
                         .HasColumnType("bit");
 
-                    b.Property<int>("PointID")
+                    b.Property<int>("PointId")
                         .HasColumnType("int");
 
                     b.Property<string>("Reason")
@@ -169,29 +133,6 @@ namespace UrashimaServer.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("PointModifies");
-                });
-
-            modelBuilder.Entity("UrashimaServer.Database.Models.RequestAdsBoard", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("BoardID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PointID")
-                        .HasColumnType("int");
-
-                    b.Property<string>("status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("RequestAdsBoards");
                 });
 
             modelBuilder.Entity("UrashimaServer.Models.Account", b =>
@@ -256,6 +197,9 @@ namespace UrashimaServer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("AdsCreateRequestId")
+                        .HasColumnType("int");
+
                     b.Property<int>("AdsPointId")
                         .HasColumnType("int");
 
@@ -277,6 +221,8 @@ namespace UrashimaServer.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AdsCreateRequestId");
 
                     b.HasIndex("AdsPointId");
 
@@ -412,11 +358,18 @@ namespace UrashimaServer.Migrations
 
             modelBuilder.Entity("UrashimaServer.Models.AdsBoard", b =>
                 {
+                    b.HasOne("UrashimaServer.Database.Models.AdsCreationRequest", "AdsCreateRequest")
+                        .WithMany("AdsBoards")
+                        .HasForeignKey("AdsCreateRequestId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("UrashimaServer.Models.AdsPoint", "AdsPoint")
                         .WithMany("AdsBoards")
                         .HasForeignKey("AdsPointId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("AdsCreateRequest");
 
                     b.Navigation("AdsPoint");
                 });
@@ -462,6 +415,11 @@ namespace UrashimaServer.Migrations
                         .IsRequired();
 
                     b.Navigation("Report");
+                });
+
+            modelBuilder.Entity("UrashimaServer.Database.Models.AdsCreationRequest", b =>
+                {
+                    b.Navigation("AdsBoards");
                 });
 
             modelBuilder.Entity("UrashimaServer.Database.Models.Location", b =>

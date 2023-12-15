@@ -1,5 +1,7 @@
 using System.Text;
 using System.Text.RegularExpressions;
+using UrashimaServer.Common.Constant;
+using UrashimaServer.Models;
 
 namespace UrashimaServer.Common.Helper
 {
@@ -24,5 +26,10 @@ namespace UrashimaServer.Common.Helper
 
         public static bool IsUnderAuthority(string address, string managementUnit)
         => Regex.IsMatch(address, $@"\b(?i){managementUnit}\b");
+
+        public static bool IsAuthorizedOrigin(string origin, string role)
+        => !OriginConstant.CheckList.Find(e => e.Item2.Equals(role))
+            .Item1.Any(item => item.Equals(origin));
+
     }
 }

@@ -95,13 +95,23 @@ namespace UrashimaServer.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<string>> Login(LoginDto request)
         {
+            var hasOrigin = this.Request.Headers.TryGetValue("Origin", out var requestOrigin);
+
             var account = await _dbContext.Accounts.FirstOrDefaultAsync(acc => acc.Email.Equals(request.Email));
 
             if (account == null)
             {
                 return NotFound(new
                 {
-                    Message = "Account does not exist."
+                    Message = "Tài khoản không tồn tại."
+                });
+            }
+
+            if (!Helper.IsAuthorizedOrigin(requestOrigin.ToString(), account.Role))
+            {
+                return BadRequest(new
+                {
+                    message = "Invalid origin!",
                 });
             }
 
@@ -117,10 +127,11 @@ namespace UrashimaServer.Controllers
             var refreshToken = GenerateRefreshToken();
             SetRefreshToken(refreshToken, account);
             await _dbContext.SaveChangesAsync();
+
             return Ok(new
             {
                 accountId = account.Id,
-                message = "Login successfully!",
+                message = "Đăng nhập thành công!",
                 token,
                 refreshToken = refreshToken.Token,
                 role = account.Role
@@ -146,6 +157,15 @@ namespace UrashimaServer.Controllers
                 FullName = request.FullName,
                 Role = request.Role
             };
+
+            var hasOrigin = this.Request.Headers.TryGetValue("Origin", out var requestOrigin);
+            if (!Helper.IsAuthorizedOrigin(requestOrigin.ToString(), newAcc.Role))
+            {
+                return BadRequest(new
+                {
+                    message = "Invalid origin!",
+                });
+            }
 
             var token = CreateToken(newAcc, request.Role);
             var refreshToken = GenerateRefreshToken();

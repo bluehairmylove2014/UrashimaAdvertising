@@ -61,41 +61,7 @@ namespace UrashimaServer.Controllers
             return res;
         }
 
-        // -----------------------------------
-
-        // PUT: api/AdsPoints/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutAdsPoint(int id, AdsPoint adsPoint)
-        {
-            if (id != adsPoint.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(adsPoint).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!AdsPointExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
         // POST: api/AdsPoints
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<AdsPoint>> PostAdsPoint(AdsPoint adsPoint)
         {
@@ -131,7 +97,7 @@ namespace UrashimaServer.Controllers
 
         private bool AdsPointExists(int id)
         {
-            return (_context.AdsPoints?.Any(e => e.Id == id)).GetValueOrDefault();
+           return (_context.AdsPoints?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

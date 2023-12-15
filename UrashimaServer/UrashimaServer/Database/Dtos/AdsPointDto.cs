@@ -22,6 +22,7 @@ namespace UrashimaServer.Database.Dtos
     public class GetPointAdsBoardDto
     {
         public int Id { get; set; }
+        public int AdsPointId { get; set; }
         public string AdsType { get; set; } = string.Empty;
         public int Width { get; set; }
         public int Height { get; set; }

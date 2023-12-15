@@ -13,8 +13,6 @@ namespace UrashimaServer.Database
         public DbSet<ReportImage> ReportImages { get; set; }
         public DbSet<Location> Locations { get; set; }
         public DbSet<AdsCreationRequest> AdsCreationRequests { get; set; }
-        public DbSet<RequestAdsBoard> RequestAdsBoards { get; set; }
-        public DbSet<BoardModify> BoardModifies { get; set; }
         public DbSet<PointModify> PointModifies { get; set; }
         public DbSet<Account> Accounts { get; set; }
 
@@ -35,6 +33,13 @@ namespace UrashimaServer.Database
                 .WithMany(adsPoint => adsPoint.Images)
                 .HasForeignKey(e => e.AdsPointId)
                 .IsRequired();
+
+
+            modelBuilder.Entity<AdsBoard>()
+                .HasOne(e => e.AdsCreateRequest)
+                .WithMany(creationReq => creationReq.AdsBoards)
+                .HasForeignKey(e => e.AdsCreateRequestId)
+                .OnDelete(DeleteBehavior.SetNull);
 
             modelBuilder.Entity<AdsBoard>()
                 .HasOne(e => e.AdsPoint)

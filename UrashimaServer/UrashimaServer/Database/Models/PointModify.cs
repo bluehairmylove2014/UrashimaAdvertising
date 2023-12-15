@@ -6,7 +6,7 @@ namespace UrashimaServer.Database.Models
     {
         [Key]
         public int Id { get; set; }
-        public int PointID { get; set; }
+        public int PointId { get; set; }
         public bool Planned { get; set; }
         public string AdsForm { get; set; }
         public string LocationType { get; set; }
