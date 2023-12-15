@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using UrashimaServer.Common.Constant;
+using UrashimaServer.Common.CustomAttribute;
+using UrashimaServer.Common.Helper;
 using UrashimaServer.Database;
 using UrashimaServer.Database.Dtos;
 using UrashimaServer.Database.Models;
@@ -23,14 +26,33 @@ namespace UrashimaServer.Controllers
         }
 
         // GET: api/ads-request/all
-        [HttpGet("all")]
-        public async Task<ActionResult<IEnumerable<AdsCreationRequest>>> GetAllCreateRequest()
+        [HttpGet("all"), AuthorizeRoles(GlobalConstant.WardOfficer, GlobalConstant.DistrictOfficer, GlobalConstant.HeadQuater)]
+        public async Task<ActionResult<IEnumerable<GetAdsCreateRequestDto>>> GetAllCreateRequest()
         {
-            var res = await _context.AdsCreationRequests
+            var acc = await _context.Accounts.FirstOrDefaultAsync(acc => acc.Email == User.Identity!.Name);
+
+            if (acc is null)
+            {
+                return BadRequest(new
+                {
+                    Message = "Something went wrong with your account. Please login again!",
+                });
+            }
+
+            var rawResult = await _context.AdsCreationRequests
                 .Include(x => x.AdsBoards)
                 .ToListAsync();
 
-            return res;
+            var myResult = new List<GetAdsCreateRequestDto>();
+            foreach (var item in rawResult)
+            {
+                myResult.Add(new GetAdsCreateRequestDto() {
+                    RequestAddress = _context.AdsPoints.Find(item.AdsPointId)?.Address ?? "No Address"
+                });
+            }
+
+            myResult = myResult.Where(r => Helper.IsUnderAuthority(r.RequestAddress, acc.UnitUnderManagement)).ToList();
+            return myResult;
         }
 
         //POST: api/ads-request
