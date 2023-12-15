@@ -1,8 +1,16 @@
 import { AuthProvider, AuthProviderType } from '../lib/auth/process/provider';
+import {
+  OfficerAdProvider,
+  officerAdProviderType,
+} from '../lib/officerAds/process/provider/ReportProvider';
 import { ReportProvider } from '../lib/report/process/provider';
 import { reportProviderType } from '../lib/report/process/provider/ReportProvider';
+import {
+  PaginationProvider,
+  paginationProviderType,
+} from '../non-service-lib/pagination/process/provider/PaginationProvider';
 import { ReportFormProvider } from '../non-service-lib/reportForm';
-import { reportFormProviderType } from '../non-service-lib/reportForm/process/provider/ReportProvider';
+import { reportFormProviderType } from '../non-service-lib/reportForm/process/provider/ReportFormProvider';
 
 /**
  * REACT-QUERY-DEVTOOLS
@@ -31,17 +39,30 @@ export const mutationConfig = {
  * If you add 1 more module to providerConfig, you must
  * add to moduleKeyList and providerList as well
  */
-export type moduleKeyList = 'auth' | 'report' | 'report-form';
+export type moduleKeyList =
+  | 'auth'
+  | 'report'
+  | 'report-form'
+  | 'officer-ad'
+  | 'pagination';
 export type providerList = React.FC<
-  AuthProviderType | reportProviderType | reportFormProviderType
+  | AuthProviderType
+  | reportProviderType
+  | paginationProviderType
+  | officerAdProviderType
+  | reportFormProviderType
 >;
 export const providerConfig: {
   key: moduleKeyList;
   provider: providerList;
 }[] = [
   {
-    key: 'auth',
-    provider: AuthProvider,
+    key: 'pagination',
+    provider: PaginationProvider,
+  },
+  {
+    key: 'officer-ad',
+    provider: OfficerAdProvider,
   },
   {
     key: 'report',
@@ -50,6 +71,10 @@ export const providerConfig: {
   {
     key: 'report-form',
     provider: ReportFormProvider,
+  },
+  {
+    key: 'auth',
+    provider: AuthProvider,
   },
 ];
 

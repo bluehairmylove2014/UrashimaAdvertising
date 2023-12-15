@@ -90,23 +90,23 @@ body {
   /* Firefox */
 }
 
-.container {
-  margin: 0px auto;
-  padding: 0px 100px;
-  max-width: $container-width;
-}
+// .container {
+//   margin: 0px auto;
+//   padding: 0px 100px;
+//   max-width: $container-width;
+// }
 
-@media (max-width: $desktop-breakpoint) {
-  .container {
-    padding: 0px 50px;
-  }
-}
+// @media (max-width: $desktop-breakpoint) {
+//   .container {
+//     padding: 0px 50px;
+//   }
+// }
 
-@media (max-width: $mobile-breakpoint) {
-  .container {
-    padding: 0px 30px;
-  }
-}
+// @media (max-width: $mobile-breakpoint) {
+//   .container {
+//     padding: 0px 30px;
+//   }
+// }
 
 h1,
 h2,

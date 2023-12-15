@@ -1,12 +1,12 @@
-import { ReportFormState, useReportFormContext } from '../context';
+import { PaginationState, useReportFormContext } from '../context';
 
 type useSetReportFormReturnType = {
-  setForm: (formData: ReportFormState) => void;
+  setForm: (formData: PaginationState) => void;
 };
 export const useSetReportForm = (): useSetReportFormReturnType => {
   const { dispatch } = useReportFormContext();
 
-  const setForm = (formData: ReportFormState): void => {
+  const setForm = (formData: PaginationState): void => {
     dispatch({
       type: 'SET_ALL_ACTION',
       payload: {

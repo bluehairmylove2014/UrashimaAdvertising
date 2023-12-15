@@ -59,16 +59,15 @@ const calculateFromIndex = (
 };
 
 const calculateToIndex = (
-  data: any[],
+  dataLength: number,
   currentPage: number,
   elementPerPage: number
 ): number | null => {
-  if (!currentPage) return 0;
-  if (!Array.isArray(data)) return null;
+  if (!currentPage || !dataLength) return 0;
   const testMaxElement =
     (currentPage - 1) * elementPerPage + elementPerPage - 1;
-  if (data.length < testMaxElement) {
-    return data.length;
+  if (dataLength < testMaxElement) {
+    return dataLength;
   } else {
     return testMaxElement + 1;
   }

@@ -22,10 +22,7 @@ import {
   nonclusteredUnplannedPointLayer,
 } from '../../../mapgl/layers';
 import { MAP_DEFAULT_VIEW_PORT } from '../../../mapgl/viewPort';
-import {
-  useFetchAllAds,
-  useGetAdDetail,
-} from '@business-layer/business-logic/lib/ads';
+import { useGetAdDetail } from '@business-layer/business-logic/lib/ads';
 import ScreenLoader from '@presentational/atoms/ScreenLoader';
 import DetailLoader from '@presentational/atoms/DetailLoader';
 import CustomImage from '@presentational/atoms/CustomImage';
@@ -46,6 +43,7 @@ import { useNotification } from '@presentational/atoms/Notification';
 import LocationDetail from '@presentational/molecules/LocationDetail';
 import { ILocation } from '@business-layer/services/entities';
 import CustomSearchBox from '@presentational/atoms/CustomSearchBox';
+import { useGetAllOfficerAdsFromContext } from '@business-layer/business-logic/lib/officerAds/process/hooks';
 
 const MAP_STYLE = process.env.NEXT_PUBLIC_MAPBOX_MAP_STYLE || '';
 const ACCESS_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN || '';
@@ -65,7 +63,7 @@ type markerParamsType =
   | undefined;
 function Home(): ReactElement {
   const { showError } = useNotification();
-  const { data: adsData } = useFetchAllAds();
+  const adsData = useGetAllOfficerAdsFromContext();
   const mapRef = useRef<MapRef>(null);
   const [isShowCluster, setIsShowCluster] = useState<boolean>(true);
 
