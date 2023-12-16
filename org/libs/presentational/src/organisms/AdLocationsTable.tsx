@@ -1,15 +1,14 @@
 'use client';
 
 import { useGetAllOfficerAdsFromContext } from '@business-layer/business-logic/lib/officerAds/process/hooks';
-import { IAdLocation } from '@business-layer/services/entities';
 import EmptyIcon from '@presentational/atoms/EmptyIcon';
 import RowLoader from '@presentational/atoms/RowLoader';
 import Pagination from '@presentational/molecules/Pagination';
 import { calculateMaxPage, slicePaginationData } from '@utils/helpers';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import {
   useGetPagination,
-  useInitPagination,
+  useSetPaginationData,
 } from '@business-layer/business-logic/non-service-lib/pagination';
 import TableRow from '@presentational/molecules/TableRow';
 import IconButton from '@presentational/atoms/IconButton';
@@ -22,38 +21,19 @@ const MAX_ELEMENT_PER_PAGE = 6;
 function AdLocationsTable() {
   const router = useRouter();
   const officerAdData = useGetAllOfficerAdsFromContext();
-  const [displayedAdData, setDisplayedAdData] = useState<IAdLocation[] | null>(
-    null
-  );
-  const { initPagination } = useInitPagination();
-  const [paginationId, setPaginationId] = useState<number | null>(null);
-  const paginationVersion = useGetPagination(paginationId || -1);
+  const { setPaginationData } = useSetPaginationData();
+  const paginationData = useGetPagination();
 
   useEffect(() => {
     if (Array.isArray(officerAdData)) {
-      setPaginationId(
-        initPagination({
-          currentPage: START_PAGE,
-          maxPage: calculateMaxPage(officerAdData, MAX_ELEMENT_PER_PAGE),
-          maxElementPerPage: MAX_ELEMENT_PER_PAGE,
-          dataLength: officerAdData.length,
-        })
-      );
+      setPaginationData({
+        currentPage: START_PAGE,
+        maxPage: calculateMaxPage(officerAdData, MAX_ELEMENT_PER_PAGE),
+        maxElementPerPage: MAX_ELEMENT_PER_PAGE,
+        dataLength: officerAdData.length,
+      });
     }
   }, [officerAdData]);
-
-  useEffect(() => {
-    if (officerAdData && paginationVersion) {
-      setDisplayedAdData(
-        slicePaginationData(
-          officerAdData,
-          paginationVersion.data.currentPage,
-          paginationVersion.data.maxPage,
-          paginationVersion.data.maxElementPerPage
-        )
-      );
-    }
-  }, [paginationVersion?.data.currentPage]);
 
   return (
     <div className="shadow-sm overflow-x-auto overflow-y-hidden rounded-md">
@@ -81,12 +61,17 @@ function AdLocationsTable() {
           </tr>
         </thead>
         <tbody>
-          {Array.isArray(displayedAdData) ? (
-            displayedAdData.length > 0 ? (
-              displayedAdData.map((ad, adIndex) => (
+          {Array.isArray(officerAdData) ? (
+            officerAdData.length > 0 ? (
+              slicePaginationData(
+                officerAdData,
+                paginationData.currentPage,
+                paginationData.maxPage,
+                paginationData.maxElementPerPage
+              ).map((ad, adIndex) => (
                 <tr
                   className="py-4 even:bg-gray-100"
-                  key={`adLocation@${adIndex}`}
+                  key={`adLocation@${ad.address}`}
                 >
                   <TableRow
                     listData={[
@@ -113,8 +98,10 @@ function AdLocationsTable() {
                 </tr>
               ))
             ) : (
-              <tr>
-                <EmptyIcon />
+              <tr className="py-4">
+                <td colSpan={6} className="py-12">
+                  <EmptyIcon label="Không tìm thấy địa điểm nào" />
+                </td>
               </tr>
             )
           ) : (
@@ -122,11 +109,7 @@ function AdLocationsTable() {
           )}
         </tbody>
       </table>
-      {typeof paginationId === 'number' && paginationId > 0 ? (
-        <Pagination id={paginationId} />
-      ) : (
-        <></>
-      )}
+      {paginationData.maxPage > 0 ? <Pagination /> : <></>}
     </div>
   );
 }

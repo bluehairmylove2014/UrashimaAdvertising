@@ -4,6 +4,12 @@ import { OfficerAdContextType } from './type';
 
 export const OfficerAdContext = React.createContext<OfficerAdContextType>({
   state: {
+    adLocationFilterCriteria: {
+      searchKey: null,
+      adsForm: null,
+      locationType: null,
+    },
+    backupAdLocation: null,
     adLocations: null,
     adLocationsDetail: null,
   },

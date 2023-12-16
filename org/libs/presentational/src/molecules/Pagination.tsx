@@ -14,19 +14,15 @@ import {
 
 const NUMBER_OF_START_BUTTON = 4; // Number button before three dot button
 
-type paginationParamsType = {
-  id: number;
-};
 /**
  * -------------NOTE-------------
- * To get ID, in the page u need pagination,
- * please call useInitPagination to get initPagination Function,
- * After that, call it and get paginationId.
- *
- * Finally, pass this id here!!!
+ * THIS COMPONENT BASE ON PAGINATION CONTEXT
+ * PLEASE ENABLE AND USE HOOK TO SET DATA
+ * BEFORE USE
  */
-function Pagination({ id }: paginationParamsType) {
-  const paginationVersion = useGetPagination(id);
+function Pagination() {
+  const { currentPage, maxPage, maxElementPerPage, dataLength } =
+    useGetPagination();
   const { handleChangeCurrentPage } = useSetCurrentPagePagination();
 
   // methods
@@ -120,7 +116,7 @@ function Pagination({ id }: paginationParamsType) {
     return btns.map((btn, btnIndex) => (
       <PaginationButton
         type={btn.type}
-        onClick={() => handleChangeCurrentPage(id, btn.value)}
+        onClick={() => handleChangeCurrentPage(btn.value)}
         key={`paginationBtn@${btnIndex}`}
       >
         {btn.children}
@@ -130,80 +126,52 @@ function Pagination({ id }: paginationParamsType) {
 
   return (
     <div className="flex items-center justify-between border-t-0 border-gray-200 bg-white py-3 px-6">
-      {paginationVersion ? (
-        <div className="flex flex-1 items-center justify-between">
-          <div>
-            <p className="text-xs text-gray-700">
-              Showing{' '}
-              <span className="font-medium">
-                {calculateFromIndex(
-                  paginationVersion.data.currentPage,
-                  paginationVersion.data.maxElementPerPage
-                )}
-              </span>{' '}
-              to{' '}
-              <span className="font-medium">
-                {calculateToIndex(
-                  paginationVersion.data.dataLength,
-                  paginationVersion.data.currentPage,
-                  paginationVersion.data.maxElementPerPage
-                )}
-              </span>{' '}
-              of{' '}
-              <span className="font-medium">
-                {paginationVersion.data.dataLength}
-              </span>{' '}
-              results
-            </p>
-          </div>
-          <div>
-            <nav
-              className="isolate inline-flex -space-x-px rounded-md shadow-sm"
-              aria-label="Pagination"
-            >
-              <PaginationButton
-                type="prev"
-                onClick={() =>
-                  handleChangeCurrentPage(
-                    id,
-                    paginationVersion.data.currentPage - 1
-                  )
-                }
-                isDisabled={isDisablePrev({
-                  currentPage: paginationVersion.data.currentPage,
-                })}
-              >
-                <span className="sr-only">Previous</span>
-                <i className="fi fi-rr-angle-small-left" aria-hidden="true"></i>
-              </PaginationButton>
-
-              {renderListOfPaginationButton(
-                paginationVersion.data.currentPage,
-                paginationVersion.data.maxPage
-              )}
-
-              <PaginationButton
-                type="next"
-                onClick={() =>
-                  handleChangeCurrentPage(
-                    id,
-                    paginationVersion.data.currentPage + 1
-                  )
-                }
-                isDisabled={isDisableNext({
-                  currentPage: paginationVersion.data.currentPage,
-                  maxPage: paginationVersion.data.maxPage,
-                })}
-              >
-                <span className="sr-only">Next</span>
-                <i className="fi fi-rr-angle-small-right" aria-hidden="true" />
-              </PaginationButton>
-            </nav>
-          </div>
+      <div className="flex flex-1 items-center justify-between">
+        <div>
+          <p className="text-xs text-gray-700">
+            Showing{' '}
+            <span className="font-medium">
+              {calculateFromIndex(dataLength, currentPage, maxElementPerPage)}
+            </span>{' '}
+            to{' '}
+            <span className="font-medium">
+              {calculateToIndex(dataLength, currentPage, maxElementPerPage)}
+            </span>{' '}
+            of <span className="font-medium">{dataLength}</span> results
+          </p>
         </div>
-      ) : (
-        <></>
-      )}
+        <div>
+          <nav
+            className="isolate inline-flex -space-x-px rounded-md shadow-sm"
+            aria-label="Pagination"
+          >
+            <PaginationButton
+              type="prev"
+              onClick={() => handleChangeCurrentPage(currentPage - 1)}
+              isDisabled={isDisablePrev({
+                currentPage: currentPage,
+              })}
+            >
+              <span className="sr-only">Previous</span>
+              <i className="fi fi-rr-angle-small-left" aria-hidden="true"></i>
+            </PaginationButton>
+
+            {renderListOfPaginationButton(currentPage, maxPage)}
+
+            <PaginationButton
+              type="next"
+              onClick={() => handleChangeCurrentPage(currentPage + 1)}
+              isDisabled={isDisableNext({
+                currentPage: currentPage,
+                maxPage: maxPage,
+              })}
+            >
+              <span className="sr-only">Next</span>
+              <i className="fi fi-rr-angle-small-right" aria-hidden="true" />
+            </PaginationButton>
+          </nav>
+        </div>
+      </div>
     </div>
   );
 }

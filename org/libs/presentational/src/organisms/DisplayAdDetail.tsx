@@ -1,24 +1,46 @@
-import { IAdLocationDetail } from '@business-layer/services/entities';
+import {
+  IAdLocationDetail,
+  IBreadcrumb,
+} from '@business-layer/services/entities';
 import { OFFICER_PAGES } from '@constants/officerPages';
 import Link from 'next/link';
 import Thumbnail from '@presentational/atoms/Thumbnail';
+import Breadcrumbs from '@presentational/molecules/Breadcrumbs';
 
 const DEFAULT_THUMBNAIL_WIDTH = 120;
 const DEFAULT_THUMBNAIL_HEIGHT = 120;
-
+const breadcrumbsData: IBreadcrumb[] = [
+  {
+    href: OFFICER_PAGES.DASHBOARD,
+    label: 'Trang chủ',
+    isCurrent: false,
+  },
+  {
+    href: OFFICER_PAGES.ADS_LOCATION,
+    label: 'Danh sách điểm quảng cáo',
+    isCurrent: false,
+  },
+  {
+    href: OFFICER_PAGES.ADS_LOCATION,
+    label: 'Chi tiết điểm quảng cáo',
+    isCurrent: true,
+  },
+];
 function DisplayAdDetail({ adData }: { adData: IAdLocationDetail }) {
   return (
     <>
-      <div className="flex flex-row justify-between items-center mb-8 ">
-        <Link
+      <div className="flex flex-col justify-start items-start mb-8 ">
+        {/* <Link
           href={OFFICER_PAGES.ADS_LOCATION}
           className="overflow-hidden rounded-full bg-sky-700 text-white w-6 h-6 grid place-items-center text-[0.66rem]"
         >
           <i className="fi fi-sr-left"></i>
-        </Link>
-        <h1 className="w-full text-center font-bold !text-base">
+        </Link> */}
+        <h1 className="font-bold !text-base">
           THÔNG TIN ĐIỂM ĐẶT QUẢNG CÁO
         </h1>
+        <Breadcrumbs bcList={breadcrumbsData} />
+
         <div></div>
       </div>
       <div className="grid grid-cols-[80% 1fr] grid-rows-2 gap-5">

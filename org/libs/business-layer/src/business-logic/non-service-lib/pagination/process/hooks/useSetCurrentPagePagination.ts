@@ -1,19 +1,16 @@
 import { usePaginationContext } from '../context';
 
 type useSetCurrentPagePaginationReturnType = {
-  handleChangeCurrentPage: (id: number, pageNumber: number) => void;
+  handleChangeCurrentPage: (pageNumber: number) => void;
 };
 export const useSetCurrentPagePagination =
   (): useSetCurrentPagePaginationReturnType => {
     const { dispatch } = usePaginationContext();
 
-    const handleChangeCurrentPage = (id: number, pageNumber: number): void => {
+    const handleChangeCurrentPage = (pageNumber: number): void => {
       dispatch({
         type: 'SET_CURRENT_PAGE',
-        payload: {
-          id,
-          currentPage: pageNumber,
-        },
+        payload: pageNumber,
       });
     };
 

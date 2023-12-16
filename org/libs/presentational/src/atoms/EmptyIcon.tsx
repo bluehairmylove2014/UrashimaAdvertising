@@ -3,10 +3,16 @@ import EmptyIconPNG from '@assets/empty-box.png';
 
 const DEFAULT_ICON_SIZE = 80;
 
-function EmptyIcon({ customSize }: { customSize?: number }) {
+function EmptyIcon({
+  customSize,
+  label,
+}: {
+  customSize?: number;
+  label?: string;
+}) {
   const realSize = customSize ?? DEFAULT_ICON_SIZE;
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-full grid place-items-center">
       <Image
         src={EmptyIconPNG}
         alt="empty"
@@ -14,6 +20,7 @@ function EmptyIcon({ customSize }: { customSize?: number }) {
         height={realSize}
         priority={false}
       />
+      <p className="mt-2 font-semibold text-xs opacity-60">{label}</p>
     </div>
   );
 }

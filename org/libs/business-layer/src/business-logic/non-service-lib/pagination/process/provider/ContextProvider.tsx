@@ -10,7 +10,12 @@ export const ContextProvider: React.FC<ContextProviderType> = ({
   children,
 }) => {
   const [state, dispatch] = useReducer(paginationReducer, {
-    version: [],
+    data: {
+      currentPage: -1,
+      maxPage: -1,
+      maxElementPerPage: -1,
+      dataLength: -1,
+    },
   });
 
   return (

@@ -51,10 +51,11 @@ const handleNextPage = (
   }
 };
 const calculateFromIndex = (
+  dataLength: number,
   currentPage: number,
   elementPerPage: number
 ): number => {
-  if (!currentPage) return 0;
+  if (!currentPage || dataLength === 0) return 0;
   return (currentPage - 1) * elementPerPage + 1;
 };
 

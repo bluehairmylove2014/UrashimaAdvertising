@@ -11,6 +11,12 @@ export const ContextProvider: React.FC<ContextProviderType> = ({
   children,
 }) => {
   const [state, dispatch] = useReducer(officerAdReducer, {
+    adLocationFilterCriteria: {
+      searchKey: null,
+      adsForm: null,
+      locationType: null,
+    },
+    backupAdLocation: null,
     adLocations: null,
     adLocationsDetail: null,
   });

@@ -4,7 +4,12 @@ import { PaginationContextType } from './type';
 
 export const PaginationContext = React.createContext<PaginationContextType>({
   state: {
-    version: [],
+    data: {
+      currentPage: -1,
+      maxPage: -1,
+      maxElementPerPage: -1,
+      dataLength: -1,
+    },
   },
   dispatch: () => undefined,
 });
