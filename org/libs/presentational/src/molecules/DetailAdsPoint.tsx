@@ -1,24 +1,24 @@
 'use-client';
 import CustomImage from '@presentational/atoms/CustomImage';
 import CustomButtonIcon from '@presentational/atoms/CustomButtonIcon';
-import { IAdsDetail } from '@business-layer/services/entities/ads';
+import { IAdLocationDetail } from '@business-layer/services/entities/ads';
 
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { Carousel } from 'react-responsive-carousel';
-import { useSetReportForm } from '@business-layer/business-logic/lib/reportForm';
-
-import { useState } from 'react';
+import { useSetReportForm } from '@business-layer/business-logic/non-service-lib/reportForm';
 
 function DetailAdsPoint({
   detailAdsPoint,
   isReported,
   onClick,
   handleClose,
+  handleDetailReport,
 }: {
-  detailAdsPoint: IAdsDetail;
+  detailAdsPoint: IAdLocationDetail;
   isReported: boolean;
   onClick: (id: number) => void;
   handleClose: () => void;
+  handleDetailReport: () => void;
 }) {
   const { setForm } = useSetReportForm();
 
@@ -75,6 +75,7 @@ function DetailAdsPoint({
                 colorBorder="green"
                 pathImage="/assets/detailReport.png"
                 alt=""
+                onClick={handleDetailReport}
               >
                 <span className="text-green-600 text-[0.65rem] text-medium ml-1">
                   CHI TIẾT BÁO CÁO
@@ -192,7 +193,7 @@ function DetailAdsPoint({
             onClick={() => onClick(ads.id)}
             key={ads.id}
           >
-            <div className="w-[100%]  p-2 mb-4 border border-1 border-gray-300 rounded-lg hover:shadow-md transition-shadow">
+            <div className="w-[100%] p-2 mb-4 border border-1 border-gray-300 rounded-lg hover:shadow-md transition-shadow">
               <div className="flex justify-between">
                 <p className="text-sm font-bold text-neutral-800">
                   {ads.adsType} {ads.id}

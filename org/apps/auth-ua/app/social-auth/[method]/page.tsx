@@ -8,7 +8,7 @@ import {
 } from '@business-layer/business-logic/lib/auth';
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { PAGE_URLS } from '@constants/pages';
+import { OFFICER_PAGES } from '@constants/officerPages';
 import Image from 'next/image';
 import { SOCIAL_LOGIN_METHODS } from '../../../constants/social';
 
@@ -60,7 +60,7 @@ function SocialAuth() {
             setCurAuthState(authState.REDIRECT_STATE);
             // Handle get redirect url here
             setTimeout(() => {
-              router.push(PAGE_URLS.HOME);
+              router.push(OFFICER_PAGES.DASHBOARD);
             }, 2000);
           })
           .catch((error) => {
@@ -69,7 +69,7 @@ function SocialAuth() {
     } else {
       setErrorMsg('Unexpected error! Redirecting...');
       setTimeout(() => {
-        // router.push(PAGE_URLS.HOME);
+        // router.push(OFFICER_PAGES.DASHBOARD);
       }, 4000);
     }
 

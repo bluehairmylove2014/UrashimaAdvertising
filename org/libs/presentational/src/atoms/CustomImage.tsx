@@ -10,6 +10,7 @@ type customImageParams = {
   isPriority?: boolean;
   quality?: number;
   loading?: 'eager' | 'lazy';
+  size?: string;
 };
 function CustomImage({
   src,
@@ -21,6 +22,7 @@ function CustomImage({
   isPriority,
   quality = 100,
   loading,
+  size,
 }: customImageParams): JSX.Element {
   return (
     <div
@@ -37,7 +39,8 @@ function CustomImage({
         placeholder={placeholder}
         quality={quality}
         loading={loading}
-      // onError={() => console.error(`Cannot load image src: '${src}'`)}
+        sizes={size}
+        // onError={() => console.error(`Cannot load image src: '${src}'`)}
       />
     </div>
   );

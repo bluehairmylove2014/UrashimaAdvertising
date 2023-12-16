@@ -2,7 +2,7 @@
 import {
   useGetReportForm,
   useSetReportForm,
-} from '@business-layer/business-logic/lib/reportForm';
+} from '@business-layer/business-logic/non-service-lib/reportForm';
 import { ILocation } from '@business-layer/services/entities';
 import CommonLoader from '@presentational/atoms/CommonLoader';
 import ReportForm from './ReportForm';

@@ -12,14 +12,15 @@ import CustomButton from '@presentational/atoms/CustomButton';
 import AuthInput, { authInputParams } from '@presentational/atoms/AuthInput';
 import { loginSchema, useYupValidationResolver } from '@utils/validators/yup';
 import Link from 'next/link';
-import { PAGE_URLS } from './../../../constants/pages';
+import { OFFICER_PAGES } from '../../../constants/officerPages';
 import IconButton from '@presentational/atoms/IconButton';
 import FBIcon from '@presentational/assets/facebook.png';
 import GGIcon from '@presentational/assets/google.png';
 import GITIcon from '@presentational/assets/github.png';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
-const iconButtonSize = 40;
+const iconButtonSize = 2;
 const authInputList: authInputParams[] = [
   {
     name: 'email',
@@ -53,10 +54,14 @@ function LoginForm() {
     ),
     resolver,
   });
+  const router = useRouter();
 
   const handleLogin = ({ email, password }: loginFormData) => {
     onLogin({ email, password })
-      .then((msg) => showSuccess(msg))
+      .then((msg) => {
+        showSuccess(msg);
+        router.push(OFFICER_PAGES.DASHBOARD);
+      })
       .catch((error) => showError(error.message));
   };
 
@@ -85,7 +90,7 @@ function LoginForm() {
       </div>
       <div className="flex flex-row justify-end items-center mb-4">
         <Link
-          href={PAGE_URLS.HOME}
+          href={OFFICER_PAGES.DASHBOARD}
           className="font-semibold text-xs text-gray-400 hover:text-blue-600"
         >
           Forgot Password?
@@ -102,39 +107,39 @@ function LoginForm() {
           type="button"
           shape="circle"
           callback={onGoogleLogin}
-          customSize={`${iconButtonSize}px`}
+          customSize={`${iconButtonSize}rem`}
         >
           <Image
             src={GGIcon}
             alt="google login"
-            width={iconButtonSize}
-            height={iconButtonSize}
+            fill
+            sizes={`${iconButtonSize}rem`}
           />
         </IconButton>
         <IconButton
           type="button"
           shape="circle"
           callback={onFacebookLogin}
-          customSize={`${iconButtonSize}px`}
+          customSize={`${iconButtonSize}rem`}
         >
           <Image
             src={FBIcon}
             alt="facebook login"
-            width={iconButtonSize}
-            height={iconButtonSize}
+            fill
+            sizes={`${iconButtonSize}rem`}
           />
         </IconButton>
         <IconButton
           type="button"
           shape="circle"
           callback={onGithubLogin}
-          customSize={`${iconButtonSize}px`}
+          customSize={`${iconButtonSize}rem`}
         >
           <Image
             src={GITIcon}
             alt="github login"
-            width={iconButtonSize}
-            height={iconButtonSize}
+            fill
+            sizes={`${iconButtonSize}rem`}
           />
         </IconButton>
       </div>

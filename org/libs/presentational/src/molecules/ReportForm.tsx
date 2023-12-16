@@ -7,7 +7,7 @@ import {
   useYupValidationResolver,
   userReportSchema,
 } from '@utils/validators/yup';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import {
   useReportAd,
@@ -18,7 +18,7 @@ import {
   reportDataType,
   useSetReportFormActive,
   reportIdentificationDataType,
-} from '@business-layer/business-logic/lib/reportForm';
+} from '@business-layer/business-logic/non-service-lib/reportForm';
 import ImageInput from '@presentational/atoms/ImageInput';
 import PreviewImage from '@presentational/atoms/PreviewImage';
 import { useUpload } from '@business-layer/business-logic/lib/sirv';

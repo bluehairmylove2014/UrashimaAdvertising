@@ -12,3 +12,10 @@ export const useGetAllAdsQuery = () => {
     retry: mutationConfig.USE_QUERY_RETRY,
   });
 };
+export const useGetAllOfficerAdsQuery = () => {
+  return useQuery({
+    queryKey: [QUERY_N_MUTATION_KEYS.GET_ALL_OFFICER_ADS],
+    queryFn: () => adsService.getAllOfficerAds(),
+    retry: mutationConfig.USE_QUERY_RETRY,
+  });
+};

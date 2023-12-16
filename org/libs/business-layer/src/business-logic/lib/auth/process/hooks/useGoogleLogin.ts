@@ -66,6 +66,7 @@ export const useGoogleLogin = () => {
                   })
                   .then((res) => {
                     // Remove listener
+                    console.log('RESPONSE: ', res);
                     setToken(res.token);
                     setRefreshToken(res.refreshToken);
                     postMessage({

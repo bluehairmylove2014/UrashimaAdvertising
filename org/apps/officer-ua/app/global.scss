@@ -15,12 +15,12 @@ $desktop-breakpoint: 1024px;
 $tablet-breakpoint: 768px;
 $mobile-breakpoint: 480px;
 
-// $container-width: 1400px;
+$container-width: 1400px;
 
 @font-face {
   font-family: 'LuckiestGuy';
-  src: url('/assets/fonts/luckiest_guy/LuckiestGuy-Regular.ttf') format('woff2'),
-    // url('/path/to/your/font.woff') format('woff');
+  src: url('/assets/fonts/luckiest_guy/LuckiestGuy-Regular.ttf') format('woff2');
+  // url('/path/to/your/font.woff') format('woff');
 }
 
 /* Smooth scroll behavior*/
@@ -181,30 +181,10 @@ i {
 
 label {
   pointer-events: none;
-  user-select: none;
 }
 
 input,
 textarea {
   font-family: Montserrat, sans-serif;
   font-size: inherit;
-}
-
-@layer utilities {
-  .scrollbar::-webkit-scrollbar {
-    width: 0.12rem;
-  }
-
-  .scrollbar::-webkit-scrollbar-track {
-    background: #ffffff00;
-  }
-
-  .scrollbar::-webkit-scrollbar-thumb {
-    background: #a6a6a6;
-  }
-
-
-  // .scrollbar::-webkit-scrollbar-thumb:hover {
-  //   background: #888;
-  // }
 }
