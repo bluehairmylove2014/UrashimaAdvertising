@@ -25,24 +25,20 @@ async function AdBoards({ params }: { params: { boardId: string } }) {
     {
       href: OFFICER_PAGES.ADS_BOARD + `/${params.boardId}`,
       label: 'Chi tiết điểm quảng cáo',
+      isCurrent: false,
+    },
+    {
+      href: OFFICER_PAGES.ADS_BOARD_EDIT + `/${params.boardId}`,
+      label: 'Chỉnh sửa',
       isCurrent: true,
     },
   ];
 
   return (
     <main className="container mx-auto px-4 py-12">
-      <div className="flex flex-row justify-between items-start mb-8 ">
-        <div>
-          <h1 className="font-bold !text-base">THÔNG TIN ĐIỂM ĐẶT QUẢNG CÁO</h1>
-          <Breadcrumbs bcList={breadcrumbsData} />
-        </div>
-        <Link
-          href={OFFICER_PAGES.ADS_BOARD + `/edit/${adData.id}`}
-          className="px-4 py-2 rounded text-[0.65rem] font-semibold text-white bg-green-600 hover:bg-green-500 transition-colors"
-        >
-          <i className="fi fi-ss-file-edit mr-2"></i>
-          Chỉnh sửa
-        </Link>
+      <div className="flex flex-col justify-start items-start mb-8 ">
+        <h1 className="font-bold !text-base">CHỈNH SỬA ĐIỂM ĐẶT QUẢNG CÁO</h1>
+        <Breadcrumbs bcList={breadcrumbsData} />
       </div>
       <DisplayAdDetail adData={adData} />
     </main>

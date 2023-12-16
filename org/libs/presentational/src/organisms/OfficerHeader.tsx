@@ -22,11 +22,13 @@ function OfficerHeader() {
       <nav>
         <ul className="flex flex-row items-center justify-start gap-5">
           <div className=" w-20 h-10 object-cover relative">
-            <Image
-              src={'/assets/images/logo/white.png'}
-              alt="Urashima Ads"
-              fill
-            />
+            <Link href={OFFICER_PAGES.DASHBOARD}>
+              <Image
+                src={'/assets/images/logo/white.png'}
+                alt="Urashima Ads"
+                fill
+              />
+            </Link>
           </div>
           <li>
             <Link
