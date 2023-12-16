@@ -6,7 +6,7 @@ function AdLocations() {
   // const router = useRouter();
   return (
     <div className="container mx-auto px-4 py-12">
-      <h1 className="mb-12 w-full text-center font-bold">
+      <h1 className="mb-8 w-full text-center font-bold !text-base">
         DANH SÁCH ĐIỂM ĐẶT QUẢNG CÁO
       </h1>
       <div className="flex flex-row gap-4 justify-start mb-8 w-full">

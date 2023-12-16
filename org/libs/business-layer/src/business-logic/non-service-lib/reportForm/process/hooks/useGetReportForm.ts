@@ -1,6 +1,6 @@
-import { PaginationState, useReportFormContext } from '../context';
+import { ReportFormState, useReportFormContext } from '../context';
 
-export const useGetReportForm = (): PaginationState => {
+export const useGetReportForm = (): ReportFormState => {
   const { state } = useReportFormContext();
   return state;
 };

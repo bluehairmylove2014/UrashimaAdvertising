@@ -15,7 +15,7 @@ export class Services {
   }
 
   handleError(error: any): Error {
-    console.error('service error: ', error);
+    // console.error('service error: ', error);
     if (isCancel(error)) {
       this.cancelRequest();
       return error;
@@ -61,12 +61,14 @@ export class Services {
       signal,
       withCredentials,
     };
-    window && window.addEventListener('beforeunload', this.cancelRequest);
+    typeof window !== 'undefined' &&
+      window.addEventListener('beforeunload', this.cancelRequest);
     const response = await (!isProduction
       ? axios(mockParams)
       : getAxiosNormalInstance()(mockParams));
     const dataResponse = schema.parse(response.data);
-    window && window.removeEventListener('beforeunload', this.cancelRequest);
+    typeof window !== 'undefined' &&
+      window.removeEventListener('beforeunload', this.cancelRequest);
     return transformResponse ? transformResponse(dataResponse) : dataResponse;
   }
 }

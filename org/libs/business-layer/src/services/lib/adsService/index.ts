@@ -1,7 +1,22 @@
-import { getAdDetailsUrl, getAllAdsUrl, getAllOfficerAdsUrl, getOfficerAdDetailAdsUrl } from '../../config/apis';
+import {
+  getAdDetailsUrl,
+  getAllAdsUrl,
+  getAllOfficerAdsUrl,
+  getOfficerAdDetailAdsUrl,
+} from '../../config/apis';
 import { Services } from '../../service';
-import { getAdDetailResponseSchema, getAllAdsResponseSchema, getAllOfficerAdsResponseSchema, getOfficerAdDetailResponseSchema } from './schema';
-import { getAdDetailResponseType, getAllAdsResponseType, getAllOfficerAdsResponseType, getOfficerLocationDetailAdsResponseType } from './type';
+import {
+  getAdDetailResponseSchema,
+  getAllAdsResponseSchema,
+  getAllOfficerAdsResponseSchema,
+  getOfficerAdDetailResponseSchema,
+} from './schema';
+import {
+  getAdDetailResponseType,
+  getAllAdsResponseType,
+  getAllOfficerAdsResponseType,
+  getOfficerLocationDetailAdsResponseType,
+} from './type';
 
 export * from './type';
 export class AdsService extends Services {
@@ -44,7 +59,7 @@ export class AdsService extends Services {
       throw this.handleError(error);
     }
   };
-  
+
   getAllOfficerAds = async (): Promise<getAllOfficerAdsResponseType> => {
     this.abortController = new AbortController();
     try {
@@ -63,7 +78,9 @@ export class AdsService extends Services {
       throw this.handleError(error);
     }
   };
-  getOfficerLocationDetail = async (adId: number): Promise<getOfficerLocationDetailAdsResponseType> => {
+  getOfficerLocationDetail = async (
+    adId: number
+  ): Promise<getOfficerLocationDetailAdsResponseType> => {
     this.abortController = new AbortController();
     try {
       const response = await this.fetchApi<
@@ -81,6 +98,7 @@ export class AdsService extends Services {
       });
       return response;
     } catch (error) {
+      console.log('FUCCKING ERRORRRR: ', error);
       throw this.handleError(error);
     }
   };

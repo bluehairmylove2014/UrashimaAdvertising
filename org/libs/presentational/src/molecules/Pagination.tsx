@@ -12,7 +12,7 @@ import {
   isDisablePrev,
 } from '@utils/helpers';
 
-const NUMBER_OF_START_BUTTON = 3; // Number button before three dot button
+const NUMBER_OF_START_BUTTON = 4; // Number button before three dot button
 
 type paginationParamsType = {
   id: number;
@@ -69,11 +69,13 @@ function Pagination({ id }: paginationParamsType) {
           children: <span>1</span>,
           value: 1,
         });
-      } else if (currentPage <= maxPage) {
+      } else if (currentPage === 2) {
         for (
           let pageNumber =
-            currentPage + 1 < maxPage ? currentPage + 1 : maxPage - 1;
-          pageNumber >= currentPage - 1;
+            NUMBER_OF_START_BUTTON < maxPage
+              ? NUMBER_OF_START_BUTTON
+              : maxPage - 1;
+          pageNumber >= 1;
           pageNumber--
         ) {
           btns.unshift({
@@ -82,9 +84,35 @@ function Pagination({ id }: paginationParamsType) {
             value: pageNumber,
           });
         }
+        btns[1].type = 'activeNumber';
+      } else if (currentPage <= maxPage) {
+        for (
+          let pageNumber =
+            currentPage + 1 < maxPage ? currentPage + 1 : maxPage - 1;
+          pageNumber > currentPage - 2;
+          pageNumber--
+        ) {
+          btns.unshift({
+            type: 'number',
+            children: <span>{pageNumber}</span>,
+            value: pageNumber,
+          });
+        }
+        btns.unshift({
+          type: 'threeDot',
+          children: <span>...</span>,
+          value: maxPage,
+        });
+        btns.unshift({
+          type: 'number',
+          children: <span>1</span>,
+          value: 1,
+        });
 
         if (currentPage < maxPage) {
-          btns[1].type = 'activeNumber';
+          btns[3].type = 'activeNumber';
+        } else if (currentPage === maxPage) {
+          btns[btns.length - 1].type = 'activeNumber';
         }
       }
     }
