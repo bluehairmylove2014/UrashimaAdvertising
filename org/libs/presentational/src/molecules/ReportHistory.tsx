@@ -104,7 +104,7 @@ function DetailReport({
       </div>
 
       {/* Show list report form from each tab */}
-      <div className="mt-3">
+      <div className="my-3">
         <Tab.Group>
           {/* title tab */}
           <Tab.List className="flex h-[100%]">
@@ -171,16 +171,14 @@ function DetailReport({
                     <Listbox.Option
                       key={formIdx}
                       className={({ active }) =>
-                        `relative cursor-default select-none py-2 pl-3 ${
-                          active ? 'bg-blue-100 text-blue-900' : 'text-gray-900'
+                        `relative cursor-default select-none py-2 pl-3 ${active ? 'bg-blue-100 text-blue-900' : 'text-gray-900'
                         }`
                       }
                       value={form}
                     >
                       <span
-                        className={`block truncate ${
-                          selectedFormReport ? 'font-medium' : 'font-normal'
-                        }`}
+                        className={`block truncate ${selectedFormReport ? 'font-medium' : 'font-normal'
+                          }`}
                       >
                         {form}
                       </span>

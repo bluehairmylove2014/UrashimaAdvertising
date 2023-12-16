@@ -17,7 +17,7 @@ function ReportDetailAdsBoard({
 }) {
   return (
     <div
-      className="h-[100%] w-[25%] bg-white shadow-md min-w-[45vh] fixed overflow-y-scroll scrollbar z-30"
+      className="h-[100%] w-[25%] bg-white shadow-md min-w-[45vh] fixed overflow-y-scroll scrollbar z-40"
       style={{ left: 0, top: 0 }}
     >
       <div className="absolute z-10 top-0 right-0 mt-2 mx-1">

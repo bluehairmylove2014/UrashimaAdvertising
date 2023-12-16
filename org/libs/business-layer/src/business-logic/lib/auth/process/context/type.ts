@@ -5,17 +5,17 @@ export interface AuthState {
 
 export type AuthAction =
   | {
-      type: "SET_ACTION";
-      payload: AuthState["token"];
-    }
+    type: "SET_ACTION";
+    payload: string;
+  }
   | {
-      type: "SET_REFRESH_ACTION";
-      payload: AuthState["refreshToken"];
-    }
+    type: "SET_REFRESH_ACTION";
+    payload: number;
+  }
   | {
-      type: "SET_ALL_ACTION";
-      payload: AuthState;
-    };
+    type: "SET_ALL_ACTION";
+    payload: AuthState;
+  };
 
 export type AuthContextType = {
   state: AuthState;

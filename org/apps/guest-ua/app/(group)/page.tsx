@@ -58,16 +58,16 @@ import { IAdReport, ILocationReport } from '@business-layer/services/entities';
 
 type locationType =
   | {
-      lat: number;
-      lon: number;
-    }
+    lat: number;
+    lon: number;
+  }
   | undefined;
 
 type markerParamsType =
   | {
-      latitude: number;
-      longitude: number;
-    }
+    latitude: number;
+    longitude: number;
+  }
   | undefined;
 function Home(): ReactElement {
   const { showError } = useNotification();
@@ -437,10 +437,10 @@ function Home(): ReactElement {
                     planned: m.planned,
                     reported: locationReportList
                       ? locationReportList.findIndex(
-                          (lr) =>
-                            lr.latitude === m.latitude &&
-                            lr.longitude === m.longitude
-                        ) !== -1
+                        (lr) =>
+                          lr.latitude === m.latitude &&
+                          lr.longitude === m.longitude
+                      ) !== -1
                       : false,
                   },
                   geometry: {
@@ -475,6 +475,7 @@ function Home(): ReactElement {
               <InfoAdsPoint
                 info={infoHoverAdsPoint}
                 isReported={isReported}
+                isOfficer={false}
                 onClick={(id) => {
                   setIsActiveAdsBoard(false);
                   setIdAdsPointClick(id);
@@ -488,12 +489,12 @@ function Home(): ReactElement {
           )}
 
           {/* Check Loading Ads Point*/}
-
           {isClickAdsPoint ? (
             infoClickAdsPoint ? (
               <DetailAdsPoint
                 detailAdsPoint={infoClickAdsPoint}
                 isReported={isClickReported}
+                isOfficer={false}
                 onClick={(id) => {
                   setIdAdsBoard(id);
                   setIsActiveAdsBoard(true);
@@ -529,6 +530,7 @@ function Home(): ReactElement {
               <DetailAds
                 adsPoint={infoClickAdsPoint}
                 id={idAdsBoard}
+                isOfficer={false}
                 handleClose={() => {
                   setIsActiveAdsBoard(false);
                   setIsClickAdsPoint(false);
@@ -554,12 +556,19 @@ function Home(): ReactElement {
                 setAdsBoardReportedDetail(adsBoard);
                 setIsClickReportedAdsBoard(true);
                 setInfoAdsPointOfAdsBoard(
-                  adsData?.find((ads) => ads.id === adsBoard.adsBoardID)
+                  adsData?.find((ads) => ads.id === adsBoard.adsPointID)
                 );
+
               }}
               handleDetailAdsPoint={(point) => {
                 setAdsPointReportedDetail(point);
                 setIsClickReportedPoint(true);
+                if (mapRef.current !== null)
+                  mapRef.current.flyTo({
+                    zoom: 14,
+                    center: [point.longitude, point.latitude],
+                    duration: 1500,
+                  });
               }}
             />
           ) : (
