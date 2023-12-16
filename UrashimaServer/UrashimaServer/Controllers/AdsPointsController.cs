@@ -1,4 +1,4 @@
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using UrashimaServer.Database;
@@ -20,8 +20,8 @@ namespace UrashimaServer.Controllers
             _mapper = mapper;
         }
 
-        // GET: api/ads-points/all
-        [HttpGet("all")]
+        // GET: api/ads-points
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<UserAdsPointBasicDto>>> GetAllAdsPoints()
         {
             var rawResult = await _context.AdsPoints.ToListAsync();
@@ -63,21 +63,45 @@ namespace UrashimaServer.Controllers
 
         // POST: api/AdsPoints
         [HttpPost]
-        public async Task<ActionResult<AdsPoint>> PostAdsPoint(AdsPoint adsPoint)
+        public async Task<ActionResult<AdsPoint>> PostAdsPoint(PostAdsPointDto adsPoint)
         {
-          if (_context.AdsPoints == null)
-          {
-              return Problem("Entity set 'DataContext.AdsPoints'  is null.");
-          }
-            _context.AdsPoints.Add(adsPoint);
+            if (_context.AdsPoints == null)
+            {
+                return Problem("Không thể kết nối đến cơ sở dữ liệu");
+            }
+            _context.AdsPoints.Add(_mapper.Map<AdsPoint>(adsPoint));
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetAdsPoint", new { id = adsPoint.Id }, adsPoint);
         }
 
-        // DELETE: api/AdsPoints/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAdsPoint(int id)
+        // POST: api/AdsPoints
+        [HttpPut]
+        public async Task<ActionResult<AdsPoint>> PutAdsPoint(PostAdsPointDto adsPoint)
+        {
+            if (_context.AdsPoints == null)
+            {
+                return Problem("Không thể kết nối đến cơ sở dữ liệu");
+            }
+            _context.AdsPoints.Update(_mapper.Map<AdsPoint>(adsPoint));
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            } catch
+            {
+                return BadRequest(new
+                {
+                    Message = "Không thể cập nhật điểm quảng cáo"
+                });
+            }
+
+            return Ok(adsPoint);
+        }
+
+        // DELETE: api/AdsPoints
+        [HttpDelete]
+        public async Task<IActionResult> DeleteAdsPoint([FromQuery] int id)
         {
             if (_context.AdsPoints == null)
             {

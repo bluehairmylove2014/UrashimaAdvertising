@@ -1,4 +1,4 @@
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using UrashimaServer.Database;
@@ -19,7 +19,7 @@ namespace UrashimaServer.Controllers
             _mapper = mapper;
         }
 
-        // GET: api/ads-board/detail
+        // GET: api/ads-board/detail?id=5
         [HttpGet("detail")]
         public async Task<ActionResult<AdsBoardBasicDto>> GetAdsBoardDetail([FromQuery] int id)
         {
@@ -42,7 +42,7 @@ namespace UrashimaServer.Controllers
 
         // -----------------------------------
 
-        // GET: api/AdsBoards
+        // GET: api/ads-board
         [HttpGet]
         public async Task<ActionResult<IEnumerable<AdsBoard>>> GetAdsBoards()
         {
@@ -69,6 +69,76 @@ namespace UrashimaServer.Controllers
             }
 
             return Ok(boardDtoList);
+        }
+
+        // POST: api/ads-board
+        [HttpPost]
+        public async Task<ActionResult<AdsBoardBasicDto>> PostAdsBoard(AdsBoardBasicDto adsBoard)
+        {
+            if (_context.AdsBoards == null)
+            {
+                return Problem("Không thể kết nối đến cơ sở dữ liệu");
+            }
+            _context.AdsBoards.Add(_mapper.Map<AdsBoard>(adsBoard));
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            } catch
+            {
+                return BadRequest(new
+                {
+                    Message = "Tạo bảng quảng cáo không thành công, vui lòng thử lại"
+                });
+            }
+
+            return CreatedAtAction("GetAdsBoardDetail", new { id = adsBoard.Id }, adsBoard);
+        }
+
+        // POST: api/ads-board
+        [HttpPut]
+        public async Task<ActionResult<AdsBoardBasicDto>> PutAdsBoard(AdsBoardBasicDto adsBoard)
+        {
+            if (_context.AdsBoards == null)
+            {
+                return Problem("Không thể kết nối đến cơ sở dữ liệu");
+            }
+            _context.AdsBoards.Update(_mapper.Map<AdsBoard>(adsBoard));
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                return BadRequest(new
+                {
+                    Message = "Không thể cập nhật bảng quảng cáo"
+                });
+            }
+
+            return Ok(adsBoard);
+        }
+
+        // DELETE: api/ads-board?id=5
+        [HttpDelete]
+        public async Task<IActionResult> DeleteAdsBoard([FromQuery] int id)
+        {
+            if (_context.AdsBoards == null)
+            {
+                return Problem("Không thể kết nối đến cơ sở dữ liệu");
+            }
+
+            var adsBoard = await _context.AdsBoards.FindAsync(id);
+            if (adsBoard == null)
+            {
+                return NotFound();
+            }
+
+            _context.AdsBoards.Remove(adsBoard);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
     }
 }

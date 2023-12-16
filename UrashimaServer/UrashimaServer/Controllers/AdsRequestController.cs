@@ -25,8 +25,8 @@ namespace UrashimaServer.Controllers
             _mapper = mapper;
         }
 
-        // GET: api/ads-request/all
-        [HttpGet("all"), AuthorizeRoles(GlobalConstant.WardOfficer, GlobalConstant.DistrictOfficer, GlobalConstant.HeadQuater)]
+        // GET: api/ads-request
+        [HttpGet, AuthorizeRoles(GlobalConstant.WardOfficer, GlobalConstant.DistrictOfficer, GlobalConstant.HeadQuater)]
         public async Task<ActionResult<IEnumerable<GetAdsCreateRequestDto>>> GetAllCreateRequest()
         {
             var acc = await _context.Accounts.FirstOrDefaultAsync(acc => acc.Email == User.Identity!.Name);
@@ -113,7 +113,7 @@ namespace UrashimaServer.Controllers
         }
 
         // DELETE: api/ads-request
-        [HttpDelete("")]
+        [HttpDelete]
         public async Task<IActionResult> DeleteRequest([FromQuery, Required] int id)
         {
             var role = "Ward";

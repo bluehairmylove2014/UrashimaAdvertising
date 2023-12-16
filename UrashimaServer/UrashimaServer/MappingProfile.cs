@@ -13,6 +13,7 @@ namespace UrashimaServer
             // Ex: CreateMap<OrderItemDto, Order>().ReverseMap();
             CreateMap<AdsBoard, GetAdsBoardDto>().ReverseMap();
             CreateMap<AdsPoint, GetAdsPointDto>().ReverseMap();
+            CreateMap<AdsPoint, PostAdsPointDto>().ReverseMap();
 
             // Map Ads_Point
             CreateMap<AdsPoint, UserAdsPointBasicDto>().ReverseMap();

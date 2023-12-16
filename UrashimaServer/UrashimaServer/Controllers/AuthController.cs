@@ -5,7 +5,6 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using UrashimaServer.Common.Constant;
-using UrashimaServer.Common.Enum;
 using UrashimaServer.Common.Helper;
 using UrashimaServer.Database;
 using UrashimaServer.Dtos;

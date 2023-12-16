@@ -30,6 +30,18 @@ namespace UrashimaServer.Database.Dtos
         public DateTime ExpiredDate { get; set; }
     }
 
+    public class PostAdsPointDto
+    {
+        [Key]
+        public int Id { get; set; }
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
+        public string Address { get; set; } = string.Empty;
+        public string LocationType { get; set; } = string.Empty;
+        public string AdsForm { get; set; } = string.Empty;
+        public bool Planned { get; set; }
+    }
+
     public class UserAdsPointDetailDto
     {
         public int Id { get; set; }
