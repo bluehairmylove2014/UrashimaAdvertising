@@ -12,7 +12,7 @@ using UrashimaServer.Database;
 namespace UrashimaServer.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20231212142912_UrashimaDB_v1")]
+    [Migration("20231217145107_UrashimaDB_v1")]
     partial class UrashimaDB_v1
     {
         /// <inheritdoc />

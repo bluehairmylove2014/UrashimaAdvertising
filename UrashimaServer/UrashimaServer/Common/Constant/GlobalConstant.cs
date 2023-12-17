@@ -45,4 +45,11 @@
 
         public static List<(List<string>, string)> CheckList = list;
     }
+
+    public static class RequestStatusConstant
+    {
+        public const string Confirm = "Confirm";
+        public const string Unconfirm = "Unconfirm";
+        public const string Deleted = "Deleted";
+    }
 }

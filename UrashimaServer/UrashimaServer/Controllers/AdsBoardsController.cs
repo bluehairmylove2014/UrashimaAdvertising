@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using UrashimaServer.Common.Constant;
 using UrashimaServer.Database;
 using UrashimaServer.Models;
 
@@ -57,7 +58,8 @@ namespace UrashimaServer.Controllers
                 .Include(s => s.Reports)
                 .ToListAsync();
 
-            var result = rawBoards.Select(board => board.AdsCreateRequest?.RequestStatus != "Unconfirmed");
+            var result = rawBoards
+                .Select(board => board.AdsCreateRequest?.RequestStatus != RequestStatusConstant.Unconfirm);
 
             // map each element
             var boardDtoList = new List<GetAdsBoardDto>();

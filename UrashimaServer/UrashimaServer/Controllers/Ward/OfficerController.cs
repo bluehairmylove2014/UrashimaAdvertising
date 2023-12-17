@@ -25,52 +25,6 @@ namespace UrashimaServer.Controllers.Ward
             _mapper = mapper;
         }
 
-        [HttpPost("point-modification")]
-        public async Task<ActionResult<PointModify>> PointModify(PointModify PointModifyRequest)
-        {
-            _context.PointModifies.Add(PointModifyRequest);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("PointModify", new { id = PointModifyRequest.Id }, PointModifyRequest);
-        }
-
-        //public async Task<ActionResult<BoardModify>> BoardModify(BoardModify BoardModifyRequest)
-        //{
-        //    _context.BoardModifies.Add(BoardModifyRequest);
-        //    await _context.SaveChangesAsync();
-
-        //    return CreatedAtAction("BoardModify", new { id = BoardModifyRequest.Id }, BoardModifyRequest);
-        //}
-
-        [HttpGet("ad-request")]
-        public async Task<ActionResult<AdsCreationRequest>> GetAdsBoardRequestDetail([FromQuery] int id)
-        {
-            if (_context.AdsCreationRequests == null)
-            {
-                return NotFound();
-            }
-
-            AdsCreationRequest? result = null;
-            var rawRequest = await _context.AdsCreationRequests
-                .Include(s => s.AdsBoards)
-                .ToListAsync();
-
-            foreach (var req in rawRequest)
-            {
-                var value = req.AdsBoards?.AsQueryable().Where(b => b.Id == id);
-                if (!value.IsNullOrEmpty()) {
-                    result = req;
-                    break;
-                }
-            }
-
-            if (result == null) {
-                return NotFound();
-            }
-            
-            return result;
-        }
-
         [HttpGet("ads-board/detail"), AuthorizeRoles(GlobalConstant.WardOfficer, GlobalConstant.DistrictOfficer, GlobalConstant.HeadQuater)]
         public async Task<ActionResult<AdsBoardBasicDto>> GetOfficerAdsBoardDetail([FromQuery] int id)
         {
