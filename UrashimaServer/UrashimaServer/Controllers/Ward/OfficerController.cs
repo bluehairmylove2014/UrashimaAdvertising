@@ -143,7 +143,7 @@ namespace UrashimaServer.Controllers.Ward
             var adsPoint = await _context.AdsPoints
                 .Where(adsPoint => adsPoint.Id == id)
                 .Include(s => s.AdsBoard)
-                .Include(s => s.Image)
+                .Include(s => s.Images)
                 .FirstOrDefaultAsync();
 
             if (adsPoint is null || !Helper.IsUnderAuthority(adsPoint.Address, acc.UnitUnderManagement))

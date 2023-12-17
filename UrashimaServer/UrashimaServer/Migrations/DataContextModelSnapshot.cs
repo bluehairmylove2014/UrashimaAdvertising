@@ -377,7 +377,7 @@ namespace UrashimaServer.Migrations
             modelBuilder.Entity("UrashimaServer.Models.AdsPointImage", b =>
                 {
                     b.HasOne("UrashimaServer.Models.AdsPoint", "AdsPoint")
-                        .WithMany("Image")
+                        .WithMany("Images")
                         .HasForeignKey("AdsPointId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -436,7 +436,7 @@ namespace UrashimaServer.Migrations
                 {
                     b.Navigation("AdsBoard");
 
-                    b.Navigation("Image");
+                    b.Navigation("Images");
 
                     b.Navigation("Reports");
                 });

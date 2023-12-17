@@ -12,7 +12,7 @@ using UrashimaServer.Database;
 namespace UrashimaServer.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20231217160416_UrashimaDB_v1")]
+    [Migration("20231217163153_UrashimaDB_v1")]
     partial class UrashimaDB_v1
     {
         /// <inheritdoc />
@@ -380,7 +380,7 @@ namespace UrashimaServer.Migrations
             modelBuilder.Entity("UrashimaServer.Models.AdsPointImage", b =>
                 {
                     b.HasOne("UrashimaServer.Models.AdsPoint", "AdsPoint")
-                        .WithMany("Image")
+                        .WithMany("Images")
                         .HasForeignKey("AdsPointId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -439,7 +439,7 @@ namespace UrashimaServer.Migrations
                 {
                     b.Navigation("AdsBoard");
 
-                    b.Navigation("Image");
+                    b.Navigation("Images");
 
                     b.Navigation("Reports");
                 });

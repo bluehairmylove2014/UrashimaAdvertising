@@ -30,7 +30,7 @@ namespace UrashimaServer.Database
 
             modelBuilder.Entity<AdsPointImage>()
                 .HasOne(e => e.AdsPoint)
-                .WithMany(adsPoint => adsPoint.Image)
+                .WithMany(adsPoint => adsPoint.Images)
                 .HasForeignKey(e => e.AdsPointId)
                 .IsRequired();
 

@@ -48,7 +48,7 @@ namespace UrashimaServer.Controllers
             var adsPoint = (await _context.AdsPoints
                 .Where(adsPoint => adsPoint.Id == id)
                 .Include(s => s.AdsBoard)
-                .Include(s => s.Image)
+                .Include(s => s.Images)
                 .ToListAsync()).FirstOrDefault();
 
             if (adsPoint == null)
