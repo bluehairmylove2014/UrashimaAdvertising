@@ -50,16 +50,16 @@ const ACCESS_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN || '';
 
 type locationType =
   | {
-      lat: number;
-      lon: number;
-    }
+    lat: number;
+    lon: number;
+  }
   | undefined;
 
 type markerParamsType =
   | {
-      latitude: number;
-      longitude: number;
-    }
+    latitude: number;
+    longitude: number;
+  }
   | undefined;
 function Home(): ReactElement {
   const { showError } = useNotification();
@@ -386,10 +386,10 @@ function Home(): ReactElement {
                     planned: m.planned,
                     reported: locationReportList
                       ? locationReportList.findIndex(
-                          (lr) =>
-                            lr.latitude === m.latitude &&
-                            lr.longitude === m.longitude
-                        ) !== -1
+                        (lr) =>
+                          lr.latitude === m.latitude &&
+                          lr.longitude === m.longitude
+                      ) !== -1
                       : false,
                   },
                   geometry: {
@@ -424,6 +424,7 @@ function Home(): ReactElement {
               <InfoAdsPoint
                 info={infoHoverAdsPoint}
                 isReported={isReported}
+                isOfficer={true}
                 onClick={(id) => {
                   setIsActiveAdsBoard(false);
                   setIdAdsPointClick(id);
@@ -443,6 +444,7 @@ function Home(): ReactElement {
               <DetailAdsPoint
                 detailAdsPoint={infoClickAdsPoint}
                 isReported={isClickReported}
+                isOfficer={true}
                 onClick={(id) => {
                   setIdAdsBoard(id);
                   setIsActiveAdsBoard(true);
@@ -450,7 +452,7 @@ function Home(): ReactElement {
                 handleClose={() => {
                   setIsClickAdsPoint(false);
                 }}
-                handleDetailReport={() => {}}
+                handleDetailReport={() => { }}
               />
             ) : (
               <></>
@@ -464,6 +466,7 @@ function Home(): ReactElement {
               <DetailAds
                 adsPoint={infoClickAdsPoint}
                 id={idAdsBoard}
+                isOfficer={true}
                 handleClose={() => {
                   setIsActiveAdsBoard(false);
                   setIsClickAdsPoint(false);
