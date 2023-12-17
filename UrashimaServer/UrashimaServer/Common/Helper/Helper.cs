@@ -25,7 +25,7 @@ namespace UrashimaServer.Common.Helper
         }
 
         public static bool IsUnderAuthority(string address, string managementUnit)
-        => Regex.IsMatch(address, $@"\b(?i){managementUnit}\b");
+        => !string.IsNullOrEmpty(managementUnit) && Regex.IsMatch(address, $@"\b(?i){managementUnit}\b");
 
         public static bool IsAuthorizedOrigin(string origin, string role)
         => !OriginConstant.CheckList.Find(e => e.Item2.Equals(role))

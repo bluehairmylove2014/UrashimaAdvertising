@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
@@ -12,7 +11,7 @@ using UrashimaServer.Database.Models;
 
 namespace UrashimaServer.Controllers
 {
-    [Route("api/ads-request")]
+    [Route("api/officer/ads-request")]
     [ApiController]
     public class AdsRequestController : ControllerBase
     {

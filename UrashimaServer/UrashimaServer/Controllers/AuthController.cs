@@ -106,13 +106,13 @@ namespace UrashimaServer.Controllers
                 });
             }
 
-            if (!Helper.IsAuthorizedOrigin(requestOrigin.ToString(), account.Role))
-            {
-                return BadRequest(new
-                {
-                    message = "Invalid origin!",
-                });
-            }
+            //if (!Helper.IsAuthorizedOrigin(requestOrigin.ToString(), account.Role))
+            //{
+            //    return BadRequest(new
+            //    {
+            //        message = "Invalid origin!",
+            //    });
+            //}
 
             if (!VerifyPasswordHash(request.Password, Helper.StringToByteArray(account.PasswordHash), Helper.StringToByteArray(account.PasswordSalt)))
             {

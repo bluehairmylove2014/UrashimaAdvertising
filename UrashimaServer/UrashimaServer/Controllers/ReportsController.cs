@@ -1,4 +1,4 @@
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using UrashimaServer.Common.Constant;
@@ -11,7 +11,7 @@ using UrashimaServer.Models;
 
 namespace UrashimaServer.Controllers
 {
-    [Route("api/report")]
+    [Route("api/reports")]
     [ApiController]
     public class ReportsController : ControllerBase
     {
@@ -115,7 +115,8 @@ namespace UrashimaServer.Controllers
             return Ok(result);
         }
 
-        [HttpGet("role-based"), AuthorizeRoles(GlobalConstant.WardOfficer, GlobalConstant.DistrictOfficer, GlobalConstant.HeadQuater)]
+        [Route("/api/officer/reports")]
+        [HttpGet, AuthorizeRoles(GlobalConstant.WardOfficer, GlobalConstant.DistrictOfficer, GlobalConstant.HeadQuater)]
         public async Task<ActionResult<IList<GetReportDto>>> GetReportBasedOnRole()
         {
             var acc = await _context.Accounts.FirstOrDefaultAsync(acc => acc.Email == User.Identity!.Name);
@@ -144,7 +145,35 @@ namespace UrashimaServer.Controllers
             return Ok(result);
         }
 
-        [HttpPut("role-based"), AuthorizeRoles(GlobalConstant.WardOfficer, GlobalConstant.DistrictOfficer, GlobalConstant.HeadQuater)]
+        [Route("/api/officer/reports/detail")]
+        [HttpGet, AuthorizeRoles(GlobalConstant.WardOfficer, GlobalConstant.DistrictOfficer, GlobalConstant.HeadQuater)]
+        public async Task<ActionResult<IList<GetReportDto>>> GetReportDetailBasedOnRole(int id)
+        {
+            var acc = await _context.Accounts.FirstOrDefaultAsync(acc => acc.Email == User.Identity!.Name);
+
+            if (acc is null)
+            {
+                return BadRequest(new
+                {
+                    Message = "Something went wrong with your account. Please login again!",
+                });
+            }
+
+            var rawResult = await _context.Reports
+                .Where(r => r.Id == id)
+                .Include(r => r.Images)
+                .FirstOrDefaultAsync();
+
+            if (rawResult is null || !Helper.IsUnderAuthority(rawResult.Address, acc.UnitUnderManagement))
+            {
+                return NotFound();
+            }
+
+            return Ok(_mapper.Map<GetReportDto>(rawResult));
+        }
+
+        [Route("/api/officer/reports")]
+        [HttpPut, AuthorizeRoles(GlobalConstant.WardOfficer, GlobalConstant.DistrictOfficer, GlobalConstant.HeadQuater)]
         public async Task<ActionResult<GetReportDto>> UpdateReportBasedOnRole(GetReportDto updateReport)
         {
             var acc = await _context.Accounts.FirstOrDefaultAsync(acc => acc.Email == User.Identity!.Name);
@@ -180,7 +209,16 @@ namespace UrashimaServer.Controllers
             mailRequest.ToEmail = updatedItem.Email;
             mailRequest.Subject = "Your report is being processed!!!";
             mailRequest.Body = $"Dear {acc.FullName}, We are writing to inform you that your report is currently being processed. Our team is working hard to ensure that your order is handled as soon as possible.\r\n\r\nReport status: {updatedItem.ReportStatus}, Treatment: {updatedItem.TreatmentProcess}\r\n\r\n. If you have any questions or concerns about your report, please don't hesitate to contact us. We're always here to help.\r\n\r\nThank you for reporting the problem to us.\r\n\r\nBest regards,\r\n\r\nUrashima Map";
-            await _emailService.SendEmailAsync(mailRequest);
+            try
+            {
+                await _emailService.SendEmailAsync(mailRequest);
+            } catch
+            {
+                return BadRequest(new
+                {
+                    Message = "Không thể gửi email"
+                });
+            }
 
             return Ok(_mapper.Map<GetReportDto>(updatedItem));
         }
