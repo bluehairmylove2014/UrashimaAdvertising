@@ -30,20 +30,20 @@ namespace UrashimaServer.Database
 
             modelBuilder.Entity<AdsPointImage>()
                 .HasOne(e => e.AdsPoint)
-                .WithMany(adsPoint => adsPoint.Images)
+                .WithMany(adsPoint => adsPoint.Image)
                 .HasForeignKey(e => e.AdsPointId)
                 .IsRequired();
 
 
             modelBuilder.Entity<AdsBoard>()
                 .HasOne(e => e.AdsCreateRequest)
-                .WithMany(creationReq => creationReq.AdsBoards)
+                .WithMany(creationReq => creationReq.AdsBoard)
                 .HasForeignKey(e => e.AdsCreateRequestId)
                 .OnDelete(DeleteBehavior.SetNull);
 
             modelBuilder.Entity<AdsBoard>()
                 .HasOne(e => e.AdsPoint)
-                .WithMany(adsPoint => adsPoint.AdsBoards)
+                .WithMany(adsPoint => adsPoint.AdsBoard)
                 .HasForeignKey(e => e.AdsPointId)
                 .IsRequired();
 

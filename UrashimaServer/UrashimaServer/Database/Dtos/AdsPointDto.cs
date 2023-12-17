@@ -51,7 +51,7 @@ namespace UrashimaServer.Database.Dtos
         public string LocationType { get; set; } = string.Empty;
         public string AdsForm { get; set; } = string.Empty;
         public bool Planned { get; set; }
-        public ICollection<PointImageDto>? Images { get; set; }
-        public ICollection<GetPointAdsBoardDto>? AdsBoards { get; set; }
+        public ICollection<PointImageDto>? Image { get; set; }
+        public ICollection<GetPointAdsBoardDto>? AdsBoard { get; set; }
     }
 }

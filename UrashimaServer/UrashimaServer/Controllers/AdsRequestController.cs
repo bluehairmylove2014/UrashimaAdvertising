@@ -41,7 +41,7 @@ namespace UrashimaServer.Controllers
             }
 
             var rawResult = await _context.AdsCreationRequests
-                .Include(x => x.AdsBoards)
+                .Include(x => x.AdsBoard)
                 .ToListAsync();
 
             var myResult = new List<GetAdsCreateRequestDto>();
@@ -61,11 +61,11 @@ namespace UrashimaServer.Controllers
         public async Task<IActionResult> PostCreateRequest(AdsCreateRequestDto createRequest)
         {
             var request = _mapper.Map<AdsCreationRequest>(createRequest);
-            var boardList = request.AdsBoards;
+            var boardList = request.AdsBoard;
 
             if (boardList is not null)
             {
-                request.AdsBoards = null;
+                request.AdsBoard = null;
             }
 
             if (_context.AdsCreationRequests == null)
@@ -188,12 +188,12 @@ namespace UrashimaServer.Controllers
 
             AdsCreationRequest? result = null;
             var rawRequest = await _context.AdsCreationRequests
-                .Include(s => s.AdsBoards)
+                .Include(s => s.AdsBoard)
                 .ToListAsync();
 
             foreach (var req in rawRequest)
             {
-                var value = req.AdsBoards?.AsQueryable().Where(b => b.Id == id);
+                var value = req.AdsBoard?.AsQueryable().Where(b => b.Id == id);
                 if (!value.IsNullOrEmpty())
                 {
                     result = req;

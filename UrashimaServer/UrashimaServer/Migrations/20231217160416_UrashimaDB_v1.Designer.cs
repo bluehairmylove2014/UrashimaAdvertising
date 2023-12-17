@@ -12,7 +12,7 @@ using UrashimaServer.Database;
 namespace UrashimaServer.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20231217145107_UrashimaDB_v1")]
+    [Migration("20231217160416_UrashimaDB_v1")]
     partial class UrashimaDB_v1
     {
         /// <inheritdoc />
@@ -362,12 +362,12 @@ namespace UrashimaServer.Migrations
             modelBuilder.Entity("UrashimaServer.Models.AdsBoard", b =>
                 {
                     b.HasOne("UrashimaServer.Database.Models.AdsCreationRequest", "AdsCreateRequest")
-                        .WithMany("AdsBoards")
+                        .WithMany("AdsBoard")
                         .HasForeignKey("AdsCreateRequestId")
                         .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("UrashimaServer.Models.AdsPoint", "AdsPoint")
-                        .WithMany("AdsBoards")
+                        .WithMany("AdsBoard")
                         .HasForeignKey("AdsPointId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -380,7 +380,7 @@ namespace UrashimaServer.Migrations
             modelBuilder.Entity("UrashimaServer.Models.AdsPointImage", b =>
                 {
                     b.HasOne("UrashimaServer.Models.AdsPoint", "AdsPoint")
-                        .WithMany("Images")
+                        .WithMany("Image")
                         .HasForeignKey("AdsPointId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -422,7 +422,7 @@ namespace UrashimaServer.Migrations
 
             modelBuilder.Entity("UrashimaServer.Database.Models.AdsCreationRequest", b =>
                 {
-                    b.Navigation("AdsBoards");
+                    b.Navigation("AdsBoard");
                 });
 
             modelBuilder.Entity("UrashimaServer.Database.Models.Location", b =>
@@ -437,9 +437,9 @@ namespace UrashimaServer.Migrations
 
             modelBuilder.Entity("UrashimaServer.Models.AdsPoint", b =>
                 {
-                    b.Navigation("AdsBoards");
+                    b.Navigation("AdsBoard");
 
-                    b.Navigation("Images");
+                    b.Navigation("Image");
 
                     b.Navigation("Reports");
                 });
