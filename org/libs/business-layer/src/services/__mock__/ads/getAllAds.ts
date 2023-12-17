@@ -2,9 +2,9 @@ import { axiosMockAdapterInstance } from '../../config/axios';
 import adsRawData from '../data/ads.json';
 import { getApiUrl } from '../../config/url';
 import { getAllAdsUrl } from '../../config/apis';
-import { IAds } from '@business-layer/services/entities';
+import { IAdLocation } from '@business-layer/services/entities';
 
-const adsData: IAds[] = adsRawData;
+const adsData: IAdLocation[] = adsRawData;
 
 axiosMockAdapterInstance
   .onGet(getApiUrl(false) + getAllAdsUrl)

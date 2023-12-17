@@ -1,5 +1,5 @@
 // import CustomButtonIcon from '@presentational/atoms/CustomButtonIcon';
-import { IAds } from '@business-layer/services/entities/ads';
+import { IAdLocation } from '@business-layer/services/entities/ads';
 // import { useSetReportForm } from '@business-layer/business-logic/lib/reportForm';
 
 function InfoAds({
@@ -7,7 +7,7 @@ function InfoAds({
   isReported,
   onClick,
 }: {
-  info: IAds;
+  info: IAdLocation;
   isReported: boolean;
   onClick: (id: number) => void;
 }) {

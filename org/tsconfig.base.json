@@ -16,7 +16,7 @@
     "resolveJsonModule": true,
     "baseUrl": ".",
     "paths": {
-      "@assets/*": ["libs/presentational/assets*"],
+      "@assets/*": ["libs/presentational/src/assets/*"],
       "@business-layer/*": ["libs/business-layer/src/*"],
       "@constants/*": ["libs/constants/*"],
       "@presentational/*": ["libs/presentational/src/*"],

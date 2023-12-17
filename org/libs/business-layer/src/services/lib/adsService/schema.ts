@@ -11,6 +11,7 @@ const getAllAdsResponseSchema = z.array(
     planned: z.boolean(),
   })
 );
+
 const getAdDetailResponseSchema = z.object({
   id: z.number(),
   latitude: z.number(),
@@ -36,4 +37,13 @@ const getAdDetailResponseSchema = z.object({
   ),
 });
 
-export { getAllAdsResponseSchema, getAdDetailResponseSchema };
+
+const getAllOfficerAdsResponseSchema = getAllAdsResponseSchema;
+const getOfficerAdDetailResponseSchema = getAdDetailResponseSchema;
+
+export { 
+  getAllAdsResponseSchema, 
+  getAdDetailResponseSchema, 
+  getAllOfficerAdsResponseSchema,
+  getOfficerAdDetailResponseSchema 
+};

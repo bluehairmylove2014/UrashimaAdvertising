@@ -10,6 +10,9 @@ export const updateAccountUrl = '/v1/auth/login-social';
 // ADS
 export const getAllAdsUrl = '/api/ad-points';
 export const getAdDetailsUrl = '/api/ad-point';
+export const getAllOfficerAdsUrl = '/api/ward/ad-points'
+export const getOfficerLocationDetailAdsUrl = '/api/ward/ad-point'
+export const getOfficerAdDetailAdsUrl = '/pi/ward/ad-board'
 
 // REPORT
 export const reportAdUrl = '/api/report/ad-board';

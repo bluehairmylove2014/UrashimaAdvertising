@@ -1,15 +1,15 @@
 // Import necessary modules and functions
-import { IAdsDetail } from '@business-layer/services/entities';
+import { IAdLocationDetail } from '@business-layer/services/entities';
 import { useGetAdDetailMutation } from '../../fetching/mutation';
 
 type useGetAdDetailReturnType = {
-  onGetAdDetail: (id: number) => Promise<IAdsDetail>;
+  onGetAdDetail: (id: number) => Promise<IAdLocationDetail>;
   isLoading: boolean;
 };
 export const useGetAdDetail = (): useGetAdDetailReturnType => {
   const getAdDetailMutation = useGetAdDetailMutation();
 
-  const onGetAdDetail = (id: number): Promise<IAdsDetail> => {
+  const onGetAdDetail = (id: number): Promise<IAdLocationDetail> => {
     return new Promise((resolve, reject) => {
       getAdDetailMutation
         .mutateAsync(id)

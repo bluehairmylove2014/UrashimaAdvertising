@@ -21,7 +21,7 @@ function IconButton({
   return (
     <button
       type={type}
-      className={`${shapeStyle[shape]} w-8 h-8`}
+      className={`${shapeStyle[shape]} w-8 h-8 relative overflow-hidden`}
       style={{ width: customSize, height: customSize }}
       onClick={() => callback && callback()}
     >

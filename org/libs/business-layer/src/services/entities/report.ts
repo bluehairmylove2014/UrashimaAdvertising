@@ -1,5 +1,4 @@
-import { IAdsDetail } from './ads';
-import { IAdsBoard } from './adsBoard';
+import { IAdLocationDetail, IAdsBoard } from './ads';
 
 interface IReport {
   reportType: string;
@@ -10,14 +9,15 @@ interface IReport {
   images: {
     image: string;
   }[];
-  reportData: IAdsDetail | IAdsBoard;
 }
 
 export interface IAdReport extends IReport {
   adsBoardID: number;
   adsPointID: number;
+  reportData: IAdsBoard;
 }
 export interface ILocationReport extends IReport {
   latitude: number;
   longitude: number;
+  reportData: IAdLocationDetail;
 }

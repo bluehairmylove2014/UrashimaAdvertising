@@ -1,4 +1,7 @@
-import { IAds, IAdsDetail } from '../../entities';
+import { IAdLocation, IAdLocationDetail } from '../../entities';
 
-export type getAllAdsResponseType = IAds[];
-export type getAdDetailResponseType = IAdsDetail;
+export type getAllAdsResponseType = IAdLocation[];
+export type getAdDetailResponseType = IAdLocationDetail;
+
+export type getAllOfficerAdsResponseType = IAdLocation[];
+export type getOfficerLocationDetailAdsResponseType = IAdLocationDetail;
