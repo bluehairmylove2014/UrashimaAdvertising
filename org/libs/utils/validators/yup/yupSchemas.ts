@@ -15,3 +15,10 @@ export const userReportSchema = yup.object({
   phone: yup.string().matches(vietnamPhoneNumber, 'Số điện thoại không hợp lệ'),
   content: yup.string().required('Cần điền nội dung báo cáo').max(1000),
 });
+
+export const editLocationDetailSchema = yup.object({
+  address: yup
+    .string()
+    .required('Địa chỉ không được để trống')
+    .max(255, 'Địa chỉ tối đa 255 ký tự'),
+});

@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { AdsService } from '@business-layer/services';
-import DisplayAdDetail from '@presentational/organisms/DisplayAdDetail';
+import EditAdDetail from '@presentational/organisms/EditAdDetail';
 import Breadcrumbs from '@presentational/molecules/Breadcrumbs';
-import Link from 'next/link';
 import { IBreadcrumb } from '@business-layer/services/entities';
 import { OFFICER_PAGES } from '@constants/officerPages';
+import { LOCATION_TYPES } from '../../../../../constants/locationTypes';
+import { ADS_FORM } from '../../../../../constants/adsForm';
 
 const officerService = new AdsService();
 
@@ -33,6 +35,8 @@ async function AdBoards({ params }: { params: { boardId: string } }) {
       isCurrent: true,
     },
   ];
+  const [defaultLocationOption, ...locationOptions] = LOCATION_TYPES;
+  const [defaultAdsFormOption, ...adsFormOptions] = ADS_FORM;
 
   return (
     <main className="container mx-auto px-4 py-12">
@@ -40,7 +44,11 @@ async function AdBoards({ params }: { params: { boardId: string } }) {
         <h1 className="font-bold !text-base">CHỈNH SỬA ĐIỂM ĐẶT QUẢNG CÁO</h1>
         <Breadcrumbs bcList={breadcrumbsData} />
       </div>
-      <DisplayAdDetail adData={adData} />
+      <EditAdDetail
+        adData={adData}
+        locationOptions={locationOptions}
+        adsFormOptions={adsFormOptions}
+      />
     </main>
   );
 }

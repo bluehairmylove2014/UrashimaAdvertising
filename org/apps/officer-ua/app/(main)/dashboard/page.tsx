@@ -50,16 +50,16 @@ const ACCESS_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN || '';
 
 type locationType =
   | {
-    lat: number;
-    lon: number;
-  }
+      lat: number;
+      lon: number;
+    }
   | undefined;
 
 type markerParamsType =
   | {
-    latitude: number;
-    longitude: number;
-  }
+      latitude: number;
+      longitude: number;
+    }
   | undefined;
 function Home(): ReactElement {
   const { showError } = useNotification();
@@ -303,7 +303,7 @@ function Home(): ReactElement {
           mapStyle={MAP_STYLE}
         >
           <div className="flex flex-row justify-between w-full my-4 z-40 relative gap-3 overflow-hidden">
-            <form className="w-1/2 h-fit pl-4">
+            <div className="w-1/2 h-fit pl-4">
               <CustomSearchBox
                 marker={true}
                 accessToken={ACCESS_TOKEN}
@@ -328,7 +328,7 @@ function Home(): ReactElement {
                   }
                 }}
               />
-            </form>
+            </div>
 
             <div className="pr-4">{/*  */}</div>
           </div>
@@ -386,10 +386,10 @@ function Home(): ReactElement {
                     planned: m.planned,
                     reported: locationReportList
                       ? locationReportList.findIndex(
-                        (lr) =>
-                          lr.latitude === m.latitude &&
-                          lr.longitude === m.longitude
-                      ) !== -1
+                          (lr) =>
+                            lr.latitude === m.latitude &&
+                            lr.longitude === m.longitude
+                        ) !== -1
                       : false,
                   },
                   geometry: {
@@ -452,7 +452,7 @@ function Home(): ReactElement {
                 handleClose={() => {
                   setIsClickAdsPoint(false);
                 }}
-                handleDetailReport={() => { }}
+                handleDetailReport={() => {}}
               />
             ) : (
               <></>

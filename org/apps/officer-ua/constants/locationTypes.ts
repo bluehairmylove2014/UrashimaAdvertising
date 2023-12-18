@@ -1,8 +1,6 @@
-export const LOCATION_TYPES: {
-  name: string;
-  value: null | string;
-  defaultChecked: boolean;
-}[] = [
+import { modernSelectOptionType } from "@presentational/atoms/ModernSelect";
+
+export const LOCATION_TYPES: modernSelectOptionType[] = [
   {
     name: 'Tất cả loại địa điểm',
     value: null,

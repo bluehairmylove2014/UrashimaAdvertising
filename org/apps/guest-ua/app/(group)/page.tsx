@@ -58,16 +58,16 @@ import { IAdReport, ILocationReport } from '@business-layer/services/entities';
 
 type locationType =
   | {
-    lat: number;
-    lon: number;
-  }
+      lat: number;
+      lon: number;
+    }
   | undefined;
 
 type markerParamsType =
   | {
-    latitude: number;
-    longitude: number;
-  }
+      latitude: number;
+      longitude: number;
+    }
   | undefined;
 function Home(): ReactElement {
   const { showError } = useNotification();
@@ -337,7 +337,7 @@ function Home(): ReactElement {
           mapStyle={MAP_STYLE}
         >
           <div className="flex flex-row justify-between w-full my-4 z-40 relative gap-3 overflow-hidden">
-            <form className="w-1/2 h-fit pl-4">
+            <div className="w-1/2 h-fit pl-4">
               <CustomSearchBox
                 marker={true}
                 accessToken={ACCESS_TOKEN}
@@ -362,7 +362,7 @@ function Home(): ReactElement {
                   }
                 }}
               />
-            </form>
+            </div>
 
             <div className="pr-4">
               <button
@@ -437,10 +437,10 @@ function Home(): ReactElement {
                     planned: m.planned,
                     reported: locationReportList
                       ? locationReportList.findIndex(
-                        (lr) =>
-                          lr.latitude === m.latitude &&
-                          lr.longitude === m.longitude
-                      ) !== -1
+                          (lr) =>
+                            lr.latitude === m.latitude &&
+                            lr.longitude === m.longitude
+                        ) !== -1
                       : false,
                   },
                   geometry: {
@@ -558,7 +558,6 @@ function Home(): ReactElement {
                 setInfoAdsPointOfAdsBoard(
                   adsData?.find((ads) => ads.id === adsBoard.adsPointID)
                 );
-
               }}
               handleDetailAdsPoint={(point) => {
                 setAdsPointReportedDetail(point);

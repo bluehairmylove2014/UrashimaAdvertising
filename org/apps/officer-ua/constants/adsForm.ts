@@ -1,8 +1,6 @@
-export const ADS_FORM: {
-  name: string;
-  value: null | string;
-  defaultChecked: boolean;
-}[] = [
+import { modernSelectOptionType } from '@presentational/atoms/ModernSelect';
+
+export const ADS_FORM: modernSelectOptionType[] = [
   {
     name: 'Tất cả hình thức',
     value: null,

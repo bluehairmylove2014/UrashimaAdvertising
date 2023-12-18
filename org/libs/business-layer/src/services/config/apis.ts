@@ -8,14 +8,14 @@ export const refreshTokenUrl = '/v1/auth/refresh-token';
 export const updateAccountUrl = '/v1/auth/login-social';
 
 // ADS
-export const getAllAdsUrl = '/api/ad-points';
-export const getAdDetailsUrl = '/api/ad-point';
-export const getAllOfficerAdsUrl = '/api/ward/ad-points'
-export const getOfficerLocationDetailAdsUrl = '/api/ward/ad-point'
-export const getOfficerAdDetailAdsUrl = '/pi/ward/ad-board'
+export const getAllAdsUrl = '/api/ads-point';
+export const getAdDetailsUrl = '/api/ads-point/detail';
+export const getAllOfficerAdsUrl = '/api/officer/ads-point';
+export const getOfficerLocationDetailAdsUrl = '/api/officer/ads-point';
+export const getOfficerAdDetailAdsUrl = '/api/officer/ads-board/detail';
 
 // REPORT
-export const reportAdUrl = '/api/report/ad-board';
+export const reportAdUrl = '/api/report/ads-board';
 export const reportLocationUrl = '/api/report/location';
 
 // LOCATION

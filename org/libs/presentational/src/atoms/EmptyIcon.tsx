@@ -12,7 +12,7 @@ function EmptyIcon({
 }) {
   const realSize = customSize ?? DEFAULT_ICON_SIZE;
   return (
-    <div className="w-full h-full grid place-items-center">
+    <span className="w-full h-full grid place-items-center">
       <Image
         src={EmptyIconPNG}
         alt="empty"
@@ -21,7 +21,7 @@ function EmptyIcon({
         priority={false}
       />
       <p className="mt-2 font-semibold text-xs opacity-60">{label}</p>
-    </div>
+    </span>
   );
 }
 

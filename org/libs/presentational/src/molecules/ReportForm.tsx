@@ -258,7 +258,7 @@ function ReportForm({
               </button>
             </div>
           ) : (
-            <ImageInput onSelectImages={handleSelectImage} />
+            <ImageInput onSelectImages={handleSelectImage} limit={2} />
           )}
         </div>
         <CustomButton

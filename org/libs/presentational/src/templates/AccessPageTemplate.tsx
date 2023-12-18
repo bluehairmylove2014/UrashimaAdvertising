@@ -1,3 +1,4 @@
+import Notification from '@presentational/atoms/Notification';
 import React from 'react';
 
 type accessPageTemplateParams = {
@@ -5,7 +6,12 @@ type accessPageTemplateParams = {
 };
 
 const AccessPageTemplate = ({ children }: accessPageTemplateParams) => {
-  return <div className="w-screen h-screen">{children}</div>;
+  return (
+    <div className="w-screen h-screen">
+      <Notification />
+      {children}
+    </div>
+  );
 };
 
 export default AccessPageTemplate;

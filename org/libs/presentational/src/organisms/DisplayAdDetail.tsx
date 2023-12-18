@@ -120,9 +120,9 @@ function DisplayAdDetail({ adData }: { adData: IAdLocationDetail }) {
                     <TableRow
                       listData={[
                         ad.id.toString(),
-                        <div className="w-full grid place-items-center">
+                        <span className="w-full grid place-items-center">
                           <Thumbnail width={200} height={200} src={ad.image} />
-                        </div>,
+                        </span>,
                         <span>
                           {ad.width}m x {ad.height}m
                         </span>,

@@ -2,15 +2,33 @@
 import { useRef } from 'react';
 import { useNotification } from './Notification';
 
-const limitTotalSize = 10485760; // 10MB
+const limitTotalSize = 10485760; // 10 MB
+const MBConvertFactor = 1048576; // 1048576 KB = 1 MB
+
+const styleList = {
+  fill: 'w-fit h-full flex flex-col justify-center items-center',
+  button: 'w-fit h-fit ',
+};
 
 function ImageInput({
   onSelectImages,
+  style,
+  limit,
+  limitSize,
+  isAbortLimitSize,
+  disabled,
 }: {
   onSelectImages: (imageList: FileList) => void;
+  style?: 'fill' | 'button';
+  limit?: number;
+  limitSize?: number;
+  isAbortLimitSize?: boolean;
+  disabled?: boolean;
 }) {
+  const realLimitSize = limitSize ?? limitTotalSize;
+  const selectedStyle = style || 'button';
   const inputRef = useRef<HTMLInputElement>(null);
-  const { showSuccess, showError } = useNotification();
+  const { showError } = useNotification();
 
   const triggerInputFile = () => {
     inputRef.current && inputRef.current.click();
@@ -21,8 +39,8 @@ function ImageInput({
       return;
     }
 
-    if (fileList.length > 2) {
-      showError('Chỉ được chọn TỐI ĐA 2 ảnh');
+    if (typeof limit === 'number' && limit > 0 && fileList.length > limit) {
+      showError(`Chỉ được chọn TỐI ĐA ${limit} ảnh`);
       return;
     }
 
@@ -31,22 +49,30 @@ function ImageInput({
       0
     );
 
-    if (totalSize < limitTotalSize) {
-      onSelectImages && onSelectImages(fileList);
+    if (!isAbortLimitSize) {
+      if (totalSize < realLimitSize) {
+        onSelectImages && onSelectImages(fileList);
+      } else {
+        showError(
+          `Kích thước tối đa ${(realLimitSize / MBConvertFactor).toFixed(0)}MB`
+        );
+      }
     } else {
-      showError('Kích thước tối đa 10MB cho tối đa 2 ảnh');
+      onSelectImages && onSelectImages(fileList);
     }
   };
 
   return (
     <>
       <button
-        className="w-fit h-fit rounded px-4 py-2 bg-cyan-100 border-solid border-2 border-blue-400 text-blue-500 text-[0.5rem] hover:border-blue-600 transition-colors"
+        className={`${styleList[selectedStyle]} disabled:cursor-not-allowed disabled:opacity-50 rounded px-4 py-2 bg-cyan-100 border-solid border-2 border-blue-400 text-blue-500 text-[0.5rem] hover:border-blue-600 transition-colors`}
         type="button"
         onClick={triggerInputFile}
+        disabled={disabled}
       >
         <i className="fi fi-br-picture inline-block"></i>
-        <span className="ml-2">Thêm hình ảnh (Tối đa 2)</span>
+        <span className="ml-2">Thêm hình ảnh </span>
+        {limit ? <span>(Tối đa 2)</span> : <></>}
       </button>{' '}
       <input
         type="file"
