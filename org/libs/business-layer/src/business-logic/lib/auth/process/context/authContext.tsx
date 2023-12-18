@@ -1,6 +1,8 @@
-import React from "react";
-import { useContext } from "react";
-import { AuthContextType } from ".";
+'use client';
+
+import React from 'react';
+import { useContext } from 'react';
+import { AuthContextType } from '.';
 
 export const AuthContext = React.createContext<AuthContextType>({
   state: {
@@ -13,7 +15,7 @@ export const AuthContext = React.createContext<AuthContextType>({
 export const useAuthContext = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error("useAuthContext must be used within a AuthProvider");
+    throw new Error('useAuthContext must be used within a AuthProvider');
   }
   return context;
 };

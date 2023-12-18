@@ -38,8 +38,6 @@ export const useReportLocation = (): useReportLocationReturnType => {
     return new Promise((resolve, reject) => {
       const { reportData: reportTargetData, ...reportWithoutTargetData } =
         reportData;
-      console.log(reportData);
-      console.log(reportWithoutTargetData);
       reportLocationMutation
         .mutateAsync(reportWithoutTargetData)
         .then((data) => {

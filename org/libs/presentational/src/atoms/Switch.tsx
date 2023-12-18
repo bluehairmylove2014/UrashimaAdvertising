@@ -5,20 +5,23 @@ import { useState } from 'react';
 function Switch({
   defaultValue,
   onChange,
+  disabled
 }: {
   defaultValue?: boolean;
   onChange: (status: boolean) => void;
+  disabled?: boolean
 }) {
   const [isChecked, setIsChecked] = useState<boolean>(defaultValue ?? false);
   return (
     <button
       type="button"
+      disabled={disabled}
       onClick={() => {
         const newValue = !isChecked;
         setIsChecked(newValue);
         onChange && onChange(newValue);
       }}
-      className="grid place-items-center"
+      className="grid place-items-center disabled:cursor-not-allowed"
     >
       <label className="relative inline-flex items-center cursor-pointer">
         <input

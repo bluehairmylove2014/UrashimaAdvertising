@@ -127,7 +127,11 @@ function DisplayAdDetail({ adData }: { adData: IAdLocationDetail }) {
                           {ad.width}m x {ad.height}m
                         </span>,
                         ad.adsType,
-                        formatDate(new Date(ad.expiredDate)).dateMonthYear,
+                        <>
+                          {formatDate(new Date(ad.expiredDate)).dateMonthYear}{' '}
+                          <br />
+                          {formatDate(new Date(ad.expiredDate)).time24}
+                        </>,
                       ]}
                     />
                   </tr>

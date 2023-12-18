@@ -20,11 +20,16 @@ export class Services {
       this.cancelRequest();
       return error;
     }
-    return new Error(
-      isAxiosError(error)
-        ? error?.response?.data?.message ?? unknownError
-        : unknownError
-    );
+    if (error?.name && error.name === 'ZodError') {
+      console.error(error);
+      return new Error(unknownError);
+    } else {
+      return new Error(
+        isAxiosError(error)
+          ? error?.response?.data?.message ?? unknownError
+          : unknownError
+      );
+    }
   }
 
   async fetchApi<U extends ZodSchema<any>, T>({

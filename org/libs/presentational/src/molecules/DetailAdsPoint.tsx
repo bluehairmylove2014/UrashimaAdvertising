@@ -23,7 +23,7 @@ function DetailAdsPoint({
   handleDetailReport: () => void;
 }) {
   const { setForm } = useSetReportForm();
-
+  console.log(detailAdsPoint);
   return (
     <div
       className="h-[100%] w-[25%] shadow-md min-w-[45vh] fixed z-40"
@@ -62,11 +62,11 @@ function DetailAdsPoint({
         </Carousel>
 
         {/* two button for adspoint */}
-        {isOfficer ?
+        {isOfficer ? (
           <>
             <div className="my-4"></div>
           </>
-          :
+        ) : (
           <>
             <div className="mt-4 mx-5">
               {isReported ? (
@@ -119,10 +119,8 @@ function DetailAdsPoint({
               )}
             </div>
             <hr className="my-4 mx-2"></hr>
-
           </>
-        }
-
+        )}
 
         {/* Information advertisement point */}
         <div className="mx-5">

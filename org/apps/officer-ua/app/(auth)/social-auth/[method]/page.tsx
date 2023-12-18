@@ -58,7 +58,6 @@ function SocialAuth() {
         checkingMethod()
           .then((msg) => {
             setCurAuthState(authState.REDIRECT_STATE);
-            console.log('SUCCESS, REDIRECT TO :', OFFICER_PAGES.DASHBOARD);
             // Handle get redirect url here
             setTimeout(() => {
               router.push(OFFICER_PAGES.DASHBOARD);

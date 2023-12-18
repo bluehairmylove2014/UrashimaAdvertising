@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect, useState } from 'react';
 import { Loader, authUrls } from '../../config';
 import { useAuthContext } from '../context';

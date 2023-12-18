@@ -1,8 +1,10 @@
+'use client';
+
 // Importing necessary libraries and modules
-import React, { useReducer } from "react";
-import { AuthContext } from "../context/authContext";
-import { authReducer } from "../context/reducer";
-import { useAccessToken } from "../hooks/useAccessToken";
+import React, { useReducer } from 'react';
+import { AuthContext } from '../context/authContext';
+import { authReducer } from '../context/reducer';
+import { useAccessToken } from '../hooks/useAccessToken';
 
 type AuthProviderType = {
   children: React.ReactNode;

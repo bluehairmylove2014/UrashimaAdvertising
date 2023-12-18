@@ -500,13 +500,11 @@ function Home(): ReactElement {
                   setIsActiveAdsBoard(true);
                 }}
                 handleClose={() => {
-                  console.log(infoClickAdsPoint);
                   setIsClickAdsPoint(false);
                 }}
                 handleDetailReport={() => {
                   setIsClickReportedPoint(true);
 
-                  console.log(locationReportList);
                   const pos = adsData?.find(
                     (ads) => ads.id === infoClickAdsPoint.id
                   );

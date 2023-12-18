@@ -113,7 +113,9 @@ function ReportForm({
       try {
         const { name, phone, email, content } = data;
         const imgPathData = await Promise.all(
-          Array.from(imagesPreview).map((img) => onUpload({ imgFile: img }))
+          Array.from(imagesPreview).map((img) =>
+            onUpload({ imgFile: img, path: '/UrashimaAds Hub/reports' })
+          )
         );
         handleReport({
           ...{ name, phone, email, content },
@@ -128,15 +130,6 @@ function ReportForm({
         showError(error.message);
       }
     } else {
-      console.log('REPORT: ', {
-        ...data,
-        reportTarget,
-        reportData,
-        ...reportIdentificationData,
-        images: [],
-        reportType: selectedReportType,
-      });
-      console.log('reportData: ', reportData);
       handleReport({
         ...data,
         reportTarget,

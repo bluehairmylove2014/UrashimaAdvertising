@@ -37,13 +37,17 @@ const getAdDetailResponseSchema = z.object({
   ),
 });
 
-
 const getAllOfficerAdsResponseSchema = getAllAdsResponseSchema;
 const getOfficerAdDetailResponseSchema = getAdDetailResponseSchema;
 
-export { 
-  getAllAdsResponseSchema, 
-  getAdDetailResponseSchema, 
+const adsPointModificationSchema = z.object({
+  message: z.string(),
+});
+
+export {
+  getAllAdsResponseSchema,
+  getAdDetailResponseSchema,
   getAllOfficerAdsResponseSchema,
-  getOfficerAdDetailResponseSchema 
+  getOfficerAdDetailResponseSchema,
+  adsPointModificationSchema,
 };

@@ -21,11 +21,13 @@ function ModernSelect({
   options,
   style,
   defaultValue,
+  disabled,
 }: {
   onOptionSelect: (value: modernSelectOptionType) => void;
   options: modernSelectOptionType[];
   style?: modernSelectUniqueStyle;
   defaultValue?: modernSelectOptionValueType;
+  disabled?: boolean;
 }) {
   const [selectedOption, setSelectedOption] = useState<string | null>(
     defaultValue ||
@@ -42,8 +44,9 @@ function ModernSelect({
     >
       <button
         type="button"
+        disabled={disabled}
         onClick={toggleDropdown}
-        className="h-full flex flex-row items-center text-[0.65rem] min-w-[10rem]"
+        className="h-full flex flex-row items-center text-[0.65rem] min-w-[10rem] disabled:cursor-not-allowed disabled:bg-zinc-100"
       >
         <span className="flex-grow mr-2 ml-3 max-w-[200px] whitespace-nowrap overflow-hidden text-ellipsis line-clamp-1">
           {selectedOption}
