@@ -1,8 +1,8 @@
-import { isDevelopment } from "./axios";
-import { authServiceConfig } from "./config";
+import { isDevelopment } from './axios';
+import { authServiceConfig } from './config';
 
-const serverApi = "http://localhost:2014/api";
-const localApi = "http://localhost:2808/api";
+const serverApi = 'https://urashima-ads.azurewebsites.net';
+const localApi = 'http://localhost:666/api';
 
 export const getApiUrl = (isProduction?: boolean) => {
   return isProduction

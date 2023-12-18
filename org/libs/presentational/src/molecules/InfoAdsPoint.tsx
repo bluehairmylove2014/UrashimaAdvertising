@@ -5,10 +5,12 @@ import { IAdLocation } from '@business-layer/services/entities/ads';
 function InfoAds({
   info,
   isReported,
+  isOfficer,
   onClick,
 }: {
   info: IAdLocation;
   isReported: boolean;
+  isOfficer: boolean;
   onClick: (id: number) => void;
 }) {
   // const { setForm } = useSetReportForm();
@@ -36,13 +38,18 @@ function InfoAds({
         {' '}
         {info.planned ? 'ĐÃ QUY HOẠCH' : 'CHƯA QUY HOẠCH'}
       </p>
-      {isReported ? (
-        <p className="font-bold text-rose-600 text-sm">
-          Bạn đã báo cáo điểm này
-        </p>
-      ) : (
-        <></>
-      )}
+      {isOfficer ? <></>
+        :
+        <>
+          {isReported ? (
+            <p className="font-bold text-rose-600 text-sm">
+              Bạn đã báo cáo điểm này
+            </p>
+          ) : (
+            <></>
+          )}
+        </>}
+
 
       {/* <div className="flex justify-between mt-2">
         <CustomButtonIcon

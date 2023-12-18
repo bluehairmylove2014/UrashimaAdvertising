@@ -337,7 +337,7 @@ function Home(): ReactElement {
           mapStyle={MAP_STYLE}
         >
           <div className="flex flex-row justify-between w-full my-4 z-40 relative gap-3 overflow-hidden">
-            <form className="w-1/2 h-fit pl-4">
+            <div className="w-1/2 h-fit pl-4">
               <CustomSearchBox
                 marker={true}
                 accessToken={ACCESS_TOKEN}
@@ -362,7 +362,7 @@ function Home(): ReactElement {
                   }
                 }}
               />
-            </form>
+            </div>
 
             <div className="pr-4">
               <button
@@ -475,6 +475,7 @@ function Home(): ReactElement {
               <InfoAdsPoint
                 info={infoHoverAdsPoint}
                 isReported={isReported}
+                isOfficer={false}
                 onClick={(id) => {
                   setIsActiveAdsBoard(false);
                   setIdAdsPointClick(id);
@@ -488,24 +489,22 @@ function Home(): ReactElement {
           )}
 
           {/* Check Loading Ads Point*/}
-
           {isClickAdsPoint ? (
             infoClickAdsPoint ? (
               <DetailAdsPoint
                 detailAdsPoint={infoClickAdsPoint}
                 isReported={isClickReported}
+                isOfficer={false}
                 onClick={(id) => {
                   setIdAdsBoard(id);
                   setIsActiveAdsBoard(true);
                 }}
                 handleClose={() => {
-                  console.log(infoClickAdsPoint);
                   setIsClickAdsPoint(false);
                 }}
                 handleDetailReport={() => {
                   setIsClickReportedPoint(true);
 
-                  console.log(locationReportList);
                   const pos = adsData?.find(
                     (ads) => ads.id === infoClickAdsPoint.id
                   );
@@ -529,6 +528,7 @@ function Home(): ReactElement {
               <DetailAds
                 adsPoint={infoClickAdsPoint}
                 id={idAdsBoard}
+                isOfficer={false}
                 handleClose={() => {
                   setIsActiveAdsBoard(false);
                   setIsClickAdsPoint(false);
@@ -554,12 +554,18 @@ function Home(): ReactElement {
                 setAdsBoardReportedDetail(adsBoard);
                 setIsClickReportedAdsBoard(true);
                 setInfoAdsPointOfAdsBoard(
-                  adsData?.find((ads) => ads.id === adsBoard.adsBoardID)
+                  adsData?.find((ads) => ads.id === adsBoard.adsPointID)
                 );
               }}
               handleDetailAdsPoint={(point) => {
                 setAdsPointReportedDetail(point);
                 setIsClickReportedPoint(true);
+                if (mapRef.current !== null)
+                  mapRef.current.flyTo({
+                    zoom: 14,
+                    center: [point.longitude, point.latitude],
+                    duration: 1500,
+                  });
               }}
             />
           ) : (

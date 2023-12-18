@@ -1,3 +1,5 @@
+'use client';
+
 import { axios } from '../../../../../services';
 import { authConfig } from '../../../../configs';
 import { useRefreshToken } from '../hooks/useRefreshToken';

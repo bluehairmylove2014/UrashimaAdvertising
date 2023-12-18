@@ -1,12 +1,12 @@
 [
   {
-    "id": "1",
+    "id": 1,
     "email": "nguyenbaphuong@gmail.com",
     "password": "123123",
     "fullName": "Nguyễn Ba Phương"
   },
   {
-    "id": "2",
+    "id": 2,
     "email": "phucdat@gmail.com",
     "password": "123123",
     "fullName": "Phan Phúc Đạt"

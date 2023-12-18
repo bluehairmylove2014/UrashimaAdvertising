@@ -15,3 +15,40 @@ export const userReportSchema = yup.object({
   phone: yup.string().matches(vietnamPhoneNumber, 'Số điện thoại không hợp lệ'),
   content: yup.string().required('Cần điền nội dung báo cáo').max(1000),
 });
+
+export const editLocationDetailSchema = yup.object({
+  address: yup
+    .string()
+    .required('Địa chỉ không được để trống')
+    .max(255, 'Địa chỉ tối đa 255 ký tự'),
+  id: yup.number(),
+  latitude: yup.number(),
+  longitude: yup.number(),
+  locationType: yup.string().required('Không được để trống loại địa điểm'),
+  adsForm: yup.string().required('Không được để trống hình thức'),
+  planned: yup.boolean(),
+  images: yup.array(
+    yup.object({
+      image: yup.string(),
+    })
+  ),
+  adsBoard: yup.array(
+    yup.object({
+      id: yup.number(),
+      adsType: yup
+        .string()
+        .required('Không được để trống hình thức bảng quáng cáo'),
+      height: yup.number().min(1, 'Chiều cao tối thiểu 1m'),
+      width: yup.number().min(1, 'Chiều rộng tối thiểu 1m'),
+      image: yup.string(),
+      expiredDate: yup.string(),
+    })
+  ),
+});
+
+export const reasonsInputSchema = yup.object({
+  reasons: yup
+    .string()
+    .required('Không được để trống nội dung')
+    .max(1000, 'Nội dung tối đa 1000 ký tự'),
+});

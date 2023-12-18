@@ -43,7 +43,7 @@ import { useNotification } from '@presentational/atoms/Notification';
 import LocationDetail from '@presentational/molecules/LocationDetail';
 import { ILocation } from '@business-layer/services/entities';
 import CustomSearchBox from '@presentational/atoms/CustomSearchBox';
-import { useGetAllOfficerAdsFromContext } from '@business-layer/business-logic/lib/officerAds/process/hooks';
+import { useFetchAllOfficerAds } from '@business-layer/business-logic/lib/officerAds/process/hooks';
 
 const MAP_STYLE = process.env.NEXT_PUBLIC_MAPBOX_MAP_STYLE || '';
 const ACCESS_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN || '';
@@ -63,7 +63,7 @@ type markerParamsType =
   | undefined;
 function Home(): ReactElement {
   const { showError } = useNotification();
-  const adsData = useGetAllOfficerAdsFromContext();
+  const { data: adsData } = useFetchAllOfficerAds();
   const mapRef = useRef<MapRef>(null);
   const [isShowCluster, setIsShowCluster] = useState<boolean>(true);
 
@@ -303,7 +303,7 @@ function Home(): ReactElement {
           mapStyle={MAP_STYLE}
         >
           <div className="flex flex-row justify-between w-full my-4 z-40 relative gap-3 overflow-hidden">
-            <form className="w-1/2 h-fit pl-4">
+            <div className="w-1/2 h-fit pl-4">
               <CustomSearchBox
                 marker={true}
                 accessToken={ACCESS_TOKEN}
@@ -328,7 +328,7 @@ function Home(): ReactElement {
                   }
                 }}
               />
-            </form>
+            </div>
 
             <div className="pr-4">{/*  */}</div>
           </div>
@@ -424,6 +424,7 @@ function Home(): ReactElement {
               <InfoAdsPoint
                 info={infoHoverAdsPoint}
                 isReported={isReported}
+                isOfficer={true}
                 onClick={(id) => {
                   setIsActiveAdsBoard(false);
                   setIdAdsPointClick(id);
@@ -443,6 +444,7 @@ function Home(): ReactElement {
               <DetailAdsPoint
                 detailAdsPoint={infoClickAdsPoint}
                 isReported={isClickReported}
+                isOfficer={true}
                 onClick={(id) => {
                   setIdAdsBoard(id);
                   setIsActiveAdsBoard(true);
@@ -464,6 +466,7 @@ function Home(): ReactElement {
               <DetailAds
                 adsPoint={infoClickAdsPoint}
                 id={idAdsBoard}
+                isOfficer={true}
                 handleClose={() => {
                   setIsActiveAdsBoard(false);
                   setIsClickAdsPoint(false);

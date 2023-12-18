@@ -4,7 +4,8 @@ import ButtonLoader from './ButtonLoader';
 type buttonType = 'button' | 'submit';
 type buttonStyle =
   | 'fill-primary' // blue background, white color
-  | 'fill-secondary'; // gray background, black color
+  | 'fill-secondary' // gray background, black color
+  | 'fill-error'; // red bg, white color
 type commonButtonType = {
   children: React.ReactNode | string | number;
   style: buttonStyle;
@@ -27,6 +28,12 @@ function getTailwindClassStyle(style: buttonStyle) {
     case 'fill-secondary':
       return {
         normal: 'bg-gray-100 rounded hover:bg-gray-300 transition-colors',
+        disabled: 'bg-gray-300 cursor-not-allowed',
+        common: 'rounded text-black',
+      };
+    case 'fill-error':
+      return {
+        normal: 'bg-red-600 rounded hover:bg-gray-500 transition-colors',
         disabled: 'bg-gray-300 cursor-not-allowed',
         common: 'rounded text-white',
       };

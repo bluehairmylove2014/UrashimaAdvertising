@@ -12,11 +12,13 @@ const convertDate = (date?: string) => {
 function DetailAdsPoint({
   adsPoint,
   id,
+  isOfficer,
   handleClose,
   handleBack,
 }: {
   adsPoint: IAdLocationDetail;
   id: number;
+  isOfficer: boolean;
   handleClose: () => void;
   handleBack: () => void;
 }) {
@@ -72,36 +74,31 @@ function DetailAdsPoint({
         <h3 className="my-3 mx-3">{adsBoardDetail?.adsType}</h3>
 
         {/* two button for adspoint */}
-        <div className="flex my-3 mx-2">
-          {/* <CustomButtonIcon
-                        widthIcon='0.9rem'
-                        heightIcon='0.9rem'
-                        type='button'
-                        pathImage='/assets/save.png'
-                        border={1}
-                        round={2}
-                        colorBorder='green'
-                        alt=''
-                    >
-                        <span className="text-green-600 text-[0.6rem] text-bold ml-1">LƯU</span>
+        {isOfficer ?
+          <>
+          </>
+          :
+          <>
+            <div className="flex my-3 mx-2">
+              <span className="ml-1"></span>
+              <CustomButtonIcon
+                widthIcon="0.8rem"
+                heightIcon="0.8rem"
+                round={2}
+                type="button"
+                border={1}
+                colorBorder="rose"
+                pathImage="/assets/report.png"
+                alt=""
+              >
+                <span className="text-rose-600 text-[0.6rem] text-bold">
+                  BÁO CÁO VI PHẠM
+                </span>
+              </CustomButtonIcon>
+            </div>
+          </>
+        }
 
-                    </CustomButtonIcon> */}
-          <span className="ml-1"></span>
-          <CustomButtonIcon
-            widthIcon="0.8rem"
-            heightIcon="0.8rem"
-            round={2}
-            type="button"
-            border={1}
-            colorBorder="rose"
-            pathImage="/assets/report.png"
-            alt=""
-          >
-            <span className="text-rose-600 text-[0.6rem] text-bold">
-              BÁO CÁO VI PHẠM
-            </span>
-          </CustomButtonIcon>
-        </div>
 
         <hr className="mx-2"></hr>
         {/* Information advertisement point */}

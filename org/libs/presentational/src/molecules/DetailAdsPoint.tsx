@@ -10,18 +10,20 @@ import { useSetReportForm } from '@business-layer/business-logic/non-service-lib
 function DetailAdsPoint({
   detailAdsPoint,
   isReported,
+  isOfficer,
   onClick,
   handleClose,
   handleDetailReport,
 }: {
   detailAdsPoint: IAdLocationDetail;
   isReported: boolean;
+  isOfficer: boolean;
   onClick: (id: number) => void;
   handleClose: () => void;
   handleDetailReport: () => void;
 }) {
   const { setForm } = useSetReportForm();
-
+  console.log(detailAdsPoint);
   return (
     <div
       className="h-[100%] w-[25%] shadow-md min-w-[45vh] fixed z-40"
@@ -60,58 +62,66 @@ function DetailAdsPoint({
         </Carousel>
 
         {/* two button for adspoint */}
-        <div className="mt-4 mx-5">
-          {isReported ? (
-            <>
-              <p className="mb-1 text-rose-600 font-bold text-sm">
-                Bạn đã báo cáo điểm này
-              </p>
-              <CustomButtonIcon
-                widthIcon="0.7rem"
-                heightIcon="0.7rem"
-                round={2}
-                type="button"
-                border={1}
-                colorBorder="green"
-                pathImage="/assets/detailReport.png"
-                alt=""
-                onClick={handleDetailReport}
-              >
-                <span className="text-green-600 text-[0.65rem] text-medium ml-1">
-                  CHI TIẾT BÁO CÁO
-                </span>
-              </CustomButtonIcon>
-            </>
-          ) : (
-            <CustomButtonIcon
-              widthIcon="0.8rem"
-              heightIcon="0.8rem"
-              round={2}
-              type="button"
-              border={1}
-              colorBorder="rose"
-              pathImage="/assets/report.png"
-              alt=""
-              onClick={() => {
-                setForm({
-                  isReportFormActive: true,
-                  reportTarget: 'LOCATION',
-                  reportData: detailAdsPoint,
-                  reportIdentificationData: {
-                    latitude: detailAdsPoint.latitude,
-                    longitude: detailAdsPoint.longitude,
-                  },
-                });
-              }}
-            >
-              <span className="text-rose-600 text-[0.6rem] text-bold ml-1">
-                BÁO CÁO VI PHẠM
-              </span>
-            </CustomButtonIcon>
-          )}
-        </div>
+        {isOfficer ? (
+          <>
+            <div className="my-4"></div>
+          </>
+        ) : (
+          <>
+            <div className="mt-4 mx-5">
+              {isReported ? (
+                <>
+                  <p className="mb-1 text-rose-600 font-bold text-sm">
+                    Bạn đã báo cáo điểm này
+                  </p>
+                  <CustomButtonIcon
+                    widthIcon="0.7rem"
+                    heightIcon="0.7rem"
+                    round={2}
+                    type="button"
+                    border={1}
+                    colorBorder="green"
+                    pathImage="/assets/detailReport.png"
+                    alt=""
+                    onClick={handleDetailReport}
+                  >
+                    <span className="text-green-600 text-[0.65rem] text-medium ml-1">
+                      CHI TIẾT BÁO CÁO
+                    </span>
+                  </CustomButtonIcon>
+                </>
+              ) : (
+                <CustomButtonIcon
+                  widthIcon="0.8rem"
+                  heightIcon="0.8rem"
+                  round={2}
+                  type="button"
+                  border={1}
+                  colorBorder="rose"
+                  pathImage="/assets/report.png"
+                  alt=""
+                  onClick={() => {
+                    setForm({
+                      isReportFormActive: true,
+                      reportTarget: 'LOCATION',
+                      reportData: detailAdsPoint,
+                      reportIdentificationData: {
+                        latitude: detailAdsPoint.latitude,
+                        longitude: detailAdsPoint.longitude,
+                      },
+                    });
+                  }}
+                >
+                  <span className="text-rose-600 text-[0.6rem] text-bold ml-1">
+                    BÁO CÁO VI PHẠM
+                  </span>
+                </CustomButtonIcon>
+              )}
+            </div>
+            <hr className="my-4 mx-2"></hr>
+          </>
+        )}
 
-        <hr className="my-4 mx-2"></hr>
         {/* Information advertisement point */}
         <div className="mx-5">
           <div className="flex justify-between items-center text-[0.8rem]">

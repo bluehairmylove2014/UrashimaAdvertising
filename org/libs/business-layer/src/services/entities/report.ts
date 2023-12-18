@@ -21,3 +21,5 @@ export interface ILocationReport extends IReport {
   longitude: number;
   reportData: IAdLocationDetail;
 }
+
+

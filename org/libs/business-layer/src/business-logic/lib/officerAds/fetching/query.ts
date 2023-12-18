@@ -5,10 +5,10 @@ import { mutationConfig } from '@business-layer/business-logic/configs';
 
 const adsService = new AdsService();
 
-export const useGetAllOfficerAdsQuery = () => {
+export const useGetAllOfficerAdsQuery = (token: string | null) => {
   return useQuery({
-    queryKey: [QUERY_N_MUTATION_KEYS.GET_ALL_OFFICER_ADS],
-    queryFn: () => adsService.getAllOfficerAds(),
+    queryKey: [QUERY_N_MUTATION_KEYS.GET_ALL_OFFICER_ADS, token],
+    queryFn: () => adsService.getAllOfficerAds(token),
     retry: mutationConfig.USE_QUERY_RETRY,
   });
 };

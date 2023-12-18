@@ -1,4 +1,5 @@
 import {
+  adsPointModificationUrl,
   getAdDetailsUrl,
   getAllAdsUrl,
   getAllOfficerAdsUrl,
@@ -6,12 +7,16 @@ import {
 } from '../../config/apis';
 import { Services } from '../../service';
 import {
+  adsPointModificationSchema,
   getAdDetailResponseSchema,
   getAllAdsResponseSchema,
   getAllOfficerAdsResponseSchema,
   getOfficerAdDetailResponseSchema,
 } from './schema';
 import {
+  adsPointModificationParamsType,
+  adsPointModificationResponseType,
+  getAdDetailParamsType,
   getAdDetailResponseType,
   getAllAdsResponseType,
   getAllOfficerAdsResponseType,
@@ -60,45 +65,86 @@ export class AdsService extends Services {
     }
   };
 
-  getAllOfficerAds = async (): Promise<getAllOfficerAdsResponseType> => {
+  getAllOfficerAds = async (
+    token: string | null
+  ): Promise<getAllOfficerAdsResponseType> => {
     this.abortController = new AbortController();
     try {
-      const response = await this.fetchApi<
-        typeof getAllOfficerAdsResponseSchema,
-        getAllOfficerAdsResponseType
-      >({
-        method: 'GET',
-        url: getAllOfficerAdsUrl,
-        schema: getAllOfficerAdsResponseSchema,
-        signal: this.abortController.signal,
-        transformResponse: (res) => res,
-      });
-      return response;
+      if (token) {
+        const response = await this.fetchApi<
+          typeof getAllOfficerAdsResponseSchema,
+          getAllOfficerAdsResponseType
+        >({
+          method: 'GET',
+          url: getAllOfficerAdsUrl,
+          schema: getAllOfficerAdsResponseSchema,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          signal: this.abortController.signal,
+          transformResponse: (res) => res,
+        });
+        return response;
+      } else {
+        throw new Error('Unauthorized');
+      }
     } catch (error) {
       throw this.handleError(error);
     }
   };
-  getOfficerLocationDetail = async (
-    adId: number
-  ): Promise<getOfficerLocationDetailAdsResponseType> => {
+  getOfficerLocationDetail = async ({
+    adId,
+    token,
+  }: getAdDetailParamsType): Promise<getOfficerLocationDetailAdsResponseType> => {
+    this.abortController = new AbortController();
+    try {
+      if (token) {
+        const response = await this.fetchApi<
+          typeof getOfficerAdDetailResponseSchema,
+          getOfficerLocationDetailAdsResponseType
+        >({
+          method: 'GET',
+          url: getOfficerAdDetailAdsUrl,
+          schema: getOfficerAdDetailResponseSchema,
+          params: {
+            id: adId,
+          },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          signal: this.abortController.signal,
+          transformResponse: (res) => res,
+        });
+        return response;
+      } else {
+        throw new Error('Unauthorized');
+      }
+    } catch (error) {
+      throw new Error('Unauthorized');
+      // throw this.handleError(error);
+    }
+  };
+  adsPointModification = async (
+    data: adsPointModificationParamsType
+  ): Promise<adsPointModificationResponseType> => {
     this.abortController = new AbortController();
     try {
       const response = await this.fetchApi<
-        typeof getOfficerAdDetailResponseSchema,
-        getOfficerLocationDetailAdsResponseType
+        typeof adsPointModificationSchema,
+        adsPointModificationResponseType
       >({
-        method: 'GET',
-        url: getOfficerAdDetailAdsUrl,
-        schema: getOfficerAdDetailResponseSchema,
-        params: {
-          id: adId,
+        method: 'POST',
+        url: adsPointModificationUrl,
+        schema: adsPointModificationSchema,
+        data: data.modificationData,
+        headers: {
+          Authorization: `Bearer ${data.token}`,
         },
         signal: this.abortController.signal,
         transformResponse: (res) => res,
       });
       return response;
     } catch (error) {
-      console.log('FUCCKING ERRORRRR: ', error);
       throw this.handleError(error);
     }
   };

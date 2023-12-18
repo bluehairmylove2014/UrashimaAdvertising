@@ -3,6 +3,7 @@ import { IAdLocation } from '@business-layer/services/entities';
 import { useGetAllOfficerAdsQuery } from '../../fetching/query';
 import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query';
 import { getAllOfficerAdsResponseType } from '@business-layer/services/lib/adsService';
+import { getToken } from '@business-layer/business-logic/lib/auth/process/hooks/useAccessToken';
 
 type useFetchAllOfficerAdsReturnType = {
   data: IAdLocation[] | undefined;
@@ -11,6 +12,6 @@ type useFetchAllOfficerAdsReturnType = {
   ) => Promise<QueryObserverResult<getAllOfficerAdsResponseType, Error>>;
 };
 export const useFetchAllOfficerAds = (): useFetchAllOfficerAdsReturnType => {
-  const { data, refetch } = useGetAllOfficerAdsQuery();
+  const { data, refetch } = useGetAllOfficerAdsQuery(getToken());
   return { data, refetch };
 };

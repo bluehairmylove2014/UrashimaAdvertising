@@ -19,8 +19,10 @@ export const useUpload = () => {
 
   const onUpload = ({
     imgFile,
+    path,
   }: {
     imgFile: File;
+    path: string;
   }): Promise<uploadReturnType> => {
     return new Promise((resolve, reject) => {
       // Convert file to buffer
@@ -29,7 +31,7 @@ export const useUpload = () => {
           .mutateAsync({
             file: imgFile,
             fileBuffer: buffer,
-            path: `/UrashimaAds Hub/reports/${imgFile.name}`,
+            path: `${path}/${imgFile.name}`,
           })
           .then((data) => {
             resolve(data);

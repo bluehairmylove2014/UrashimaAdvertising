@@ -8,4 +8,6 @@ export const OFFICER_PAGES = {
   REPORT: '/reports',
   APPROVE: '/ad-approve',
   ME: '/me',
+  PERSONAL_INFORMATION: '/me/personal-information',
+  CHANGE_PASSWORD: '/me/change-password',
 };
