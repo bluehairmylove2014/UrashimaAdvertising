@@ -36,8 +36,16 @@ namespace UrashimaServer
             CreateMap<GeoCodeResultDto, GeoCodeResult>().ReverseMap();
 
             // Map create request
-            CreateMap<AdsCreationRequest, AdsCreateRequestDto>().ReverseMap();
+            CreateMap<AdsCreationRequest, AdsCreateBoardRequestDto>().ReverseMap();
+            CreateMap<AdsCreationRequest, AdsCreatePointRequestDto>().ReverseMap();
             CreateMap<AdsBoard, AdsCreateRequestBoardDto>().ReverseMap();
+            CreateMap<AdsPoint, AdsCreateRequestPointDto>().ReverseMap();
+            CreateMap<AdsCreationRequest, GetAdsCreateRequestDto>().ReverseMap();
+
+            // Map modify request
+            CreateMap<PointModify, PointModifyDto>().ReverseMap();
+            CreateMap<BoardModify, BoardModifyDto>().ReverseMap();
+            CreateMap<PointModifyImage, PointModifyImageDto>().ReverseMap();
 
             // Map Account
             CreateMap<Account, AccountBasicInfoDto>().ReverseMap();
