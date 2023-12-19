@@ -27,8 +27,8 @@ async function PersonalInformation() {
     <div className="w-3/4 p-4">
       <h2 className="font-bold mb-4">Thông tin cá nhân</h2>
       <p>
-        Manage your personal information, including phone numbers and email
-        address where you can be contacted
+        Quản lý thông tin cá nhân của bạn, bao gồm số điện thoại, họ tên, email
+        và ngày sinh. Vai trò và đơn vị quản lý là thông tin không thể thay đổi.
       </p>
       <OfficerPersonalDetail data={accountInfoData} />
     </div>

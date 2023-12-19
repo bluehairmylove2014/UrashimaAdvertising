@@ -21,6 +21,7 @@ export const reportLocationUrl = '/api/report/location';
 
 // USER
 export const getAccountInfoUrl = '/api/account/info';
+export const modifyAccountInfoUrl = '/api/account/info';
 
 // LOCATION
 export const getLocationGeocoderUrl = '/api/location/geo-code';

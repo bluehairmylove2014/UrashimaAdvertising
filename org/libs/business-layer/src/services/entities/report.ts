@@ -9,6 +9,9 @@ interface IReport {
   images: {
     image: string;
   }[];
+  reportStatus: boolean; // false: Chưa xử lý, true: Đã xử lý
+  response: string | null; // null: Chưa xử lý chưa có response, string ngược lại
+  submissionDate: string; // Ngày tháng năm giờ phút giây
 }
 
 export interface IAdReport extends IReport {
@@ -21,5 +24,3 @@ export interface ILocationReport extends IReport {
   longitude: number;
   reportData: IAdLocationDetail;
 }
-
-

@@ -9,4 +9,7 @@ const getAccountInfoResponseSchema = z.object({
   role: z.string(),
   unitUnderManagement: z.string(),
 });
-export { getAccountInfoResponseSchema };
+const modifyAccountInfoResponseSchema = z.object({
+  message: z.string(),
+});
+export { getAccountInfoResponseSchema, modifyAccountInfoResponseSchema };

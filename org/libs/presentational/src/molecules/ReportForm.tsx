@@ -22,6 +22,7 @@ import {
 import ImageInput from '@presentational/atoms/ImageInput';
 import PreviewImage from '@presentational/atoms/PreviewImage';
 import { useUpload } from '@business-layer/business-logic/lib/sirv';
+import { getCurrentDateTime } from '@utils/helpers';
 
 const PREVIEW_HEIGHT = 80;
 type formDataType = {
@@ -107,6 +108,7 @@ function ReportForm({
       showError('Bạn chưa chọn kiểu báo cáo!');
       return;
     }
+    console.log(getCurrentDateTime());
     // UPLOAD TO CDN
     setIsUploading(true);
     if (imagesPreview) {
@@ -124,6 +126,9 @@ function ReportForm({
           ...reportIdentificationData,
           images: imgPathData.map((d) => ({ image: d.path })),
           reportType: selectedReportType,
+          reportStatus: false,
+          response: null,
+          submissionDate: getCurrentDateTime(),
         });
         setImagesPreview(null);
       } catch (error: any) {
@@ -137,6 +142,9 @@ function ReportForm({
         ...reportIdentificationData,
         images: [],
         reportType: selectedReportType,
+        reportStatus: false,
+        response: null,
+        submissionDate: getCurrentDateTime(),
       });
     }
   };
