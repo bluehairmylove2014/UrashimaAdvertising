@@ -27,8 +27,8 @@ export function middleware(request: NextRequest) {
     );
   } else if (
     pathName.startsWith(OFFICER_PAGES.DASHBOARD) ||
-    // pathName.startsWith(OFFICER_PAGES.ADS_BOARD) ||
-    // pathName.startsWith(OFFICER_PAGES.ADS_BOARD_EDIT) ||
+    pathName.startsWith(OFFICER_PAGES.ADS_BOARD) ||
+    pathName.startsWith(OFFICER_PAGES.ADS_BOARD_EDIT) ||
     pathName.startsWith(OFFICER_PAGES.ADS_LOCATION) ||
     pathName.startsWith(OFFICER_PAGES.APPROVE) ||
     pathName.startsWith(OFFICER_PAGES.PERSONAL_INFORMATION) ||

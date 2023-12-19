@@ -11,18 +11,15 @@ async function getAccountDetail() {
     if (token) {
       return await accountService.getAccountInfo(token);
     } else {
-      console.error('UNAUTHORIZED');
       return null;
     }
   } catch (error) {
-    console.error(error);
     return null;
   }
 }
 
 async function PersonalInformation() {
   const accountInfoData = await getAccountDetail();
-  console.log('accountInfoData: ', accountInfoData);
   return (
     <div className="w-3/4 p-4">
       <h2 className="font-bold mb-4">Thông tin cá nhân</h2>
