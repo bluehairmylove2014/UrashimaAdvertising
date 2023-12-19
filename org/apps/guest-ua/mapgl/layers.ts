@@ -90,6 +90,42 @@ export const nonclusteredUnplannedPointLayer: LayerProps = {
     'circle-stroke-color': strokeColor,
   },
 };
+export const nonclusteredReportedAdsBoardLayer: LayerProps = {
+  id: 'unclustered-ads-board-reported',
+  type: 'circle',
+  source: sourceName,
+  filter: [
+    'all',
+    ['!', ['has', 'point_count']],
+    ['==', ['get', 'reported'], true],
+    ['==', ['get', 'isAdsLocation'], true],
+    ['==', ['get', 'isAdsBoardReport'], true],
+  ],
+  paint: {
+    'circle-color': '#FB5001',
+    'circle-radius': pointSize,
+    'circle-stroke-width': strokeWidth,
+    'circle-stroke-color': strokeColor,
+  },
+};
+export const nonclusteredReportedUnknownPointLayer: LayerProps = {
+  id: 'unclustered-unknown-point-reported',
+  type: 'circle',
+  source: sourceName,
+  filter: [
+    'all',
+    ['!', ['has', 'point_count']],
+    ['==', ['get', 'reported'], true],
+    ['==', ['get', 'isAdsLocation'], false],
+    ['==', ['get', 'isAdsBoardReport'], false],
+  ],
+  paint: {
+    'circle-color': '#00098A',
+    'circle-radius': pointSize,
+    'circle-stroke-width': strokeWidth,
+    'circle-stroke-color': strokeColor,
+  },
+};
 export const nonclusteredReportedPointLayer: LayerProps = {
   id: 'unclustered-point-reported',
   type: 'circle',
@@ -98,6 +134,8 @@ export const nonclusteredReportedPointLayer: LayerProps = {
     'all',
     ['!', ['has', 'point_count']],
     ['==', ['get', 'reported'], true],
+    ['==', ['get', 'isAdsLocation'], true],
+    ['==', ['get', 'isAdsBoardReport'], false],
   ],
   paint: {
     'circle-color': '#8B0000',

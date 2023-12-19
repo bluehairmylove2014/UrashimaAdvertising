@@ -18,7 +18,9 @@ import {
   clusterLayer,
   nonClusteredPlannedPointLayer,
   nonClusteredReportedPointSymbolLayer,
+  nonclusteredReportedAdsBoardLayer,
   nonclusteredReportedPointLayer,
+  nonclusteredReportedUnknownPointLayer,
   nonclusteredUnplannedPointLayer,
 } from '../../mapgl/layers';
 import { MAP_DEFAULT_VIEW_PORT } from '../../mapgl/viewPort';
@@ -43,7 +45,10 @@ import DetailAdsPoint from '@presentational/molecules/DetailAdsPoint';
 
 import 'mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import { useGetReportForm } from '@business-layer/business-logic/non-service-lib/reportForm';
-import { useGetLocationReports } from '@business-layer/business-logic/lib/report';
+import {
+  useGetLocationReports,
+  useGetAdReports,
+} from '@business-layer/business-logic/lib/report';
 import { useGetLocationDetail } from '@business-layer/business-logic/lib/geocode';
 import { useNotification } from '@presentational/atoms/Notification';
 
@@ -55,6 +60,8 @@ import ReportDetailAdsBoard from '@presentational/molecules/ReportDetailAdsBoard
 import ReportDetailPoint from '@presentational/molecules/ReportDetailPoint';
 
 import { IAdReport, ILocationReport } from '@business-layer/services/entities';
+
+import { FeatureCollection, Point } from 'geojson';
 
 type locationType =
   | {
@@ -123,6 +130,7 @@ function Home(): ReactElement {
     useState<boolean>(false);
 
   const locationReportList = useGetLocationReports();
+  const adsReportList = useGetAdReports();
   const { onGetLocationDetail } = useGetLocationDetail();
   const [isReportHistoryActive, setIsReportHistoryActive] =
     useState<boolean>(false);
@@ -314,6 +322,59 @@ function Home(): ReactElement {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  if (adsData) {
+    console.log(
+      [
+        ...adsData.map((m) => ({
+          type: 'Feature',
+          properties: {
+            id: m.id,
+            cluster: false,
+            name: m.address,
+            planned: m.planned,
+            isAdsLocation: true,
+            isAdsBoardReport: adsReportList
+              ? adsReportList.some((ar) => ar.adsPointID === m.id)
+              : false,
+            reported: locationReportList
+              ? locationReportList.some(
+                  (lr) =>
+                    lr.latitude === m.latitude && lr.longitude === m.longitude
+                )
+              : false || adsReportList
+              ? adsReportList.some((ar) => ar.adsPointID === m.id)
+              : false,
+          },
+          geometry: {
+            type: 'Point',
+            coordinates: [m.longitude, m.latitude],
+          },
+        })),
+        ...(locationReportList
+          ? locationReportList
+              .filter((locationReport) => locationReport.reportData === null)
+              .map((m, index) => ({
+                type: 'Feature',
+                properties: {
+                  id: adsData.length + index + 1,
+                  cluster: false,
+                  name: '',
+                  planned: false,
+                  reported: true,
+                  isAdsLocation: false,
+                  isAdsBoardReport: false,
+                },
+                geometry: {
+                  type: 'Point',
+                  coordinates: [m.longitude, m.latitude],
+                },
+              }))
+          : []),
+      ].filter((e) => e.properties.isAdsBoardReport)
+    );
+  }
+
   return (
     <div className="relative w-screen h-screen">
       <div className="relative z-0">
@@ -426,38 +487,82 @@ function Home(): ReactElement {
             <Source
               id="earthquakes"
               type="geojson"
-              data={{
-                type: 'FeatureCollection',
-                features: adsData.map((m) => ({
-                  type: 'Feature',
-                  properties: {
-                    id: m.id,
-                    cluster: false,
-                    name: m.address,
-                    planned: m.planned,
-                    reported: locationReportList
-                      ? locationReportList.findIndex(
-                          (lr) =>
-                            lr.latitude === m.latitude &&
-                            lr.longitude === m.longitude
-                        ) !== -1
-                      : false,
-                  },
-                  geometry: {
-                    type: 'Point',
-                    coordinates: [m.longitude, m.latitude],
-                  },
-                })),
-              }}
+              data={
+                {
+                  type: 'FeatureCollection',
+                  features: [
+                    ...adsData.map((m) => ({
+                      type: 'Feature',
+                      properties: {
+                        id: m.id,
+                        cluster: false,
+                        name: m.address,
+                        planned: m.planned,
+                        isAdsLocation: true,
+                        isAdsBoardReport: adsReportList
+                          ? adsReportList.some((ar) => ar.adsPointID === m.id)
+                          : false,
+                        reported: locationReportList
+                          ? locationReportList.some(
+                              (lr) =>
+                                lr.latitude === m.latitude &&
+                                lr.longitude === m.longitude
+                            )
+                          : false || adsReportList
+                          ? adsReportList.some((ar) => ar.adsPointID === m.id)
+                          : false,
+                      },
+                      geometry: {
+                        type: 'Point',
+                        coordinates: [m.longitude, m.latitude],
+                      },
+                    })),
+                    ...(locationReportList
+                      ? locationReportList
+                          .filter(
+                            (locationReport) =>
+                              locationReport.reportData === null
+                          )
+                          .map((m, index) => ({
+                            type: 'Feature',
+                            properties: {
+                              id: adsData.length + index + 1,
+                              cluster: false,
+                              name: '',
+                              planned: false,
+                              reported: true,
+                              isAdsLocation: false,
+                              isAdsBoardReport: false,
+                            },
+                            geometry: {
+                              type: 'Point',
+                              coordinates: [m.longitude, m.latitude],
+                            },
+                          }))
+                      : []),
+                  ],
+                } as FeatureCollection<Point>
+              }
               cluster={true}
               clusterMaxZoom={14}
               clusterRadius={40}
             >
+              {/* Cluster layer */}
               <Layer {...clusterLayer} />
               <Layer {...clusterCountLayer} />
+
+              {/* Planned ads point layer */}
               <Layer {...nonClusteredPlannedPointLayer} />
+
+              {/* Unplanned ads point layer */}
               <Layer {...nonclusteredUnplannedPointLayer} />
+
+              {/* Report layer */}
+              <Layer {...nonclusteredReportedAdsBoardLayer} />
+              <Layer {...nonclusteredReportedUnknownPointLayer} />
               <Layer {...nonclusteredReportedPointLayer} />
+
+              {/* Symbol "!" for report layer */}
               <Layer {...nonClusteredReportedPointSymbolLayer} />
             </Source>
           ) : (
