@@ -35,27 +35,6 @@ namespace UrashimaServer.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AdsCreationRequests",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    AdsPointId = table.Column<int>(type: "int", nullable: false),
-                    AdsContent = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CompanyName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Phone = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ContractStart = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ContractEnd = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    RequestStatus = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AdsCreationRequests", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AdsPoints",
                 columns: table => new
                 {
@@ -66,7 +45,8 @@ namespace UrashimaServer.Migrations
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LocationType = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     AdsForm = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Planned = table.Column<bool>(type: "bit", nullable: false)
+                    Planned = table.Column<bool>(type: "bit", nullable: false),
+                    AdsCreateRequestId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -92,21 +72,103 @@ namespace UrashimaServer.Migrations
                 name: "PointModifies",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    PointId = table.Column<int>(type: "int", nullable: false),
-                    Planned = table.Column<bool>(type: "bit", nullable: false),
-                    AdsForm = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LocationType = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false),
                     Longitude = table.Column<double>(type: "float", nullable: false),
                     Latitude = table.Column<double>(type: "float", nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LocationType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AdsForm = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Planned = table.Column<bool>(type: "bit", nullable: false),
                     ModifyTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Reason = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_PointModifies", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AdsCreationRequests",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AdsPointId = table.Column<int>(type: "int", nullable: false),
+                    AdsContent = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CompanyName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Phone = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ContractStart = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ContractEnd = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    RequestStatus = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AdsCreationRequests", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AdsCreationRequests_AdsPoints_AdsPointId",
+                        column: x => x.AdsPointId,
+                        principalTable: "AdsPoints",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AdsPointImages",
+                columns: table => new
+                {
+                    Image = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    AdsPointId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AdsPointImages", x => x.Image);
+                    table.ForeignKey(
+                        name: "FK_AdsPointImages_AdsPoints_AdsPointId",
+                        column: x => x.AdsPointId,
+                        principalTable: "AdsPoints",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "BoardModifies",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false),
+                    AdsPointId = table.Column<int>(type: "int", nullable: false),
+                    AdsType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Width = table.Column<int>(type: "int", nullable: false),
+                    Height = table.Column<int>(type: "int", nullable: false),
+                    Image = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ExpiredDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BoardModifies", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_BoardModifies_PointModifies_AdsPointId",
+                        column: x => x.AdsPointId,
+                        principalTable: "PointModifies",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PointModifyImages",
+                columns: table => new
+                {
+                    Image = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    AdsPointId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PointModifyImages", x => x.Image);
+                    table.ForeignKey(
+                        name: "FK_PointModifyImages_PointModifies_AdsPointId",
+                        column: x => x.AdsPointId,
+                        principalTable: "PointModifies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -134,24 +196,6 @@ namespace UrashimaServer.Migrations
                         onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_AdsBoards_AdsPoints_AdsPointId",
-                        column: x => x.AdsPointId,
-                        principalTable: "AdsPoints",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AdsPointImages",
-                columns: table => new
-                {
-                    Image = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    AdsPointId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AdsPointImages", x => x.Image);
-                    table.ForeignKey(
-                        name: "FK_AdsPointImages_AdsPoints_AdsPointId",
                         column: x => x.AdsPointId,
                         principalTable: "AdsPoints",
                         principalColumn: "Id",
@@ -226,8 +270,24 @@ namespace UrashimaServer.Migrations
                 column: "AdsPointId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AdsCreationRequests_AdsPointId",
+                table: "AdsCreationRequests",
+                column: "AdsPointId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_AdsPointImages_AdsPointId",
                 table: "AdsPointImages",
+                column: "AdsPointId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BoardModifies_AdsPointId",
+                table: "BoardModifies",
+                column: "AdsPointId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PointModifyImages_AdsPointId",
+                table: "PointModifyImages",
                 column: "AdsPointId");
 
             migrationBuilder.CreateIndex(
@@ -261,10 +321,16 @@ namespace UrashimaServer.Migrations
                 name: "AdsPointImages");
 
             migrationBuilder.DropTable(
-                name: "PointModifies");
+                name: "BoardModifies");
+
+            migrationBuilder.DropTable(
+                name: "PointModifyImages");
 
             migrationBuilder.DropTable(
                 name: "ReportImages");
+
+            migrationBuilder.DropTable(
+                name: "PointModifies");
 
             migrationBuilder.DropTable(
                 name: "Reports");

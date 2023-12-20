@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using UrashimaServer.Database.Models;
 
 namespace UrashimaServer.Models
 {
@@ -15,5 +16,8 @@ namespace UrashimaServer.Models
         public ICollection<AdsPointImage>? Images { get; set; }
         public ICollection<AdsBoard>? AdsBoard { get; set; }
         public ICollection<Report>? Reports { get; set; }
+
+        public int? AdsCreateRequestId { set; get; }
+        public AdsCreationRequest? AdsCreateRequest { set; get; }
     }
 }

@@ -14,6 +14,8 @@ namespace UrashimaServer.Database
         public DbSet<Location> Locations { get; set; }
         public DbSet<AdsCreationRequest> AdsCreationRequests { get; set; }
         public DbSet<PointModify> PointModifies { get; set; }
+        public DbSet<BoardModify> BoardModifies { get; set; }
+        public DbSet<PointModifyImage> PointModifyImages { get; set; }
         public DbSet<Account> Accounts { get; set; }
 
         public DataContext(DbContextOptions<DataContext> options) : base(options)
@@ -33,7 +35,6 @@ namespace UrashimaServer.Database
                 .WithMany(adsPoint => adsPoint.Images)
                 .HasForeignKey(e => e.AdsPointId)
                 .IsRequired();
-
 
             modelBuilder.Entity<AdsBoard>()
                 .HasOne(e => e.AdsCreateRequest)
@@ -69,6 +70,24 @@ namespace UrashimaServer.Database
                 .IsRequired();
 
             modelBuilder.Entity<Account>();
+
+            modelBuilder.Entity<AdsCreationRequest>()
+                .HasOne<AdsPoint>(e => e.AdsPoint)
+                .WithOne(point => point.AdsCreateRequest)
+                .HasForeignKey<AdsCreationRequest>(e => e.AdsPointId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<BoardModify>()
+                .HasOne(e => e.AdsPoint)
+                .WithMany(adsPoint => adsPoint.AdsBoard)
+                .HasForeignKey(e => e.AdsPointId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<PointModifyImage>()
+                .HasOne(e => e.AdsPoint)
+                .WithMany(adsPoint => adsPoint.Images)
+                .HasForeignKey(e => e.AdsPointId)
+                .IsRequired();
         }
     }
 }

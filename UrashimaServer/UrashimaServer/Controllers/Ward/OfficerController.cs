@@ -155,5 +155,38 @@ namespace UrashimaServer.Controllers.Ward
 
             return res;
         }
+
+        // -------------------------
+
+        [HttpPost("ads-modification/point")] // , AuthorizeRoles(GlobalConstant.WardOfficer, GlobalConstant.DistrictOfficer) , GlobalConstant.HeadQuater
+        public async Task<ActionResult<PointModifyDto>> PointModify(PointModifyDto PointModifyRequest)
+        {
+            var result = _mapper.Map<PointModify>(PointModifyRequest);
+
+            result.ModifyTime = DateTime.Now;
+            if (result.Images != null)
+            {
+                foreach (var item in result.Images)
+                {
+                    item.AdsPointId = PointModifyRequest.Id;
+                }
+            }
+
+            _context.PointModifies.Add(result);
+            await _context.SaveChangesAsync();
+
+            return Ok(new
+            {
+                message = "Tạo yêu cầu chỉnh sửa điểm quảng cáo thành công"
+            });
+        }
+
+        //public async Task<ActionResult<BoardModify>> BoardModify(BoardModify BoardModifyRequest)
+        //{
+        //    _context.BoardModifies.Add(BoardModifyRequest);
+        //    await _context.SaveChangesAsync();
+
+        //    return CreatedAtAction("BoardModify", new { id = BoardModifyRequest.Id }, BoardModifyRequest);
+        //}
     }
 }
