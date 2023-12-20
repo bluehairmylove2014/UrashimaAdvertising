@@ -6,6 +6,8 @@ import { IAdLocationDetail } from '@business-layer/services/entities/ads';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { Carousel } from 'react-responsive-carousel';
 import { useSetReportForm } from '@business-layer/business-logic/non-service-lib/reportForm';
+import { useGetAdReports } from '@business-layer/business-logic/lib/report';
+import { Alert } from '@material-tailwind/react';
 
 function DetailAdsPoint({
   detailAdsPoint,
@@ -23,7 +25,8 @@ function DetailAdsPoint({
   handleDetailReport: () => void;
 }) {
   const { setForm } = useSetReportForm();
-  console.log(detailAdsPoint);
+  const adsReportList = useGetAdReports();
+
   return (
     <div
       className="h-[100%] w-[25%] shadow-md min-w-[45vh] fixed z-40"
@@ -217,23 +220,31 @@ function DetailAdsPoint({
                 >
                   {' '}
                 </CustomButtonIcon> */}
-                <button
-                  className="border-solid border-red-500 border-[1px] text-red-500 rounded text-[0.65rem] w-5 h-5 bg-white overflow-hidden hover:bg-red-500 hover:text-white transition-colors"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setForm({
-                      isReportFormActive: true,
-                      reportTarget: 'AD',
-                      reportData: ads,
-                      reportIdentificationData: {
-                        adsBoardID: ads.id,
-                        adsPointID: detailAdsPoint.id,
-                      },
-                    });
-                  }}
-                >
-                  <i className="fi fi-ss-triangle-warning"></i>
-                </button>
+
+                {adsReportList?.find((report) => report.adsBoardID === ads.id && report.adsPointID === detailAdsPoint.id) !== undefined
+                  ?
+                  <></>
+                  :
+                  <>
+                    <button
+                      className="border-solid border-red-500 border-[1px] text-red-500 rounded text-[0.65rem] w-5 h-5 bg-white overflow-hidden hover:bg-red-500 hover:text-white transition-colors"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setForm({
+                          isReportFormActive: true,
+                          reportTarget: 'AD',
+                          reportData: ads,
+                          reportIdentificationData: {
+                            adsBoardID: ads.id,
+                            adsPointID: detailAdsPoint.id,
+                          },
+                        });
+                      }}
+                    >
+                      <i className="fi fi-ss-triangle-warning"></i>
+                    </button>
+                  </>}
+
               </div>
               <p className="text-[0.65rem] font-medium text-gray-500">
                 {detailAdsPoint.address}
@@ -273,7 +284,7 @@ function DetailAdsPoint({
               </div>
 
               {/* Two button */}
-              <div className="flex justify-between mt-2">
+              <div className="mt-2">
                 {/* <CustomButtonIcon
                   widthIcon="0.9rem"
                   heightIcon="0.9rem"
@@ -284,38 +295,21 @@ function DetailAdsPoint({
                 >
                   {' '}
                 </CustomButtonIcon> */}
-                <div></div>
-
-                {/* <CustomButtonIcon
-                  widthIcon="0.8rem"
-                  heightIcon="0.8rem"
-                  round={2}
-                  type="button"
-                  border={1}
-                  colorBorder="rose"
-                  pathImage="/assets/report.png"
-                  alt=""
-                  onClick={() => {
-                    setForm({
-                      isReportFormActive: true,
-                      reportTarget: 'AD',
-                      reportAdditionData: {
-                        adsBoardID: ads.id,
-                        adsPointID: detailAdsPoint.id,
-                      },
-                    });
-                  }}
-                >
-                  <span className="text-rose-600 text-[0.6rem] text-bold ml-1">
-                    BÁO CÁO VI PHẠM
-                  </span>
-                </CustomButtonIcon> */}
+                <div>
+                  {adsReportList?.find((report) => report.adsBoardID === ads.id && report.adsPointID === detailAdsPoint.id) !== undefined
+                    ?
+                    <>
+                      <div className='text-rose-600 font-bold text-[0.7rem] text-right'>Bảng quảng cáo bị báo cáo</div>
+                    </>
+                    :
+                    <></>
+                  }
+                </div>
               </div>
             </div>
           </div>
         ))}
 
-        <hr className="mx-2 mb-4 mt-1"></hr>
       </div>
     </div>
   );
