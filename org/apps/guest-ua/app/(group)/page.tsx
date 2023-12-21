@@ -42,6 +42,7 @@ import {
 import InfoAdsPoint from '@presentational/molecules/InfoAdsPoint';
 import DetailAds from '@presentational/molecules/DetailAds';
 import DetailAdsPoint from '@presentational/molecules/DetailAdsPoint';
+import Announcement from '@presentational/molecules/Announcement';
 
 import 'mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import { useGetReportForm } from '@business-layer/business-logic/non-service-lib/reportForm';
@@ -65,16 +66,16 @@ import { FeatureCollection, Point } from 'geojson';
 
 type locationType =
   | {
-      lat: number;
-      lon: number;
-    }
+    lat: number;
+    lon: number;
+  }
   | undefined;
 
 type markerParamsType =
   | {
-      latitude: number;
-      longitude: number;
-    }
+    latitude: number;
+    longitude: number;
+  }
   | undefined;
 function Home(): ReactElement {
   const { showError } = useNotification();
@@ -89,6 +90,9 @@ function Home(): ReactElement {
   const [infoClickAdsPoint, setInfoClickAdsPoint] =
     useState<IAdLocationDetail>();
   const [idAdsPointClick, setIdAdsPointClick] = useState(-1);
+
+  // Create state for show notification
+  const [isNotifications, setIsNotifications] = useState<boolean>(false);
 
   //Create state for getting id advertisement point
   const [idAdsPoint, setIdAdsPoint] = useState(-1);
@@ -387,9 +391,17 @@ function Home(): ReactElement {
                 <i className="fi fi-ss-triangle-warning mr-1"></i> Báo cáo của
                 bạn
               </button>
-              <button className="bg-white rounded px-2 py-0 h-[36px] text-xs font-medium ml-2">
+              <button className="bg-white rounded px-2 py-0 h-[36px] text-xs font-medium ml-2" onClick={() => {
+                setIsNotifications(!isNotifications);
+              }}>
                 <i className="fi fi-ss-bell"></i>
               </button>
+              {isNotifications ?
+                <Announcement handleClose={() => {
+                  setIsNotifications(false);
+                }} />
+                :
+                <></>}
             </div>
           </div>
           {marker ? (
@@ -452,13 +464,13 @@ function Home(): ReactElement {
                           : false,
                         reported: locationReportList
                           ? locationReportList.some(
-                              (lr) =>
-                                lr.latitude === m.latitude &&
-                                lr.longitude === m.longitude
-                            )
+                            (lr) =>
+                              lr.latitude === m.latitude &&
+                              lr.longitude === m.longitude
+                          )
                           : false || adsReportList
-                          ? adsReportList.some((ar) => ar.adsPointID === m.id)
-                          : false,
+                            ? adsReportList.some((ar) => ar.adsPointID === m.id)
+                            : false,
                       },
                       geometry: {
                         type: 'Point',
@@ -467,26 +479,26 @@ function Home(): ReactElement {
                     })),
                     ...(locationReportList
                       ? locationReportList
-                          .filter(
-                            (locationReport) =>
-                              locationReport.reportData === null
-                          )
-                          .map((m, index) => ({
-                            type: 'Feature',
-                            properties: {
-                              id: adsData.length + index + 1,
-                              cluster: false,
-                              name: '',
-                              planned: false,
-                              reported: true,
-                              isAdsLocation: false,
-                              isAdsBoardReport: false,
-                            },
-                            geometry: {
-                              type: 'Point',
-                              coordinates: [m.longitude, m.latitude],
-                            },
-                          }))
+                        .filter(
+                          (locationReport) =>
+                            locationReport.reportData === null
+                        )
+                        .map((m, index) => ({
+                          type: 'Feature',
+                          properties: {
+                            id: adsData.length + index + 1,
+                            cluster: false,
+                            name: '',
+                            planned: false,
+                            reported: true,
+                            isAdsLocation: false,
+                            isAdsBoardReport: false,
+                          },
+                          geometry: {
+                            type: 'Point',
+                            coordinates: [m.longitude, m.latitude],
+                          },
+                        }))
                       : []),
                   ],
                 } as FeatureCollection<Point>
