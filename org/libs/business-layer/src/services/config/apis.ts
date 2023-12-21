@@ -26,6 +26,9 @@ export const modifyAccountInfoUrl = '/api/account/info';
 // LOCATION
 export const getLocationGeocoderUrl = '/api/location/geo-code';
 
+// APPROVE
+export const getApproveListUrl = '/api/officer/ads-request';
+
 // SIRV
 export const sirvBaseUrlTemplate = 'https://api.sirv.com/v2';
 export const connectSirvUrl = sirvBaseUrlTemplate + '/token';

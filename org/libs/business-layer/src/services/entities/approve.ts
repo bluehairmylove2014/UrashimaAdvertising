@@ -1,6 +1,8 @@
-import { IAdsBoard } from "./ads";
+import { IAdLocation, IAdsBoard } from './ads';
 
-export interface IAPPROVE {
+export interface IApprove {
+  id: number;
+  adsPointId: string;
   adsContent: string;
   companyName: string;
   email: string;
@@ -8,5 +10,8 @@ export interface IAPPROVE {
   address: string;
   contractStart: string;
   contractEnd: string;
-  adsBoard: IAdsBoard[]
+  requestStatus: string;
+  adsBoard?: IAdsBoard[] | undefined | null;
+  adsPoint?: IAdLocation;
+  RequestAddress: string;
 }
