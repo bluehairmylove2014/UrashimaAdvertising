@@ -11,7 +11,7 @@ using UrashimaServer.Models;
 
 namespace UrashimaServer.Controllers
 {
-    [Route("api/reports")]
+    [Route("api/report")]
     [ApiController]
     public class ReportsController : ControllerBase
     {
@@ -38,6 +38,8 @@ namespace UrashimaServer.Controllers
 
             var rep = _mapper.Map<Report>(rawReport);
             rep.AdsBoardId = rawReport.AdsId;
+            var point = _context.AdsPoints.Find(rawReport.AdsId);
+            rep.Address = point != null ? point.Address : "";
 
             _context.Reports.Add(rep);
 
@@ -60,6 +62,8 @@ namespace UrashimaServer.Controllers
 
             var rep = _mapper.Map<Report>(rawReport);
             rep.AdsPointId = rawReport.AdsId;
+            var point = _context.AdsPoints.Find(rawReport.AdsId);
+            rep.Address = point != null ? point.Address : "";
 
             _context.Reports.Add(rep);
 
@@ -80,12 +84,33 @@ namespace UrashimaServer.Controllers
             }
 
             var rep = _mapper.Map<Report>(rawReport);
+            var controller = new LocationsController(_mapper);
+            var geoCode = (await controller.GetRevGeoCodeInfo(rawReport.Latitude, rawReport.Longitude)).Result;
+            
+            OkObjectResult geoObj = new(new GeoCodeResultDto());
+            if (geoCode != null)
+                geoObj = (OkObjectResult)geoCode;
+
+            string address = "Ward 1, District 1";
+            if (geoObj.Value != null)
+            {
+                foreach (var item in Helper.GetKeyValuePairs(geoObj.Value))
+                {
+                    if (item.Key == "Display_name")
+                    {
+                        address = (string)item.Value;
+                        break;
+                    }
+                }
+            }
+
             rep.Location = new Location()
             {
                 Longitude = rawReport.Longitude,
                 Latitude = rawReport.Latitude,
-                Address = rawReport.Address,
+                Address = address,
             };
+            rep.Address = address;
 
             _context.Reports.Add(rep);
 

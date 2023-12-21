@@ -25,7 +25,6 @@ namespace UrashimaServer.Database.Dtos
     {
         public double Latitude { get; set; }
         public double Longitude { get; set; }
-        public string Address { get; set; }
         public string ReportType { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
@@ -53,7 +52,6 @@ namespace UrashimaServer.Database.Dtos
     {
         public int AdsId { get; set; }
         public string ReportType { get; set; } = string.Empty;
-        public string Address { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string Phone { get; set; } = string.Empty;
