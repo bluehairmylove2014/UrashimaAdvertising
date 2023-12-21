@@ -323,58 +323,6 @@ function Home(): ReactElement {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (adsData) {
-    console.log(
-      [
-        ...adsData.map((m) => ({
-          type: 'Feature',
-          properties: {
-            id: m.id,
-            cluster: false,
-            name: m.address,
-            planned: m.planned,
-            isAdsLocation: true,
-            isAdsBoardReport: adsReportList
-              ? adsReportList.some((ar) => ar.adsPointID === m.id)
-              : false,
-            reported: locationReportList
-              ? locationReportList.some(
-                  (lr) =>
-                    lr.latitude === m.latitude && lr.longitude === m.longitude
-                )
-              : false || adsReportList
-              ? adsReportList.some((ar) => ar.adsPointID === m.id)
-              : false,
-          },
-          geometry: {
-            type: 'Point',
-            coordinates: [m.longitude, m.latitude],
-          },
-        })),
-        ...(locationReportList
-          ? locationReportList
-              .filter((locationReport) => locationReport.reportData === null)
-              .map((m, index) => ({
-                type: 'Feature',
-                properties: {
-                  id: adsData.length + index + 1,
-                  cluster: false,
-                  name: '',
-                  planned: false,
-                  reported: true,
-                  isAdsLocation: false,
-                  isAdsBoardReport: false,
-                },
-                geometry: {
-                  type: 'Point',
-                  coordinates: [m.longitude, m.latitude],
-                },
-              }))
-          : []),
-      ].filter((e) => e.properties.isAdsBoardReport)
-    );
-  }
-
   return (
     <div className="relative w-screen h-screen">
       <div className="relative z-0">
