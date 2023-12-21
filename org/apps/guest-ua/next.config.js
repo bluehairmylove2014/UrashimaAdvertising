@@ -18,7 +18,7 @@ const nextConfig = {
         protocol: 'https',
         port: '',
         hostname: 'urashima.sirv.com',
-        pathname: '/UrashimaAds%20Hub/*',
+        pathname: '/UrashimaAds%20Hub/**',
       },
     ],
   },

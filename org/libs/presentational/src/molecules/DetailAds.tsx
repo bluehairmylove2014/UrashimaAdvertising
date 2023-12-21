@@ -63,12 +63,16 @@ function DetailAdsPoint({
         {/* <Carousel showStatus={false} showArrows={false} showThumbs={false}>
                     {adsBoard.image.map(value => ( */}
         <div className="w-[100%] h-[30vh]">
-          <CustomImage
-            src="/assets/billboardExample.png"
-            alt="location"
-            width="100%"
-            height="100%"
-          />
+          {adsBoardDetail?.image ? (
+            <CustomImage
+              src={adsBoardDetail.image}
+              alt="location"
+              width="100%"
+              height="100%"
+            />
+          ) : (
+            <></>
+          )}
         </div>
         {/* //     ))}
                 // </Carousel> */}

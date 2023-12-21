@@ -123,7 +123,7 @@ function ReportDetailAdsBoard({
                     key={`carousel@${index}`}
                   >
                     <CustomImage
-                      src="/assets/billboardExample.png"
+                      src={data.image}
                       alt="location"
                       width="100%"
                       height="30vh"

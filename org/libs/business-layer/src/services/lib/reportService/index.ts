@@ -33,6 +33,7 @@ export class ReportService extends Services {
   ): Promise<reportResponseType> => {
     this.abortController = new AbortController();
     try {
+      console.log('DATA: ', data);
       const response = await this.fetchApi<
         typeof reportResponseSchema,
         reportResponseType

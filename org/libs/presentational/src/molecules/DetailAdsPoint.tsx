@@ -23,7 +23,7 @@ function DetailAdsPoint({
   handleDetailReport: () => void;
 }) {
   const { setForm } = useSetReportForm();
-  console.log(detailAdsPoint);
+
   return (
     <div
       className="h-[100%] w-[25%] shadow-md min-w-[45vh] fixed z-40"
@@ -52,7 +52,7 @@ function DetailAdsPoint({
           {detailAdsPoint.images.map((data, index) => (
             <div className="w-[100%] h-[30vh]" key={`carousel@${index}`}>
               <CustomImage
-                src="/assets/billboardExample.png"
+                src={data.image}
                 alt="location"
                 width="100%"
                 height="30vh"
@@ -242,7 +242,7 @@ function DetailAdsPoint({
               <div className="flex my-3">
                 <div className="rounded overflow-hidden">
                   <CustomImage
-                    src="/assets/billboardExample.png"
+                    src={ads.image}
                     alt="ads"
                     width="12vh"
                     height="100%"
