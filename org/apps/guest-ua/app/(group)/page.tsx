@@ -450,15 +450,22 @@ function Home(): ReactElement {
                         isAdsBoardReport: adsReportList
                           ? adsReportList.some((ar) => ar.adsPointID === m.id)
                           : false,
-                        reported: locationReportList
-                          ? locationReportList.some(
+
+                        reported: Boolean(
+                          (locationReportList &&
+                            locationReportList.some(
                               (lr) =>
                                 lr.latitude === m.latitude &&
                                 lr.longitude === m.longitude
-                            )
-                          : false || adsReportList
-                          ? adsReportList.some((ar) => ar.adsPointID === m.id)
-                          : false,
+                            )) ||
+                            (adsReportList &&
+                              adsReportList.some((ar) => {
+                                if (m.id === 900) {
+                                  console.log(ar.adsPointID, '____', m.id);
+                                }
+                                return ar.adsPointID === m.id;
+                              }))
+                        ),
                       },
                       geometry: {
                         type: 'Point',

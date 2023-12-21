@@ -3,6 +3,7 @@ import CustomImage from '@presentational/atoms/CustomImage';
 import CustomButtonIcon from '@presentational/atoms/CustomButtonIcon';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { IAdLocationDetail } from '@business-layer/services/entities/ads';
+import { useSetReportForm } from '@business-layer/business-logic/non-service-lib/reportForm';
 
 const convertDate = (date?: string) => {
   if (!date) return 'Error';
@@ -23,6 +24,8 @@ function DetailAdsPoint({
   handleBack: () => void;
 }) {
   const adsBoardDetail = adsPoint.adsBoard.find((ads) => (ads.id = id));
+  const { setForm } = useSetReportForm();
+
   return (
     <div
       className="h-[100%] w-[25%] shadow-md min-w-[45vh] fixed z-40"
@@ -74,10 +77,9 @@ function DetailAdsPoint({
         <h3 className="my-3 mx-3">{adsBoardDetail?.adsType}</h3>
 
         {/* two button for adspoint */}
-        {isOfficer ?
-          <>
-          </>
-          :
+        {isOfficer ? (
+          <></>
+        ) : (
           <>
             <div className="flex my-3 mx-2">
               <span className="ml-1"></span>
@@ -90,6 +92,19 @@ function DetailAdsPoint({
                 colorBorder="rose"
                 pathImage="/assets/report.png"
                 alt=""
+                onClick={(e) => {
+                  e.stopPropagation();
+                  adsBoardDetail &&
+                    setForm({
+                      isReportFormActive: true,
+                      reportTarget: 'AD',
+                      reportData: adsBoardDetail,
+                      reportIdentificationData: {
+                        adsBoardID: adsBoardDetail.id,
+                        adsPointID: adsPoint.id,
+                      },
+                    });
+                }}
               >
                 <span className="text-rose-600 text-[0.6rem] text-bold">
                   BÁO CÁO VI PHẠM
@@ -97,8 +112,7 @@ function DetailAdsPoint({
               </CustomButtonIcon>
             </div>
           </>
-        }
-
+        )}
 
         <hr className="mx-2"></hr>
         {/* Information advertisement point */}
