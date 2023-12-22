@@ -35,16 +35,14 @@ function Pagination() {
       children: React.ReactNode;
       value: number;
     }[] = [
-      { type: 'number', children: <span>{maxPage}</span>, value: maxPage },
+      {
+        type: 'number',
+        children: <span>{maxPage}</span>,
+        value: maxPage,
+      },
     ];
 
     if (maxPage > 1) {
-      btns.unshift({
-        type: 'threeDot',
-        children: <span>...</span>,
-        value: maxPage,
-      });
-
       if (currentPage === 1) {
         for (
           let pageNumber =
@@ -94,11 +92,14 @@ function Pagination() {
             value: pageNumber,
           });
         }
-        btns.unshift({
-          type: 'threeDot',
-          children: <span>...</span>,
-          value: maxPage,
-        });
+        if (btns.length > 2) {
+          btns.unshift({
+            type: 'threeDot',
+            children: <span>...</span>,
+            value: maxPage,
+          });
+        }
+
         btns.unshift({
           type: 'number',
           children: <span>1</span>,
@@ -110,6 +111,13 @@ function Pagination() {
         } else if (currentPage === maxPage) {
           btns[btns.length - 1].type = 'activeNumber';
         }
+      }
+      if (btns.length > 3) {
+        btns.splice(btns.length - 1, 0, {
+          type: 'threeDot',
+          children: <span>...</span>,
+          value: maxPage,
+        });
       }
     }
 

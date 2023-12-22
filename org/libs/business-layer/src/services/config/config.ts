@@ -1,3 +1,3 @@
 export const authServiceConfig = {
-  isMockApi: false,
+  isMockApi: true,
 };

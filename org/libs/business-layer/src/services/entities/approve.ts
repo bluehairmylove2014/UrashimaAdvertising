@@ -1,8 +1,8 @@
 import { IAdLocation, IAdsBoard } from './ads';
 
-export interface IApprove {
+export interface IApproveBase {
   id: number;
-  adsPointId: string;
+  adsPointId: number;
   adsContent: string;
   companyName: string;
   email: string;
@@ -10,8 +10,10 @@ export interface IApprove {
   address: string;
   contractStart: string;
   contractEnd: string;
+}
+
+export interface IApprove extends IApproveBase {
   requestStatus: string;
-  adsBoard?: IAdsBoard[] | undefined | null;
-  adsPoint?: IAdLocation;
-  RequestAddress: string;
+  adsBoard?: IAdsBoard | null; // If adsBoard !== null => approve for Ad Board, else approve for ad Location
+  adsPoint: IAdLocation;
 }

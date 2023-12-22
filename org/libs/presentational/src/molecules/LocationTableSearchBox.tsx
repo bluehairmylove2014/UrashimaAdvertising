@@ -15,6 +15,7 @@ function LocationTableSearchBox() {
       <i className="fi fi-rr-search absolute top-1/2 left-4 transform -translate-y-1/2 bottom-[4px] text-[0.65rem]"></i>
       <input
         name="searchBox"
+        type="text"
         className="px-8 py-2 w-full text-[0.65rem] outline-none"
         placeholder="Search..."
         onChange={onSearch}

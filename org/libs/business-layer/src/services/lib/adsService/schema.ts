@@ -1,16 +1,24 @@
 import z from 'zod';
 
-const getAllAdsResponseSchema = z.array(
-  z.object({
-    id: z.number(),
-    latitude: z.number(),
-    longitude: z.number(),
-    address: z.string(),
-    locationType: z.string(),
-    adsForm: z.string(),
-    planned: z.boolean(),
-  })
-);
+const adLocationSchema = z.object({
+  id: z.number(),
+  latitude: z.number(),
+  longitude: z.number(),
+  address: z.string(),
+  locationType: z.string(),
+  adsForm: z.string(),
+  planned: z.boolean(),
+});
+const adBoardSchema = z.object({
+  id: z.number(),
+  adsType: z.string(),
+  height: z.number(),
+  width: z.number(),
+  image: z.string(),
+  expiredDate: z.string(),
+});
+
+const getAllAdsResponseSchema = z.array(adLocationSchema);
 
 const getAdDetailResponseSchema = z.object({
   id: z.number(),
@@ -25,16 +33,7 @@ const getAdDetailResponseSchema = z.object({
       image: z.string(),
     })
   ),
-  adsBoard: z.array(
-    z.object({
-      id: z.number(),
-      adsType: z.string(),
-      height: z.number(),
-      width: z.number(),
-      image: z.string(),
-      expiredDate: z.string(),
-    })
-  ),
+  adsBoard: z.array(adBoardSchema),
 });
 
 const getAllOfficerAdsResponseSchema = getAllAdsResponseSchema;
@@ -45,6 +44,8 @@ const adsPointModificationSchema = z.object({
 });
 
 export {
+  adLocationSchema,
+  adBoardSchema,
   getAllAdsResponseSchema,
   getAdDetailResponseSchema,
   getAllOfficerAdsResponseSchema,
