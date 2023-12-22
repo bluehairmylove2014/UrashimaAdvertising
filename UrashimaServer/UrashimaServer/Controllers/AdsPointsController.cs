@@ -25,13 +25,17 @@ namespace UrashimaServer.Controllers
         public async Task<ActionResult<IEnumerable<UserAdsPointBasicDto>>> GetAllAdsPoints()
         {
             var rawResult = await _context.AdsPoints.ToListAsync();
-            
+            var result = rawResult
+                .Where(point => point.AdsCreateRequest == null || point.AdsCreateRequest.RequestStatus);
+
             var res = new List<UserAdsPointBasicDto>();
             foreach (var item in rawResult)
             {
                 var pointDto = _mapper.Map<UserAdsPointBasicDto>(item);
                 res.Add(pointDto);
             }
+
+            
 
             return res;
         }

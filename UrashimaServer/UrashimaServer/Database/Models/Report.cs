@@ -13,7 +13,7 @@ namespace UrashimaServer.Models
         public string Email { get; set; } = string.Empty;
         public string Phone { get; set; } = string.Empty;
         public string Content { get; set; } = string.Empty;
-        public string ReportStatus { get; set; } = string.Empty;
+        public bool ReportStatus { get; set; } = false;
         public string TreatmentProcess { get; set; } = string.Empty;
         public DateTime SubmissionDate { get; set; } = DateTime.Now;
         public ICollection<ReportImage>? Images { get; set; }

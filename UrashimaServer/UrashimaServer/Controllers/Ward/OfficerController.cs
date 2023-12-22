@@ -79,10 +79,10 @@ namespace UrashimaServer.Controllers.Ward
                 .Include(s => s.AdsCreateRequest)
                 .Include(s => s.Reports)
                 .ToListAsync();
-
+            
             var result = rawBoards
                 .Where(r => Helper.IsUnderAuthority(r.AdsPoint!.Address, acc.UnitUnderManagement))
-                .Select(board => board.AdsCreateRequest?.RequestStatus != "Unconfirmed");
+                .Select(board => board.AdsCreateRequest?.RequestStatus);
 
             // map each element
             var boardDtoList = new List<GetAdsBoardDto>();
