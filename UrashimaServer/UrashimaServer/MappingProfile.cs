@@ -29,6 +29,7 @@ namespace UrashimaServer
             CreateMap<ReportImage, ReportImageDto>().ReverseMap();
             CreateMap<Report, GetReportDto>().ReverseMap();
             CreateMap<Report, PostReportDto>().ReverseMap();
+            CreateMap<Report, PostReportBoardDto>().ReverseMap();
             CreateMap<Report, PostReportLocationDto>().ReverseMap();
 
             // Map Location

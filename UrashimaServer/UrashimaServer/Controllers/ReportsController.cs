@@ -51,29 +51,29 @@ namespace UrashimaServer.Controllers
             });
         }
 
-        // POST: api/report/ads-point
-        [HttpPost("ads-point")]
-        public async Task<IActionResult> PostReportAdsPoint(PostReportDto rawReport)
-        {
-            if (_context.Reports == null)
-            {
-                return Problem("Entity set 'DataContext.Reports' is null.");
-            }
+        //// POST: api/report/ads-point
+        //[HttpPost("ads-point")]
+        //public async Task<IActionResult> PostReportAdsPoint(PostReportDto rawReport)
+        //{
+        //    if (_context.Reports == null)
+        //    {
+        //        return Problem("Entity set 'DataContext.Reports' is null.");
+        //    }
 
-            var rep = _mapper.Map<Report>(rawReport);
-            rep.AdsPointId = rawReport.AdsId;
-            var point = _context.AdsPoints.Find(rawReport.AdsId);
-            rep.Address = point != null ? point.Address : "";
+        //    var rep = _mapper.Map<Report>(rawReport);
+        //    rep.AdsPointId = rawReport.AdsId;
+        //    var point = _context.AdsPoints.Find(rawReport.AdsId);
+        //    rep.Address = point != null ? point.Address : "";
 
-            _context.Reports.Add(rep);
+        //    _context.Reports.Add(rep);
 
-            await _context.SaveChangesAsync();
+        //    await _context.SaveChangesAsync();
 
-            return Ok(new
-            {
-                message = "report ads-point successfully"
-            });
-        }
+        //    return Ok(new
+        //    {
+        //        message = "report ads-point successfully"
+        //    });
+        //}
         
         [HttpPost("location")]
         public async Task<IActionResult> PostReportLocation(PostReportLocationDto rawReport)
@@ -84,33 +84,46 @@ namespace UrashimaServer.Controllers
             }
 
             var rep = _mapper.Map<Report>(rawReport);
-            var controller = new LocationsController(_mapper);
-            var geoCode = (await controller.GetRevGeoCodeInfo(rawReport.Latitude, rawReport.Longitude)).Result;
-            
-            OkObjectResult geoObj = new(new GeoCodeResultDto());
-            if (geoCode != null)
-                geoObj = (OkObjectResult)geoCode;
 
-            string address = "Ward 1, District 1";
-            if (geoObj.Value != null)
+            var point = _context.AdsPoints
+                .Where(point 
+                    => point.Longitude == rawReport.Longitude && point.Latitude == rawReport.Latitude)
+                .FirstOrDefault();
+            
+            if (point != null)
             {
-                foreach (var item in Helper.GetKeyValuePairs(geoObj.Value))
+                rep.AdsPointId = point.Id;
+                rep.Address = point.Address;
+            } else
+            {
+                var controller = new LocationsController(_mapper);
+                var geoCode = (await controller.GetRevGeoCodeInfo(rawReport.Latitude, rawReport.Longitude)).Result;
+            
+                OkObjectResult geoObj = new(new GeoCodeResultDto());
+                if (geoCode != null)
+                    geoObj = (OkObjectResult)geoCode;
+
+                string address = "Ward 1, District 1";
+                if (geoObj.Value != null)
                 {
-                    if (item.Key == "Display_name")
+                    foreach (var item in Helper.GetKeyValuePairs(geoObj.Value))
                     {
-                        address = (string)item.Value;
-                        break;
+                        if (item.Key == "Display_name")
+                        {
+                            address = (string)item.Value;
+                            break;
+                        }
                     }
                 }
-            }
 
-            rep.Location = new Location()
-            {
-                Longitude = rawReport.Longitude,
-                Latitude = rawReport.Latitude,
-                Address = address,
-            };
-            rep.Address = address;
+                rep.Location = new Location()
+                {
+                    Longitude = rawReport.Longitude,
+                    Latitude = rawReport.Latitude,
+                    Address = address,
+                };
+                rep.Address = address;
+            }
 
             _context.Reports.Add(rep);
 

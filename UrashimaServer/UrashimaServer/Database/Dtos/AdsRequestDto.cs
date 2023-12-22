@@ -27,7 +27,6 @@ namespace UrashimaServer.Database.Dtos
 
     public class AdsCreateBoardRequestDto
     {
-        public int Id { get; set; }
         public int AdsPointId { get; set; }
         public string AdsContent { get; set; } = string.Empty;
         public string CompanyName { get; set; } = string.Empty;
