@@ -11,7 +11,7 @@ using UrashimaServer.Models;
 
 namespace UrashimaServer.Controllers
 {
-    [Route("api/report")]
+    [Route("api/reports")]
     [ApiController]
     public class ReportsController : ControllerBase
     {
