@@ -29,7 +29,7 @@ namespace UrashimaServer.Controllers
 
         // POST: api/report/ads-board
         [HttpPost("ads-board")]
-        public async Task<IActionResult> PostReportAdsBoard(PostReportDto rawReport)
+        public async Task<IActionResult> PostReportAdsBoard(PostReportBoardDto rawReport)
         {
             if (_context.Reports == null)
             {
@@ -37,8 +37,8 @@ namespace UrashimaServer.Controllers
             }
 
             var rep = _mapper.Map<Report>(rawReport);
-            rep.AdsBoardId = rawReport.AdsId;
-            var point = _context.AdsPoints.Find(rawReport.AdsId);
+            rep.AdsBoardId = rawReport.AdsBoardID;
+            var point = _context.AdsPoints.Find(rawReport.AdsPointID);
             rep.Address = point != null ? point.Address : "";
 
             _context.Reports.Add(rep);

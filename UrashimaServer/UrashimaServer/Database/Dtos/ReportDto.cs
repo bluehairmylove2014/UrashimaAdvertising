@@ -58,4 +58,16 @@ namespace UrashimaServer.Database.Dtos
         public string Content { get; set; } = string.Empty;
         public ICollection<ReportImageDto>? Images { get; set; }
     }
+
+    public class PostReportBoardDto
+    {
+        public int AdsPointID { get; set; }
+        public int AdsBoardID { get; set; }
+        public string ReportType { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string Phone { get; set; } = string.Empty;
+        public string Content { get; set; } = string.Empty;
+        public ICollection<ReportImageDto>? Images { get; set; }
+    }
 }
