@@ -37,7 +37,7 @@ namespace UrashimaServer.Database.Dtos
         public DateTime ContractStart { get; set; }
         public DateTime ContractEnd { get; set; }
 
-        public ICollection<AdsCreateRequestBoardDto>? AdsBoard { set; get; }
+        public AdsCreateRequestBoardDto? AdsBoard { get; set; }
     }
 
     public class AdsCreatePointRequestDto
@@ -51,7 +51,7 @@ namespace UrashimaServer.Database.Dtos
         public DateTime ContractStart { get; set; }
         public DateTime ContractEnd { get; set; }
 
-        public AdsCreateRequestPointDto? AdsPoint { set; get; }
+        public AdsCreateRequestPointDto? AdsPoint { get; set; }
     }
 
     public class GetAdsCreateRequestDto
@@ -65,8 +65,8 @@ namespace UrashimaServer.Database.Dtos
         public string Address { get; set; } = string.Empty;
         public DateTime ContractStart { get; set; }
         public DateTime ContractEnd { get; set; }
-        public AdsCreateRequestPointDto? AdsPoint { set; get; }
-        public ICollection<AdsCreateRequestBoardDto>? AdsBoard { set; get; }
-        public string RequestAddress { get; set; } = string.Empty;
+        public bool RequestStatus { get; set; }
+        public AdsCreateRequestPointDto? AdsPoint { get; set; }
+        public AdsCreateRequestBoardDto? AdsBoard { get; set; }
     }
 }

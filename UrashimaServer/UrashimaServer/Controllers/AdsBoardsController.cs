@@ -58,13 +58,13 @@ namespace UrashimaServer.Controllers
                 .Include(s => s.Reports)
                 .ToListAsync();
 
-            var result = rawBoards
-                .Select(board => board.AdsCreateRequest?.RequestStatus != RequestStatusConstant.Unconfirm);
+            var result = rawBoards.Where(board 
+                => board.AdsCreateRequest == null || board.AdsCreateRequest.RequestStatus);
 
             // map each element
             var boardDtoList = new List<GetAdsBoardDto>();
 
-            foreach (var item in rawBoards)
+            foreach (var item in result)
             {
                 var boardDto = _mapper.Map<GetAdsBoardDto>(item);
                 boardDtoList.Add(boardDto);
