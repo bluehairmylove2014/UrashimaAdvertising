@@ -57,8 +57,8 @@ namespace UrashimaServer.Controllers
                     rawResult = JsonConvert.DeserializeObject<GeoCodeResult>(apiResponse);
                     result = _mapper.Map<GeoCodeResultDto>(rawResult?.Address);
                     result.Display_name = rawResult?.Display_name;
-                    result.Latt = rawResult?.Lat;
-                    result.Longt = rawResult?.Lon;
+                    result.Latt = latitude;
+                    result.Longt = longitude;
                 }
             }
 
