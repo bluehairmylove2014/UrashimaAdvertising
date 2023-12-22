@@ -65,22 +65,25 @@ import { FeatureCollection, Point } from 'geojson';
 
 type locationType =
   | {
-      lat: number;
-      lon: number;
-    }
+    lat: number;
+    lon: number;
+  }
   | undefined;
 
 type markerParamsType =
   | {
-      latitude: number;
-      longitude: number;
-    }
+    latitude: number;
+    longitude: number;
+  }
   | undefined;
 function Home(): ReactElement {
   const { showError } = useNotification();
   const { data: adsData } = useFetchAllAds();
   const mapRef = useRef<MapRef>(null);
   const [isShowCluster, setIsShowCluster] = useState<boolean>(true);
+
+  //Create state for need back button
+  const [isBackActive, setIsBackActive] = useState<boolean>(true);
 
   const [isActiveAdsBoard, setIsActiveAdsBoard] = useState<boolean>(false);
   const [idAdsBoard, setIdAdsBoard] = useState(-1);
@@ -100,11 +103,14 @@ function Home(): ReactElement {
   //Create state for checking ads point is reported
   const [isAdsPointReported, setIsAdsPointReported] = useState(false);
   //Create state for checking ads point is reported
-  const [infoUnknowPointReported, setInfoUnknowPointReported] =
-    useState<locationType>(undefined);
+  const [longLatUnknowPointReported, setLongLatUnknowPointReported] = useState<locationType>(undefined);
+  const [infoUnknowPointReported, setInfoUnknowPointReported] = useState<
+    ILocation | undefined
+  >(undefined);
 
   // Create state for show notification
   const [isNotifications, setIsNotifications] = useState<boolean>(false);
+
 
   //Create state for checking ads board is click detail
   const [adsBoardReportedDetail, setAdsBoardReportedDetail] =
@@ -163,7 +169,7 @@ function Home(): ReactElement {
         .then((data) => {
           setInfoClickAdsPoint(data);
         })
-        .catch((error) => console.error(error));
+        .catch((error) => console.log(error));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [idAdsPointClick]);
@@ -202,11 +208,16 @@ function Home(): ReactElement {
   const handleClick = useCallback((event: MapLayerMouseEvent) => {
     if (!mapRef.current) return;
 
+    setIsNotifications(false);
     setIsActiveAdsBoard(false);
     setIsClickAdsPoint(false);
     setIsReportHistoryActive(false);
     setIsClickReportedAdsBoard(false);
     setIsClickReportedPoint(false);
+    setIsBackActive(true);
+    setLongLatUnknowPointReported(undefined);
+    setInfoHoverAdsPoint(undefined);
+    setIsLocationOnClickPopupActive(false);
 
     //Check the point is cluster? Move and zoom
     const features = mapRef.current.queryRenderedFeatures(event.point, {
@@ -226,25 +237,25 @@ function Home(): ReactElement {
         'unclustered-point-unplanned',
         'unclustered-point-reported',
         'unclustered-unknown-point-reported',
-        'unclustered-ads-board-reported',
+        'unclustered-ads-board-reported'
       ],
     });
 
     if (featuresAllPoint[0] && featuresAllPoint[0].geometry.type === 'Point') {
-      const [long, lat] = featuresAllPoint[0].geometry.coordinates;
+      const [long, lat] = featuresAllPoint[0].properties?.longLatArr
+        .slice(1, -1) // Remove the square brackets at the beginning and end
+        .split(",")   // Split the string into an array of substrings
+        .map(Number);
 
       //Check ADS Point is reported
-      if (
-        featuresAllPoint[0].layer.id === 'unclustered-unknown-point-reported'
-      ) {
-        setAdsPointReportedDetail(
-          locationReportList?.find((location) => {
-            location.longitude === long && location.latitude === lat;
-          })
-        );
-        setIsClickReportedPoint(true);
+      if (featuresAllPoint[0].layer.id === 'unclustered-unknown-point-reported') {
+        console.log(locationReportList);
+        setAdsPointReportedDetail(locationReportList?.find((location) => location.longitude === long && location.latitude === lat))
+        setIsClickReportedPoint(true)
+        setIsBackActive(false);
         return;
-      } else setIsClickReportedPoint(false);
+      }
+      else setIsClickReportedPoint(false);
 
       mapRef.current.flyTo({
         zoom: 14,
@@ -264,7 +275,6 @@ function Home(): ReactElement {
 
     // Click to normal location
     const { lng, lat } = event.lngLat;
-
     setUserClickMarker({
       latitude: lat,
       longitude: lng,
@@ -307,14 +317,18 @@ function Home(): ReactElement {
     );
 
     if (!adsPoint) {
-      setInfoUnknowPointReported(undefined);
+      setLongLatUnknowPointReported(undefined);
       setInfoHoverAdsPoint(undefined);
       setIsAdsPointReported(false);
       setIdAdsPoint(-1);
+      return;
     }
 
     if (adsPoint && adsPoint.geometry.type === 'Point') {
-      const [long, lat] = adsPoint.geometry.coordinates;
+      const [long, lat] = adsPoint.properties?.longLatArr
+        .slice(1, -1) // Remove the square brackets at the beginning and end
+        .split(",")   // Split the string into an array of substrings
+        .map(Number);
 
       //Detech mouse around
       if (
@@ -331,10 +345,18 @@ function Home(): ReactElement {
 
       //Check Unknow Poin is reported
       if (adsPoint.layer.id === 'unclustered-unknown-point-reported') {
-        setInfoUnknowPointReported({
+        setLongLatUnknowPointReported({
           lon: long,
-          lat: lat,
-        });
+          lat: lat
+        })
+
+        onGetLocationDetail({ latitude: lat, longitude: long })
+          .then((data) => {
+            setInfoUnknowPointReported(data);
+          })
+          .catch((error) => {
+            showError('Lỗi lấy dữ liệu địa điểm');
+          });
 
         setPosPrevMouse({
           lat: lat,
@@ -350,7 +372,8 @@ function Home(): ReactElement {
         adsPoint.layer.id === 'unclustered-ads-board-reported'
       )
         setIsAdsPointReported(true);
-      else setIsAdsPointReported(false);
+      else
+        setIsAdsPointReported(false);
 
       setIdAdsPoint(adsPoint.properties?.id);
       setPosPrevMouse({
@@ -362,6 +385,65 @@ function Home(): ReactElement {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // if (adsData) {
+  //   console.log(
+  //     [
+  //       ...adsData.map((m) => ({
+  //         type: 'Feature',
+  //         properties: {
+  //           id: m.id,
+  //           cluster: false,
+  //           name: m.address,
+  //           planned: m.planned,
+  //           isAdsLocation: true,
+  //           isAdsBoardReport: adsReportList
+  //             ? adsReportList.some((ar) => ar.adsPointID === m.id)
+  //             : false,
+
+  //           reported: Boolean(
+  //             (locationReportList &&
+  //               locationReportList.some(
+  //                 (lr) =>
+  //                   lr.latitude === m.latitude && lr.longitude === m.longitude
+  //               )) ||
+  //               (adsReportList &&
+  //                 adsReportList.some((ar) => {
+  //                   if (m.id === 900) {
+  //                     console.log(ar.adsPointID, '____', m.id);
+  //                   }
+  //                   return ar.adsPointID === m.id;
+  //                 }))
+  //           ),
+  //         },
+  //         geometry: {
+  //           type: 'Point',
+  //           coordinates: [m.longitude, m.latitude],
+  //         },
+  //       })),
+  //       ...(locationReportList
+  //         ? locationReportList
+  //             .filter((locationReport) => locationReport.reportData === null)
+  //             .map((m, index) => ({
+  //               type: 'Feature',
+  //               properties: {
+  //                 id: adsData.length + index + 1,
+  //                 cluster: false,
+  //                 name: '',
+  //                 planned: false,
+  //                 reported: true,
+  //                 isAdsLocation: false,
+  //                 isAdsBoardReport: false,
+  //               },
+  //               geometry: {
+  //                 type: 'Point',
+  //                 coordinates: [m.longitude, m.latitude],
+  //               },
+  //             }))
+  //         : []),
+  //     ].filter((e) => !e.properties.isAdsLocation)
+  //   );
+  // }
 
   return (
     <div className="relative w-screen h-screen">
@@ -426,12 +508,9 @@ function Home(): ReactElement {
                 <i className="fi fi-ss-triangle-warning mr-1"></i> Báo cáo của
                 bạn
               </button>
-              <button
-                className="bg-white rounded px-2 py-0 h-[36px] text-xs font-medium ml-2"
-                onClick={() => {
-                  setIsNotifications(!isNotifications);
-                }}
-              >
+              <button className="bg-white rounded px-2 py-0 h-[36px] text-xs font-medium ml-2" onClick={() => {
+                setIsNotifications(!isNotifications);
+              }}>
                 <i className="fi fi-ss-bell"></i>
               </button>
               {isNotifications ? (
@@ -510,10 +589,13 @@ function Home(): ReactElement {
                                 lr.latitude === m.latitude &&
                                 lr.longitude === m.longitude
                             )) ||
-                            (adsReportList &&
-                              adsReportList.some(
-                                (ar) => ar.adsPointID === m.id
-                              ))
+                          (adsReportList &&
+                            adsReportList.some((ar) => {
+                              if (m.id === 900) {
+                                // console.log(ar.adsPointID, '____', m.id);
+                              }
+                              return ar.adsPointID === m.id;
+                            }))
                         ),
                         longLatArr: [m.longitude, m.latitude],
                       },
@@ -524,27 +606,27 @@ function Home(): ReactElement {
                     })),
                     ...(locationReportList
                       ? locationReportList
-                          .filter(
-                            (locationReport) =>
-                              locationReport.reportData === null
-                          )
-                          .map((m, index) => ({
-                            type: 'Feature',
-                            properties: {
-                              id: adsData.length + index + 1,
-                              cluster: false,
-                              name: '',
-                              planned: false,
-                              reported: true,
-                              isAdsLocation: false,
-                              isAdsBoardReport: false,
-                              longLatArr: [m.longitude, m.latitude],
-                            },
-                            geometry: {
-                              type: 'Point',
-                              coordinates: [m.longitude, m.latitude],
-                            },
-                          }))
+                        .filter(
+                          (locationReport) =>
+                            locationReport.reportData === null
+                        )
+                        .map((m, index) => ({
+                          type: 'Feature',
+                          properties: {
+                            id: adsData.length + index + 1,
+                            cluster: false,
+                            name: '',
+                            planned: false,
+                            reported: true,
+                            isAdsLocation: false,
+                            isAdsBoardReport: false,
+                            longLatArr: [m.longitude, m.latitude],
+                          },
+                          geometry: {
+                            type: 'Point',
+                            coordinates: [m.longitude, m.latitude],
+                          },
+                        }))
                       : []),
                   ],
                 } as FeatureCollection<Point>
@@ -576,30 +658,40 @@ function Home(): ReactElement {
           )}
 
           {/* Hover Unknow Point Reported */}
-          {infoUnknowPointReported ? (
+          {longLatUnknowPointReported ? (
             <Popup
-              longitude={infoUnknowPointReported.lon}
-              latitude={infoUnknowPointReported.lat}
+              longitude={longLatUnknowPointReported.lon}
+              latitude={longLatUnknowPointReported.lat}
               closeButton={false}
               closeOnClick={false}
               maxWidth="50vh"
             >
-              <div className="text-[0.7rem]">
-                <p className="font-bold text-sm">Thông tin địa điểm</p>
-                <p className="font-semibold">
-                  Quân Chủng Hải Quân - Trung Tâm Văn Phòng Thương Mại Hải Quận
-                </p>
-                <p className="text-neutral-500">
-                  227 Nguyen Van Cu, Phuong 4, Quan 5, Thanh pho Ho Chi Minh
-                </p>
-                <p className="text-rose-600 text-sm font-semibold text-right">
-                  Bạn đã báo cáo điểm này
-                </p>
-              </div>
+              {infoUnknowPointReported
+                ?
+                (
+                  <div className='text-[0.7rem]'>
+                    <p className='font-bold text-sm'>Thông tin địa điểm</p>
+                    <p className='font-semibold text-neutral-600 mt-1'>{infoUnknowPointReported.display_name}</p>
+                    <p className='text-neutral-500 mt-1'>Kinh độ: <span className=''>{longLatUnknowPointReported.lon}</span></p>
+                    <p className='text-neutral-500 mb-1'>Vĩ độ: <span className=''>{longLatUnknowPointReported.lat}</span></p>
+                    <p className='text-rose-600 text-sm font-semibold text-right'>Bạn đã báo cáo điểm này</p>
+                  </div>
+                )
+                :
+                <>
+                  <div role="status">
+                    <svg aria-hidden="true" className="w-4 h-4 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor" />
+                      <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill" />
+                    </svg>
+                    <span className="sr-only">Loading...</span>
+                  </div>
+                </>}
+
             </Popup>
-          ) : (
+          ) :
             <></>
-          )}
+          }
 
           {/* Hover Ads Point */}
           {infoHoverAdsPoint ? (
@@ -619,6 +711,7 @@ function Home(): ReactElement {
           ) : (
             <></>
           )}
+
 
           {/* Check Loading Ads Point*/}
           {isClickAdsPoint ? (
@@ -691,9 +784,16 @@ function Home(): ReactElement {
               handleDetailAdsBoard={(adsBoard) => {
                 setAdsBoardReportedDetail(adsBoard);
                 setIsClickReportedAdsBoard(true);
+                const adsPointData = adsData?.find((ads) => ads.id === adsBoard.adsPointID)
                 setInfoAdsPointOfAdsBoard(
-                  adsData?.find((ads) => ads.id === adsBoard.adsPointID)
+                  adsPointData
                 );
+                if (mapRef.current !== null && adsPointData?.latitude && adsPointData?.longitude)
+                  mapRef.current.flyTo({
+                    zoom: 14,
+                    center: [adsPointData?.longitude, adsPointData.latitude],
+                    duration: 1500,
+                  });
               }}
               handleDetailAdsPoint={(point) => {
                 setAdsPointReportedDetail(point);
@@ -738,6 +838,7 @@ function Home(): ReactElement {
           {isClickReportedPoint ? (
             adsPointReportedDetail ? (
               <ReportDetailPoint
+                backActive={isBackActive}
                 infoPointReport={adsPointReportedDetail}
                 handleClose={() => {
                   setIsClickReportedPoint(false);
