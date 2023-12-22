@@ -17,6 +17,8 @@ namespace UrashimaServer.Database
         public DbSet<BoardModify> BoardModifies { get; set; }
         public DbSet<PointModifyImage> PointModifyImages { get; set; }
         public DbSet<Account> Accounts { get; set; }
+        public DbSet<ReportType> ReportTypes { get; set; }
+        public DbSet<AdsType> AdsTypes { get; set; }
 
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         { }
