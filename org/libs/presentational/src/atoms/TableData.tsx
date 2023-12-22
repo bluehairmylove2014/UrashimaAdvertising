@@ -1,5 +1,11 @@
-function TableData({ children }: { children: React.ReactNode }) {
-  return <p className="line-clamp-2">{children}</p>;
+function TableData({
+  children,
+  isMultiRow,
+}: {
+  children: React.ReactNode;
+  isMultiRow?: boolean;
+}) {
+  return <p className={`${isMultiRow ? 'line-clamp-2' : ''}`}>{children}</p>;
 }
 
 export default TableData;

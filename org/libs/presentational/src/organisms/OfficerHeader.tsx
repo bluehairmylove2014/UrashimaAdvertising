@@ -7,12 +7,12 @@ import Link from 'next/link';
 
 const officerNavDropdownOptions = [
   {
-    name: 'Điểm đặt quảng cáo',
-    href: OFFICER_PAGES.ADS_LOCATION,
+    name: 'Danh sách cấp phép',
+    href: OFFICER_PAGES.APPROVE_LIST,
   },
   {
-    name: 'Bảng quảng cáo',
-    href: OFFICER_PAGES.ADS_BOARD,
+    name: 'Tạo cấp phép mới',
+    href: OFFICER_PAGES.NEW_APPROVE,
   },
 ];
 
@@ -40,13 +40,13 @@ function OfficerHeader() {
             </Link>
           </li>
           <li>
-            <OfficerNavDropdown
-              options={officerNavDropdownOptions}
-              position="center"
+            <Link
+              href={OFFICER_PAGES.ADS_LOCATION}
+              prefetch={true}
+              className="text-xs text-white font-semibold hover:text-orange-400"
             >
-              <span>Quản lý quảng cáo</span>
-              <i className="fi fi-sr-caret-down ml-1 -bottom-[1px]"></i>
-            </OfficerNavDropdown>
+              Quản lý quảng cáo
+            </Link>
           </li>
           <li>
             <Link
@@ -58,13 +58,12 @@ function OfficerHeader() {
             </Link>
           </li>
           <li>
-            <Link
-              href={OFFICER_PAGES.APPROVE}
-              prefetch={true}
-              className="text-xs text-white font-semibold hover:text-orange-400"
+            <OfficerNavDropdown
+              options={officerNavDropdownOptions}
+              position="center"
             >
-              Cấp phép
-            </Link>
+              <span>Cấp phép</span>
+            </OfficerNavDropdown>
           </li>
         </ul>
       </nav>

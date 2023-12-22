@@ -200,6 +200,10 @@ function Home(): ReactElement {
   //Catch click mouse event
   const handleClick = useCallback((event: MapLayerMouseEvent) => {
     if (!mapRef.current) return;
+    const fakeFeatures = mapRef.current.queryRenderedFeatures(event.point, {
+      layers: ['unclustered-unknown-point-reported'],
+    });
+    console.log(fakeFeatures);
 
     setIsActiveAdsBoard(false);
     setIsClickAdsPoint(false);
@@ -355,6 +359,65 @@ function Home(): ReactElement {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // if (adsData) {
+  //   console.log(
+  //     [
+  //       ...adsData.map((m) => ({
+  //         type: 'Feature',
+  //         properties: {
+  //           id: m.id,
+  //           cluster: false,
+  //           name: m.address,
+  //           planned: m.planned,
+  //           isAdsLocation: true,
+  //           isAdsBoardReport: adsReportList
+  //             ? adsReportList.some((ar) => ar.adsPointID === m.id)
+  //             : false,
+
+  //           reported: Boolean(
+  //             (locationReportList &&
+  //               locationReportList.some(
+  //                 (lr) =>
+  //                   lr.latitude === m.latitude && lr.longitude === m.longitude
+  //               )) ||
+  //               (adsReportList &&
+  //                 adsReportList.some((ar) => {
+  //                   if (m.id === 900) {
+  //                     console.log(ar.adsPointID, '____', m.id);
+  //                   }
+  //                   return ar.adsPointID === m.id;
+  //                 }))
+  //           ),
+  //         },
+  //         geometry: {
+  //           type: 'Point',
+  //           coordinates: [m.longitude, m.latitude],
+  //         },
+  //       })),
+  //       ...(locationReportList
+  //         ? locationReportList
+  //             .filter((locationReport) => locationReport.reportData === null)
+  //             .map((m, index) => ({
+  //               type: 'Feature',
+  //               properties: {
+  //                 id: adsData.length + index + 1,
+  //                 cluster: false,
+  //                 name: '',
+  //                 planned: false,
+  //                 reported: true,
+  //                 isAdsLocation: false,
+  //                 isAdsBoardReport: false,
+  //               },
+  //               geometry: {
+  //                 type: 'Point',
+  //                 coordinates: [m.longitude, m.latitude],
+  //               },
+  //             }))
+  //         : []),
+  //     ].filter((e) => !e.properties.isAdsLocation)
+  //   );
+  // }
+
   return (
     <div className="relative w-screen h-screen">
       <div className="relative z-0">
@@ -489,7 +552,6 @@ function Home(): ReactElement {
                         isAdsBoardReport: adsReportList
                           ? adsReportList.some((ar) => ar.adsPointID === m.id)
                           : false,
-
                         reported: Boolean(
                           (locationReportList &&
                             locationReportList.some(
@@ -505,6 +567,7 @@ function Home(): ReactElement {
                               return ar.adsPointID === m.id;
                             }))
                         ),
+                        longLatArr: [m.longitude, m.latitude],
                       },
                       geometry: {
                         type: 'Point',
@@ -527,6 +590,7 @@ function Home(): ReactElement {
                             reported: true,
                             isAdsLocation: false,
                             isAdsBoardReport: false,
+                            longLatArr: [m.longitude, m.latitude],
                           },
                           geometry: {
                             type: 'Point',
@@ -553,8 +617,8 @@ function Home(): ReactElement {
 
               {/* Report layer */}
               <Layer {...nonclusteredReportedAdsBoardLayer} />
-              <Layer {...nonclusteredReportedUnknownPointLayer} />
               <Layer {...nonclusteredReportedPointLayer} />
+              <Layer {...nonclusteredReportedUnknownPointLayer} />
 
               {/* Symbol "!" for report layer */}
               <Layer {...nonClusteredReportedPointSymbolLayer} />
