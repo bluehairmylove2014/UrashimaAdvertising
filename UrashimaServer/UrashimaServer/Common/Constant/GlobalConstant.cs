@@ -45,4 +45,11 @@
 
         public static List<(List<string>, string)> CheckList = list;
     }
+
+    public static class RequestConstant
+    {
+        public const string Accepted = "accepted";
+        public const string Rejected = "rejected";
+        public const string Inprogress = "inprocess";
+    }
 }

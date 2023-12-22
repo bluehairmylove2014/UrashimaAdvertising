@@ -15,7 +15,7 @@ namespace UrashimaServer.Database.Models
         public string Address { get; set; } = string.Empty;
         public DateTime ContractStart { get; set; }
         public DateTime ContractEnd { get; set; }
-        public bool RequestStatus { get; set; } = false;
+        public string RequestStatus { get; set; } = string.Empty;
 
         public AdsPoint? AdsPoint { get; set; }
         public AdsBoard? AdsBoard { get; set; }

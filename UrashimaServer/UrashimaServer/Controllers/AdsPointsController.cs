@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using UrashimaServer.Common.Constant;
 using UrashimaServer.Database;
 using UrashimaServer.Database.Dtos;
 using UrashimaServer.Models;
@@ -26,7 +27,8 @@ namespace UrashimaServer.Controllers
         {
             var rawResult = await _context.AdsPoints.ToListAsync();
             var result = rawResult
-                .Where(point => point.AdsCreateRequest == null || point.AdsCreateRequest.RequestStatus);
+                .Where(point => point.AdsCreateRequest == null || 
+                point.AdsCreateRequest.RequestStatus == RequestConstant.Accepted);
 
             var res = new List<UserAdsPointBasicDto>();
             foreach (var item in rawResult)

@@ -12,7 +12,7 @@ using UrashimaServer.Database;
 namespace UrashimaServer.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20231222062702_UrashimaDB_v1")]
+    [Migration("20231222140108_UrashimaDB_v1")]
     partial class UrashimaDB_v1
     {
         /// <inheritdoc />
@@ -62,8 +62,9 @@ namespace UrashimaServer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("RequestStatus")
-                        .HasColumnType("bit");
+                    b.Property<string>("RequestStatus")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
