@@ -32,8 +32,8 @@ import {
 import ScreenLoader from '@presentational/atoms/ScreenLoader';
 import DetailLoader from '@presentational/atoms/DetailLoader';
 import CustomImage from '@presentational/atoms/CustomImage';
-
 import ReportForm from '@presentational/molecules/ReportForm';
+import Announcement from '@presentational/molecules/Announcement';
 
 import {
   IAdLocation,
@@ -99,9 +99,11 @@ function Home(): ReactElement {
 
   //Create state for checking ads point is reported
   const [isAdsPointReported, setIsAdsPointReported] = useState(false);
-
   //Create state for checking ads point is reported
   const [infoUnknowPointReported, setInfoUnknowPointReported] = useState<locationType>(undefined);
+
+  // Create state for show notification
+  const [isNotifications, setIsNotifications] = useState<boolean>(false);
 
   //Create state for checking ads board is click detail
   const [adsBoardReportedDetail, setAdsBoardReportedDetail] =
@@ -416,9 +418,17 @@ function Home(): ReactElement {
                 <i className="fi fi-ss-triangle-warning mr-1"></i> Báo cáo của
                 bạn
               </button>
-              <button className="bg-white rounded px-2 py-0 h-[36px] text-xs font-medium ml-2">
+              <button className="bg-white rounded px-2 py-0 h-[36px] text-xs font-medium ml-2" onClick={() => {
+                setIsNotifications(!isNotifications);
+              }}>
                 <i className="fi fi-ss-bell"></i>
               </button>
+              {isNotifications ?
+                <Announcement handleClose={() => {
+                  setIsNotifications(false);
+                }} />
+                :
+                <></>}
             </div>
           </div>
           {marker ? (
