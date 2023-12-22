@@ -72,7 +72,7 @@ function ImageInput({
       >
         <i className="fi fi-br-picture inline-block"></i>
         <span className="ml-2">Thêm hình ảnh </span>
-        {limit ? <span>(Tối đa 2)</span> : <></>}
+        {limit ? <span>(Tối đa {limit || 2})</span> : <></>}
       </button>{' '}
       <input
         type="file"
@@ -81,7 +81,7 @@ function ImageInput({
         className="hidden"
         ref={inputRef}
         multiple={true}
-        max={2}
+        max={limit || 2}
         onChange={(e) => handleUploadImage(e.target.files)}
       />
     </>

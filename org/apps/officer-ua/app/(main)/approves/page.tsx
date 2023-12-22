@@ -10,6 +10,7 @@ import {
   APPROVE_STATUS_FILTER_OPTIONS,
   APPROVE_TIME_FILTER_OPTIONS,
 } from '../../../constants/approve';
+import Link from 'next/link';
 
 const breadcrumbsData: IBreadcrumb[] = [
   {
@@ -40,17 +41,27 @@ async function getApprovesList() {
 async function Approves() {
   const approvesList = await getApprovesList();
   return (
-    <div className="container mx-auto px-4 py-12">
-      <div className="flex flex-col items-start justify-start mb-8">
-        <h1 className="w-full font-bold !text-base">DANH SÁCH CẤP PHÉP</h1>
-        <Breadcrumbs bcList={breadcrumbsData} />
+    <main className="container mx-auto px-4 py-12">
+      <div className="flex flex-row justify-between items-start mb-8">
+        <div className="flex flex-col items-start justify-start">
+          <h1 className="w-full font-bold !text-base">DANH SÁCH CẤP PHÉP</h1>
+          <Breadcrumbs bcList={breadcrumbsData} />
+        </div>
+        <div className="w-fit h-8">
+          <Link
+            href={OFFICER_PAGES.NEW_APPROVE}
+            className="w-fit h-fit px-6 py-2 rounded overflow-hidden bg-green-600 hover:bg-green-500 transition-colors text-xs font-semibold text-white"
+          >
+            + Tạo cấp phép
+          </Link>
+        </div>
       </div>
       <ApprovesList
         inputApproveData={approvesList}
         timeFilterOptions={APPROVE_TIME_FILTER_OPTIONS}
         requestStatusFilterOptions={APPROVE_STATUS_FILTER_OPTIONS}
       />
-    </div>
+    </main>
   );
 }
 
