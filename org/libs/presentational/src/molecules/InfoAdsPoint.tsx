@@ -4,14 +4,12 @@ import { IAdLocation } from '@business-layer/services/entities/ads';
 
 function InfoAds({
   info,
-  isReported,
+  isAdsPointReported,
   isOfficer,
-  onClick,
 }: {
   info: IAdLocation;
-  isReported: boolean;
+  isAdsPointReported: boolean;
   isOfficer: boolean;
-  onClick: (id: number) => void;
 }) {
   // const { setForm } = useSetReportForm();
   return (
@@ -41,7 +39,7 @@ function InfoAds({
       {isOfficer ? <></>
         :
         <>
-          {isReported ? (
+          {isAdsPointReported ? (
             <p className="font-bold text-rose-600 text-sm">
               Bạn đã báo cáo điểm này
             </p>

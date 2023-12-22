@@ -33,38 +33,37 @@ function DetailReport({
   const [selectedFormReport, setSelectedFormReport] = useState(formReport[0]);
   const adReportsData = useGetAdReports();
   const locationReportData = useGetLocationReports();
-  const [isEmpty, setIsEmpty] = useState(true);
 
-  const adReportsDataCurrent = useMemo(() => {
+  const allReportData = [...adReportsData || [], ...locationReportData || []];
+  const allReportDataCurrent = useMemo(() => {
     if (selectedFormReport === 'Tất cả hình thức báo cáo') {
-      return adReportsData;
+      return allReportData || [];
     } else {
-      return adReportsData?.filter(
+      return allReportData?.filter(
         (report) => report.reportType === selectedFormReport
-      );
+      ) || [];
     }
   }, [selectedFormReport]);
 
-  const locationReportDataCurrent = useMemo(() => {
-    if (selectedFormReport === 'Tất cả hình thức báo cáo') {
-      return locationReportData;
-    } else {
-      return locationReportData?.filter(
-        (report) => report.reportType === selectedFormReport
-      );
-    }
-  }, [selectedFormReport]);
+  //Sort data to present report newest
+  allReportDataCurrent.sort(function (a, b) {
+    return b.submissionDate.localeCompare(a.submissionDate);
+  });
+
+  //Category report 
+  const [categories, setCategories] = useState({
+    all: allReportDataCurrent,
+    approved: allReportDataCurrent?.filter((report) => report.reportStatus === true) || [],
+    notApproved: allReportDataCurrent?.filter((report) => report.reportStatus === false) || []
+  })
 
   useEffect(() => {
-    if (
-      (adReportsDataCurrent === undefined ||
-        adReportsDataCurrent?.length == 0) &&
-      (locationReportDataCurrent === undefined ||
-        locationReportDataCurrent?.length == 0)
-    ) {
-      setIsEmpty(true);
-    } else setIsEmpty(false);
-  }, [adReportsDataCurrent, locationReportDataCurrent]);
+    setCategories({
+      all: allReportDataCurrent,
+      approved: allReportDataCurrent?.filter((report) => report.reportStatus === true) || [],
+      notApproved: allReportDataCurrent?.filter((report) => report.reportStatus === false) || [],
+    });
+  }, [allReportDataCurrent]);
 
   return (
     <div
@@ -108,42 +107,23 @@ function DetailReport({
         <Tab.Group>
           {/* title tab */}
           <Tab.List className="flex h-[100%]">
-            <Tab
-              className={({ selected }) =>
-                classNames(
-                  'w-full py-2 text-[0.7rem] font-medium leading-5 border-solid border-x-0 border-t-0 border-1',
-                  selected
-                    ? ' border-blue-700 text-blue-700'
-                    : ' border-gray-200 text-gray-600 hover:bg-gray-200 hover:rounded-full'
-                )
-              }
-            >
-              Tất cả báo cáo
-            </Tab>
-            <Tab
-              className={({ selected }) =>
-                classNames(
-                  'w-full py-2 text-[0.7rem] font-medium leading-5 border-solid border-x-0 border-t-0 border-1',
-                  selected
-                    ? ' border-blue-700 text-blue-700'
-                    : ' border-gray-200 text-gray-600 hover:bg-gray-200 hover:rounded-full'
-                )
-              }
-            >
-              Đang xét duyệt
-            </Tab>
-            <Tab
-              className={({ selected }) =>
-                classNames(
-                  'w-full py-2 text-[0.7rem] font-medium leading-5 border-solid border-x-0 border-t-0 border-1 ',
-                  selected
-                    ? ' border-blue-700 text-blue-700'
-                    : ' border-gray-200 text-gray-600 hover:bg-gray-200 hover:rounded-full'
-                )
-              }
-            >
-              Đã xét duyệt
-            </Tab>
+            {Object.keys(categories).map((category) => (
+              <Tab
+                key={category}
+                className={({ selected }) =>
+                  classNames(
+                    'w-full py-2 text-[0.7rem] font-medium leading-5 border-solid border-x-0 border-t-0 border-1',
+                    selected
+                      ? ' border-blue-700 text-blue-700'
+                      : ' border-gray-200 text-gray-600 hover:bg-gray-200 hover:rounded-full'
+                  )
+                }
+              >
+                {category === 'all' ? <>Tất cả báo cáo</> : <></>}
+                {category === 'approved' ? <>Đã xét duyệt</> : <></>}
+                {category === 'notApproved' ? <>Đang xét duyệt</> : <></>}
+              </Tab>
+            ))}
           </Tab.List>
 
           {/* Listbox form report */}
@@ -191,167 +171,181 @@ function DetailReport({
 
           {/* List report */}
           <Tab.Panels>
-            {isEmpty ? (
-              <Tab.Panel>
-                <div className="mx-3 text-green-600">
-                  <p>Không có báo cáo ở danh mục này</p>
-                </div>
-              </Tab.Panel>
-            ) : (
-              <Tab.Panel>
-                {/* List ads board report */}
-                {adReportsDataCurrent?.map((report) => (
-                  <div
-                    className="mx-3 bg-white p-2 border rounded-lg font-bold cursor-pointer hover:shadow-lg focus:shadow-lg mt-3"
-                    key={report.content}
-                    onClick={() => handleDetailAdsBoard(report)}
-                  >
-                    <div className="flex justify-between text-xs">
-                      <p className="text-neutral-600">{report.reportType}</p>
-                      {/* <p className="text-green-600 text-[0.7rem]">
-                        ĐÃ XÉT DUYỆT
-                      </p> */}
-                      <p className="text-rose-600 text-[0.7rem]">
-                        ĐANG XÉT DUYỆT
-                      </p>
+            {Object.values(categories).map((reportDataList, indexReportData) => (
+              <Fragment key={indexReportData}>
+                {reportDataList === undefined || reportDataList.length === 0 ? (
+                  <Tab.Panel>
+                    <div className="mx-3 text-green-600">
+                      <p>Không có báo cáo ở danh mục này</p>
                     </div>
-                    <hr className="my-2" />
-                    <div className="mt-2 flex w-[100%]">
-                      <div className="w-[30%] min-w-[30%] h-[12vh] rounded  overflow-hidden mr-1">
-                        <CustomImage
-                          src="/assets/billboardExample.png"
-                          alt="Ads Form"
-                          width="100%"
-                          height="100%"
-                        />
-                      </div>
-
-                      <div className="font-medium text-gray-600 truncate">
-                        <p className=" text-[0.6rem] whitespace-normal font-bold">
-                          Báo cáo về điểm đặt quảng cáo
-                        </p>
-                        <p className=" text-[0.6rem] whitespace-normal">
-                          Loaị bảng quảng cáo:
-                          <span className="font-semibold">
-                            {' '}
-                            {report.reportData.adsType}
-                          </span>
-                        </p>
-
-                        <p className=" text-[0.6rem]">
-                          Nội dung:
-                          <span className="font-semibold">
-                            {report.content}
-                          </span>
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-
-                {/* List Location Report */}
-                {locationReportDataCurrent?.map((report) => (
-                  <div
-                    className="mx-3 bg-white p-2 border rounded-lg font-bold cursor-pointer hover:shadow-lg focus:shadow-lg mt-3"
-                    key={report.content}
-                    onClick={() => handleDetailAdsPoint(report)}
-                  >
-                    <div className="flex justify-between">
-                      <p className="text-neutral-600">{report.reportType}</p>
-                      <p className="text-green-600 text-[0.7rem]">
-                        ĐÃ XÉT DUYỆT
-                      </p>
-                      {/* <p className="text-green-600 italic text-right mt-2">
-                ĐANG XÉT DUYỆT
-              </p> */}
-                    </div>
-                    <hr className="my-2" />
-
-                    <div className="mt-1 flex w-[100%]">
-                      {report.reportData ? (
-                        // Report AdsPoint have ReportData
-                        <>
-                          <div className="w-[30%] min-w-[30%] h-[12vh] rounded  overflow-hidden mr-1">
-                            <CustomImage
-                              src="/assets/billboardExample.png"
-                              alt="Ads Form"
-                              width="100%"
-                              height="100%"
-                            />
-                          </div>
-
-                          <div className="font-medium text-gray-600 truncate">
-                            <p className=" text-[0.6rem] whitespace-normal font-bold">
-                              Báo cáo về điểm quảng cáo
-                            </p>
-                            <p className=" text-[0.6rem] whitespace-normal">
-                              Địa điểm:
-                              <span className="font-semibold">
-                                {' '}
-                                {report.reportData.address}
-                              </span>
-                            </p>
-
-                            <p className=" text-[0.6rem]">
-                              Nội dung:
-                              <span className="font-semibold">
-                                {report.content}
-                              </span>
-                            </p>
-                          </div>
-                        </>
-                      ) : (
-                        // Report Point doesnt have ReportData
-                        <div className="ml-1 font-medium text-gray-600 truncate  w-[100%]">
-                          <div className="flex w-[100%]">
-                            <div className="w-[30%] mr-1">
-                              <CustomImage
-                                src="/assets/billboardExample.png"
-                                alt="Ads Form"
-                                width="100%"
-                                height="100%"
-                              />
+                  </Tab.Panel>
+                ) : (
+                  <Tab.Panel>
+                    {/* List for all report */}
+                    {reportDataList?.map((report, index) => (
+                      <div key={index}>
+                        {/* Check report is ads board report */}
+                        {'adsBoardID' in report && 'adsPointID' in report ?
+                          <div
+                            className="mx-3 bg-white p-2 border rounded-lg font-bold cursor-pointer hover:shadow-lg focus:shadow-lg mt-3"
+                            key={report.content}
+                            onClick={() => handleDetailAdsBoard(report)}
+                          >
+                            <div className="flex justify-between text-xs">
+                              <p className="text-neutral-600">{report.reportType}</p>
+                              {report.reportStatus ?
+                                <p className="text-green-600 text-[0.7rem]">
+                                  ĐÃ XÉT DUYỆT
+                                </p>
+                                :
+                                <p className="text-rose-600 text-[0.7rem]">
+                                  ĐANG XÉT DUYỆT
+                                </p>
+                              }
                             </div>
-                            <div>
-                              <p className=" text-[0.6rem] whitespace-normal font-bold">
-                                Báo cáo về một địa điểm trên bản đồ
-                              </p>
-                              <p className=" text-[0.6rem] whitespace-normal">
-                                Vĩ độ:
-                                <span className="font-semibold">
-                                  {' '}
-                                  {report.latitude}
-                                </span>
-                              </p>
-                              <p className=" text-[0.6rem] whitespace-normal">
-                                Kinh độ:
-                                <span className="font-semibold">
-                                  {' '}
-                                  {report.longitude}
-                                </span>
-                              </p>
-                              <p className=" text-[0.6rem]">
-                                Nội dung:
-                                <span className="font-semibold">
-                                  {report.content}
-                                </span>
-                              </p>
+                            <hr className="my-2" />
+                            <div className="mt-2 flex w-[100%]">
+                              <div className="w-[30%] min-w-[30%] h-[12vh] rounded  overflow-hidden mr-1">
+                                <CustomImage
+                                  src={report.reportData.image}
+                                  alt="Ads Form"
+                                  width="100%"
+                                  height="100%"
+                                />
+                              </div>
+
+                              <div className="font-medium text-gray-600 truncate">
+                                <p className=" text-[0.6rem] whitespace-normal font-bold">
+                                  Báo cáo về bảng quảng cáo
+                                </p>
+                                <p className=" text-[0.6rem] whitespace-normal">
+                                  Loaị bảng quảng cáo:
+                                  <span className="font-semibold">
+                                    {' '}
+                                    {report.reportData.adsType}
+                                  </span>
+                                </p>
+
+                                <p className=" text-[0.6rem]">
+                                  Nội dung:
+                                  <span className="font-semibold">
+                                    {report.content}
+                                  </span>
+                                </p>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </Tab.Panel>
-            )}
+                          : <></>
+                        }
 
-            <Tab.Panel>Content 2</Tab.Panel>
-            <Tab.Panel>Content 3</Tab.Panel>
+                        {/* Check report is location report */}
+                        {'latitude' in report && 'longitude' in report ?
+                          <div
+                            className="mx-3 bg-white p-2 border rounded-lg font-bold cursor-pointer hover:shadow-lg focus:shadow-lg mt-3"
+                            key={report.content}
+                            onClick={() => handleDetailAdsPoint(report)}
+                          >
+                            <div className="flex justify-between">
+                              <p className="text-neutral-600">{report.reportType}</p>
+                              {report.reportStatus ?
+                                <p className="text-green-600 text-[0.7rem]">
+                                  ĐÃ XÉT DUYỆT
+                                </p>
+                                :
+                                <p className="text-rose-600 text-[0.7rem]">
+                                  ĐANG XÉT DUYỆT
+                                </p>
+                              }
+                            </div>
+                            <hr className="my-2" />
+
+                            <div className="mt-1 flex w-[100%]">
+                              {report.reportData ? (
+                                // Report AdsPoint have ReportData
+                                <>
+                                  <div className="w-[30%] min-w-[30%] h-[12vh] rounded  overflow-hidden mr-1">
+                                    <CustomImage
+                                      src={report.reportData.images[0].image}
+                                      alt="Ads Form"
+                                      width="100%"
+                                      height="100%"
+                                    />
+                                  </div>
+
+                                  <div className="font-medium text-gray-600 truncate">
+                                    <p className=" text-[0.6rem] whitespace-normal font-bold">
+                                      Báo cáo về điểm quảng cáo
+                                    </p>
+                                    <p className=" text-[0.6rem] whitespace-normal">
+                                      Địa điểm:
+                                      <span className="font-semibold">
+                                        {' '}
+                                        {report.reportData.address}
+                                      </span>
+                                    </p>
+
+                                    <p className=" text-[0.6rem]">
+                                      Nội dung:
+                                      <span className="font-semibold">
+                                        {report.content}
+                                      </span>
+                                    </p>
+                                  </div>
+                                </>
+                              ) : (
+                                // Report Point doesnt have ReportData
+                                <div className="ml-1 font-medium text-gray-600 truncate  w-[100%]">
+                                  <div className="flex w-[100%]">
+                                    <div className="w-[30%] mr-1">
+                                      <CustomImage
+                                        src="/assets/billboardExample.png"
+                                        alt="Ads Form"
+                                        width="100%"
+                                        height="100%"
+                                      />
+                                    </div>
+                                    <div>
+                                      <p className=" text-[0.6rem] whitespace-normal font-bold">
+                                        Báo cáo về một địa điểm trên bản đồ
+                                      </p>
+                                      <p className=" text-[0.6rem] whitespace-normal">
+                                        Vĩ độ:
+                                        <span className="font-semibold">
+                                          {' '}
+                                          {report.latitude}
+                                        </span>
+                                      </p>
+                                      <p className=" text-[0.6rem] whitespace-normal">
+                                        Kinh độ:
+                                        <span className="font-semibold">
+                                          {' '}
+                                          {report.longitude}
+                                        </span>
+                                      </p>
+                                      <p className=" text-[0.6rem]">
+                                        Nội dung:
+                                        <span className="font-semibold">
+                                          {report.content}
+                                        </span>
+                                      </p>
+                                    </div>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                          : <></>
+                        }
+                      </div>
+                    ))}
+                  </Tab.Panel>
+                )}
+              </Fragment>
+            ))}
           </Tab.Panels>
         </Tab.Group>
       </div>
-    </div>
+    </div >
   );
 }
 

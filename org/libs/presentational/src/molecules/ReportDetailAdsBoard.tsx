@@ -178,7 +178,7 @@ function ReportDetailAdsBoard({
         {infoAdsBoardReport.reportData.image ? (
           <div className="w-[100%] h-[25vh] mt-2">
             <CustomImage
-              src="/assets/billboardExample.png"
+              src={infoAdsBoardReport.reportData.image}
               alt="location"
               width="100%"
               height="100%"

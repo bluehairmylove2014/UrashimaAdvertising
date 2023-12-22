@@ -3,7 +3,10 @@ import CustomImage from '@presentational/atoms/CustomImage';
 import CustomButtonIcon from '@presentational/atoms/CustomButtonIcon';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { IAdLocationDetail } from '@business-layer/services/entities/ads';
-import { useSetReportForm } from '@business-layer/business-logic/non-service-lib/reportForm';
+import { useGetAdReports } from '@business-layer/business-logic/lib/report';
+import { IAdReport } from '@business-layer/services/entities';
+import { formatDate } from '@utils/helpers';
+
 
 const convertDate = (date?: string) => {
   if (!date) return 'Error';
@@ -14,17 +17,20 @@ function DetailAdsPoint({
   adsPoint,
   id,
   isOfficer,
+  handleDetailReportAdsBoard,
   handleClose,
   handleBack,
 }: {
   adsPoint: IAdLocationDetail;
   id: number;
   isOfficer: boolean;
+  handleDetailReportAdsBoard: (adsBoard: IAdReport) => void
   handleClose: () => void;
   handleBack: () => void;
 }) {
   const adsBoardDetail = adsPoint.adsBoard.find((ads) => (ads.id = id));
-  const { setForm } = useSetReportForm();
+  const adsReportList = useGetAdReports();
+  const reportReported = adsReportList?.find((report) => report.adsBoardID === adsBoardDetail?.id && report.adsPointID === adsPoint?.id);
 
   return (
     <div
@@ -34,9 +40,12 @@ function DetailAdsPoint({
       <div className="h-[100%] w-[100%] bg-white relative overflow-y-scroll scrollbar">
         <div className="absolute z-10 top-0 right-0 mt-2 mx-1">
           <CustomButtonIcon
-            widthIcon="0.7rem"
-            heightIcon="0.7rem"
+            widthIcon="0.6rem"
+            heightIcon="0.6rem"
             type="button"
+            bgColor="bg-black/70"
+            round={5}
+            padding={8}
             pathImage="/assets/close.png"
             alt=""
             onClick={handleClose}
@@ -60,63 +69,66 @@ function DetailAdsPoint({
           </CustomButtonIcon>
         </div>
 
-        {/* <Carousel showStatus={false} showArrows={false} showThumbs={false}>
-                    {adsBoard.image.map(value => ( */}
         <div className="w-[100%] h-[30vh]">
-          {adsBoardDetail?.image ? (
+          {adsBoardDetail?.image &&
             <CustomImage
-              src={adsBoardDetail.image}
+              src={adsBoardDetail?.image}
               alt="location"
               width="100%"
               height="100%"
             />
-          ) : (
-            <></>
-          )}
+          }
         </div>
-        {/* //     ))}
-                // </Carousel> */}
 
-        {/* advertisement type */}
         <h3 className="my-3 mx-3">{adsBoardDetail?.adsType}</h3>
 
         {/* two button for adspoint */}
-        {isOfficer ? (
-          <></>
-        ) : (
+        {isOfficer ?
           <>
-            <div className="flex my-3 mx-2">
-              <span className="ml-1"></span>
-              <CustomButtonIcon
-                widthIcon="0.8rem"
-                heightIcon="0.8rem"
-                round={2}
-                type="button"
-                border={1}
-                colorBorder="rose"
-                pathImage="/assets/report.png"
-                alt=""
-                onClick={(e) => {
-                  e.stopPropagation();
-                  adsBoardDetail &&
-                    setForm({
-                      isReportFormActive: true,
-                      reportTarget: 'AD',
-                      reportData: adsBoardDetail,
-                      reportIdentificationData: {
-                        adsBoardID: adsBoardDetail.id,
-                        adsPointID: adsPoint.id,
-                      },
-                    });
-                }}
-              >
-                <span className="text-rose-600 text-[0.6rem] text-bold">
-                  BÁO CÁO VI PHẠM
-                </span>
-              </CustomButtonIcon>
-            </div>
           </>
-        )}
+          :
+
+          <>
+            {reportReported !== undefined ?
+              <div className='mx-2 mb-3'>
+                <CustomButtonIcon
+                  widthIcon="0.7rem"
+                  heightIcon="0.7rem"
+                  round={2}
+                  type="button"
+                  border={1}
+                  colorBorder="green"
+                  pathImage="/assets/detailReport.png"
+                  alt=""
+                  onClick={() => handleDetailReportAdsBoard(reportReported)}
+                >
+                  <span className="text-green-600 text-[0.65rem] text-medium ml-1">
+                    CHI TIẾT BÁO CÁO
+                  </span>
+                </CustomButtonIcon>
+              </div>
+              :
+              <div className="flex my-3 mx-2">
+                <span className="ml-1"></span>
+                <CustomButtonIcon
+                  widthIcon="0.8rem"
+                  heightIcon="0.8rem"
+                  round={2}
+                  type="button"
+                  border={1}
+                  colorBorder="rose"
+                  pathImage="/assets/report.png"
+                  alt=""
+                >
+                  <span className="text-rose-600 text-[0.6rem] text-bold">
+                    BÁO CÁO VI PHẠM
+                  </span>
+                </CustomButtonIcon>
+              </div>}
+
+          </>
+        }
+
 
         <hr className="mx-2"></hr>
         {/* Information advertisement point */}
@@ -204,9 +216,10 @@ function DetailAdsPoint({
           <p className="text-[0.8rem] text-neutral-700 mt-2">
             {' '}
             Ngày hết hạn hợp đồng:
-            <span className="font-bold text-rose-600">
-              {' '}
-              {convertDate(adsBoardDetail?.expiredDate)}
+            <span className="font-bold text-rose-600 ml-1">
+              {adsBoardDetail?.expiredDate
+                ? formatDate(new Date(adsBoardDetail.expiredDate)).dateMonthYear
+                : 'N/A'}
             </span>
           </p>
         </div>
