@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using UrashimaServer.Common.Constant;
@@ -22,6 +23,23 @@ namespace UrashimaServer.Common.Helper
             for (int i = 0; i < NumberChars; i += 2)
                 bytes[i / 2] = Convert.ToByte(hex.Substring(i, 2), 16);
             return bytes;
+        }
+
+        public static IEnumerable<KeyValuePair<string, object>> GetKeyValuePairs(object obj)
+        {
+            Type type = obj.GetType();
+
+            PropertyInfo[] properties = type.GetProperties();
+
+            // Iterate through properties and get key-value pairs
+            foreach (var property in properties)
+            {
+                // Get the value of the property with null-check
+                object value = property.GetValue(obj) ?? DBNull.Value;
+
+                var kvp = new KeyValuePair<string, object>(property.Name, value);
+                yield return kvp;
+            }
         }
 
         public static bool IsUnderAuthority(string address, string managementUnit)

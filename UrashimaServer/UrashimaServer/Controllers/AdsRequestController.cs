@@ -49,11 +49,15 @@ namespace UrashimaServer.Controllers
             foreach (var item in rawResult)
             {
                 var toAddRes = _mapper.Map<GetAdsCreateRequestDto>(item);
-                toAddRes.RequestAddress = _context.AdsPoints.Find(item.AdsPointId)?.Address ?? "No Address";
                 myResult.Add(toAddRes);
             }
 
-            // myResult = myResult.Where(r => Helper.IsUnderAuthority(r.RequestAddress, acc.UnitUnderManagement)).ToList();
+            //myResult = myResult.Where(item =>
+            //{
+            //    var RequestAddress = _context.AdsPoints.Find(item.AdsPointId)?.Address ?? "No Address";
+            //    return Helper.IsUnderAuthority(RequestAddress, acc.UnitUnderManagement);
+            //}).ToList();
+
             return myResult;
         }
 
@@ -62,9 +66,9 @@ namespace UrashimaServer.Controllers
         public async Task<IActionResult> PostCreateRequestForBoard(AdsCreateBoardRequestDto createRequest)
         {
             var request = _mapper.Map<AdsCreationRequest>(createRequest);
-            var boardList = request.AdsBoard;
+            var board = request.AdsBoard;
 
-            if (boardList is not null)
+            if (board is not null)
             {
                 request.AdsBoard = null;
             }
@@ -80,23 +84,18 @@ namespace UrashimaServer.Controllers
                 return BadRequest("Điểm quảng cáo không tồn tại");
             }
 
-            request.RequestStatus = RequestStatusConstant.Unconfirm;
-
             try
             {
                 _context.AdsCreationRequests.Add(request);
                 await _context.SaveChangesAsync();
 
-                if (tempPoint.Id != 0 && boardList != null)
+                if (tempPoint.Id != 0 && board != null)
                 {
                     if (_context.AdsPoints.Any(e => e.Id == tempPoint.Id))
                     {
-                        foreach (var board in boardList)
-                        {
-                            board.AdsPointId = tempPoint.Id;
-                            board.AdsCreateRequestId = request.Id;
-                            _context.AdsBoards.Add(board);
-                        }
+                        board.AdsPointId = tempPoint.Id;
+                        board.AdsCreateRequestId = request.Id;
+                        _context.AdsBoards.Add(board);
                     };
                 }
 
@@ -126,6 +125,7 @@ namespace UrashimaServer.Controllers
             var request = _mapper.Map<AdsCreationRequest>(createRequest);
             var adsPoint = request.AdsPoint;
             request.AdsPoint = null;
+            request.AdsBoard = null;
 
             if (adsPoint == null)
             {
@@ -137,8 +137,6 @@ namespace UrashimaServer.Controllers
                 return Problem("Entity set 'DataContext.AdsCreationRequest' is null.");
             }
 
-            request.RequestStatus = RequestStatusConstant.Unconfirm;
-
             try
             {
                 _context.AdsPoints.Add(adsPoint);
@@ -146,6 +144,9 @@ namespace UrashimaServer.Controllers
 
                 request.AdsPointId = adsPoint.Id;;
                 _context.AdsCreationRequests.Add(request);
+                await _context.SaveChangesAsync();
+
+                adsPoint.AdsCreateRequestId = request.Id;
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateException)
@@ -190,25 +191,17 @@ namespace UrashimaServer.Controllers
                 return NotFound();
             }
 
-            if (adsCreateRequest.RequestStatus == RequestStatusConstant.Unconfirm)
+            if (acc.Role == GlobalConstant.HeadQuater)
             {
-                if (acc.Role != GlobalConstant.HeadQuater)
-                {
-                    adsCreateRequest.RequestStatus = RequestStatusConstant.Deleted;
-                } else
-                {
-                    adsCreateRequest.RequestStatus = RequestStatusConstant.Confirm;
-                }
-            } else if (acc.Role == GlobalConstant.HeadQuater)
-            {
-                adsCreateRequest.RequestStatus = adsCreateRequest.RequestStatus == RequestStatusConstant.Deleted ?
-                    RequestStatusConstant.Confirm : RequestStatusConstant.Deleted;
+                adsCreateRequest.RequestStatus = !adsCreateRequest.RequestStatus;
+            } else {
+                adsCreateRequest.RequestStatus = false;
             }
             await _context.SaveChangesAsync();
 
             return Ok(new
             {
-                message = "Thành công thay đổi trạng thái của Yêu cầu Cấp phép."
+                message = "Thành công."
             });
         }
 

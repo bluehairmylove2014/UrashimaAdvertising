@@ -19,6 +19,7 @@ namespace UrashimaServer.Database
         public DbSet<Account> Accounts { get; set; }
         public DbSet<ReportType> ReportTypes { get; set; }
         public DbSet<AdsType> AdsTypes { get; set; }
+        public DbSet<WardDistrict> WardDistricts { get; set; }
 
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         { }
@@ -39,16 +40,16 @@ namespace UrashimaServer.Database
                 .IsRequired();
 
             modelBuilder.Entity<AdsBoard>()
-                .HasOne(e => e.AdsCreateRequest)
-                .WithMany(creationReq => creationReq.AdsBoard)
-                .HasForeignKey(e => e.AdsCreateRequestId)
-                .OnDelete(DeleteBehavior.SetNull);
-
-            modelBuilder.Entity<AdsBoard>()
                 .HasOne(e => e.AdsPoint)
                 .WithMany(adsPoint => adsPoint.AdsBoard)
                 .HasForeignKey(e => e.AdsPointId)
                 .IsRequired();
+
+            modelBuilder.Entity<AdsBoard>()
+                .HasOne<AdsCreationRequest>(e => e.AdsCreateRequest)
+                .WithOne(req => req.AdsBoard)
+                .HasForeignKey<AdsBoard>(e => e.AdsCreateRequestId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Report>(entity =>
             {

@@ -22,7 +22,7 @@ namespace UrashimaServer.Controllers
         }
 
         [HttpGet("geo-code")]
-        public async Task<IActionResult> GetRevGeoCodeInfo(
+        public async Task<ActionResult<GeoCodeResultDto>> GetRevGeoCodeInfo(
             [FromQuery] double latitude = 10.7627917,
             [FromQuery] double longitude = 106.6813989
         )

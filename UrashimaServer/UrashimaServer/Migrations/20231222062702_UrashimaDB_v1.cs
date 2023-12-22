@@ -88,6 +88,20 @@ namespace UrashimaServer.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "WardDistricts",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Ward = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    District = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_WardDistricts", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AdsCreationRequests",
                 columns: table => new
                 {
@@ -101,7 +115,7 @@ namespace UrashimaServer.Migrations
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ContractStart = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ContractEnd = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    RequestStatus = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    RequestStatus = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -192,8 +206,7 @@ namespace UrashimaServer.Migrations
                         name: "FK_AdsBoards_AdsCreationRequests_AdsCreateRequestId",
                         column: x => x.AdsCreateRequestId,
                         principalTable: "AdsCreationRequests",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_AdsBoards_AdsPoints_AdsPointId",
                         column: x => x.AdsPointId,
@@ -214,7 +227,7 @@ namespace UrashimaServer.Migrations
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Phone = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ReportStatus = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ReportStatus = table.Column<bool>(type: "bit", nullable: false),
                     TreatmentProcess = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     SubmissionDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     AdsBoardId = table.Column<int>(type: "int", nullable: true),
@@ -262,7 +275,9 @@ namespace UrashimaServer.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_AdsBoards_AdsCreateRequestId",
                 table: "AdsBoards",
-                column: "AdsCreateRequestId");
+                column: "AdsCreateRequestId",
+                unique: true,
+                filter: "[AdsCreateRequestId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AdsBoards_AdsPointId",
@@ -328,6 +343,9 @@ namespace UrashimaServer.Migrations
 
             migrationBuilder.DropTable(
                 name: "ReportImages");
+
+            migrationBuilder.DropTable(
+                name: "WardDistricts");
 
             migrationBuilder.DropTable(
                 name: "PointModifies");
