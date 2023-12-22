@@ -65,7 +65,7 @@ namespace UrashimaServer.Database.Dtos
         public string Address { get; set; } = string.Empty;
         public DateTime ContractStart { get; set; }
         public DateTime ContractEnd { get; set; }
-        public bool RequestStatus { get; set; }
+        public string RequestStatus { get; set; } = string.Empty;
         public AdsCreateRequestPointDto? AdsPoint { get; set; }
         public AdsCreateRequestBoardDto? AdsBoard { get; set; }
     }

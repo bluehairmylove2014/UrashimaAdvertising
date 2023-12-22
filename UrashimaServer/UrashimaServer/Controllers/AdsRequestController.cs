@@ -84,6 +84,8 @@ namespace UrashimaServer.Controllers
                 return BadRequest("Điểm quảng cáo không tồn tại");
             }
 
+            request.RequestStatus = RequestConstant.Inprogress;
+
             try
             {
                 _context.AdsCreationRequests.Add(request);
@@ -136,6 +138,8 @@ namespace UrashimaServer.Controllers
             {
                 return Problem("Entity set 'DataContext.AdsCreationRequest' is null.");
             }
+
+            request.RequestStatus = RequestConstant.Inprogress;
 
             try
             {
@@ -191,11 +195,12 @@ namespace UrashimaServer.Controllers
                 return NotFound();
             }
 
-            if (acc.Role == GlobalConstant.HeadQuater)
+            if (adsCreateRequest.RequestStatus == RequestConstant.Inprogress)
             {
-                adsCreateRequest.RequestStatus = !adsCreateRequest.RequestStatus;
-            } else {
-                adsCreateRequest.RequestStatus = false;
+                if (acc.Role == GlobalConstant.HeadQuater)
+                {
+                    adsCreateRequest.RequestStatus = RequestConstant.Rejected;
+                }
             }
             await _context.SaveChangesAsync();
 

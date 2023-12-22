@@ -115,7 +115,7 @@ namespace UrashimaServer.Migrations
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ContractStart = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ContractEnd = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    RequestStatus = table.Column<bool>(type: "bit", nullable: false)
+                    RequestStatus = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
