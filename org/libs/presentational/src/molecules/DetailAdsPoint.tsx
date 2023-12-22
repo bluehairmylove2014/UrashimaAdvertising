@@ -6,23 +6,25 @@ import { IAdLocationDetail } from '@business-layer/services/entities/ads';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { Carousel } from 'react-responsive-carousel';
 import { useSetReportForm } from '@business-layer/business-logic/non-service-lib/reportForm';
+import { useGetAdReports, useGetLocationReports } from '@business-layer/business-logic/lib/report';
+import { Alert } from '@material-tailwind/react';
 
 function DetailAdsPoint({
   detailAdsPoint,
-  isReported,
   isOfficer,
   onClick,
   handleClose,
   handleDetailReport,
 }: {
   detailAdsPoint: IAdLocationDetail;
-  isReported: boolean;
   isOfficer: boolean;
   onClick: (id: number) => void;
   handleClose: () => void;
   handleDetailReport: () => void;
 }) {
   const { setForm } = useSetReportForm();
+  const adsReportList = useGetAdReports();
+  const adsPointReportList = useGetLocationReports();
 
   return (
     <div
@@ -69,54 +71,55 @@ function DetailAdsPoint({
         ) : (
           <>
             <div className="mt-4 mx-5">
-              {isReported ? (
-                <>
-                  <p className="mb-1 text-rose-600 font-bold text-sm">
-                    Bạn đã báo cáo điểm này
-                  </p>
+              {adsPointReportList?.find((report) => report.longitude === detailAdsPoint.longitude && report.latitude === detailAdsPoint.latitude) !== undefined
+                ? (
+                  <>
+                    <p className="mb-1 text-rose-600 font-bold text-sm">
+                      Bạn đã báo cáo điểm này
+                    </p>
+                    <CustomButtonIcon
+                      widthIcon="0.7rem"
+                      heightIcon="0.7rem"
+                      round={2}
+                      type="button"
+                      border={1}
+                      colorBorder="green"
+                      pathImage="/assets/detailReport.png"
+                      alt=""
+                      onClick={handleDetailReport}
+                    >
+                      <span className="text-green-600 text-[0.65rem] text-medium ml-1">
+                        CHI TIẾT BÁO CÁO
+                      </span>
+                    </CustomButtonIcon>
+                  </>
+                ) : (
                   <CustomButtonIcon
-                    widthIcon="0.7rem"
-                    heightIcon="0.7rem"
+                    widthIcon="0.8rem"
+                    heightIcon="0.8rem"
                     round={2}
                     type="button"
                     border={1}
-                    colorBorder="green"
-                    pathImage="/assets/detailReport.png"
+                    colorBorder="rose"
+                    pathImage="/assets/report.png"
                     alt=""
-                    onClick={handleDetailReport}
+                    onClick={() => {
+                      setForm({
+                        isReportFormActive: true,
+                        reportTarget: 'LOCATION',
+                        reportData: detailAdsPoint,
+                        reportIdentificationData: {
+                          latitude: detailAdsPoint.latitude,
+                          longitude: detailAdsPoint.longitude,
+                        },
+                      });
+                    }}
                   >
-                    <span className="text-green-600 text-[0.65rem] text-medium ml-1">
-                      CHI TIẾT BÁO CÁO
+                    <span className="text-rose-600 text-[0.6rem] text-bold ml-1">
+                      BÁO CÁO VI PHẠM
                     </span>
                   </CustomButtonIcon>
-                </>
-              ) : (
-                <CustomButtonIcon
-                  widthIcon="0.8rem"
-                  heightIcon="0.8rem"
-                  round={2}
-                  type="button"
-                  border={1}
-                  colorBorder="rose"
-                  pathImage="/assets/report.png"
-                  alt=""
-                  onClick={() => {
-                    setForm({
-                      isReportFormActive: true,
-                      reportTarget: 'LOCATION',
-                      reportData: detailAdsPoint,
-                      reportIdentificationData: {
-                        latitude: detailAdsPoint.latitude,
-                        longitude: detailAdsPoint.longitude,
-                      },
-                    });
-                  }}
-                >
-                  <span className="text-rose-600 text-[0.6rem] text-bold ml-1">
-                    BÁO CÁO VI PHẠM
-                  </span>
-                </CustomButtonIcon>
-              )}
+                )}
             </div>
             <hr className="my-4 mx-2"></hr>
           </>
@@ -217,23 +220,31 @@ function DetailAdsPoint({
                 >
                   {' '}
                 </CustomButtonIcon> */}
-                <button
-                  className="border-solid border-red-500 border-[1px] text-red-500 rounded text-[0.65rem] w-5 h-5 bg-white overflow-hidden hover:bg-red-500 hover:text-white transition-colors"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setForm({
-                      isReportFormActive: true,
-                      reportTarget: 'AD',
-                      reportData: ads,
-                      reportIdentificationData: {
-                        adsBoardID: ads.id,
-                        adsPointID: detailAdsPoint.id,
-                      },
-                    });
-                  }}
-                >
-                  <i className="fi fi-ss-triangle-warning"></i>
-                </button>
+
+                {adsReportList?.find((report) => report.adsBoardID === ads.id && report.adsPointID === detailAdsPoint.id) !== undefined
+                  ?
+                  <></>
+                  :
+                  <>
+                    <button
+                      className="border-solid border-red-500 border-[1px] text-red-500 rounded text-[0.65rem] w-5 h-5 bg-white overflow-hidden hover:bg-red-500 hover:text-white transition-colors"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setForm({
+                          isReportFormActive: true,
+                          reportTarget: 'AD',
+                          reportData: ads,
+                          reportIdentificationData: {
+                            adsBoardID: ads.id,
+                            adsPointID: detailAdsPoint.id,
+                          },
+                        });
+                      }}
+                    >
+                      <i className="fi fi-ss-triangle-warning"></i>
+                    </button>
+                  </>}
+
               </div>
               <p className="text-[0.65rem] font-medium text-gray-500">
                 {detailAdsPoint.address}
@@ -272,50 +283,25 @@ function DetailAdsPoint({
                 </span>
               </div>
 
-              {/* Two button */}
-              <div className="flex justify-between mt-2">
-                {/* <CustomButtonIcon
-                  widthIcon="0.9rem"
-                  heightIcon="0.9rem"
-                  type="button"
-                  pathImage="/assets/detail.png"
-                  alt=""
-                  onClick={() => onClick(ads.id)}
-                >
-                  {' '}
-                </CustomButtonIcon> */}
-                <div></div>
-
-                {/* <CustomButtonIcon
-                  widthIcon="0.8rem"
-                  heightIcon="0.8rem"
-                  round={2}
-                  type="button"
-                  border={1}
-                  colorBorder="rose"
-                  pathImage="/assets/report.png"
-                  alt=""
-                  onClick={() => {
-                    setForm({
-                      isReportFormActive: true,
-                      reportTarget: 'AD',
-                      reportAdditionData: {
-                        adsBoardID: ads.id,
-                        adsPointID: detailAdsPoint.id,
-                      },
-                    });
-                  }}
-                >
-                  <span className="text-rose-600 text-[0.6rem] text-bold ml-1">
-                    BÁO CÁO VI PHẠM
-                  </span>
-                </CustomButtonIcon> */}
-              </div>
+              {adsReportList?.find((report) => report.adsBoardID === ads.id && report.adsPointID === detailAdsPoint.id) !== undefined
+                ?
+                <>
+                  <hr className='my-2'></hr>
+                  <div className='flex justify-between'>
+                    <div></div>
+                    <div className='flex'>
+                      <i className="fi fi-sr-diamond-exclamation text-rose-600"></i>
+                      <p className='text-rose-600 font-bold text-[0.7rem] text-right ml-1'>Bảng quảng cáo bị báo cáo</p>
+                    </div>
+                  </div>
+                </>
+                :
+                <></>
+              }
             </div>
           </div>
         ))}
 
-        <hr className="mx-2 mb-4 mt-1"></hr>
       </div>
     </div>
   );
