@@ -48,6 +48,7 @@ builder.Services.AddCors(options => options.AddPolicy(name: "NgOrigins",
         policy.WithOrigins("http://localhost:*").AllowAnyMethod().AllowAnyHeader();
         policy.WithOrigins("http://localhost:2808").AllowAnyMethod().AllowAnyHeader();
         policy.WithOrigins("http://localhost:2816").AllowAnyMethod().AllowAnyHeader();
+        policy.WithOrigins("http://localhost:2016").AllowAnyMethod().AllowAnyHeader();
     }));
 // Auto Mapper
 builder.Services.AddAutoMapper(typeof(MappingProfile));
