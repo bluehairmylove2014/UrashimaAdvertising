@@ -9,6 +9,7 @@ using UrashimaServer.Common.Helper;
 using UrashimaServer.Database;
 using UrashimaServer.Database.Dtos;
 using UrashimaServer.Database.Models;
+using UrashimaServer.Models;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace UrashimaServer.Controllers
@@ -131,7 +132,7 @@ namespace UrashimaServer.Controllers
             {
                 return BadRequest(new
                 {
-                    Message = "Something went wrong with your account. Please login again!",
+                    Message = "Tài khoản của bạn đã bị lỗi. Vui lòng đăng nhập!",
                 });
             }
 
@@ -150,6 +151,9 @@ namespace UrashimaServer.Controllers
                 if (acc.Role == GlobalConstant.HeadQuater)
                 {
                     adsCreateRequest.RequestStatus = RequestConstant.Rejected;
+                } else
+                {
+                    _context.AdsCreationRequests.Remove(adsCreateRequest);
                 }
             }
             await _context.SaveChangesAsync();
