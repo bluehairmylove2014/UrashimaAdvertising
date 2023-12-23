@@ -121,57 +121,6 @@ namespace UrashimaServer.Controllers
             });
         }
 
-        //POST: api/officer/ads-request
-        //[HttpPost("point")] // , AuthorizeRoles(GlobalConstant.WardOfficer, GlobalConstant.DistrictOfficer)
-        //public async Task<IActionResult> PostCreateRequestForPoint(AdsCreatePointRequestDto createRequest)
-        //{
-        //    var request = _mapper.Map<AdsCreationRequest>(createRequest);
-        //    var adsPoint = request.AdsPoint;
-        //    request.AdsPoint = null;
-        //    request.AdsBoard = null;
-
-        //    if (adsPoint == null)
-        //    {
-        //        return BadRequest("Thiếu dữ liệu điểm quảng cáo.");
-        //    }
-
-        //    if (_context.AdsCreationRequests == null)
-        //    {
-        //        return Problem("Entity set 'DataContext.AdsCreationRequest' is null.");
-        //    }
-
-        //    request.RequestStatus = RequestConstant.Inprogress;
-
-        //    try
-        //    {
-        //        _context.AdsPoints.Add(adsPoint);
-        //        await _context.SaveChangesAsync();
-
-        //        request.AdsPointId = adsPoint.Id;;
-        //        _context.AdsCreationRequests.Add(request);
-        //        await _context.SaveChangesAsync();
-
-        //        adsPoint.AdsCreateRequestId = request.Id;
-        //        await _context.SaveChangesAsync();
-        //    }
-        //    catch (DbUpdateException)
-        //    {
-        //        if (CreateRequestExists(request.Id))
-        //        {
-        //            return Conflict();
-        //        }
-        //        else
-        //        {
-        //            throw;
-        //        }
-        //    }
-
-        //    return Ok(new
-        //    {
-        //        message = "Ok"
-        //    });
-        //}
-
         // DELETE: api/officer/ads-request
         [HttpDelete, AuthorizeRoles(GlobalConstant.WardOfficer, GlobalConstant.DistrictOfficer, GlobalConstant.HeadQuater)]
         public async Task<IActionResult> ChangeRequestStatus([FromQuery, Required] int id)

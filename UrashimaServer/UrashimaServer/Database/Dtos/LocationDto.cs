@@ -1,5 +1,13 @@
 ﻿namespace UrashimaServer.Database.Dtos
 {
+    public class LocationBasicDto
+    {
+        public int Id { get; set; }
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
+        public string Address { get; set; } = string.Empty;
+    }
+
     public class InputGeoCodeDto
     {
         public double Latitude { get; set; }

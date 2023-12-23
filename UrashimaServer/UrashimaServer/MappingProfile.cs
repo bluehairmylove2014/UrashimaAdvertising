@@ -31,10 +31,12 @@ namespace UrashimaServer
             CreateMap<Report, PostReportDto>().ReverseMap();
             CreateMap<Report, PostReportBoardDto>().ReverseMap();
             CreateMap<Report, PostReportLocationDto>().ReverseMap();
+            CreateMap<Report, GetReportDetailDto>().ReverseMap();
 
             // Map Location
             CreateMap<GeoCodeResultDto, AddressResultDto>().ReverseMap();
             CreateMap<GeoCodeResultDto, GeoCodeResult>().ReverseMap();
+            CreateMap<Location, LocationBasicDto>().ReverseMap();
 
             // Map create request
             CreateMap<AdsCreationRequest, AdsCreateBoardRequestDto>().ReverseMap();
