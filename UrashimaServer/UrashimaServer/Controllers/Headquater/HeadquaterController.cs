@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,19 +11,21 @@ using UrashimaServer.Database.Models;
 
 namespace UrashimaServer.Controllers.Headquater
 {
-    [Route("api/[controller]")]
+    [Route("api/headquater")]
     [ApiController]
     public class HeadquaterController : ControllerBase
     {
         private readonly DataContext _context;
+        private readonly IMapper _mapper;
 
-        public HeadquaterController(DataContext context)
+        public HeadquaterController(DataContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
-        // GET: api/Headquater
-        [HttpGet]
+        // GET: api/headquater/ward-district
+        [HttpGet("ward-district")]
         public async Task<ActionResult<IEnumerable<WardDistrict>>> GetWardDistricts()
         {
           if (_context.WardDistricts == null)
@@ -32,58 +35,8 @@ namespace UrashimaServer.Controllers.Headquater
             return await _context.WardDistricts.ToListAsync();
         }
 
-        // GET: api/Headquater/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<WardDistrict>> GetWardDistrict(int id)
-        {
-          if (_context.WardDistricts == null)
-          {
-              return NotFound();
-          }
-            var wardDistrict = await _context.WardDistricts.FindAsync(id);
-
-            if (wardDistrict == null)
-            {
-                return NotFound();
-            }
-
-            return wardDistrict;
-        }
-
-        // PUT: api/Headquater/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutWardDistrict(int id, WardDistrict wardDistrict)
-        {
-            if (id != wardDistrict.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(wardDistrict).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!WardDistrictExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // POST: api/Headquater
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
+        // POST: api/headquater/ward-district
+        [HttpPost("ward-district")]
         public async Task<ActionResult<WardDistrict>> PostWardDistrict(WardDistrict wardDistrict)
         {
           if (_context.WardDistricts == null)
@@ -96,29 +49,18 @@ namespace UrashimaServer.Controllers.Headquater
             return CreatedAtAction("GetWardDistrict", new { id = wardDistrict.Id }, wardDistrict);
         }
 
-        // DELETE: api/Headquater/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteWardDistrict(int id)
+        // POST: api/headquater/request/approve
+        [HttpPost("request/approve")]
+        public async Task<ActionResult<WardDistrict>> ApproveAdsRequest()
         {
-            if (_context.WardDistricts == null)
+            await Task.Delay(100);
+
+
+
+            return Ok(new
             {
-                return NotFound();
-            }
-            var wardDistrict = await _context.WardDistricts.FindAsync(id);
-            if (wardDistrict == null)
-            {
-                return NotFound();
-            }
-
-            _context.WardDistricts.Remove(wardDistrict);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool WardDistrictExists(int id)
-        {
-            return (_context.WardDistricts?.Any(e => e.Id == id)).GetValueOrDefault();
+                message = "Phê duyệt thành công."
+            });
         }
     }
 }

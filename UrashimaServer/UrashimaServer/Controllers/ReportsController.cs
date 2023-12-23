@@ -184,30 +184,31 @@ namespace UrashimaServer.Controllers
         }
 
         [Route("/api/officer/reports/detail")]
-        [HttpGet, AuthorizeRoles(GlobalConstant.WardOfficer, GlobalConstant.DistrictOfficer, GlobalConstant.HeadQuater)]
-        public async Task<ActionResult<IList<GetReportDto>>> GetReportDetailBasedOnRole(int id)
+        [HttpGet] // , AuthorizeRoles(GlobalConstant.WardOfficer, GlobalConstant.DistrictOfficer, GlobalConstant.HeadQuater)
+        public async Task<ActionResult<GetReportDetailDto>> GetReportDetailBasedOnRole(int id) // GetReportDetailDto
         {
-            var acc = await _context.Accounts.FirstOrDefaultAsync(acc => acc.Email == User.Identity!.Name);
+            //var acc = await _context.Accounts.FirstOrDefaultAsync(acc => acc.Email == User.Identity!.Name);
 
-            if (acc is null)
-            {
-                return BadRequest(new
-                {
-                    Message = "Vui lòng đăng nhập lại để tiếp tục",
-                });
-            }
+            //if (acc is null)
+            //{
+            //    return BadRequest(new
+            //    {
+            //        Message = "Something went wrong with your account. Please login again!",
+            //    });
+            //}
 
-            var rawResult = await _context.Reports
-                .Where(r => r.Id == id)
-                .Include(r => r.Images)
+            var rawResult = await _context.Reports.Where(r => r.Id == id)
+                .Include(r => r.AdsBoard)
+                .Include(r => r.AdsPoint)
+                .Include(r => r.Location)
                 .FirstOrDefaultAsync();
 
-            if (rawResult is null || !Helper.IsUnderAuthority(rawResult.Address, acc.UnitUnderManagement))
-            {
-                return NotFound();
-            }
+            //if (rawResult is null || !Helper.IsUnderAuthority(rawResult.Address, acc.UnitUnderManagement))
+            //{
+            //    return NotFound();
+            //}
 
-            return Ok(_mapper.Map<GetReportDto>(rawResult));
+            return Ok(_mapper.Map<GetReportDetailDto>(rawResult));
         }
 
         [Route("/api/officer/reports")]
