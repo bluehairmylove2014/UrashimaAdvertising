@@ -47,7 +47,7 @@ namespace UrashimaServer.Controllers
 
             return Ok(new
             {
-                message = "report ads-board successfully"
+                message = "báo cáo bảng quảng cáo thành công"
             });
         }
 
@@ -131,7 +131,7 @@ namespace UrashimaServer.Controllers
 
             return Ok(new
             {
-                message = "report location successfully"
+                message = "báo cáo vị trí thành công"
             });
         }
 
@@ -163,7 +163,7 @@ namespace UrashimaServer.Controllers
             {
                 return BadRequest(new
                 {
-                    Message = "Something went wrong with your account. Please login again!",
+                    Message = "Vui lòng đăng nhập để tiếp tục",
                 });
             }
 
@@ -193,7 +193,7 @@ namespace UrashimaServer.Controllers
             {
                 return BadRequest(new
                 {
-                    Message = "Something went wrong with your account. Please login again!",
+                    Message = "Vui lòng đăng nhập lại để tiếp tục",
                 });
             }
 
@@ -220,7 +220,7 @@ namespace UrashimaServer.Controllers
             {
                 return BadRequest(new
                 {
-                    Message = "Something went wrong with your account. Please login again!",
+                    Message = "Vui lòng đăng nhập lại để tiếp tục",
                 });
             }
 
@@ -234,7 +234,7 @@ namespace UrashimaServer.Controllers
             {
                 return BadRequest(new
                 {
-                    Message = "Cannot find the report"
+                    Message = "không có báo cáo"
                 });
             }
 
@@ -245,8 +245,8 @@ namespace UrashimaServer.Controllers
             // Setup mail
             MailRequest mailRequest = new MailRequest();
             mailRequest.ToEmail = updatedItem.Email;
-            mailRequest.Subject = "Your report is being processed!!!";
-            mailRequest.Body = $"Dear {acc.FullName}, We are writing to inform you that your report is currently being processed. Our team is working hard to ensure that your order is handled as soon as possible.\r\n\r\nReport status: {updatedItem.ReportStatus}, Treatment: {updatedItem.TreatmentProcess}\r\n\r\n. If you have any questions or concerns about your report, please don't hesitate to contact us. We're always here to help.\r\n\r\nThank you for reporting the problem to us.\r\n\r\nBest regards,\r\n\r\nUrashima Map";
+            mailRequest.Subject = "Báo cáo đang xử lí!!!";
+            mailRequest.Body = $"Thân chào {acc.FullName}, We are writing to inform you that your report is currently being processed. Our team is working hard to ensure that your order is handled as soon as possible.\r\n\r\nReport status: {updatedItem.ReportStatus}, Treatment: {updatedItem.TreatmentProcess}\r\n\r\n. If you have any questions or concerns about your report, please don't hesitate to contact us. We're always here to help.\r\n\r\nThank you for reporting the problem to us.\r\n\r\nBest regards,\r\n\r\nUrashima Map";
             try
             {
                 await _emailService.SendEmailAsync(mailRequest);

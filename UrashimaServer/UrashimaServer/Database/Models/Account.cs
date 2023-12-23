@@ -15,6 +15,8 @@ namespace UrashimaServer.Models
         public string PasswordHash { get; set; } = string.Empty;
         public string PasswordSalt { get; set; } = string.Empty;
         public string RefreshToken { get; set; } = string.Empty;
+        public string PasswordResetToken { get; set; } = string.Empty;
+        public DateTime ResetTokenExpires { get; set; } = DateTime.Now;
         public DateTime TokenCreated { get; set; }
         public DateTime TokenExpires { get; set; }
     }

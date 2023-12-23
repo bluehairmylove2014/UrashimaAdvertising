@@ -5,10 +5,12 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using UrashimaServer.Common.Constant;
+using UrashimaServer.Common.CustomAttribute;
 using UrashimaServer.Common.Helper;
 using UrashimaServer.Database;
 using UrashimaServer.Dtos;
 using UrashimaServer.Models;
+using OtpNet;
 
 namespace UrashimaServer.Controllers
 {
@@ -18,11 +20,13 @@ namespace UrashimaServer.Controllers
     {
         readonly IConfiguration _configuration;
         readonly DataContext _dbContext;
+        readonly IEmailService _emailService;
 
-        public AuthController(IConfiguration configuration, DataContext dbContext)
+        public AuthController(IConfiguration configuration, DataContext dbContext, IEmailService emailService)
         {
             _configuration = configuration;
             _dbContext = dbContext;
+            _emailService = emailService;
         }
 
         [HttpGet("{id}")]
@@ -117,7 +121,7 @@ namespace UrashimaServer.Controllers
             if (!VerifyPasswordHash(request.Password, Helper.StringToByteArray(account.PasswordHash), Helper.StringToByteArray(account.PasswordSalt)))
             {
                 return BadRequest(new {
-                    message = "Wrong credentials!",
+                    message = "Sai thông tin tài khoản",
                 });
             }
 
@@ -272,6 +276,144 @@ namespace UrashimaServer.Controllers
             return jwt;
         }
 
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword(EmailDto emailDto)
+        {
+            if (_dbContext.Accounts == null)
+            {
+                return NotFound();
+            }
+            var account = await _dbContext.Accounts.FirstOrDefaultAsync(acc => acc.Email == emailDto.Email);
+
+            if (account == null)
+            {
+                return NotFound();
+            }
+
+            account.PasswordResetToken = GenerateOTP();
+            account.ResetTokenExpires = DateTime.Now.AddMinutes(5);
+            await _dbContext.SaveChangesAsync();
+
+            // Setup mail
+            MailRequest mailRequest = new MailRequest();
+            mailRequest.ToEmail = emailDto.Email;
+            mailRequest.Subject = "Mã OTP đổi mật khẩu!!!";
+            mailRequest.Body = $"Thân chào {account.FullName}, Mã OTP của bạn là: {account.PasswordResetToken} và sẽ hết hạn trong vòng 300s";
+            try
+            {
+                await _emailService.SendEmailAsync(mailRequest);
+            }
+            catch
+            {
+                return BadRequest(new
+                {
+                    Message = "Không thể gửi email"
+                });
+            }
+
+            return Ok(new
+            {
+                Message = "Mã Otp đã được gửi đến địa chỉ mail của bạn"
+            });
+        }
+
+        [HttpPost("verify-otp")]
+        public async Task<IActionResult> VerifyOtpToken(EmailAndOtpDto request)
+        {
+            if (_dbContext.Accounts == null)
+            {
+                return NotFound();
+            }
+
+            var account = await _dbContext.Accounts.FirstOrDefaultAsync(acc => acc.Email == request.Email);
+
+            if (account == null)
+            {
+                return NotFound();
+            }
+
+            if (!account.PasswordResetToken.Equals(request.Otp) || IsOtpExpired(account.ResetTokenExpires, 300))
+            {
+                return BadRequest(new
+                {
+                    Message = "Mã otp không hợp lệ"
+                });
+            }
+            
+            return Ok();
+        }
+
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword(ResetPasswordRequest request)
+        {
+            if (_dbContext.Accounts == null)
+            {
+                return NotFound();
+            }
+            var account = await _dbContext.Accounts.FirstOrDefaultAsync(acc => acc.Email == request.Email);
+
+            if (account == null)
+            {
+                return NotFound();
+            }
+
+            CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
+
+            account.PasswordHash = Helper.ByteArrayToString(passwordHash);
+            account.PasswordSalt = Helper.ByteArrayToString(passwordSalt);
+
+            await _dbContext.SaveChangesAsync();
+
+            return Ok(new
+            {
+                message = "Đổi mật khẩu thành công"
+            });
+        }
+
+        [HttpPost("change-password"), AuthorizeRoles(GlobalConstant.WardOfficer, GlobalConstant.DistrictOfficer, GlobalConstant.HeadQuater)]
+        public async Task<IActionResult> ChangePassword(ChangePasswordRequest request)
+        {
+            if (_dbContext.Accounts == null)
+            {
+                return NotFound();
+            }
+            var account = await _dbContext.Accounts.FirstOrDefaultAsync(acc => acc.Email == User.Identity!.Name);
+
+            if (account == null)
+            {
+                return NotFound();
+            }
+
+            if (!VerifyPasswordHash(request.OldPassword, Helper.StringToByteArray(account.PasswordHash), Helper.StringToByteArray(account.PasswordSalt)))
+            {
+                return BadRequest(new
+                {
+                    message = "Mật khẩu cũ không chính xác",
+                });
+            }
+
+            if (request.Password.Equals(request.OldPassword))
+            {
+                return BadRequest(
+                    new
+                    {
+                        Message = "Mật khẩu cũ và mật khẩu mới không được trùng nhau"
+                    });
+            }
+
+            CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
+
+            account.PasswordHash = Helper.ByteArrayToString(passwordHash);
+            account.PasswordSalt = Helper.ByteArrayToString(passwordSalt);
+
+            await _dbContext.SaveChangesAsync();
+
+            return Ok(new
+            {
+                message = "Đổi mật khẩu thành công"
+            });
+        }
+
         private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
             using (var hmac = new HMACSHA512())
@@ -288,6 +430,22 @@ namespace UrashimaServer.Controllers
                 var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
                 return computedHash.SequenceEqual(passwordHash);
             }
+        }
+
+        private string GenerateOTP()
+        {
+            var key = KeyGeneration.GenerateRandomKey(20);
+
+            var base32String = Base32Encoding.ToString(key);
+            var base32Bytes = Base32Encoding.ToBytes(base32String);
+            var totp = new Totp(base32Bytes, 300);
+            return totp.ComputeTotp(DateTime.UtcNow);
+        }
+
+        private bool IsOtpExpired(DateTime otpTime, int validityPeriodSeconds)
+        {
+            TimeSpan timeSinceOtp = DateTime.Now - otpTime;
+            return timeSinceOtp.TotalSeconds > validityPeriodSeconds;
         }
     }
 }

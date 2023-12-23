@@ -1,4 +1,5 @@
-﻿using UrashimaServer.Common.Constant;
+﻿using System.ComponentModel.DataAnnotations;
+using UrashimaServer.Common.Constant;
 
 namespace UrashimaServer.Dtos
 {
@@ -28,5 +29,43 @@ namespace UrashimaServer.Dtos
         public string Token { get; set; } = string.Empty;
         public DateTime Created { get; set; } = DateTime.Now;
         public DateTime Expires { get; set; }
+    }
+
+    public class ChangePasswordRequest
+    {
+        [Required]
+        public string OldPassword { get; set; } = string.Empty;
+        [Required, MinLength(6, ErrorMessage = "Mật khẩu ít nhất 6 kí tự")]
+        public string Password { get; set; } = string.Empty;
+        [Required, Compare("Password", ErrorMessage = "Mật khẩu xác nhận không giống mật khẩu mới")]
+        public string ConfirmPassword { get; set; } = string.Empty;
+    }
+
+    public class ResetPasswordRequest
+    {
+        [EmailAddress]
+        public string Email { get; set; } = string.Empty;
+        [Required, MinLength(6, ErrorMessage = "Mật khẩu ít nhất 6 kí tự")]
+        public string Password { get; set; } = string.Empty;
+        [Required, Compare("Password", ErrorMessage = "Mật khẩu xác nhận không giống mật khẩu mới")]
+        public string ConfirmPassword { get; set; } = string.Empty;
+    }
+
+    public class EmailDto
+    {
+        [EmailAddress]
+        public string Email { get; set; } = string.Empty;
+    }
+
+    public class OtpDto
+    {
+        public string Otp { get; set; } = string.Empty;
+    }
+
+    public class EmailAndOtpDto
+    {
+        [EmailAddress]
+        public string Email { get; set; } = string.Empty;
+        public string Otp { get; set; } = string.Empty;
     }
 }
