@@ -1,9 +1,9 @@
-const slicePaginationData = (
+const slicePaginationData = <T>(
   data: any[],
   pageNumber: number,
   maxPage: number,
   elementPerPage: number
-): any[] => {
+): T[] => {
   if (!Array.isArray(data)) return [];
   else {
     if (pageNumber <= maxPage && pageNumber > 0) {

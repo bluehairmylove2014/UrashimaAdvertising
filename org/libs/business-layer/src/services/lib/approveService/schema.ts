@@ -13,11 +13,18 @@ const getApproveListResponseSchema = z.array(
     contractStart: z.string(),
     contractEnd: z.string(),
     requestStatus: z.string(),
-    adsBoard: adBoardSchema.nullable(),
+    adsBoard: adBoardSchema,
     adsPoint: adLocationSchema,
   })
 );
 const createNewApproveRequestResponseSchema = z.object({
   message: z.string(),
 });
-export { getApproveListResponseSchema, createNewApproveRequestResponseSchema };
+const deleteApproveRequestResponseSchema = z.object({
+  message: z.string(),
+});
+export {
+  getApproveListResponseSchema,
+  createNewApproveRequestResponseSchema,
+  deleteApproveRequestResponseSchema,
+};

@@ -2,6 +2,8 @@ import { IBreadcrumb } from '@business-layer/services/entities';
 import { OFFICER_PAGES } from '@constants/officerPages';
 import Breadcrumbs from '@presentational/molecules/Breadcrumbs';
 import CreateNewApproveForm from '@presentational/organisms/CreateNewApproveForm';
+import { ADS_FORM } from '../../../../constants/adsForm';
+import { LOCATION_TYPES } from '../../../../constants/locationTypes';
 
 const breadcrumbsData: IBreadcrumb[] = [
   {
@@ -28,7 +30,10 @@ function NewApprove() {
         <h1 className="w-full font-bold !text-base">CẤP PHÉP QUẢNG CÁO</h1>
         <Breadcrumbs bcList={breadcrumbsData} />
       </div>
-      <CreateNewApproveForm />
+      <CreateNewApproveForm
+        adsFormOptions={ADS_FORM}
+        locationTypeOptions={LOCATION_TYPES}
+      />
     </div>
   );
 }

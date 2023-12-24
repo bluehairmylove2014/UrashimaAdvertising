@@ -18,7 +18,7 @@ const officerNavDropdownOptions = [
 
 function OfficerHeader() {
   return (
-    <header className="flex flex-row items-center justify-between bg-indigo-950 w-full h-12 px-4">
+    <header className="flex flex-row items-center justify-between bg-indigo-950 w-full h-12 px-4 sticky top-0 z-20">
       <nav>
         <ul className="flex flex-row items-center justify-start gap-5">
           <div className=" w-20 h-10 object-cover relative">

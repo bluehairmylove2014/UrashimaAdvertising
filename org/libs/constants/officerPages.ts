@@ -1,5 +1,8 @@
 export const OFFICER_PAGES = {
   AUTH: '/',
+  RESET_PASSWORD: '/reset-password',
+  RESET_PASSWORD_OTP: '/reset-password/otp',
+  RESET_PASSWORD_NEW: '/reset-password/new',
   SOCIAL_AUTH: '/social-auth',
   DASHBOARD: '/dashboard',
   ADS_BOARD: '/ad-boards',

@@ -30,8 +30,7 @@ export const getLocationGeocoderUrl = '/api/location/geo-code';
 export const getApproveListUrl = '/api/officer/ads-request';
 export const createNewAdBoardApproveRequestUrl =
   '/api/officer/ads-request/board';
-export const createNewAdLocationApproveRequestUrl =
-  '/api/officer/ads-request/point';
+export const deleteApproveUrl = '/api/officer/ads-request';
 
 // SIRV
 export const sirvBaseUrlTemplate = 'https://api.sirv.com/v2';

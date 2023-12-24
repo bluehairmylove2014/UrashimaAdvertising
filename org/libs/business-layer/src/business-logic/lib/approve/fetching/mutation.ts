@@ -2,8 +2,9 @@ import { useMutation } from '@tanstack/react-query';
 import {
   ApproveService,
   createNewAdBoardApproveRequestParamsType,
-  createNewAdLocationApproveRequestParamsType,
   createNewApproveRequestResponseType,
+  deleteApproveRequestParamsType,
+  deleteApproveRequestResponseType,
 } from '@business-layer/services';
 
 const approveService = new ApproveService();
@@ -18,13 +19,13 @@ export const useCreateNewAdBoardApproveRequestMutation = () => {
     mutationFn: approveService.requestAdBoardApprove,
   });
 };
-export const useCreateNewAdLocationApproveRequestMutation = () => {
+export const useDeleteApproveRequestMutation = () => {
   return useMutation<
-    createNewApproveRequestResponseType,
+    deleteApproveRequestResponseType,
     Error,
-    createNewAdLocationApproveRequestParamsType,
+    deleteApproveRequestParamsType,
     unknown
   >({
-    mutationFn: approveService.requestAdLocationApprove,
+    mutationFn: approveService.deleteApproveRequest,
   });
 };
