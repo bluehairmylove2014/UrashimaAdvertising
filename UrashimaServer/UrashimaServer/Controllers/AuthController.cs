@@ -340,7 +340,10 @@ namespace UrashimaServer.Controllers
                 });
             }
             
-            return Ok();
+            return Ok(new
+            {
+                Message = "Mã otp hợp lệ"
+            });
         }
 
         [HttpPost("reset-password")]
