@@ -1,0 +1,302 @@
+[
+  {
+    "id": 1,
+    "adsPointId": 1201,
+    "adsContent": "Promotion for new product launch in City A",
+    "companyName": "Company A",
+    "email": "companyA@example.com",
+    "phone": "0337839146",
+    "address": "123 Main St, City A",
+    "contractStart": "2023-11-09 01:46:09",
+    "contractEnd": "2023-12-28 01:46:09",
+    "requestStatus": "inprocess",
+    "adsBoard": {
+      "id": 3,
+      "adsPointId": 1,
+      "adsType": "Trụ bảng hiflex",
+      "height": 65,
+      "width": 30,
+      "image": "https://urashima.sirv.com/UrashimaAds%20Hub/ads/ten_location_2/6.png",
+      "expiredDate": "2023-12-28 01:46:09"
+    },
+    "adsPoint": {
+      "id": 1,
+      "latitude": 10.848539839107955,
+      "longitude": 106.79426945987659,
+      "address": "94520 Lawrence Avenue Suite 342\nLake Samanthaville, IN 02633",
+      "locationType": "Đất công/Công viên/Hành lang an toàn giao thông",
+      "adsForm": "Xã hội hoá",
+      "planned": true
+    }
+  },
+  {
+    "id": 2,
+    "adsPointId": 1202,
+    "adsContent": "Holiday Specials Promotion in City B",
+    "companyName": "Company B",
+    "email": "companyB@example.com",
+    "phone": "0337839146",
+    "address": "456 Side St, City B",
+    "contractStart": "2023-06-05 01:46:09",
+    "contractEnd": "2023-07-16 01:46:09",
+    "requestStatus": "accepted",
+    "adsBoard": {
+      "id": 1,
+      "adsPointId": 2,
+      "adsType": "Trụ bảng hiflex",
+      "height": 65,
+      "width": 30,
+      "image": "https://urashima.sirv.com/UrashimaAds%20Hub/ads/ten_location_2/6.png",
+      "expiredDate": "2023-07-16 01:46:09"
+    },
+    "adsPoint": {
+      "id": 2,
+      "latitude": 10.816002825600563,
+      "longitude": 106.79358224934447,
+      "address": "421 Brown Fords\nSouth William, NM 52457",
+      "locationType": "Đất công/Công viên/Hành lang an toàn giao thông",
+      "adsForm": "Cổ động chính trị",
+      "planned": false
+    }
+  },
+  {
+    "id": 3,
+    "adsPointId": 1203,
+    "adsContent": "Holiday Specials Promotion in City B",
+    "companyName": "Company C",
+    "email": "companyC@example.com",
+    "phone": "0337839146",
+    "address": "456 Side St, City B",
+    "contractStart": "2023-06-05 01:46:09",
+    "contractEnd": "2023-07-16 01:46:09",
+    "requestStatus": "rejected",
+    "adsBoard": {
+      "id": 1,
+      "adsPointId": 3,
+      "adsType": "Trụ bảng hiflex",
+      "height": 65,
+      "width": 30,
+      "image": "https://urashima.sirv.com/UrashimaAds%20Hub/ads/ten_location_2/6.png",
+      "expiredDate": "2023-07-16 01:46:09"
+    },
+    "adsPoint": {
+      "id": 3,
+      "latitude": 10.816002825600563,
+      "longitude": 106.79358224934447,
+      "address": "421 Brown Fords\nSouth William, NM 52457",
+      "locationType": "Đất công/Công viên/Hành lang an toàn giao thông",
+      "adsForm": "Cổ động chính trị",
+      "planned": false
+    }
+  },
+  {
+    "id": 4,
+    "adsPointId": 1204,
+    "adsContent": "Flash Sale Event in City C",
+    "companyName": "Company D",
+    "email": "companyD@example.com",
+    "phone": "0337839146",
+    "address": "789 Center St, City C",
+    "contractStart": "2023-09-15 01:46:09",
+    "contractEnd": "2023-10-25 01:46:09",
+    "requestStatus": "inprocess",
+    "adsBoard": {
+      "id": 1,
+      "adsPointId": 4,
+      "adsType": "Trụ bảng hiflex",
+      "height": 65,
+      "width": 30,
+      "image": "https://urashima.sirv.com/UrashimaAds%20Hub/ads/ten_location_2/6.png",
+      "expiredDate": "2023-10-25 01:46:09"
+    },
+    "adsPoint": {
+      "id": 4,
+      "latitude": 10.759181350936814,
+      "longitude": 106.69024217131862,
+      "address": "632 Smith Bypass\nNew Alice, MA 12653",
+      "locationType": "Đất công/Công viên/Hành lang an toàn giao thông",
+      "adsForm": "Thương mại",
+      "planned": true
+    }
+  },
+  {
+    "id": 5,
+    "adsPointId": 1205,
+    "adsContent": "Grand Opening Celebration in City D",
+    "companyName": "Company E",
+    "email": "companyE@example.com",
+    "phone": "0337839146",
+    "address": "101 Main Blvd, City D",
+    "contractStart": "2023-04-20 01:46:09",
+    "contractEnd": "2023-05-30 01:46:09",
+    "requestStatus": "accepted",
+    "adsBoard": {
+      "id": 1,
+      "adsPointId": 5,
+      "adsType": "Trụ bảng hiflex",
+      "height": 65,
+      "width": 30,
+      "image": "https://urashima.sirv.com/UrashimaAds%20Hub/ads/ten_location_2/6.png",
+      "expiredDate": "2023-05-30 01:46:09"
+    },
+    "adsPoint": {
+      "id": 5,
+      "latitude": 10.886655572126713,
+      "longitude": 106.67480826377822,
+      "address": "789 Green Meadow Apt. 967\nWest Rileystad, TX 10822",
+      "locationType": "Đất công/Công viên/Hành lang an toàn giao thông",
+      "adsForm": "Quảng cáo dịch vụ",
+      "planned": false
+    }
+  },
+  {
+    "id": 6,
+    "adsPointId": 1206,
+    "adsContent": "Seasonal Clearance Sale in City E",
+    "companyName": "Company F",
+    "email": "companyF@example.com",
+    "phone": "0337839146",
+    "address": "876 Pine St, City E",
+    "contractStart": "2023-08-10 01:46:09",
+    "contractEnd": "2023-09-20 01:46:09",
+    "requestStatus": "rejected",
+    "adsBoard": {
+      "id": 1,
+      "adsPointId": 6,
+      "adsType": "Trụ bảng hiflex",
+      "height": 65,
+      "width": 30,
+      "image": "https://urashima.sirv.com/UrashimaAds%20Hub/ads/ten_location_2/6.png",
+      "expiredDate": "2023-09-20 01:46:09"
+    },
+    "adsPoint": {
+      "id": 6,
+      "latitude": 10.961783129465113,
+      "longitude": 106.73591324549966,
+      "address": "234 Oak Plains\nEast Shannon, AZ 13978",
+      "locationType": "Đất công/Công viên/Hành lang an toàn giao thông",
+      "adsForm": "Cổ động chính trị",
+      "planned": false
+    }
+  },
+  {
+    "id": 7,
+    "adsPointId": 1207,
+    "adsContent": "Back-to-School Discounts in City F",
+    "companyName": "Company G",
+    "email": "companyG@example.com",
+    "phone": "0337839146",
+    "address": "543 School Lane, City F",
+    "contractStart": "2023-07-01 01:46:09",
+    "contractEnd": "2023-08-15 01:46:09",
+    "requestStatus": "inprocess",
+    "adsBoard": {
+      "id": 1,
+      "adsPointId": 7,
+      "adsType": "Trụ bảng hiflex",
+      "height": 65,
+      "width": 30,
+      "image": "https://urashima.sirv.com/UrashimaAds%20Hub/ads/ten_location_2/6.png",
+      "expiredDate": "2023-08-15 01:46:09"
+    },
+    "adsPoint": {
+      "id": 7,
+      "latitude": 10.982496258718535,
+      "longitude": 106.64633598327637,
+      "address": "345 Birch Knoll Apt. 745\nPort Sherry, VT 45015",
+      "locationType": "Đất công/Công viên/Hành lang an toàn giao thông",
+      "adsForm": "Thương mại",
+      "planned": true
+    }
+  },
+  {
+    "id": 8,
+    "adsPointId": 1208,
+    "adsContent": "Summer Music Festival in City G",
+    "companyName": "Company H",
+    "email": "companyH@example.com",
+    "phone": "0337839146",
+    "address": "678 Beach Ave, City G",
+    "contractStart": "2023-05-15 01:46:09",
+    "contractEnd": "2023-06-25 01:46:09",
+    "requestStatus": "accepted",
+    "adsBoard": {
+      "id": 1,
+      "adsPointId": 8,
+      "adsType": "Trụ bảng hiflex",
+      "height": 65,
+      "width": 30,
+      "image": "https://urashima.sirv.com/UrashimaAds%20Hub/ads/ten_location_2/6.png",
+      "expiredDate": "2023-06-25 01:46:09"
+    },
+    "adsPoint": {
+      "id": 8,
+      "latitude": 10.80545853260985,
+      "longitude": 106.72291326522827,
+      "address": "987 Ocean View Suite 123\nWest Jamie, CA 50876",
+      "locationType": "Đất công/Công viên/Hành lang an toàn giao thông",
+      "adsForm": "Giải trí",
+      "planned": false
+    }
+  },
+  {
+    "id": 9,
+    "adsPointId": 1209,
+    "adsContent": "Tech Expo in City H",
+    "companyName": "Company I",
+    "email": "companyI@example.com",
+    "phone": "0337839146",
+    "address": "543 Tech Lane, City H",
+    "contractStart": "2023-10-01 01:46:09",
+    "contractEnd": "2023-11-15 01:46:09",
+    "requestStatus": "inprocess",
+    "adsBoard": {
+      "id": 1,
+      "adsPointId": 9,
+      "adsType": "Trụ bảng hiflex",
+      "height": 65,
+      "width": 30,
+      "image": "https://urashima.sirv.com/UrashimaAds%20Hub/ads/ten_location_2/6.png",
+      "expiredDate": "2023-11-15 01:46:09"
+    },
+    "adsPoint": {
+      "id": 9,
+      "latitude": 10.853995149618032,
+      "longitude": 106.65709567070007,
+      "address": "876 Byte Square Suite 567\nPort Techton, IL 60122",
+      "locationType": "Đất công/Công viên/Hành lang an toàn giao thông",
+      "adsForm": "Khoa học công nghệ",
+      "planned": true
+    }
+  },
+  {
+    "id": 10,
+    "adsPointId": 1210,
+    "adsContent": "Winter Fashion Show in City I",
+    "companyName": "Company J",
+    "email": "companyJ@example.com",
+    "phone": "0337839146",
+    "address": "789 Runway Blvd, City I",
+    "contractStart": "2023-12-01 01:46:09",
+    "contractEnd": "2024-01-15 01:46:09",
+    "requestStatus": "rejected",
+    "adsBoard": {
+      "id": 1,
+      "adsPointId": 10,
+      "adsType": "Trụ bảng hiflex",
+      "height": 65,
+      "width": 30,
+      "image": "https://urashima.sirv.com/UrashimaAds%20Hub/ads/ten_location_2/6.png",
+      "expiredDate": "2024-01-15 01:46:09"
+    },
+    "adsPoint": {
+      "id": 10,
+      "latitude": 10.924255992866548,
+      "longitude": 106.70347237586975,
+      "address": "234 Style Tower Apt. 789\nFashion Square, NY 70145",
+      "locationType": "Đất công/Công viên/Hành lang an toàn giao thông",
+      "adsForm": "Thời trang",
+      "planned": false
+    }
+  }
+]

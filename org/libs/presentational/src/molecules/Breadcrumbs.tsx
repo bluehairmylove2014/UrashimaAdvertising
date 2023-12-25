@@ -5,7 +5,7 @@ function Breadcrumbs({ bcList }: { bcList: IBreadcrumb[] }) {
   return (
     <div className="flex flex-row justify-start items-center gap-2">
       {bcList.map((bc, index) => (
-        <>
+        <span key={`breadcrumb@${index}`}>
           <Link
             href={bc.href}
             className={`text-[0.6rem] font-semibold opacity-60 whitespace-nowrap hover:opacity-100 ${
@@ -19,7 +19,7 @@ function Breadcrumbs({ bcList }: { bcList: IBreadcrumb[] }) {
           ) : (
             <></>
           )}
-        </>
+        </span>
       ))}
     </div>
   );

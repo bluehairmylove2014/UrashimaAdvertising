@@ -5,3 +5,4 @@ export * from './adsService';
 export * from './sirvService';
 export * from './geocodeService';
 export * from './accountService';
+export * from './approveService';

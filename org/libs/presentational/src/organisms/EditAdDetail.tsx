@@ -168,7 +168,6 @@ function EditAdDetail({
   };
   const onModify = ({ reasons }: { reasons: string }) => {
     // UPLOAD TO CDN
-    console.log(getValues());
     onUploadImageToCDN().then((imgData) => {
       const formData = getValues();
       const modifyData: IAdLocationDetail = {

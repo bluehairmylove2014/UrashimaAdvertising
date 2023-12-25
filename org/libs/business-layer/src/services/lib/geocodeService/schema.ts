@@ -2,9 +2,9 @@ import z from 'zod';
 
 const getLocationDetailResponseSchema = z.object({
   display_name: z.string(),
-  amenity: z.string(),
-  house_number: z.string(),
-  road: z.string(),
+  amenity: z.string().nullable(),
+  house_number: z.string().nullable(),
+  road: z.string().nullable(),
   suburb: z.string(),
   town: z.string(),
   postcode: z.number(),

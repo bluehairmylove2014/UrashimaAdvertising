@@ -13,7 +13,9 @@ const QueryProvider: React.FC<QueryProviderProps> = ({ children }) => {
   return (
     <QueryClientProvider client={queryClient}>
       {children}
-      {reactQueryDevtoolsConfig.isActive && <ReactQueryDevtools />}
+      {reactQueryDevtoolsConfig.isActive && (
+        <ReactQueryDevtools client={queryClient} buttonPosition="bottom-left" />
+      )}
     </QueryClientProvider>
   );
 };

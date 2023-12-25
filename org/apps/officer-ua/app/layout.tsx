@@ -5,7 +5,7 @@ import Notification from '@presentational/atoms/Notification';
 import { activeModuleConfig } from '../constants/modules';
 
 export const metadata = {
-  title: 'Urashima Ads',
+  title: 'Officer Urashima Ads',
   description: 'Urashima Ads authentication hub',
 };
 const montserrat = Montserrat({

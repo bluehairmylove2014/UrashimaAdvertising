@@ -24,13 +24,13 @@ const iconButtonSize = 2;
 const authInputList: authInputParams[] = [
   {
     name: 'email',
-    label: 'Email address',
+    label: 'Địa chỉ Email',
     type: 'EMAIL',
     control: null,
   },
   {
     name: 'password',
-    label: 'Password',
+    label: 'Mật khẩu',
     type: 'PASSWORD',
     control: null,
   },
@@ -72,7 +72,7 @@ function LoginForm() {
       noValidate
     >
       <div className="leading-4 mb-8">
-        <p className="text-center font-extrabold">Welcome to</p>
+        <p className="text-center font-extrabold">Chào mừng đến</p>
         <h4 className="text-center font-extrabold">URASHIMA ADVERTISING</h4>
       </div>
       <div className="mb-3 w-full h-fit grid grid-rows-2 gap-4">
@@ -90,17 +90,17 @@ function LoginForm() {
       </div>
       <div className="flex flex-row justify-end items-center mb-4">
         <Link
-          href={OFFICER_PAGES.DASHBOARD}
+          href={OFFICER_PAGES.RESET_PASSWORD}
           className="font-semibold text-xs text-gray-400 hover:text-blue-600"
         >
-          Forgot Password?
+          Quên mật khẩu?
         </Link>
       </div>
       <CustomButton style="fill-primary" type="submit" loading={isLoginLoading}>
-        Sign in
+        Đăng nhập
       </CustomButton>
       <p className=" font-medium text-xs text-gray-500 flex justify-center items-center my-4">
-        Or you can sign in with
+        Hoặc bạn có thể đăng nhập bằng
       </p>
       <div className="flex flex-row justify-center items-center gap-4">
         <IconButton

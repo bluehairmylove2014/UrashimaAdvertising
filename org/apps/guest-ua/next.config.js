@@ -18,9 +18,12 @@ const nextConfig = {
         protocol: 'https',
         port: '',
         hostname: 'urashima.sirv.com',
-        pathname: '/UrashimaAds%20Hub/*',
+        pathname: '/UrashimaAds%20Hub/**',
       },
     ],
+    dangerouslyAllowSVG: true,
+    contentDispositionType: 'attachment',
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
 };
 

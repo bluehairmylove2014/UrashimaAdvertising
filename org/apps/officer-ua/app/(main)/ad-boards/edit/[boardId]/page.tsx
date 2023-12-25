@@ -20,11 +20,9 @@ async function getAdLocationDetail(boardId: number) {
         token: token,
       });
     } else {
-      console.error('UNAUTHORIZED');
       return null;
     }
   } catch (error) {
-    console.error(error);
     return null;
   }
 }

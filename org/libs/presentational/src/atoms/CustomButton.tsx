@@ -5,7 +5,8 @@ type buttonType = 'button' | 'submit';
 type buttonStyle =
   | 'fill-primary' // blue background, white color
   | 'fill-secondary' // gray background, black color
-  | 'fill-error'; // red bg, white color
+  | 'fill-error' // red bg, white color
+  | 'fill-green';
 type commonButtonType = {
   children: React.ReactNode | string | number;
   style: buttonStyle;
@@ -22,25 +23,31 @@ function getTailwindClassStyle(style: buttonStyle) {
     case 'fill-primary':
       return {
         normal: 'bg-blue-500 hover:bg-blue-700 transition-colors',
-        disabled: 'bg-cyan-500 cursor-not-allowed',
+        disabled: 'disabled:bg-cyan-500 disabled:cursor-not-allowed',
         common: 'rounded text-white',
       };
     case 'fill-secondary':
       return {
         normal: 'bg-gray-100 rounded hover:bg-gray-300 transition-colors',
-        disabled: 'bg-gray-300 cursor-not-allowed',
+        disabled: 'disabled:bg-gray-300 disabled:cursor-not-allowed',
         common: 'rounded text-black',
+      };
+    case 'fill-green':
+      return {
+        normal: 'bg-green-600 rounded hover:bg-green-500 transition-colors',
+        disabled: 'disabled:bg-gray-300 disabled:cursor-not-allowed',
+        common: 'rounded text-white',
       };
     case 'fill-error':
       return {
         normal: 'bg-red-600 rounded hover:bg-gray-500 transition-colors',
-        disabled: 'bg-gray-300 cursor-not-allowed',
+        disabled: 'disabled:bg-gray-300 disabled:cursor-not-allowed',
         common: 'rounded text-white',
       };
     default:
       return {
         normal: '',
-        disabled: '',
+        disabled: 'disabled:bg-gray-300 disabled:cursor-not-allowed',
         common: '',
       };
   }
@@ -62,9 +69,7 @@ function CustomButton({
 
   return (
     <button
-      className={`${commonStyle} shadow-sm w-full py-2 font-semibold text-xs ${
-        loading ? disabledStyle : normalStyle
-      }`}
+      className={`${commonStyle} ${disabledStyle} ${normalStyle} shadow-sm w-full py-2 font-semibold text-xs`}
       onClick={onClick}
       disabled={disabled || loading}
       type={type ?? defaultType}

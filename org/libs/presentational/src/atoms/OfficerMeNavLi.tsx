@@ -11,7 +11,9 @@ function OfficerMeNavLi({ label, href }: { label: string; href: string }) {
         href.includes(pathName) ? 'text-red-600' : 'text-black'
       } w-full py-1 hover:text-red-600 transition-colors text-sm text-center font-semibold rounded overflow-hidden`}
     >
-      <Link href={href}>{label}</Link>
+      <Link href={href} className="whitespace-nowrap">
+        {label}
+      </Link>
     </li>
   );
 }

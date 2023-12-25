@@ -1,7 +1,14 @@
-import { getAccountInfoUrl } from '../../config/apis';
+import { getAccountInfoUrl, modifyAccountInfoUrl } from '../../config/apis';
 import { Services } from '../../service';
-import { getAccountInfoResponseSchema } from './schema';
-import { getAccountInfoResponseType } from './type';
+import {
+  getAccountInfoResponseSchema,
+  modifyAccountInfoResponseSchema,
+} from './schema';
+import {
+  getAccountInfoResponseType,
+  modifyAccountInfoParamsType,
+  modifyAccountInfoResponseType,
+} from './type';
 
 export * from './type';
 export class AccountService extends Services {
@@ -29,7 +36,35 @@ export class AccountService extends Services {
         throw new Error('Unauthorized');
       }
     } catch (error) {
-      console.log('ERROR: ', error);
+      throw this.handleError(error);
+    }
+  };
+  modifyAccountInfo = async ({
+    data,
+    token,
+  }: modifyAccountInfoParamsType): Promise<modifyAccountInfoResponseType> => {
+    this.abortController = new AbortController();
+    try {
+      if (token) {
+        const response = await this.fetchApi<
+          typeof modifyAccountInfoResponseSchema,
+          modifyAccountInfoResponseType
+        >({
+          method: 'PUT',
+          url: modifyAccountInfoUrl,
+          schema: modifyAccountInfoResponseSchema,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          data,
+          signal: this.abortController.signal,
+          transformResponse: (res) => res,
+        });
+        return response;
+      } else {
+        throw new Error('Unauthorized');
+      }
+    } catch (error) {
       throw this.handleError(error);
     }
   };

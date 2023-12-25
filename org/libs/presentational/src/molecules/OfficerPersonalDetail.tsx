@@ -4,15 +4,17 @@ import { IAccountDetail } from '@business-layer/services/entities';
 import { useNotification } from '@presentational/atoms/Notification';
 import { useForm } from 'react-hook-form';
 import RoleIcon, { roleIconType } from '@presentational/atoms/RoleIcon';
-
-type personalDetailFormType = {
-  email: string;
-  fullName: string;
-  dateOfBirth: string;
-  phone: string;
-};
+import { useState } from 'react';
+import CustomButton from '@presentational/atoms/CustomButton';
+import { accountInfoToModifyType } from '@business-layer/services';
+import { useModifyAccountInfo } from './../../../business-layer/src/business-logic/lib/account';
+import {
+  accountModifyFormSchema,
+  useYupValidationResolver,
+} from '@utils/validators/yup';
 
 function OfficerPersonalDetail({ data }: { data: IAccountDetail | null }) {
+  const [isEnableEdit, setIsEnableEdit] = useState<boolean>(false);
   const { showSuccess, showError, showReactHookFormError } = useNotification();
   const formDefaultValue = {
     email: data?.email ?? '',
@@ -20,17 +22,28 @@ function OfficerPersonalDetail({ data }: { data: IAccountDetail | null }) {
     dateOfBirth: data?.dateOfBirth.substring(0, 10) ?? '',
     phone: data?.phone ?? '',
   };
-  const { register, handleSubmit } = useForm<personalDetailFormType>({
+  const resolver = useYupValidationResolver(accountModifyFormSchema);
+  const { register, handleSubmit, reset } = useForm<accountInfoToModifyType>({
     defaultValues: formDefaultValue,
+    resolver,
   });
+  const { onModifyAccountInfo, isLoading } = useModifyAccountInfo();
 
-  const onSuccessSubmit = (data: personalDetailFormType) => {
-    console.log(data);
+  // methods
+  const handleEditProfile = (data: accountInfoToModifyType) => {
+    onModifyAccountInfo(data)
+      .then((msg) => {
+        showSuccess(msg);
+        setIsEnableEdit(false);
+      })
+      .catch((error) => {
+        showError(error.message);
+      });
   };
 
   return (
     <form
-      onSubmit={handleSubmit(onSuccessSubmit, showReactHookFormError)}
+      onSubmit={handleSubmit(handleEditProfile, showReactHookFormError)}
       className="mt-4 space-y-4"
     >
       {data ? (
@@ -42,7 +55,8 @@ function OfficerPersonalDetail({ data }: { data: IAccountDetail | null }) {
             <input
               id="email"
               type="email"
-              className="w-3/4 p-2 border rounded text-xs"
+              disabled={!isEnableEdit}
+              className="disabled:cursor-not-allowed disabled:bg-zinc-50 w-3/4 p-2 border rounded text-xs"
               {...register('email')}
             />
           </div>
@@ -53,7 +67,8 @@ function OfficerPersonalDetail({ data }: { data: IAccountDetail | null }) {
             <input
               id="fullName"
               type="text"
-              className="w-3/4 p-2 border rounded text-xs"
+              disabled={!isEnableEdit}
+              className="disabled:cursor-not-allowed disabled:bg-zinc-50 w-3/4 p-2 border rounded text-xs"
               {...register('fullName')}
             />
           </div>
@@ -64,7 +79,8 @@ function OfficerPersonalDetail({ data }: { data: IAccountDetail | null }) {
             <input
               id="dob"
               type="date"
-              className="w-3/4 p-2 border rounded text-xs"
+              disabled={!isEnableEdit}
+              className="disabled:cursor-not-allowed disabled:bg-zinc-50 w-3/4 p-2 border rounded text-xs"
               {...register('dateOfBirth')}
             />
           </div>
@@ -75,7 +91,8 @@ function OfficerPersonalDetail({ data }: { data: IAccountDetail | null }) {
             <input
               id="phone"
               type="text"
-              className="w-3/4 p-2 border rounded text-xs"
+              disabled={!isEnableEdit}
+              className="disabled:cursor-not-allowed disabled:bg-zinc-50 w-3/4 p-2 border rounded text-xs"
               {...register('phone')}
             />
           </div>
@@ -94,6 +111,44 @@ function OfficerPersonalDetail({ data }: { data: IAccountDetail | null }) {
       ) : (
         <></>
       )}
+      <div className="w-full h-fit grid place-items-center mt-12">
+        {isEnableEdit ? (
+          <div className="flex flex-row gap-3">
+            <div className="w-28 h-10">
+              <CustomButton
+                style="fill-secondary"
+                type="button"
+                disabled={isLoading}
+                onClick={() => {
+                  setIsEnableEdit(false);
+                  reset();
+                }}
+              >
+                Huỷ thay đổi
+              </CustomButton>
+            </div>
+            <div className="w-36 h-10">
+              <CustomButton
+                style="fill-green"
+                type="submit"
+                loading={isLoading}
+              >
+                Xác nhận chỉnh sửa
+              </CustomButton>
+            </div>
+          </div>
+        ) : (
+          <div className="w-36 h-10">
+            <CustomButton
+              style="fill-primary"
+              type="button"
+              onClick={() => setIsEnableEdit(true)}
+            >
+              Chỉnh sửa thông tin
+            </CustomButton>
+          </div>
+        )}
+      </div>
     </form>
   );
 }
