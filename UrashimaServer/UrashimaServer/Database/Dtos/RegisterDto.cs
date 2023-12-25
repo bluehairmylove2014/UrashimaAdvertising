@@ -37,8 +37,6 @@ namespace UrashimaServer.Dtos
         public string OldPassword { get; set; } = string.Empty;
         [Required, MinLength(6, ErrorMessage = "Mật khẩu ít nhất 6 kí tự")]
         public string Password { get; set; } = string.Empty;
-        [Required, Compare("Password", ErrorMessage = "Mật khẩu xác nhận không giống mật khẩu mới")]
-        public string ConfirmPassword { get; set; } = string.Empty;
     }
 
     public class ResetPasswordRequest
@@ -47,8 +45,6 @@ namespace UrashimaServer.Dtos
         public string Email { get; set; } = string.Empty;
         [Required, MinLength(6, ErrorMessage = "Mật khẩu ít nhất 6 kí tự")]
         public string Password { get; set; } = string.Empty;
-        [Required, Compare("Password", ErrorMessage = "Mật khẩu xác nhận không giống mật khẩu mới")]
-        public string ConfirmPassword { get; set; } = string.Empty;
     }
 
     public class EmailDto
