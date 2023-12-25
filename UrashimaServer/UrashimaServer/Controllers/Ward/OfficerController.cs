@@ -45,10 +45,18 @@ namespace UrashimaServer.Controllers.Ward
             var adsBoard = await _context.AdsBoards
                 .Where(b => b.Id == id)
                 .Include(b => b.AdsPoint).FirstOrDefaultAsync();
-
-            if (adsBoard is null || !Helper.IsUnderAuthority(adsBoard.AdsPoint!.Address, acc.UnitUnderManagement))
+            if (adsBoard is null)
             {
-                return NotFound();
+                return NotFound(new
+                {
+                    message = "Không tìm thấy bảng quảng cáo."
+                });
+            } else if (!Helper.IsUnderAuthority(adsBoard.AdsPoint!.Address, acc.UnitUnderManagement))
+            {
+                return BadRequest(new
+                {
+                    message = "Chi tiết bảng quảng cáo không thuộc thẩm quyền."
+                });
             }
 
             var res = _mapper.Map<AdsBoardBasicDto>(adsBoard);
@@ -146,9 +154,18 @@ namespace UrashimaServer.Controllers.Ward
                 .Include(s => s.Images)
                 .FirstOrDefaultAsync();
 
-            if (adsPoint is null || !Helper.IsUnderAuthority(adsPoint.Address, acc.UnitUnderManagement))
+            if (adsPoint == null)
             {
-                return NotFound();
+                return NotFound(new
+                {
+                    message = "Không tìm thấy điểm quảng cáo."
+                });
+            } else if (!Helper.IsUnderAuthority(adsPoint.Address, acc.UnitUnderManagement)) 
+            {
+                return BadRequest(new
+                {
+                    message = "Chi tiết địa điểm không thuộc thẩm quyền."
+                });
             }
 
             var res = _mapper.Map<UserAdsPointDetailDto>(adsPoint);
