@@ -23,6 +23,7 @@ function OTPInput({ onChange, disabled, otpLength }: otpInputType) {
     index: number
   ) => {
     const value = target.value.trim();
+
     const newOtp = [...otp];
     newOtp[index] = value;
     setOtp(newOtp);
@@ -54,7 +55,7 @@ function OTPInput({ onChange, disabled, otpLength }: otpInputType) {
               type="tel"
               ref={(e) => (otpInputRef.current[i] = e)}
               maxLength={1}
-              disabled={disabled || currentOtpIndex !== i}
+              disabled={disabled}
               autoComplete="off"
               onChange={(e) => handleOtpInputChange(e, i)}
               className="outline-none border-none bg-transparent w-full h-full text-center disabled:bg-zinc-100 disabled:cursor-not-allowed"
