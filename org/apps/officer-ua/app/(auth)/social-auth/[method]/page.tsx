@@ -77,32 +77,23 @@ function SocialAuth() {
   }, []);
 
   return (
-    <main className="w-screen h-screen grid place-items-center relative">
-      <Image
-        src={'/assets/images/bgs/dark-bg.png'}
-        alt="dark-bg"
-        fill
-        sizes="100vw"
-        className="z-10"
-      />
-      <div className="container mx-auto max-w-xs relative z-20">
-        <div className="w-full h-fit bg-white overflow-hidden rounded px-4 py-10">
-          {errorMsg ? (
-            <div className="flex flex-row flex-nowrap justify-center items-center gap-3">
-              <Image
-                src="/assets/images/icons/error.png"
-                alt="error"
-                width={30}
-                height={30}
-              />
-              <span className="flex shrink w-fit text-base">{errorMsg}</span>
-            </div>
-          ) : (
-            <ButtonLoader label={curAuthState.name} loaderColor="BLUE" />
-          )}
-        </div>
+    <div className="container mx-auto max-w-xs relative z-20">
+      <div className="w-full h-fit bg-white overflow-hidden rounded px-4 py-10">
+        {errorMsg ? (
+          <div className="flex flex-row flex-nowrap justify-center items-center gap-3">
+            <Image
+              src="/assets/images/icons/error.png"
+              alt="error"
+              width={30}
+              height={30}
+            />
+            <span className="flex shrink w-fit text-base">{errorMsg}</span>
+          </div>
+        ) : (
+          <ButtonLoader label={curAuthState.name} loaderColor="BLUE" />
+        )}
       </div>
-    </main>
+    </div>
   );
 }
 

@@ -10,7 +10,15 @@
     "contractStart": "2023-11-09 01:46:09",
     "contractEnd": "2023-12-28 01:46:09",
     "requestStatus": "inprocess",
-    "adsBoard": null,
+    "adsBoard": {
+      "id": 3,
+      "adsPointId": 1,
+      "adsType": "Trụ bảng hiflex",
+      "height": 65,
+      "width": 30,
+      "image": "https://urashima.sirv.com/UrashimaAds%20Hub/ads/ten_location_2/6.png",
+      "expiredDate": "2023-12-28 01:46:09"
+    },
     "adsPoint": {
       "id": 1,
       "latitude": 10.848539839107955,
@@ -32,7 +40,15 @@
     "contractStart": "2023-06-05 01:46:09",
     "contractEnd": "2023-07-16 01:46:09",
     "requestStatus": "accepted",
-    "adsBoard": null,
+    "adsBoard": {
+      "id": 1,
+      "adsPointId": 2,
+      "adsType": "Trụ bảng hiflex",
+      "height": 65,
+      "width": 30,
+      "image": "https://urashima.sirv.com/UrashimaAds%20Hub/ads/ten_location_2/6.png",
+      "expiredDate": "2023-07-16 01:46:09"
+    },
     "adsPoint": {
       "id": 2,
       "latitude": 10.816002825600563,
@@ -54,7 +70,15 @@
     "contractStart": "2023-06-05 01:46:09",
     "contractEnd": "2023-07-16 01:46:09",
     "requestStatus": "rejected",
-    "adsBoard": null,
+    "adsBoard": {
+      "id": 1,
+      "adsPointId": 3,
+      "adsType": "Trụ bảng hiflex",
+      "height": 65,
+      "width": 30,
+      "image": "https://urashima.sirv.com/UrashimaAds%20Hub/ads/ten_location_2/6.png",
+      "expiredDate": "2023-07-16 01:46:09"
+    },
     "adsPoint": {
       "id": 3,
       "latitude": 10.816002825600563,
@@ -76,7 +100,15 @@
     "contractStart": "2023-09-15 01:46:09",
     "contractEnd": "2023-10-25 01:46:09",
     "requestStatus": "inprocess",
-    "adsBoard": null,
+    "adsBoard": {
+      "id": 1,
+      "adsPointId": 4,
+      "adsType": "Trụ bảng hiflex",
+      "height": 65,
+      "width": 30,
+      "image": "https://urashima.sirv.com/UrashimaAds%20Hub/ads/ten_location_2/6.png",
+      "expiredDate": "2023-10-25 01:46:09"
+    },
     "adsPoint": {
       "id": 4,
       "latitude": 10.759181350936814,
@@ -98,7 +130,15 @@
     "contractStart": "2023-04-20 01:46:09",
     "contractEnd": "2023-05-30 01:46:09",
     "requestStatus": "accepted",
-    "adsBoard": null,
+    "adsBoard": {
+      "id": 1,
+      "adsPointId": 5,
+      "adsType": "Trụ bảng hiflex",
+      "height": 65,
+      "width": 30,
+      "image": "https://urashima.sirv.com/UrashimaAds%20Hub/ads/ten_location_2/6.png",
+      "expiredDate": "2023-05-30 01:46:09"
+    },
     "adsPoint": {
       "id": 5,
       "latitude": 10.886655572126713,
@@ -120,7 +160,15 @@
     "contractStart": "2023-08-10 01:46:09",
     "contractEnd": "2023-09-20 01:46:09",
     "requestStatus": "rejected",
-    "adsBoard": null,
+    "adsBoard": {
+      "id": 1,
+      "adsPointId": 6,
+      "adsType": "Trụ bảng hiflex",
+      "height": 65,
+      "width": 30,
+      "image": "https://urashima.sirv.com/UrashimaAds%20Hub/ads/ten_location_2/6.png",
+      "expiredDate": "2023-09-20 01:46:09"
+    },
     "adsPoint": {
       "id": 6,
       "latitude": 10.961783129465113,
@@ -142,7 +190,15 @@
     "contractStart": "2023-07-01 01:46:09",
     "contractEnd": "2023-08-15 01:46:09",
     "requestStatus": "inprocess",
-    "adsBoard": null,
+    "adsBoard": {
+      "id": 1,
+      "adsPointId": 7,
+      "adsType": "Trụ bảng hiflex",
+      "height": 65,
+      "width": 30,
+      "image": "https://urashima.sirv.com/UrashimaAds%20Hub/ads/ten_location_2/6.png",
+      "expiredDate": "2023-08-15 01:46:09"
+    },
     "adsPoint": {
       "id": 7,
       "latitude": 10.982496258718535,
@@ -164,7 +220,15 @@
     "contractStart": "2023-05-15 01:46:09",
     "contractEnd": "2023-06-25 01:46:09",
     "requestStatus": "accepted",
-    "adsBoard": null,
+    "adsBoard": {
+      "id": 1,
+      "adsPointId": 8,
+      "adsType": "Trụ bảng hiflex",
+      "height": 65,
+      "width": 30,
+      "image": "https://urashima.sirv.com/UrashimaAds%20Hub/ads/ten_location_2/6.png",
+      "expiredDate": "2023-06-25 01:46:09"
+    },
     "adsPoint": {
       "id": 8,
       "latitude": 10.80545853260985,
@@ -186,7 +250,15 @@
     "contractStart": "2023-10-01 01:46:09",
     "contractEnd": "2023-11-15 01:46:09",
     "requestStatus": "inprocess",
-    "adsBoard": null,
+    "adsBoard": {
+      "id": 1,
+      "adsPointId": 9,
+      "adsType": "Trụ bảng hiflex",
+      "height": 65,
+      "width": 30,
+      "image": "https://urashima.sirv.com/UrashimaAds%20Hub/ads/ten_location_2/6.png",
+      "expiredDate": "2023-11-15 01:46:09"
+    },
     "adsPoint": {
       "id": 9,
       "latitude": 10.853995149618032,
@@ -208,7 +280,15 @@
     "contractStart": "2023-12-01 01:46:09",
     "contractEnd": "2024-01-15 01:46:09",
     "requestStatus": "rejected",
-    "adsBoard": null,
+    "adsBoard": {
+      "id": 1,
+      "adsPointId": 10,
+      "adsType": "Trụ bảng hiflex",
+      "height": 65,
+      "width": 30,
+      "image": "https://urashima.sirv.com/UrashimaAds%20Hub/ads/ten_location_2/6.png",
+      "expiredDate": "2024-01-15 01:46:09"
+    },
     "adsPoint": {
       "id": 10,
       "latitude": 10.924255992866548,

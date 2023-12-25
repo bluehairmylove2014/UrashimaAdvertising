@@ -14,11 +14,17 @@ import TableRow from '@presentational/molecules/TableRow';
 import IconButton from '@presentational/atoms/IconButton';
 import { useRouter } from 'next/navigation';
 import { OFFICER_PAGES } from '@constants/officerPages';
+import { IAdLocation } from '@business-layer/services/entities';
 
 const START_PAGE = 1;
 const MAX_ELEMENT_PER_PAGE = 6;
 
-function AdLocationsTable() {
+type additionFuncParamsType = {
+  isChoosing?: boolean;
+  onChoosing?: (locationData: IAdLocation) => void;
+};
+
+function AdLocationsTable({ isChoosing, onChoosing }: additionFuncParamsType) {
   const router = useRouter();
   const officerAdData = useGetAllOfficerAdsFromContext();
   const { setPaginationData } = useSetPaginationData();
@@ -63,7 +69,7 @@ function AdLocationsTable() {
         <tbody>
           {Array.isArray(officerAdData) ? (
             officerAdData.length > 0 ? (
-              slicePaginationData(
+              slicePaginationData<IAdLocation>(
                 officerAdData,
                 paginationData.currentPage,
                 paginationData.maxPage,
@@ -84,15 +90,25 @@ function AdLocationsTable() {
                       ) : (
                         <i className="fi fi-br-cross text-red-600"></i>
                       ),
-                      <IconButton
-                        type="button"
-                        shape="square"
-                        callback={() => {
-                          router.push(OFFICER_PAGES.ADS_BOARD + `/${ad.id}`);
-                        }}
-                      >
-                        <i className="fi fi-sr-file-circle-info text-blue-600 text-sm hover:text-blue-400 transition-colors"></i>
-                      </IconButton>,
+                      isChoosing ? (
+                        <button
+                          className="bg-transparent border-solid border-2 border-green-600 rounded hover:bg-green-600 hover:text-white transition-colors text-[0.6rem] px-4 py-1"
+                          type="button"
+                          onClick={() => onChoosing && onChoosing(ad)}
+                        >
+                          Chọn
+                        </button>
+                      ) : (
+                        <IconButton
+                          type="button"
+                          shape="square"
+                          callback={() => {
+                            router.push(OFFICER_PAGES.ADS_BOARD + `/${ad.id}`);
+                          }}
+                        >
+                          <i className="fi fi-sr-file-circle-info text-blue-600 text-sm hover:text-blue-400 transition-colors"></i>
+                        </IconButton>
+                      ),
                     ]}
                   />
                 </tr>

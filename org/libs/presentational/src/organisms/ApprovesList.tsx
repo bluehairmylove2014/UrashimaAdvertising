@@ -10,7 +10,7 @@ import {
   isDateGreaterThan,
   slicePaginationData,
 } from '@utils/helpers';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   useGetPagination,
   useSetPaginationData,
@@ -24,15 +24,22 @@ import { debounce } from '@business-layer/business-logic/helper';
 import ModernSelect, {
   modernSelectOptionType,
 } from '@presentational/atoms/ModernSelect';
+import Image from 'next/image';
+import {
+  useDeleteApproveRequest,
+  useHandleApprove,
+  useHandleFilterApprove,
+} from '@business-layer/business-logic/lib/approve/process/hooks';
+import YesNoPopup from '@presentational/molecules/YesNoPopup';
+import { useNotification } from '@presentational/atoms/Notification';
+import {
+  requestStatusTypes,
+  timeTypes,
+} from '@business-layer/business-logic/lib/approve/process/context';
 
 const START_PAGE = 1;
 const MAX_ELEMENT_PER_PAGE = 4;
 
-type filterCriteriaType = {
-  searchKey: string | null;
-  timeFilter: string | null;
-  requestStatusFilter: string | null;
-};
 function ApprovesList({
   inputApproveData,
   timeFilterOptions,
@@ -46,82 +53,28 @@ function ApprovesList({
   const router = useRouter();
   const { setPaginationData } = useSetPaginationData();
   const paginationData = useGetPagination();
-  const [approveData, setApproveData] = useState<IApprove[] | null>(
-    inputApproveData
-  );
-  const [filterCriteria, setFilterCriteria] = useState<filterCriteriaType>({
-    searchKey: null,
-    timeFilter: null,
-    requestStatusFilter: null,
-  });
+  const { approvesData, setApproves, deleteApproveById } = useHandleApprove();
+  const { filterByRequestStatus, filterBySearchKey, filterByTime } =
+    useHandleFilterApprove();
+  const { onDeleteApproveRequest } = useDeleteApproveRequest();
+  const [isShowingPopup, setIsShowingPopup] = useState<boolean>(false);
+  const needDeletedRequestId = useRef<number | null>(null);
+  const { showSuccess, showError } = useNotification();
 
   useEffect(() => {
-    setApproveData(inputApproveData);
-    if (Array.isArray(inputApproveData)) {
-      setPaginationData({
-        currentPage: START_PAGE,
-        maxPage: calculateMaxPage(inputApproveData, MAX_ELEMENT_PER_PAGE),
-        maxElementPerPage: MAX_ELEMENT_PER_PAGE,
-        dataLength: inputApproveData.length,
-      });
-    }
+    setApproves(inputApproveData);
   }, [inputApproveData]);
 
   useEffect(() => {
-    let newApproveData = inputApproveData ? [...inputApproveData] : [];
-    if (filterCriteria.timeFilter) {
-      switch (filterCriteria.timeFilter) {
-        case 'Đã quá hạn': {
-          newApproveData = newApproveData.filter((approve) =>
-            isDateGreaterThan(currentDate, approve.contractEnd)
-          );
-          break;
-        }
-        case 'Chưa hoạt động': {
-          newApproveData = newApproveData.filter((approve) =>
-            isDateGreaterThan(approve.contractStart, currentDate)
-          );
-          break;
-        }
-        case 'Đang hoạt động': {
-          newApproveData = newApproveData.filter(
-            (approve) =>
-              isDateGreaterThan(currentDate, approve.contractStart) &&
-              isDateGreaterThan(approve.contractEnd, currentDate)
-          );
-          break;
-        }
-      }
-    }
-    if (filterCriteria.requestStatusFilter) {
-      newApproveData = newApproveData.filter(
-        (approve) =>
-          filterCriteria.requestStatusFilter === approve.requestStatus
-      );
-    }
-    if (filterCriteria.searchKey) {
-      const searchCompanyName = filterCriteria.searchKey.trim().toLowerCase();
-      newApproveData = newApproveData.filter((approve) => {
-        const approveCompanyName = approve.companyName.toLowerCase();
-        return (
-          approveCompanyName.includes(searchCompanyName) ||
-          searchCompanyName.includes(approveCompanyName)
-        );
+    if (Array.isArray(approvesData)) {
+      setPaginationData({
+        currentPage: START_PAGE,
+        maxPage: calculateMaxPage(approvesData, MAX_ELEMENT_PER_PAGE),
+        maxElementPerPage: MAX_ELEMENT_PER_PAGE,
+        dataLength: approvesData.length,
       });
     }
-
-    setPaginationData({
-      currentPage: START_PAGE,
-      maxPage: calculateMaxPage(newApproveData, MAX_ELEMENT_PER_PAGE),
-      maxElementPerPage: MAX_ELEMENT_PER_PAGE,
-      dataLength: newApproveData.length,
-    });
-    setApproveData(newApproveData);
-  }, [
-    filterCriteria.searchKey,
-    filterCriteria.timeFilter,
-    filterCriteria.requestStatusFilter,
-  ]);
+  }, [approvesData]);
 
   // Methods
   const renderDateTime = (date: Date) => {
@@ -131,22 +84,28 @@ function ApprovesList({
     );
   };
   const onSearch = debounce((inputValue: string) => {
-    setFilterCriteria({
-      ...filterCriteria,
-      searchKey: inputValue,
-    });
+    filterBySearchKey(inputValue);
   }, 500);
-  const filterByTime = (option: modernSelectOptionType) => {
-    setFilterCriteria({
-      ...filterCriteria,
-      timeFilter: option.value,
-    });
+  const handleFilterByTime = (option: modernSelectOptionType) => {
+    filterByTime(option.value as timeTypes);
   };
-  const filterByRequestStatus = (option: modernSelectOptionType) => {
-    setFilterCriteria({
-      ...filterCriteria,
-      requestStatusFilter: option.value,
-    });
+  const handleFilterByRequestStatus = (option: modernSelectOptionType) => {
+    filterByRequestStatus(option.value as requestStatusTypes);
+  };
+  const showDeletePopup = (id: number) => {
+    needDeletedRequestId.current = id;
+    setIsShowingPopup(true);
+  };
+  const handleDeleteRequest = (result: boolean) => {
+    if (result && needDeletedRequestId.current) {
+      onDeleteApproveRequest(needDeletedRequestId.current)
+        .then((msg) => {
+          showSuccess(msg);
+        })
+        .catch((error) => showError(error.msg));
+    }
+    needDeletedRequestId.current = null;
+    setIsShowingPopup(false);
   };
 
   return (
@@ -164,12 +123,12 @@ function ApprovesList({
         </form>
         <div className="flex flex-row justify-end flex-grow gap-2">
           <ModernSelect
-            onOptionSelect={filterByTime}
+            onOptionSelect={handleFilterByTime}
             options={timeFilterOptions}
             style="clean"
           />
           <ModernSelect
-            onOptionSelect={filterByRequestStatus}
+            onOptionSelect={handleFilterByRequestStatus}
             options={requestStatusFilterOptions}
             style="clean"
           />
@@ -188,22 +147,22 @@ function ApprovesList({
               <th scope="col" className="px-2 py-3 w-[30%]">
                 Thông tin công ty
               </th>
-              <th scope="col" className="px-2 py-3 w-[30%]">
+              <th scope="col" className="px-2 py-3 w-[25%]">
                 Địa chỉ cấp phép
               </th>
               <th scope="col" className="px-2 py-3 w-[20%]">
                 Thời hạn
               </th>
-              <th scope="col" className="px-2 py-3 w-[5%]">
+              <th scope="col" className="px-2 py-3 w-[10%]">
                 Hành động
               </th>
             </tr>
           </thead>
           <tbody>
-            {Array.isArray(approveData) ? (
-              approveData.length > 0 ? (
-                slicePaginationData(
-                  approveData,
+            {Array.isArray(approvesData) ? (
+              approvesData.length > 0 ? (
+                slicePaginationData<IApprove>(
+                  approvesData,
                   paginationData.currentPage,
                   paginationData.maxPage,
                   paginationData.maxElementPerPage
@@ -250,7 +209,16 @@ function ApprovesList({
                             )}
                           </span>
                         </>,
-                        approve.adsPoint.address,
+                        <span className="flex flex-row items-center justify-center gap-2">
+                          <Image
+                            src={approve.adsBoard.image}
+                            alt={approve.adsPoint.address}
+                            width={70}
+                            height={70}
+                            className="rounded object-cover"
+                          />
+                          <span>{approve.adsPoint.address}</span>
+                        </span>,
                         <span>
                           {renderDateTime(new Date(approve.contractStart))}
                           <br />
@@ -258,17 +226,32 @@ function ApprovesList({
                           <br />
                           {renderDateTime(new Date(approve.contractEnd))}
                         </span>,
-                        <IconButton
-                          type="button"
-                          shape="square"
-                          callback={() => {
-                            router.push(
-                              OFFICER_PAGES.APPROVE_DETAIL + `/${approve.id}`
-                            );
-                          }}
-                        >
-                          <i className="fi fi-sr-file-circle-info text-blue-600 text-sm hover:text-blue-400 transition-colors"></i>
-                        </IconButton>,
+                        <span className="flex flex-row gap-2">
+                          <IconButton
+                            type="button"
+                            shape="square"
+                            callback={() => {
+                              router.push(
+                                OFFICER_PAGES.APPROVE_DETAIL + `/${approve.id}`
+                              );
+                            }}
+                          >
+                            <i className="fi fi-sr-file-circle-info text-blue-600 text-sm hover:text-blue-400 transition-colors"></i>
+                          </IconButton>
+                          {approve.requestStatus === 'inprocess' ? (
+                            <IconButton
+                              type="button"
+                              shape="square"
+                              callback={() => {
+                                showDeletePopup(approve.id);
+                              }}
+                            >
+                              <i className="fi fi-ss-trash text-red-600 text-sm hover:text-red-400 transition-colors"></i>
+                            </IconButton>
+                          ) : (
+                            <></>
+                          )}
+                        </span>,
                       ]}
                     />
                   </tr>
@@ -286,6 +269,11 @@ function ApprovesList({
           </tbody>
         </table>
         {paginationData.maxPage > 1 ? <Pagination /> : <></>}
+        <YesNoPopup
+          message="Bạn có chắc muốn xoá không?"
+          onResult={handleDeleteRequest}
+          isActive={isShowingPopup}
+        />
       </div>
     </>
   );

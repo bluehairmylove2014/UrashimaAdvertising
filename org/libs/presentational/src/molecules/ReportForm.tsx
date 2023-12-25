@@ -128,7 +128,7 @@ function ReportForm({
           images: imgPathData.map((d) => ({ image: d.path })),
           reportType: selectedReportType,
           reportStatus: false,
-          response: null,
+          treatmentProcess: '',
           submissionDate: getCurrentDateTime(),
         });
         setImagesPreview(null);
@@ -144,7 +144,7 @@ function ReportForm({
         images: [],
         reportType: selectedReportType,
         reportStatus: false,
-        response: null,
+        treatmentProcess: '',
         submissionDate: getCurrentDateTime(),
       });
     }
@@ -160,8 +160,9 @@ function ReportForm({
 
   return (
     <div
-      className={`${isActive ? 'block' : 'hidden'
-        } fixed w-screen h-screen top-0 left-0 bg-black/60 p-6 rounded-md z-30 grid place-items-center`}
+      className={`${
+        isActive ? 'block' : 'hidden'
+      } fixed w-screen h-screen top-0 left-0 bg-black/60 p-6 rounded-md z-30 grid place-items-center`}
     >
       <form
         onSubmit={handleSubmit(onSuccessSubmit, showReactHookFormError)}
@@ -213,10 +214,11 @@ function ReportForm({
           {reportsType.map((r) => (
             <button
               key={r}
-              className={`text-[0.6rem] font-medium ${selectedReportType === r
-                ? 'bg-cyan-400'
-                : 'bg-cyan-100 hover:bg-cyan-200'
-                } transition-colors rounded-lg px-3 py-2 whitespace-nowrap disabled:cursor-not-allowed`}
+              className={`text-[0.6rem] font-medium ${
+                selectedReportType === r
+                  ? 'bg-cyan-400'
+                  : 'bg-cyan-100 hover:bg-cyan-200'
+              } transition-colors rounded-lg px-3 py-2 whitespace-nowrap disabled:cursor-not-allowed`}
               type="button"
               onClick={() => onSelectReportType(r)}
               disabled={isReportingAd || isReportingLocation || isUploading}

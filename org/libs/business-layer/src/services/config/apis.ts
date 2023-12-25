@@ -19,6 +19,11 @@ export const adsPointModificationUrl = '/api/officer/point-modification';
 export const reportAdUrl = '/api/reports/ads-board';
 export const reportLocationUrl = '/api/reports/location';
 
+// OFFICER REPORT
+export const getAllOfficerReportsUrl = '/api/officer/reports';
+export const getOfficerReportDetailUrl = '/api/officer/reports/detail';
+export const editReportUrl = '/api/officer/reports';
+
 // USER
 export const getAccountInfoUrl = '/api/account/info';
 export const modifyAccountInfoUrl = '/api/account/info';
@@ -30,8 +35,7 @@ export const getLocationGeocoderUrl = '/api/location/geo-code';
 export const getApproveListUrl = '/api/officer/ads-request';
 export const createNewAdBoardApproveRequestUrl =
   '/api/officer/ads-request/board';
-export const createNewAdLocationApproveRequestUrl =
-  '/api/officer/ads-request/point';
+export const deleteApproveUrl = '/api/officer/ads-request';
 
 // SIRV
 export const sirvBaseUrlTemplate = 'https://api.sirv.com/v2';

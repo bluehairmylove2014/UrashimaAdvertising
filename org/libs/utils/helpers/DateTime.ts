@@ -35,6 +35,16 @@ function getCurrentDateTime(): string {
 
   return currentDateTime;
 }
+function nMonthsFromToday(n: number): Date {
+  const result = new Date();
+  result.setMonth(result.getMonth() + n);
+  return result;
+}
+function nDaysFromToday(n: number): Date {
+  const result = new Date();
+  result.setDate(result.getDate() + n);
+  return result;
+}
 function shortenDateTime(dateTime: string): string {
   const dateObj: Date = new Date(dateTime);
 
@@ -98,4 +108,6 @@ export {
   shortenDateTime,
   revertShortenedDateTime,
   formatDate,
+  nMonthsFromToday,
+  nDaysFromToday,
 };

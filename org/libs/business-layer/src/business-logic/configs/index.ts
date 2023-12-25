@@ -1,3 +1,7 @@
+import {
+  ApproveProvider,
+  approveProviderType,
+} from '../lib/approve/process/provider/ApproveProvider';
 import { AuthProvider, AuthProviderType } from '../lib/auth/process/provider';
 import {
   OfficerAdProvider,
@@ -44,18 +48,24 @@ export type moduleKeyList =
   | 'report'
   | 'report-form'
   | 'officer-ad'
-  | 'pagination';
+  | 'pagination'
+  | 'approve';
 export type providerList = React.FC<
   | AuthProviderType
   | reportProviderType
   | paginationProviderType
   | officerAdProviderType
   | reportFormProviderType
+  | approveProviderType
 >;
 export const providerConfig: {
   key: moduleKeyList;
   provider: providerList;
 }[] = [
+  {
+    key: 'approve',
+    provider: ApproveProvider,
+  },
   {
     key: 'pagination',
     provider: PaginationProvider,

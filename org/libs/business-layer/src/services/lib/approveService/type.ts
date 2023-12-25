@@ -1,4 +1,4 @@
-import { IAdLocation, IAdsBoard } from '@business-layer/services/entities';
+import { IAdsBoard } from '@business-layer/services/entities';
 import {
   IApprove,
   IApproveBase,
@@ -6,21 +6,17 @@ import {
 
 export type getApproveListResponseType = IApprove[];
 
-export type adBoardApproveDataType = IApproveBase & {
-  adsBoard: IAdsBoard;
+export type adBoardApproveDataType = Omit<IApproveBase, 'id'> & {
+  adsBoard: Omit<IAdsBoard, 'id' | 'expiredDate'>;
 };
 export type createNewAdBoardApproveRequestParamsType = {
   approveData: adBoardApproveDataType;
   token: string | null;
 };
+export type createNewApproveRequestResponseType = { message: string };
 
-export type adLocationApproveDataType = IApproveBase & {
-  adsBoard: IApproveBase & {
-    adsPoint: IAdLocation;
-  };
-};
-export type createNewAdLocationApproveRequestParamsType = {
-  approveData: adLocationApproveDataType;
+export type deleteApproveRequestParamsType = {
+  id: number;
   token: string | null;
 };
-export type createNewApproveRequestResponseType = { message: string };
+export type deleteApproveRequestResponseType = { message: string };

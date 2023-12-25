@@ -14,6 +14,6 @@ export interface IApproveBase {
 
 export interface IApprove extends IApproveBase {
   requestStatus: string;
-  adsBoard?: IAdsBoard | null; // If adsBoard !== null => approve for Ad Board, else approve for ad Location
+  adsBoard: IAdsBoard;
   adsPoint: IAdLocation;
 }

@@ -40,6 +40,7 @@ async function getApprovesList() {
 }
 async function Approves() {
   const approvesList = await getApprovesList();
+
   return (
     <main className="container mx-auto px-4 py-12">
       <div className="flex flex-row justify-between items-start mb-8">

@@ -1,18 +1,20 @@
 import {
   getApproveListUrl,
   createNewAdBoardApproveRequestUrl,
-  createNewAdLocationApproveRequestUrl,
+  deleteApproveUrl,
 } from '../../config/apis';
 import { Services } from '../../service';
 import {
   createNewApproveRequestResponseSchema,
+  deleteApproveRequestResponseSchema,
   getApproveListResponseSchema,
 } from './schema';
 import {
   getApproveListResponseType,
   createNewAdBoardApproveRequestParamsType,
   createNewApproveRequestResponseType,
-  createNewAdLocationApproveRequestParamsType,
+  deleteApproveRequestParamsType,
+  deleteApproveRequestResponseType,
 } from './type';
 
 export * from './type';
@@ -73,21 +75,21 @@ export class ApproveService extends Services {
       throw this.handleError(error);
     }
   };
-  requestAdLocationApprove = async ({
-    approveData,
+  deleteApproveRequest = async ({
+    id,
     token,
-  }: createNewAdLocationApproveRequestParamsType): Promise<createNewApproveRequestResponseType> => {
+  }: deleteApproveRequestParamsType): Promise<deleteApproveRequestResponseType> => {
     this.abortController = new AbortController();
     try {
       if (token) {
         const response = await this.fetchApi<
-          typeof createNewApproveRequestResponseSchema,
-          createNewAdLocationApproveRequestParamsType
+          typeof deleteApproveRequestResponseSchema,
+          deleteApproveRequestResponseType
         >({
-          method: 'POST',
-          url: createNewAdLocationApproveRequestUrl,
-          schema: createNewApproveRequestResponseSchema,
-          data: approveData,
+          method: 'DELETE',
+          url: deleteApproveUrl,
+          schema: deleteApproveRequestResponseSchema,
+          params: { id },
           headers: {
             Authorization: `Bearer ${token}`,
           },
