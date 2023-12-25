@@ -1,6 +1,7 @@
 import {
   editReportUrl,
   getAllOfficerReportsUrl,
+  getOfficerReportDetailUrl,
   reportAdUrl,
   reportLocationUrl,
 } from '../../config/apis';
@@ -103,7 +104,7 @@ export class ReportService extends Services {
           getOfficerReportDetailResponseType
         >({
           method: 'GET',
-          url: getAllOfficerReportsUrl,
+          url: getOfficerReportDetailUrl,
           schema: getOfficerReportDetailResponseSchema,
           params: {
             id,
