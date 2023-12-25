@@ -88,7 +88,7 @@ namespace UrashimaServer.Database
                 .HasOne(e => e.AdsPoint)
                 .WithMany(adsPoint => adsPoint.Images)
                 .HasForeignKey(e => e.AdsPointId)
-                .IsRequired();
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

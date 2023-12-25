@@ -12,7 +12,7 @@ namespace UrashimaServer.Database.Dtos
         public string AdsForm { get; set; } = string.Empty;
         public bool Planned { get; set; }
         public DateTime ModifyTime { get; set; }
-        public string Reason { get; set; } = string.Empty;
+        public string Reasons { get; set; } = string.Empty;
         public ICollection<PointModifyImageDto>? Images { get; set; }
         public ICollection<BoardModifyDto>? AdsBoard { get; set; }
     }

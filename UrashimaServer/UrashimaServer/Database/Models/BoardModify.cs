@@ -6,8 +6,8 @@ namespace UrashimaServer.Database.Models
     public class BoardModify
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
+        public int AdsBoardId { get; set; }
         public int AdsPointId { get; set; }
         public string AdsType { get; set; } = string.Empty;
         public int Width { get; set; }
