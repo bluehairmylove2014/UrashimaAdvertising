@@ -1,4 +1,4 @@
-import z from "zod";
+import z from 'zod';
 
 const authenticationResponseSchema = z.object({
   message: z.string(),
@@ -9,5 +9,12 @@ const refreshTokenResponseSchema = z.object({
   message: z.string(),
   token: z.string(),
 });
+const messageResponseSchema = z.object({
+  message: z.string(),
+});
 
-export { authenticationResponseSchema, refreshTokenResponseSchema };
+export {
+  authenticationResponseSchema,
+  refreshTokenResponseSchema,
+  messageResponseSchema,
+};

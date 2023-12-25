@@ -18,48 +18,27 @@ function OTPInput({ onChange, disabled, otpLength }: otpInputType) {
   const otpInputRef = useRef<(HTMLInputElement | null)[]>([]);
 
   // Methods
-  const handleAddOtp = (value: string) => {
-    if (currentOtpIndex < otpLength) {
-      const newOtp = [...otp];
-      newOtp[currentOtpIndex] = value;
-      setOtp(newOtp);
-      currentOtpIndex < otpLength - 1 &&
-        setCurrentOtpIndex(currentOtpIndex + 1);
-    }
-  };
-
-  const handleDeleteOtp = () => {
-    console.log('DELETE');
-    const newOtp = [...otp];
-    newOtp[currentOtpIndex] = '';
-    setOtp(newOtp);
-    currentOtpIndex > 0 && setCurrentOtpIndex(currentOtpIndex - 1);
-  };
-
-  const handleOtpInputChange = ({
-    target,
-  }: React.ChangeEvent<HTMLInputElement>) => {
+  const handleOtpInputChange = (
+    { target }: React.ChangeEvent<HTMLInputElement>,
+    index: number
+  ) => {
     const value = target.value.trim();
-    value.length > 0 && handleAddOtp(value);
-  };
-
-  const handleKeyDown = ({
-    key,
-    currentTarget,
-  }: React.KeyboardEvent<HTMLInputElement>) => {
-    if (key === 'Backspace' && currentTarget.value.trim().length === 0) {
-      handleDeleteOtp();
+    const newOtp = [...otp];
+    newOtp[index] = value;
+    setOtp(newOtp);
+    if (value.length > 0 && currentOtpIndex + 1 < otpLength) {
+      setCurrentOtpIndex(currentOtpIndex + 1);
+    } else if (value.length == 0 && currentOtpIndex > 0) {
+      setCurrentOtpIndex(currentOtpIndex - 1);
     }
   };
 
   // Effect
   useEffect(() => {
+    console.log(otp);
     onChange(otp);
   }, [otp]);
   useEffect(() => {
-    const arr = Array(otpLength).fill('_');
-    arr[currentOtpIndex] = '0';
-    console.log(arr);
     otpInputRef.current && otpInputRef.current[currentOtpIndex]?.focus();
   }, [currentOtpIndex]);
 
@@ -75,11 +54,10 @@ function OTPInput({ onChange, disabled, otpLength }: otpInputType) {
               type="tel"
               ref={(e) => (otpInputRef.current[i] = e)}
               maxLength={1}
-              disabled={disabled}
+              disabled={disabled || currentOtpIndex !== i}
               autoComplete="off"
-              onChange={(e) => handleOtpInputChange(e)}
-              onKeyDown={(e) => handleKeyDown(e)}
-              className="outline-none border-none bg-transparent w-full h-full text-center"
+              onChange={(e) => handleOtpInputChange(e, i)}
+              className="outline-none border-none bg-transparent w-full h-full text-center disabled:bg-zinc-100 disabled:cursor-not-allowed"
             />
           </div>
         ))}

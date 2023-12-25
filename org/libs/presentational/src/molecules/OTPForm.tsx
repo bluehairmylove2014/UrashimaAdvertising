@@ -12,6 +12,7 @@ import { useNotification } from '@presentational/atoms/Notification';
 import { useRouter } from 'next/navigation';
 import { OFFICER_PAGES } from '@constants/officerPages';
 import OTPInput from '@presentational/atoms/OTPInput';
+import { useVerifyPasswordOtp } from '@business-layer/business-logic/lib/auth';
 
 const DEFAULT_OTP_LENGTH = 6;
 
@@ -25,9 +26,15 @@ function OTPForm() {
     },
     resolver,
   });
+  const { onVerifyPasswordOtp, isLoading } = useVerifyPasswordOtp();
 
   const onSuccessSubmit = ({ otp }: { otp: string }) => {
-    router.push(OFFICER_PAGES.RESET_PASSWORD_NEW);
+    onVerifyPasswordOtp({ email: '', otp })
+      .then((msg) => {
+        showSuccess(msg);
+        router.push(OFFICER_PAGES.RESET_PASSWORD_NEW);
+      })
+      .catch((error) => showError(error.message));
   };
 
   return (
@@ -38,15 +45,15 @@ function OTPForm() {
       <div className="my-6 w-3/4 h-fit">
         <OTPInput
           onChange={(otp) => setValue('otp', otp.join(''))}
-          disabled={false}
+          disabled={isLoading}
           otpLength={DEFAULT_OTP_LENGTH}
         />
       </div>
       <div className="flex flex-col w-full gap-2">
-        <CustomButton style="fill-primary" type="submit" loading={false}>
+        <CustomButton style="fill-primary" type="submit" loading={isLoading}>
           Xác thực
         </CustomButton>
-        <CustomButton style="fill-secondary" type="button" loading={false}>
+        <CustomButton style="fill-secondary" type="button" disabled={isLoading} onClick={() => router.push(OFFICER_PAGES.AUTH)}>
           Huỷ
         </CustomButton>
       </div>

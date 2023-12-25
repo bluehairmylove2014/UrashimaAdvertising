@@ -10,11 +10,13 @@ import CustomButton from '@presentational/atoms/CustomButton';
 import { useNotification } from '@presentational/atoms/Notification';
 import { useRouter } from 'next/navigation';
 import { OFFICER_PAGES } from '@constants/officerPages';
+import { useForgotPassword } from '@business-layer/business-logic/lib/auth';
 
 function ResetPasswordForm() {
   const resolver = useYupValidationResolver(resetPasswordFormSchema);
   const router = useRouter();
   const { showError, showReactHookFormError, showSuccess } = useNotification();
+  const { onForgotPassword, isLoading } = useForgotPassword();
   const { control, handleSubmit } = useForm<{ email: string }>({
     defaultValues: {
       email: '',
@@ -23,7 +25,12 @@ function ResetPasswordForm() {
   });
 
   const onSuccessSubmit = ({ email }: { email: string }) => {
-    router.push(OFFICER_PAGES.RESET_PASSWORD_OTP);
+    onForgotPassword({ email })
+      .then((msg) => {
+        showSuccess(msg);
+        router.push(OFFICER_PAGES.RESET_PASSWORD_OTP);
+      })
+      .catch((error) => showError(error.message));
   };
 
   return (
@@ -37,14 +44,19 @@ function ResetPasswordForm() {
           label="Email"
           type="EMAIL"
           control={control}
-          disabled={false}
+          disabled={isLoading}
         />
       </div>
       <div className="flex flex-col w-full gap-2">
-        <CustomButton style="fill-primary" type="submit" loading={false}>
+        <CustomButton style="fill-primary" type="submit" loading={isLoading}>
           Gửi mã xác thực
         </CustomButton>
-        <CustomButton style="fill-secondary" type="button" loading={false}>
+        <CustomButton
+          style="fill-secondary"
+          type="button"
+          disabled={isLoading}
+          onClick={() => router.push(OFFICER_PAGES.AUTH)}
+        >
           Huỷ
         </CustomButton>
       </div>
