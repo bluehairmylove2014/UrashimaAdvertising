@@ -54,7 +54,7 @@ function ChangePasswordPage() {
           </label>
           <input
             id="oldPassword"
-            type="text"
+            type="password"
             disabled={isLoading}
             placeholder="Tối thiểu 6 ký tự"
             className="disabled:cursor-not-allowed disabled:bg-zinc-50 w-3/4 p-2 border rounded text-xs"
@@ -67,7 +67,7 @@ function ChangePasswordPage() {
           </label>
           <input
             id="newPassword"
-            type="text"
+            type="password"
             disabled={isLoading}
             placeholder="Tối thiểu 6 ký tự"
             className="disabled:cursor-not-allowed disabled:bg-zinc-50 w-3/4 p-2 border rounded text-xs"

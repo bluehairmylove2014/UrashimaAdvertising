@@ -1,12 +1,16 @@
 // Importing necessary modules and functions
 import { changePasswordParamsType } from '@business-layer/services';
 import { useChangePasswordMutation } from '../../fetching/mutation';
+import { getToken } from './useAccessToken';
 
 type useChangePasswordType = {
   onChangePassword: ({
     oldPassword,
     password,
-  }: changePasswordParamsType) => Promise<string>;
+  }: {
+    oldPassword: string;
+    password: string;
+  }) => Promise<string>;
   isLoading: boolean;
 };
 export const useChangePassword = (): useChangePasswordType => {
@@ -15,10 +19,13 @@ export const useChangePassword = (): useChangePasswordType => {
   const onChangePassword = ({
     oldPassword,
     password,
-  }: changePasswordParamsType): Promise<string> => {
+  }: {
+    oldPassword: string;
+    password: string;
+  }): Promise<string> => {
     return new Promise((resolve, reject) => {
       changePasswordMutation
-        .mutateAsync({ oldPassword, password })
+        .mutateAsync({ data: { oldPassword, password }, token: getToken() })
         .then((response) => {
           resolve(response.message);
         })

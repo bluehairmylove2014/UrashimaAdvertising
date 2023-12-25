@@ -23,6 +23,7 @@ import ImageInput from '@presentational/atoms/ImageInput';
 import PreviewImage from '@presentational/atoms/PreviewImage';
 import { useUpload } from '@business-layer/business-logic/lib/sirv';
 import { getCurrentDateTime } from '@utils/helpers';
+import { renameImageWithUniqueName } from '@utils/helpers/imageName';
 
 const PREVIEW_HEIGHT = 80;
 type formDataType = {
@@ -117,7 +118,10 @@ function ReportForm({
         const { name, phone, email, content } = data;
         const imgPathData = await Promise.all(
           Array.from(imagesPreview).map((img) =>
-            onUpload({ imgFile: img, path: '/UrashimaAds Hub/reports' })
+            onUpload({
+              imgFile: renameImageWithUniqueName(img),
+              path: '/UrashimaAds Hub/reports',
+            })
           )
         );
         handleReport({

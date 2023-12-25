@@ -26,7 +26,7 @@ export const useUpload = () => {
   }): Promise<uploadReturnType> => {
     return new Promise((resolve, reject) => {
       // Convert file to buffer
-      readFileAsBuffer(imgFile).then((buffer) => {
+      readFileAsBuffer(imgFile).then((buffer: any) => {
         uploadMutation
           .mutateAsync({
             file: imgFile,
