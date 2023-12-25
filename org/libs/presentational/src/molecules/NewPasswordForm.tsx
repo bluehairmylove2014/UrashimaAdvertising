@@ -33,6 +33,11 @@ function NewPasswordForm() {
     password: string;
     commitPassword: string;
   }) => {
+    if (password !== commitPassword) {
+      showError('Hai mật khẩu không giống nhau!');
+      return;
+    }
+    showSuccess('Đổi mật khẩu thành công');
     router.push(OFFICER_PAGES.AUTH);
   };
 

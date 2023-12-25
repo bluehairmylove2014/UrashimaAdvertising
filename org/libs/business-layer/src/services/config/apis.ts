@@ -19,6 +19,11 @@ export const adsPointModificationUrl = '/api/officer/point-modification';
 export const reportAdUrl = '/api/reports/ads-board';
 export const reportLocationUrl = '/api/reports/location';
 
+// OFFICER REPORT
+export const getAllOfficerReportsUrl = '/api/officer/reports';
+export const getOfficerReportDetailUrl = '/api/officer/reports/detail';
+export const editReportUrl = '/api/officer/reports';
+
 // USER
 export const getAccountInfoUrl = '/api/account/info';
 export const modifyAccountInfoUrl = '/api/account/info';

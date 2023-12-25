@@ -19,7 +19,7 @@ function OTPInput({ onChange, disabled, otpLength }: otpInputType) {
 
   // Methods
   const handleAddOtp = (value: string) => {
-    if (currentOtpIndex < otpLength && otp[currentOtpIndex] === '') {
+    if (currentOtpIndex < otpLength) {
       const newOtp = [...otp];
       newOtp[currentOtpIndex] = value;
       setOtp(newOtp);
@@ -29,6 +29,7 @@ function OTPInput({ onChange, disabled, otpLength }: otpInputType) {
   };
 
   const handleDeleteOtp = () => {
+    console.log('DELETE');
     const newOtp = [...otp];
     newOtp[currentOtpIndex] = '';
     setOtp(newOtp);
@@ -39,7 +40,7 @@ function OTPInput({ onChange, disabled, otpLength }: otpInputType) {
     target,
   }: React.ChangeEvent<HTMLInputElement>) => {
     const value = target.value.trim();
-    value.length > 0 ? handleAddOtp(value) : handleDeleteOtp();
+    value.length > 0 && handleAddOtp(value);
   };
 
   const handleKeyDown = ({
@@ -56,6 +57,9 @@ function OTPInput({ onChange, disabled, otpLength }: otpInputType) {
     onChange(otp);
   }, [otp]);
   useEffect(() => {
+    const arr = Array(otpLength).fill('_');
+    arr[currentOtpIndex] = '0';
+    console.log(arr);
     otpInputRef.current && otpInputRef.current[currentOtpIndex]?.focus();
   }, [currentOtpIndex]);
 
