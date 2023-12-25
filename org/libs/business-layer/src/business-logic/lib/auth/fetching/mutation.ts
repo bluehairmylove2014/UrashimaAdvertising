@@ -4,6 +4,11 @@ import {
   loginParamsType,
   refreshTokenResponseType,
   SocialService,
+  messageResponseType,
+  changePasswordParamsType,
+  forgotPasswordParamsType,
+  verifyPasswordOtpParamsType,
+  resetPasswordParamsType,
 } from '@business-layer/services';
 import { useMutation } from '@tanstack/react-query';
 import { mutationConfig } from '@business-layer/business-logic/configs';
@@ -89,6 +94,54 @@ export const useGetGithubAccessTokenMutation = () => {
 export const useGetGithubUserInfoMutation = () => {
   return useMutation<getGithubUserInfoResponseType, Error, string, unknown>({
     mutationFn: socialService.getGithubUserInfo,
+    retry: mutationConfig.MUTATION_RETRY,
+  });
+};
+
+export const useChangePasswordMutation = () => {
+  return useMutation<
+    messageResponseType,
+    Error,
+    changePasswordParamsType,
+    unknown
+  >({
+    mutationFn: authService.changePassword,
+    retry: mutationConfig.MUTATION_RETRY,
+  });
+};
+
+export const useForgotPasswordMutation = () => {
+  return useMutation<
+    messageResponseType,
+    Error,
+    forgotPasswordParamsType,
+    unknown
+  >({
+    mutationFn: authService.forgotPassword,
+    retry: mutationConfig.MUTATION_RETRY,
+  });
+};
+
+export const useVerifyPasswordOtpMutation = () => {
+  return useMutation<
+    messageResponseType,
+    Error,
+    verifyPasswordOtpParamsType,
+    unknown
+  >({
+    mutationFn: authService.verifyPasswordOtp,
+    retry: mutationConfig.MUTATION_RETRY,
+  });
+};
+
+export const useResetPasswordMutation = () => {
+  return useMutation<
+    messageResponseType,
+    Error,
+    resetPasswordParamsType,
+    unknown
+  >({
+    mutationFn: authService.resetPassword,
     retry: mutationConfig.MUTATION_RETRY,
   });
 };

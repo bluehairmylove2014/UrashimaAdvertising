@@ -16,3 +16,24 @@ export type refreshTokenResponseType = {
   message: string;
   token: tokenType;
 };
+
+// Change password
+export type messageResponseType = {
+  message: string;
+};
+export type changePasswordParamsType = {
+  oldPassword: string;
+  password: string;
+};
+// Forgot password
+export type forgotPasswordParamsType = {
+  email: string;
+};
+export type verifyPasswordOtpParamsType = {
+  email: string;
+  otp: string;
+};
+export type resetPasswordParamsType = {
+  email: string;
+  password: string;
+};

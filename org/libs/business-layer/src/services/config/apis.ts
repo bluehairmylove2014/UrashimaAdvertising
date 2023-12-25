@@ -47,6 +47,12 @@ export const deleteImageUrl = sirvBaseUrlTemplate + '/files/delete';
 export const approveNewAdLocationRequest = '/api/officer/ads-request';
 export const getOfficerApproveListRequest = '/api/officer/ads-request';
 
+// PASSWORD
+export const officerChangePasswordUrl = '/api/auth/change-password';
+export const officerForgotPasswordUrl = '/api/auth/forgot-password';
+export const officerVerifyPasswordOtpUrl = '/api/auth/verify-otp';
+export const officerResetPasswordUrl = '/api/auth/reset-password';
+
 // GOOGLE
 export const googleGetUserInfoUrl =
   corsProxyUrl +

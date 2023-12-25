@@ -1,5 +1,6 @@
 'use client';
 
+import { useChangePassword } from '@business-layer/business-logic/lib/auth';
 import CustomButton from '@presentational/atoms/CustomButton';
 import { useNotification } from '@presentational/atoms/Notification';
 import {
@@ -17,7 +18,8 @@ function ChangePasswordPage() {
     },
     resolver,
   });
-  const { showReactHookFormError } = useNotification();
+  const { showReactHookFormError, showSuccess, showError } = useNotification();
+  const { onChangePassword, isLoading } = useChangePassword();
 
   const handleChangePassword = ({
     oldPassword,
@@ -26,7 +28,12 @@ function ChangePasswordPage() {
     oldPassword: string;
     newPassword: string;
   }) => {
-    reset();
+    onChangePassword({ oldPassword, password: newPassword })
+      .then((msg) => {
+        showSuccess(msg);
+        reset();
+      })
+      .catch((error) => showError(error.message));
   };
 
   return (
@@ -48,7 +55,7 @@ function ChangePasswordPage() {
           <input
             id="oldPassword"
             type="text"
-            // disabled={!isEnableEdit}
+            disabled={isLoading}
             placeholder="Tối thiểu 6 ký tự"
             className="disabled:cursor-not-allowed disabled:bg-zinc-50 w-3/4 p-2 border rounded text-xs"
             {...register('oldPassword')}
@@ -61,7 +68,7 @@ function ChangePasswordPage() {
           <input
             id="newPassword"
             type="text"
-            // disabled={!isEnableEdit}
+            disabled={isLoading}
             placeholder="Tối thiểu 6 ký tự"
             className="disabled:cursor-not-allowed disabled:bg-zinc-50 w-3/4 p-2 border rounded text-xs"
             {...register('newPassword')}
@@ -69,7 +76,7 @@ function ChangePasswordPage() {
         </div>
         <div className="w-full h-fit grid place-items-center">
           <div className="w-36 h-10">
-            <CustomButton style="fill-green" type="submit">
+            <CustomButton style="fill-green" type="submit" loading={isLoading}>
               Xác nhận thay đổi
             </CustomButton>
           </div>

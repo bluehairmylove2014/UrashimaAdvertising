@@ -4,3 +4,7 @@ export * from './useLogout';
 export * from './useGoogleLogin';
 export * from './useFacebookLogin';
 export * from './useGithubLogin';
+export * from './useChangePassword';
+export * from './useForgotPassword';
+export * from './useVerifyPasswordOtp';
+export * from './useResetPassword';
