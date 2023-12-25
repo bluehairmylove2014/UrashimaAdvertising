@@ -30,7 +30,9 @@ export class AccountService extends Services {
           },
           signal: this.abortController.signal,
           transformResponse: (res) => res,
+          withCredentials: true,
         });
+        console.log(response);
         return response;
       } else {
         throw new Error('Unauthorized');

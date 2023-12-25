@@ -1,11 +1,13 @@
 import { OFFICER_PAGES } from '@constants/officerPages';
 import BellButton from '@presentational/atoms/BellButton';
+import OfficerNavLogoutBtn from '@presentational/atoms/OfficerNavLogoutBtn';
 import OfficerNavAvatar from '@presentational/molecules/OfficerNavAvatar';
 import OfficerNavDropdown from '@presentational/molecules/OfficerNavDropdown';
+import RegionManagementBtnPopup from '@presentational/atoms/RegionManagementBtnPopup';
 import Image from 'next/image';
 import Link from 'next/link';
 
-const officerNavDropdownOptions = [
+const officerApproveNavDropdownOptions = [
   {
     name: 'Danh sách cấp phép',
     href: OFFICER_PAGES.APPROVE_LIST,
@@ -13,6 +15,16 @@ const officerNavDropdownOptions = [
   {
     name: 'Tạo cấp phép mới',
     href: OFFICER_PAGES.NEW_APPROVE,
+  },
+];
+const officerAdsNavDropdownOptions = [
+  {
+    name: 'Danh sách điểm quảng cáo',
+    href: OFFICER_PAGES.ADS_LOCATION,
+  },
+  {
+    name: 'Danh sách bảng quảng cáo',
+    href: OFFICER_PAGES.ADS_LOCATION,
   },
 ];
 
@@ -41,35 +53,38 @@ function OfficerHeader() {
           </li>
           <li>
             <Link
-              href={OFFICER_PAGES.ADS_LOCATION}
-              prefetch={true}
-              className="text-xs text-white font-semibold hover:text-orange-400"
-            >
-              Quản lý quảng cáo
-            </Link>
-          </li>
-          <li>
-            <Link
               href={OFFICER_PAGES.REPORT}
               prefetch={true}
               className="text-xs text-white font-semibold hover:text-orange-400"
             >
-              Danh sách báo cáo
+              Báo cáo
             </Link>
           </li>
           <li>
             <OfficerNavDropdown
-              options={officerNavDropdownOptions}
+              options={officerAdsNavDropdownOptions}
+              position="center"
+            >
+              <span>Quảng cáo</span>
+            </OfficerNavDropdown>
+          </li>
+          <li>
+            <OfficerNavDropdown
+              options={officerApproveNavDropdownOptions}
               position="center"
             >
               <span>Cấp phép</span>
             </OfficerNavDropdown>
           </li>
+          <li>
+            <RegionManagementBtnPopup />
+          </li>
         </ul>
       </nav>
       <div className="flex flex-row justify-end items-center gap-4 hover">
-        <BellButton />
         <OfficerNavAvatar />
+        <BellButton />
+        <OfficerNavLogoutBtn />
       </div>
     </header>
   );

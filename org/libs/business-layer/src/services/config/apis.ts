@@ -12,8 +12,8 @@ export const getAllAdsUrl = '/api/ads-point';
 export const getAdDetailsUrl = '/api/ads-point/detail';
 export const getAllOfficerAdsUrl = '/api/officer/ads-point';
 export const getOfficerLocationDetailAdsUrl = '/api/officer/ads-point';
-export const getOfficerAdDetailAdsUrl = '/api/officer/ads-board/detail';
-export const adsPointModificationUrl = '/api/officer/point-modification';
+export const getOfficerAdDetailAdsUrl = '/api/officer/ads-point/detail';
+export const adsPointModificationUrl = '/api/officer/ads-modification/point';
 
 // REPORT
 export const reportAdUrl = '/api/reports/ads-board';
