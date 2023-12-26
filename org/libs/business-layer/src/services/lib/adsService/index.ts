@@ -120,8 +120,7 @@ export class AdsService extends Services {
         throw new Error('Unauthorized');
       }
     } catch (error) {
-      throw new Error('Unauthorized');
-      // throw this.handleError(error);
+      throw this.handleError(error);
     }
   };
   adsPointModification = async (

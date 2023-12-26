@@ -1,29 +1,14 @@
 'use client';
 import { ReactElement, useCallback, useEffect, useRef, useState } from 'react';
-import ReactMapGL, {
-  Source,
-  Layer,
+import {
   ViewStateChangeEvent,
   MapLayerMouseEvent,
   MapRef,
   Marker,
-  GeolocateControl,
-  NavigationControl,
-  FullscreenControl,
   Popup,
 } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import {
-  clusterCountLayer,
-  clusterLayer,
-  nonClusteredPlannedPointLayer,
-  nonClusteredReportedPointSymbolLayer,
-  nonclusteredReportedPointLayer,
-  nonclusteredUnplannedPointLayer,
-} from '../../../mapgl/layers';
-import { MAP_DEFAULT_VIEW_PORT } from '../../../mapgl/viewPort';
 import { useGetAdDetail } from '@business-layer/business-logic/lib/ads';
-import ScreenLoader from '@presentational/atoms/ScreenLoader';
 import DetailLoader from '@presentational/atoms/DetailLoader';
 import CustomImage from '@presentational/atoms/CustomImage';
 
@@ -42,11 +27,8 @@ import { useNotification } from '@presentational/atoms/Notification';
 
 import LocationDetail from '@presentational/molecules/LocationDetail';
 import { ILocation } from '@business-layer/services/entities';
-import CustomSearchBox from '@presentational/atoms/CustomSearchBox';
 import { useFetchAllOfficerAds } from '@business-layer/business-logic/lib/officerAds/process/hooks';
-
-const MAP_STYLE = process.env.NEXT_PUBLIC_MAPBOX_MAP_STYLE || '';
-const ACCESS_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN || '';
+import CustomMap from '@presentational/organisms/CustomMap';
 
 type locationType =
   | {
@@ -88,12 +70,6 @@ function Home(): ReactElement {
 
   const [cursor, setCursor] = useState('pointer');
   const { onGetAdDetail, isLoading } = useGetAdDetail();
-  const [currentLocation, setCurrentLocation] =
-    useState<locationType>(undefined);
-  const [searchKey, setSearchKey] = useState<string>('');
-  const [marker, setMarker] = useState<markerParamsType>(undefined);
-  const [userLocationMarker, setUserLocationMarker] =
-    useState<markerParamsType>(undefined);
   const [userClickMarker, setUserClickMarker] =
     useState<markerParamsType>(undefined);
   const [locationOnClickDetail, setLocationOnClickDetail] = useState<
@@ -124,25 +100,6 @@ function Home(): ReactElement {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [idAdsPointClick]);
-
-  useEffect(() => {
-    if (
-      currentLocation &&
-      currentLocation.lat &&
-      currentLocation.lon &&
-      mapRef.current
-    ) {
-      setUserLocationMarker({
-        latitude: currentLocation.lat,
-        longitude: currentLocation.lon,
-      });
-      mapRef.current.flyTo({
-        zoom: 14,
-        center: [currentLocation.lon, currentLocation.lat],
-        duration: 1500,
-      });
-    }
-  }, [currentLocation]);
 
   const handleZoom = useCallback(
     (e: ViewStateChangeEvent) => {
@@ -278,101 +235,19 @@ function Home(): ReactElement {
   return (
     <div className="relative w-screen h-screen">
       <div className="relative z-0">
-        <ReactMapGL
-          mapboxAccessToken={ACCESS_TOKEN}
-          initialViewState={MAP_DEFAULT_VIEW_PORT}
-          onZoom={handleZoom}
-          onClick={handleClick}
-          onMouseDown={handleMouseDown}
-          onMouseMove={handleMouseMove}
-          onMouseUp={handleMouseUp}
-          dragRotate={false}
-          maxZoom={18}
-          // maxBounds={[
-          //   [106.317521, 10.321631], // Tọa độ góc dưới cùng bên trái của hình chữ nhật giới hạn
-          //   [107.042629, 11.210448], // Tọa độ góc trên cùng bên phải của hình chữ nhật giới hạn
-          // ]}
-          ref={mapRef}
-          cursor={cursor}
-          style={{ width: '100vw', height: '100vh' }}
-          mapStyle={MAP_STYLE}
-        >
-          <div className="flex flex-row justify-between w-full my-4 z-40 relative gap-3 overflow-hidden">
-            <div className="w-1/2 h-fit pl-4">
-              <CustomSearchBox
-                marker={true}
-                accessToken={ACCESS_TOKEN}
-                placeholder="Tìm kiếm ở đây..."
-                value={searchKey}
-                onChange={(value) => {
-                  setSearchKey(value);
-                }}
-                onRetrieve={(retrieve) => {
-                  const coord = retrieve?.features[0]?.geometry?.coordinates;
-                  if (Array.isArray(coord)) {
-                    setMarker({ longitude: coord[0], latitude: coord[1] });
-                    mapRef.current &&
-                      mapRef.current.flyTo({
-                        zoom: 14,
-                        center: {
-                          lng: coord[0],
-                          lat: coord[1],
-                        },
-                        duration: 5000,
-                      });
-                  }
-                }}
-              />
-            </div>
-
-            <div className="pr-4">{/*  */}</div>
-          </div>
-          {marker ? (
-            <Marker {...marker}>
-              <CustomImage
-                src="/assets/placeholder.png"
-                alt="placeholder"
-                width="30px"
-                height="30px"
-              />
-            </Marker>
-          ) : (
-            <></>
-          )}
-          {userLocationMarker ? (
-            <Marker {...userLocationMarker}>
-              <CustomImage
-                src="/assets/location.png"
-                alt="location"
-                width="30px"
-                height="30px"
-              />
-            </Marker>
-          ) : (
-            <></>
-          )}
-          {userClickMarker ? (
-            <Marker {...userClickMarker}>
-              <CustomImage
-                src="/assets/gps.png"
-                alt="location"
-                width="20px"
-                height="20px"
-              />
-            </Marker>
-          ) : (
-            <></>
-          )}
-
-          {!Array.isArray(adsData) ? (
-            <ScreenLoader />
-          ) : isShowCluster ? (
-            <Source
-              id="earthquakes"
-              type="geojson"
-              data={{
-                type: 'FeatureCollection',
-                features: adsData.map((m) => ({
+        <CustomMap
+          mapProps={{
+            onZoom: handleZoom,
+            onClick: handleClick,
+            onMouseDown: handleMouseDown,
+            onMouseMove: handleMouseMove,
+            onMouseUp: handleMouseUp,
+            cursor: cursor,
+          }}
+          sourceData={{
+            type: 'FeatureCollection',
+            features: adsData
+              ? adsData.map((m) => ({
                   type: 'Feature',
                   properties: {
                     id: m.id,
@@ -391,19 +266,20 @@ function Home(): ReactElement {
                     type: 'Point',
                     coordinates: [m.longitude, m.latitude],
                   },
-                })),
-              }}
-              cluster={true}
-              clusterMaxZoom={14}
-              clusterRadius={40}
-            >
-              <Layer {...clusterLayer} />
-              <Layer {...clusterCountLayer} />
-              <Layer {...nonClusteredPlannedPointLayer} />
-              <Layer {...nonclusteredUnplannedPointLayer} />
-              <Layer {...nonclusteredReportedPointLayer} />
-              <Layer {...nonClusteredReportedPointSymbolLayer} />
-            </Source>
+                }))
+              : [],
+          }}
+          ref={mapRef}
+        >
+          {userClickMarker ? (
+            <Marker {...userClickMarker}>
+              <CustomImage
+                src="/assets/gps.png"
+                alt="location"
+                width="20px"
+                height="20px"
+              />
+            </Marker>
           ) : (
             <></>
           )}
@@ -472,24 +348,7 @@ function Home(): ReactElement {
           )}
 
           {isLoading ? <DetailLoader /> : <></>}
-
-          <FullscreenControl position="bottom-right" />
-          <NavigationControl position="bottom-right" />
-          <GeolocateControl
-            positionOptions={{ enableHighAccuracy: true }}
-            trackUserLocation={true}
-            showAccuracyCircle={false}
-            showUserLocation={false}
-            showUserHeading={false}
-            position="bottom-right"
-            onGeolocate={(e) => {
-              setCurrentLocation({
-                lat: e.coords.latitude,
-                lon: e.coords.longitude,
-              });
-            }}
-          />
-        </ReactMapGL>
+        </CustomMap>
       </div>
       <LocationDetail
         locationData={locationOnClickDetail}

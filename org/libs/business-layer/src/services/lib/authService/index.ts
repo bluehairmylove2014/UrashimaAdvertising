@@ -69,23 +69,31 @@ export class AuthService extends Services {
     }
   };
 
-  changePassword = async (
-    data: changePasswordParamsType
-  ): Promise<messageResponseType> => {
+  changePassword = async ({
+    data,
+    token,
+  }: changePasswordParamsType): Promise<messageResponseType> => {
     this.abortController = new AbortController();
     try {
-      const response = await this.fetchApi<
-        typeof messageResponseSchema,
-        messageResponseType
-      >({
-        method: 'POST',
-        url: officerChangePasswordUrl,
-        schema: messageResponseSchema,
-        data,
-        signal: this.abortController.signal,
-        transformResponse: (res) => res,
-      });
-      return response;
+      if (token) {
+        const response = await this.fetchApi<
+          typeof messageResponseSchema,
+          messageResponseType
+        >({
+          method: 'POST',
+          url: officerChangePasswordUrl,
+          schema: messageResponseSchema,
+          data,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          signal: this.abortController.signal,
+          transformResponse: (res) => res,
+        });
+        return response;
+      } else {
+        throw new Error('Unauthorized');
+      }
     } catch (error) {
       throw this.handleError(error);
     }

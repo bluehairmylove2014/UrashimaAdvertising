@@ -13,6 +13,7 @@ const convertDate = (date?: string) => {
   const dateConvert = date.split('-');
   return dateConvert[2] + '/' + dateConvert[1] + '/' + dateConvert[0];
 };
+
 function DetailAdsPoint({
   adsPoint,
   id,

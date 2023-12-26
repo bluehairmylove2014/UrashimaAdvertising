@@ -22,8 +22,11 @@ export type messageResponseType = {
   message: string;
 };
 export type changePasswordParamsType = {
-  oldPassword: string;
-  password: string;
+  data: {
+    oldPassword: string;
+    password: string;
+  };
+  token: string | null;
 };
 // Forgot password
 export type forgotPasswordParamsType = {

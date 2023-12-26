@@ -8,7 +8,6 @@ import Thumbnail from '@presentational/atoms/Thumbnail';
 import TableRow from '@presentational/molecules/TableRow';
 import RowLoader from '@presentational/atoms/RowLoader';
 import EmptyIcon from '@presentational/atoms/EmptyIcon';
-import { formatDate } from '@utils/helpers';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import ModernSelect, {
   modernSelectOptionType,
@@ -25,6 +24,7 @@ import { useModifyAdLocationDetail } from './../../../business-layer/src/busines
 import CustomButton from '@presentational/atoms/CustomButton';
 import ModifyReasonPopup from '@presentational/molecules/ModifyReasonPopup';
 import { useUpload } from '@business-layer/business-logic/lib/sirv';
+import { renameImageWithUniqueName } from '@utils/helpers/imageName';
 
 const DEFAULT_THUMBNAIL_WIDTH = 120;
 const DEFAULT_THUMBNAIL_HEIGHT = 120;
@@ -90,11 +90,13 @@ function EditAdDetail({
   const handleAddLocationImage = (images: FileList) => {
     const imgBlobList: { image: string }[] = [];
     Array.from(images).map((img: File) => {
-      const imgBlobUrl = URL.createObjectURL(img);
+      const imgWithNewName = renameImageWithUniqueName(img);
+
+      const imgBlobUrl = URL.createObjectURL(imgWithNewName);
       imgBlobList.push({ image: imgBlobUrl });
       additionLocationImages.current.push({
         blobUrl: imgBlobUrl,
-        file: img,
+        file: imgWithNewName,
       });
     });
     setValue('images', [...locationImagesWatch, ...imgBlobList]);

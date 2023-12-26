@@ -29,12 +29,12 @@ function OfficerNavDropdown({
   return (
     <button
       className="relative text-xs text-white font-semibold hover:text-orange-400 transition-colors"
-      onClick={() => toggleClass(dropdownRef.current, 'opacity-100')}
+      onClick={() => toggleClass(dropdownRef.current, '!flex')}
     >
       {children}
       <i className="fi fi-sr-caret-down ml-1 -bottom-[1px]"></i>
       <div
-        className={`flex flex-col h-fit opacity-0 w-44 bg-white rounded absolute top-[140%] z-30 overflow-hidden shadow-md ${
+        className={`flex-col h-fit hidden w-44 bg-white rounded absolute top-[140%] z-30 overflow-hidden shadow-md ${
           position ? positionStyles[position] : ''
         }`}
         ref={dropdownRef}

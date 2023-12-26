@@ -201,19 +201,20 @@ textarea {
   .scrollbar::-webkit-scrollbar-thumb {
     background: #a6a6a6;
   }
+}
 
 
-  // .scrollbar::-webkit-scrollbar-thumb:hover {
-  //   background: #888;
-  // }
-  /* Chrome, Safari, Edge, Opera */
-  input::-webkit-outer-spin-button,
-  input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
+// .scrollbar::-webkit-scrollbar-thumb:hover {
+//   background: #888;
+// }
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
 
-  /* Firefox */
-  input[type=number] {
-    -moz-appearance: textfield;
-  }
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}

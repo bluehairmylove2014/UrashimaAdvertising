@@ -54,6 +54,13 @@ export const reasonsInputSchema = y.object({
     .max(1000, 'Nội dung tối đa 1000 ký tự'),
 });
 
+export const responseInputSchema = y.object({
+  reasons: y
+    .string()
+    .required('Không được để trống nội dung')
+    .max(1000, 'Nội dung tối đa 1000 ký tự'),
+});
+
 export const accountModifyFormSchema = y.object({
   email: y
     .string()
