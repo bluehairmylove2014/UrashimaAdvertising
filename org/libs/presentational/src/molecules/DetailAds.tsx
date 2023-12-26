@@ -6,13 +6,7 @@ import { IAdLocationDetail } from '@business-layer/services/entities/ads';
 import { useGetAdReports } from '@business-layer/business-logic/lib/report';
 import { IAdReport } from '@business-layer/services/entities';
 import { formatDate } from '@utils/helpers';
-
-
-const convertDate = (date?: string) => {
-  if (!date) return 'Error';
-  const dateConvert = date.split('-');
-  return dateConvert[2] + '/' + dateConvert[1] + '/' + dateConvert[0];
-};
+import { useSetReportForm } from '@business-layer/business-logic/non-service-lib/reportForm';
 
 function DetailAdsPoint({
   adsPoint,
@@ -31,6 +25,7 @@ function DetailAdsPoint({
 }) {
   const adsBoardDetail = adsPoint.adsBoard.find((ads) => (ads.id = id));
   const adsReportList = useGetAdReports();
+  const { setForm } = useSetReportForm();
   const reportReported = adsReportList?.find((report) => report.adsBoardID === adsBoardDetail?.id && report.adsPointID === adsPoint?.id);
 
   return (
@@ -120,6 +115,19 @@ function DetailAdsPoint({
                   colorBorder="rose"
                   pathImage="/assets/report.png"
                   alt=""
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    adsBoardDetail &&
+                      setForm({
+                        isReportFormActive: true,
+                        reportTarget: 'AD',
+                        reportData: adsBoardDetail,
+                        reportIdentificationData: {
+                          adsBoardID: adsBoardDetail.id,
+                          adsPointID: adsPoint.id,
+                        },
+                      });
+                  }}
                 >
                   <span className="text-rose-600 text-[0.6rem] text-bold">
                     BÁO CÁO VI PHẠM
@@ -225,7 +233,7 @@ function DetailAdsPoint({
           </p>
         </div>
       </div>
-    </div>
+    </div >
   );
 }
 
