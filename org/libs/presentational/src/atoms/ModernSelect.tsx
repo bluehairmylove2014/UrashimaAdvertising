@@ -31,16 +31,15 @@ function ModernSelect({
 }) {
   const [selectedOption, setSelectedOption] = useState<string | null>(
     defaultValue ||
-      options.find((op) => op.defaultChecked)?.name ||
-      options[0].name
+    options.find((op) => op.defaultChecked)?.name ||
+    options[0].name
   );
   const selectRef = useRef<HTMLDivElement>(null);
   const toggleDropdown = () => toggleClass(selectRef.current, '!block');
   return (
     <div
-      className={`${
-        styleConfig[style ?? DEFAULT_STYLE]
-      } h-full relative border-solid border-[1px] border-zinc-400 transition-colors text-black font-semibold rounded text-[0.65rem]`}
+      className={`${styleConfig[style ?? DEFAULT_STYLE]
+        } h-full relative border-solid border-[1px] border-zinc-400 transition-colors text-black font-semibold rounded text-[0.65rem]`}
     >
       <button
         type="button"

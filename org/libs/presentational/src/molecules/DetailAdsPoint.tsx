@@ -226,23 +226,27 @@ function DetailAdsPoint({
                   <></>
                   :
                   <>
-                    <button
-                      className="border-solid border-red-500 border-[1px] text-red-500 rounded text-[0.65rem] w-5 h-5 bg-white overflow-hidden hover:bg-red-500 hover:text-white transition-colors"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setForm({
-                          isReportFormActive: true,
-                          reportTarget: 'AD',
-                          reportData: ads,
-                          reportIdentificationData: {
-                            adsBoardID: ads.id,
-                            adsPointID: detailAdsPoint.id,
-                          },
-                        });
-                      }}
-                    >
-                      <i className="fi fi-ss-triangle-warning"></i>
-                    </button>
+                    {isOfficer ?
+                      <></>
+                      :
+                      <button
+                        className="border-solid border-red-500 border-[1px] text-red-500 rounded text-[0.65rem] w-5 h-5 bg-white overflow-hidden hover:bg-red-500 hover:text-white transition-colors"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setForm({
+                            isReportFormActive: true,
+                            reportTarget: 'AD',
+                            reportData: ads,
+                            reportIdentificationData: {
+                              adsBoardID: ads.id,
+                              adsPointID: detailAdsPoint.id,
+                            },
+                          });
+                        }}
+                      >
+                        <i className="fi fi-ss-triangle-warning"></i>
+                      </button>
+                    }
                   </>}
 
               </div>

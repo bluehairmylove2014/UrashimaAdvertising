@@ -32,16 +32,16 @@ import CustomMap from '@presentational/organisms/CustomMap';
 
 type locationType =
   | {
-      lat: number;
-      lon: number;
-    }
+    lat: number;
+    lon: number;
+  }
   | undefined;
 
 type markerParamsType =
   | {
-      latitude: number;
-      longitude: number;
-    }
+    latitude: number;
+    longitude: number;
+  }
   | undefined;
 function Home(): ReactElement {
   const { showError } = useNotification();
@@ -65,7 +65,7 @@ function Home(): ReactElement {
   const [posPrevMouse, setPosPrevMouse] = useState<locationType>(undefined);
 
   //Create state for checking ads is reported
-  const [isReported, setIsReported] = useState(false);
+  const [isAdsPointReported, setIsAdsPointReported] = useState(false);
   const [isClickReported, setIsClickReported] = useState(false);
 
   const [cursor, setCursor] = useState('pointer');
@@ -208,11 +208,6 @@ function Home(): ReactElement {
       setIdAdsPoint(-1);
     }
     if (adsPoint && adsPoint.geometry.type === 'Point') {
-      //Check ADS Point is reported
-      if (adsPoint.layer.id === 'unclustered-point-reported')
-        setIsReported(true);
-      else setIsReported(false);
-
       const [long, lat] = adsPoint.geometry.coordinates;
 
       if (
@@ -253,25 +248,25 @@ function Home(): ReactElement {
             type: 'FeatureCollection',
             features: adsData
               ? adsData.map((m) => ({
-                  type: 'Feature',
-                  properties: {
-                    id: m.id,
-                    cluster: false,
-                    name: m.address,
-                    planned: m.planned,
-                    reported: locationReportList
-                      ? locationReportList.findIndex(
-                          (lr) =>
-                            lr.latitude === m.latitude &&
-                            lr.longitude === m.longitude
-                        ) !== -1
-                      : false,
-                  },
-                  geometry: {
-                    type: 'Point',
-                    coordinates: [m.longitude, m.latitude],
-                  },
-                }))
+                type: 'Feature',
+                properties: {
+                  id: m.id,
+                  cluster: false,
+                  name: m.address,
+                  planned: m.planned,
+                  reported: locationReportList
+                    ? locationReportList.findIndex(
+                      (lr) =>
+                        lr.latitude === m.latitude &&
+                        lr.longitude === m.longitude
+                    ) !== -1
+                    : false,
+                },
+                geometry: {
+                  type: 'Point',
+                  coordinates: [m.longitude, m.latitude],
+                },
+              }))
               : [],
           }}
           ref={mapRef}
@@ -299,14 +294,8 @@ function Home(): ReactElement {
             >
               <InfoAdsPoint
                 info={infoHoverAdsPoint}
-                isReported={isReported}
+                isAdsPointReported={isAdsPointReported}
                 isOfficer={true}
-                onClick={(id) => {
-                  setIsActiveAdsBoard(false);
-                  setIdAdsPointClick(id);
-                  setIsClickAdsPoint(true);
-                  setInfoHoverAdsPoint(undefined);
-                }}
               />
             </Popup>
           ) : (
@@ -314,12 +303,10 @@ function Home(): ReactElement {
           )}
 
           {/* Check Loading Ads Point*/}
-
           {isClickAdsPoint ? (
             infoClickAdsPoint ? (
               <DetailAdsPoint
                 detailAdsPoint={infoClickAdsPoint}
-                isReported={isClickReported}
                 isOfficer={true}
                 onClick={(id) => {
                   setIdAdsBoard(id);
@@ -328,7 +315,7 @@ function Home(): ReactElement {
                 handleClose={() => {
                   setIsClickAdsPoint(false);
                 }}
-                handleDetailReport={() => {}}
+                handleDetailReport={() => { }}
               />
             ) : (
               <></>
@@ -351,6 +338,7 @@ function Home(): ReactElement {
                   setIsActiveAdsBoard(false);
                   setIsClickAdsPoint(true);
                 }}
+                handleDetailReportAdsBoard={() => { }}
               ></DetailAds>
             ) : (
               <></>
