@@ -53,6 +53,10 @@ export const officerForgotPasswordUrl = '/api/auth/forgot-password';
 export const officerVerifyPasswordOtpUrl = '/api/auth/verify-otp';
 export const officerResetPasswordUrl = '/api/auth/reset-password';
 
+// FCAPTCHA
+export const fCaptchaSiteverifyUrl =
+  corsProxyUrl + 'https://api.friendlycaptcha.com/api/v1/siteverify';
+
 // GOOGLE
 export const googleGetUserInfoUrl =
   corsProxyUrl +

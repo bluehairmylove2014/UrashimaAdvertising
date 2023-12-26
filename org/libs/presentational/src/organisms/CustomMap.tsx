@@ -2,6 +2,7 @@ import {
   ForwardRefRenderFunction,
   MutableRefObject,
   forwardRef,
+  useCallback,
   useEffect,
   useState,
 } from 'react';
@@ -10,28 +11,23 @@ import {
   FullscreenControl,
   GeolocateControl,
   Layer,
+  LayerProps,
+  MapLayerMouseEvent,
   MapRef,
   Marker,
   NavigationControl,
   Source,
   SourceProps,
   ViewState,
+  ViewStateChangeEvent,
 } from 'react-map-gl';
 import ReactMapGL, { MapProps } from 'react-map-gl';
-import {
-  clusterLayer,
-  clusterCountLayer,
-  nonClusteredPlannedPointLayer,
-  nonclusteredUnplannedPointLayer,
-  nonclusteredReportedAdsBoardLayer,
-  nonclusteredReportedPointLayer,
-  nonclusteredReportedUnknownPointLayer,
-  nonClusteredReportedPointSymbolLayer,
-} from '@constants/mapLayers';
+import { sourceLayersList } from '@constants/mapLayers';
 import ScreenLoader from '@presentational/atoms/ScreenLoader';
 import CustomImage from '@presentational/atoms/CustomImage';
 import { ACCESS_TOKEN, MAP_STYLE } from '@constants/mapbox_key';
 import CustomSearchBox from '@presentational/atoms/CustomSearchBox';
+import PointFilterBtn from '@presentational/molecules/PointFilterBtn';
 
 const MAP_DEFAULT_VIEW_PORT: ViewState = {
   longitude: 106.682448,
@@ -70,6 +66,9 @@ const CustomMap: ForwardRefRenderFunction<MapRef, customMapProps> = (
     useState<locationType>(undefined);
   const [searchKey, setSearchKey] = useState<string>('');
   const [marker, setMarker] = useState<locationType>(undefined);
+  const [cursor, setCursor] = useState('pointer');
+  const [isShowCluster, setIsShowCluster] = useState<boolean>(true);
+  const [layers, setLayers] = useState<LayerProps[]>(sourceLayersList);
 
   useEffect(() => {
     if (
@@ -84,6 +83,30 @@ const CustomMap: ForwardRefRenderFunction<MapRef, customMapProps> = (
     }
   }, [currentLocation]);
 
+  const handleZoom = useCallback(
+    (e: ViewStateChangeEvent) => {
+      if (e.viewState.zoom < 10 && isShowCluster === true) {
+        setIsShowCluster(false);
+      } else if (e.viewState.zoom > 10 && isShowCluster === false) {
+        setIsShowCluster(true);
+      }
+    },
+    [isShowCluster]
+  );
+  //Catch Mouse Down
+  const handleMouseDown = useCallback((event: MapLayerMouseEvent) => {
+    setCursor('grabbing');
+  }, []);
+
+  //Catch Mouse Up
+  const handleMouseUp = useCallback((event: MapLayerMouseEvent) => {
+    setCursor('pointer');
+  }, []);
+
+  const handleFilterLayers = (layers: LayerProps[]) => {
+    setLayers(layers);
+  };
+
   return (
     <ReactMapGL
       {...mapProps}
@@ -94,6 +117,10 @@ const CustomMap: ForwardRefRenderFunction<MapRef, customMapProps> = (
       initialViewState={MAP_DEFAULT_VIEW_PORT}
       dragRotate={false}
       maxZoom={18}
+      cursor={cursor}
+      onMouseUp={handleMouseUp}
+      onMouseDown={handleMouseDown}
+      onZoom={handleZoom}
       // maxBounds={[
       //   [106.317521, 10.321631], // Tọa độ góc dưới cùng bên trái của hình chữ nhật giới hạn
       //   [107.042629, 11.210448], // Tọa độ góc trên cùng bên phải của hình chữ nhật giới hạn
@@ -101,7 +128,7 @@ const CustomMap: ForwardRefRenderFunction<MapRef, customMapProps> = (
     >
       {!sourceData || !Array.isArray(sourceData.features) ? (
         <ScreenLoader />
-      ) : (
+      ) : isShowCluster ? (
         <Source
           {...sourceProps}
           id="earthquakes"
@@ -111,24 +138,12 @@ const CustomMap: ForwardRefRenderFunction<MapRef, customMapProps> = (
           clusterRadius={40}
           data={sourceData}
         >
-          {/* Cluster layer */}
-          <Layer {...clusterLayer} />
-          <Layer {...clusterCountLayer} />
-
-          {/* Planned ads point layer */}
-          <Layer {...nonClusteredPlannedPointLayer} />
-
-          {/* Unplanned ads point layer */}
-          <Layer {...nonclusteredUnplannedPointLayer} />
-
-          {/* Report layer */}
-          <Layer {...nonclusteredReportedAdsBoardLayer} />
-          <Layer {...nonclusteredReportedPointLayer} />
-          <Layer {...nonclusteredReportedUnknownPointLayer} />
-
-          {/* Symbol "!" for report layer */}
-          <Layer {...nonClusteredReportedPointSymbolLayer} />
+          {layers.map((l) => (
+            <Layer {...l} key={l.id} />
+          ))}
         </Source>
+      ) : (
+        <></>
       )}
       {userLocationMarker ? (
         <Marker {...userLocationMarker}>
@@ -143,31 +158,36 @@ const CustomMap: ForwardRefRenderFunction<MapRef, customMapProps> = (
         <></>
       )}
       {children}
-      <div className="w-1/2 h-fit pl-4 my-4">
-        <CustomSearchBox
-          marker={true}
-          accessToken={ACCESS_TOKEN}
-          placeholder="Tìm kiếm ở đây..."
-          value={searchKey}
-          onChange={(value) => {
-            setSearchKey(value);
-          }}
-          onRetrieve={(retrieve) => {
-            const coord = retrieve?.features[0]?.geometry?.coordinates;
-            if (Array.isArray(coord)) {
-              setMarker({ longitude: coord[0], latitude: coord[1] });
-              isMutableRefObject(ref) &&
-                ref.current?.flyTo({
-                  zoom: 14,
-                  center: {
-                    lng: coord[0],
-                    lat: coord[1],
-                  },
-                  duration: 5000,
-                });
-            }
-          }}
-        />
+      <div className="pl-4 my-4 flex flex-row gap-4 items-start justify-start z-30">
+        <div className="w-1/2 h-fit relative">
+          <CustomSearchBox
+            marker={true}
+            accessToken={ACCESS_TOKEN}
+            placeholder="Tìm kiếm ở đây..."
+            value={searchKey}
+            onChange={(value) => {
+              setSearchKey(value);
+            }}
+            onRetrieve={(retrieve) => {
+              const coord = retrieve?.features[0]?.geometry?.coordinates;
+              if (Array.isArray(coord)) {
+                setMarker({ longitude: coord[0], latitude: coord[1] });
+                isMutableRefObject(ref) &&
+                  ref.current?.flyTo({
+                    zoom: 14,
+                    center: {
+                      lng: coord[0],
+                      lat: coord[1],
+                    },
+                    duration: 5000,
+                  });
+              }
+            }}
+          />
+        </div>
+        <div className="relative">
+          <PointFilterBtn onFilter={handleFilterLayers} />
+        </div>
       </div>
 
       {marker ? (

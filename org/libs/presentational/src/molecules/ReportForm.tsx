@@ -7,7 +7,7 @@ import {
   useYupValidationResolver,
   userReportSchema,
 } from '@utils/validators/yup';
-import { useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import {
   useReportAd,
@@ -24,13 +24,20 @@ import PreviewImage from '@presentational/atoms/PreviewImage';
 import { useUpload } from '@business-layer/business-logic/lib/sirv';
 import { getCurrentDateTime } from '@utils/helpers';
 import { renameImageWithUniqueName } from '@utils/helpers/imageName';
+import FriendlyCaptcha from '@presentational/atoms/FriendlyCaptcha';
+import QuillEditor from '@presentational/atoms/QuillEditor';
 
 const PREVIEW_HEIGHT = 80;
+const reportsType = [
+  'Tố giác sai phạm',
+  'Đăng ký nội dung',
+  'Đóng góp ý kiến',
+  'Giải đáp thắc mắc',
+];
 type formDataType = {
   name: string;
   email: string;
   phone: string;
-  content: string;
 };
 
 function ReportForm({
@@ -46,22 +53,15 @@ function ReportForm({
 }) {
   const { unActivateForm } = useSetReportFormActive();
   const formResolver = useYupValidationResolver(userReportSchema);
-  const { control, handleSubmit, reset, formState } = useForm({
+  const { control, handleSubmit, reset, formState, setValue } = useForm({
     defaultValues: {
       name: '',
       email: '',
       phone: '',
-      content: '',
     },
     resolver: formResolver,
   });
   const { showReactHookFormError, showError, showSuccess } = useNotification();
-  const reportsType = [
-    'Tố giác sai phạm',
-    'Đăng ký nội dung',
-    'Đóng góp ý kiến',
-    'Giải đáp thắc mắc',
-  ];
   const [selectedReportType, setSelectedReportType] = useState<string | null>(
     null
   );
@@ -71,6 +71,8 @@ function ReportForm({
   const [imagesPreview, setImagesPreview] = useState<FileList | null>(null);
   const { onUpload } = useUpload();
   const [isUploading, setIsUploading] = useState<boolean>(false);
+  const [isVerified, setIsVerified] = useState<boolean>(false);
+  const quillRef = useRef<HTMLDivElement>(null);
 
   // Methods
   const getReportFunc = (target: reportTargetType) => {
@@ -104,18 +106,26 @@ function ReportForm({
         });
   };
 
+  const getContentData = () => {
+    const dataDiv = quillRef.current?.querySelector('.ql-editor');
+    if (dataDiv) {
+      return dataDiv.innerHTML;
+    }
+    return '';
+  };
+
   const onSuccessSubmit = async (data: formDataType) => {
     if (!selectedReportType) {
       showError('Bạn chưa chọn kiểu báo cáo!');
       return;
     }
 
-    console.log(getCurrentDateTime());
     // UPLOAD TO CDN
     setIsUploading(true);
     if (imagesPreview) {
       try {
-        const { name, phone, email, content } = data;
+        const content = getContentData();
+        const { name, phone, email } = data;
         const imgPathData = await Promise.all(
           Array.from(imagesPreview).map((img) =>
             onUpload({
@@ -142,6 +152,7 @@ function ReportForm({
     } else {
       handleReport({
         ...data,
+        content: getContentData(),
         reportTarget,
         reportData,
         ...reportIdentificationData,
@@ -170,7 +181,7 @@ function ReportForm({
     >
       <form
         onSubmit={handleSubmit(onSuccessSubmit, showReactHookFormError)}
-        className={`w-1/2 h-fit bg-white p-6 rounded-md`}
+        className={`w-2/3 h-fit bg-white p-6 rounded-md`}
         noValidate
       >
         <div className="flex flex-row justify-between text-center mb-3">
@@ -195,26 +206,28 @@ function ReportForm({
           formState={formState}
           disabled={isReportingAd || isReportingLocation || isUploading}
         />
-        <ReportInput
-          name={'email'}
-          type="EMAIL"
-          control={control}
-          label="Email"
-          formState={formState}
-          disabled={isReportingAd || isReportingLocation || isUploading}
-        />
-        <ReportInput
-          name={'phone'}
-          type="PHONE_NUMBER"
-          control={control}
-          label="Điện thoại liên lạc"
-          formState={formState}
-          disabled={isReportingAd || isReportingLocation || isUploading}
-        />
+        <div className="grid grid-cols-2 gap-3">
+          <ReportInput
+            name={'email'}
+            type="EMAIL"
+            control={control}
+            label="Email"
+            formState={formState}
+            disabled={isReportingAd || isReportingLocation || isUploading}
+          />
+          <ReportInput
+            name={'phone'}
+            type="PHONE_NUMBER"
+            control={control}
+            label="Số điện thoại"
+            formState={formState}
+            disabled={isReportingAd || isReportingLocation || isUploading}
+          />
+        </div>
+        <div className="w-full h-36 overflow-hidden relative flex flex-col">
+          <QuillEditor ref={quillRef} />
+        </div>
         <div className=" w-full flex flex-row justify-start items-center gap-2 flex-wrap my-3">
-          <p className="text-xs font-semibold whitespace-nowrap select-none">
-            Hình thức báo cáo:{' '}
-          </p>
           {reportsType.map((r) => (
             <button
               key={r}
@@ -231,14 +244,6 @@ function ReportForm({
             </button>
           ))}
         </div>
-        <ReportInput
-          name={'content'}
-          type="LONG_TEXT"
-          control={control}
-          label="Nội dung báo cáo"
-          formState={formState}
-          disabled={isReportingAd || isReportingLocation || isUploading}
-        />
         <div className="my-3">
           {imagesPreview ? (
             <div
@@ -267,13 +272,20 @@ function ReportForm({
             <ImageInput onSelectImages={handleSelectImage} limit={2} />
           )}
         </div>
-        <CustomButton
-          style="fill-primary"
-          type="submit"
-          loading={isReportingAd || isReportingLocation || isUploading}
-        >
-          Gửi báo cáo
-        </CustomButton>
+        <hr />
+        <FriendlyCaptcha onSuccessVerify={() => setIsVerified(true)} />
+
+        {isVerified ? (
+          <CustomButton
+            style="fill-primary"
+            type="submit"
+            loading={isReportingAd || isReportingLocation || isUploading}
+          >
+            Gửi báo cáo
+          </CustomButton>
+        ) : (
+          <></>
+        )}
       </form>
     </div>
   );

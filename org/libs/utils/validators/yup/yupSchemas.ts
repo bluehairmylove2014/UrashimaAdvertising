@@ -14,7 +14,6 @@ export const userReportSchema = y.object({
   name: y.string().required('Cần bổ sung họ và tên').max(255),
   email: y.string().email('Email không hợp lệ').required('Cần điền email'),
   phone: y.string().matches(vietnamPhoneNumber, 'Số điện thoại không hợp lệ'),
-  content: y.string().required('Cần điền nội dung báo cáo').max(1000),
 });
 
 export const editLocationDetailSchema = y.object({

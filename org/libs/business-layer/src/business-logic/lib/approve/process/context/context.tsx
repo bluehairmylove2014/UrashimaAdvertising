@@ -5,6 +5,11 @@ import { ApproveContextType } from './type';
 export const ApproveContext = React.createContext<ApproveContextType>({
   state: {
     approves: null,
+    filterCriteria: {
+      searchKey: null,
+      timeFilter: null,
+      requestStatusFilter: null,
+    },
   },
   dispatch: () => undefined,
 });

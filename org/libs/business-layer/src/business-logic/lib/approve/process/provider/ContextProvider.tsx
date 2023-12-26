@@ -11,6 +11,11 @@ export const ContextProvider: React.FC<ContextProviderType> = ({
 }) => {
   const [state, dispatch] = useReducer(approveReducer, {
     approves: null,
+    filterCriteria: {
+      searchKey: null,
+      timeFilter: null,
+      requestStatusFilter: null,
+    },
   });
 
   return (

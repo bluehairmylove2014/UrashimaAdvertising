@@ -1,12 +1,6 @@
 'use client';
 import { ReactElement, useCallback, useEffect, useRef, useState } from 'react';
-import {
-  ViewStateChangeEvent,
-  MapLayerMouseEvent,
-  MapRef,
-  Marker,
-  Popup,
-} from 'react-map-gl';
+import { MapLayerMouseEvent, MapRef, Marker, Popup } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { useGetAdDetail } from '@business-layer/business-logic/lib/ads';
 import DetailLoader from '@presentational/atoms/DetailLoader';
@@ -32,22 +26,15 @@ import CustomMap from '@presentational/organisms/CustomMap';
 
 type locationType =
   | {
-    lat: number;
-    lon: number;
-  }
+      latitude: number;
+      longitude: number;
+    }
   | undefined;
 
-type markerParamsType =
-  | {
-    latitude: number;
-    longitude: number;
-  }
-  | undefined;
 function Home(): ReactElement {
   const { showError } = useNotification();
   const { data: adsData } = useFetchAllOfficerAds();
   const mapRef = useRef<MapRef>(null);
-  const [isShowCluster, setIsShowCluster] = useState<boolean>(true);
 
   const [isActiveAdsBoard, setIsActiveAdsBoard] = useState<boolean>(false);
   const [idAdsBoard, setIdAdsBoard] = useState(-1);
@@ -68,10 +55,9 @@ function Home(): ReactElement {
   const [isAdsPointReported, setIsAdsPointReported] = useState(false);
   const [isClickReported, setIsClickReported] = useState(false);
 
-  const [cursor, setCursor] = useState('pointer');
   const { onGetAdDetail, isLoading } = useGetAdDetail();
   const [userClickMarker, setUserClickMarker] =
-    useState<markerParamsType>(undefined);
+    useState<locationType>(undefined);
   const [locationOnClickDetail, setLocationOnClickDetail] = useState<
     ILocation | undefined
   >(undefined);
@@ -100,17 +86,6 @@ function Home(): ReactElement {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [idAdsPointClick]);
-
-  const handleZoom = useCallback(
-    (e: ViewStateChangeEvent) => {
-      if (e.viewState.zoom < 10 && isShowCluster === true) {
-        setIsShowCluster(false);
-      } else if (e.viewState.zoom > 10 && isShowCluster === false) {
-        setIsShowCluster(true);
-      }
-    },
-    [isShowCluster]
-  );
 
   //Catch click mouse event
   const handleClick = useCallback((event: MapLayerMouseEvent) => {
@@ -179,16 +154,6 @@ function Home(): ReactElement {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  //Catch Mouse Down
-  const handleMouseDown = useCallback((event: MapLayerMouseEvent) => {
-    setCursor('grabbing');
-  }, []);
-
-  //Catch Mouse Up
-  const handleMouseUp = useCallback((event: MapLayerMouseEvent) => {
-    setCursor('pointer');
-  }, []);
-
   //Catch Mouse Move
   const handleMouseMove = useCallback((event: MapLayerMouseEvent) => {
     if (!mapRef.current) return;
@@ -212,20 +177,20 @@ function Home(): ReactElement {
 
       if (
         posPrevMouse &&
-        event.lngLat.lng < posPrevMouse.lon + 5 &&
-        event.lngLat.lng > posPrevMouse.lon - 5
+        event.lngLat.lng < posPrevMouse.longitude + 5 &&
+        event.lngLat.lng > posPrevMouse.longitude - 5
       ) {
         if (
-          event.lngLat.lat < posPrevMouse.lat + 5 &&
-          event.lngLat.lng > posPrevMouse.lat - 5
+          event.lngLat.lat < posPrevMouse.latitude + 5 &&
+          event.lngLat.lng > posPrevMouse.latitude - 5
         )
           return;
       }
 
       setIdAdsPoint(adsPoint.properties?.id);
       setPosPrevMouse({
-        lat: lat,
-        lon: long,
+        latitude: lat,
+        longitude: long,
       });
 
       return;
@@ -237,36 +202,32 @@ function Home(): ReactElement {
       <div className="relative z-0">
         <CustomMap
           mapProps={{
-            onZoom: handleZoom,
             onClick: handleClick,
-            onMouseDown: handleMouseDown,
             onMouseMove: handleMouseMove,
-            onMouseUp: handleMouseUp,
-            cursor: cursor,
           }}
           sourceData={{
             type: 'FeatureCollection',
             features: adsData
               ? adsData.map((m) => ({
-                type: 'Feature',
-                properties: {
-                  id: m.id,
-                  cluster: false,
-                  name: m.address,
-                  planned: m.planned,
-                  reported: locationReportList
-                    ? locationReportList.findIndex(
-                      (lr) =>
-                        lr.latitude === m.latitude &&
-                        lr.longitude === m.longitude
-                    ) !== -1
-                    : false,
-                },
-                geometry: {
-                  type: 'Point',
-                  coordinates: [m.longitude, m.latitude],
-                },
-              }))
+                  type: 'Feature',
+                  properties: {
+                    id: m.id,
+                    cluster: false,
+                    name: m.address,
+                    planned: m.planned,
+                    reported: locationReportList
+                      ? locationReportList.findIndex(
+                          (lr) =>
+                            lr.latitude === m.latitude &&
+                            lr.longitude === m.longitude
+                        ) !== -1
+                      : false,
+                  },
+                  geometry: {
+                    type: 'Point',
+                    coordinates: [m.longitude, m.latitude],
+                  },
+                }))
               : [],
           }}
           ref={mapRef}
@@ -315,7 +276,7 @@ function Home(): ReactElement {
                 handleClose={() => {
                   setIsClickAdsPoint(false);
                 }}
-                handleDetailReport={() => { }}
+                handleDetailReport={() => {}}
               />
             ) : (
               <></>
@@ -338,7 +299,7 @@ function Home(): ReactElement {
                   setIsActiveAdsBoard(false);
                   setIsClickAdsPoint(true);
                 }}
-                handleDetailReportAdsBoard={() => { }}
+                handleDetailReportAdsBoard={() => {}}
               ></DetailAds>
             ) : (
               <></>
