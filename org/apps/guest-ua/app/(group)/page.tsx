@@ -1,39 +1,22 @@
 'use client';
 import { ReactElement, useCallback, useEffect, useRef, useState } from 'react';
-import ReactMapGL, {
-  Source,
-  Layer,
+import {
   ViewStateChangeEvent,
   MapLayerMouseEvent,
   MapRef,
   Marker,
-  GeolocateControl,
-  NavigationControl,
-  FullscreenControl,
   Popup,
 } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import {
-  clusterCountLayer,
-  clusterLayer,
-  nonClusteredPlannedPointLayer,
-  nonClusteredReportedPointSymbolLayer,
-  nonclusteredReportedAdsBoardLayer,
-  nonclusteredReportedPointLayer,
-  nonclusteredReportedUnknownPointLayer,
-  nonclusteredUnplannedPointLayer,
-} from '../../mapgl/layers';
-import { MAP_DEFAULT_VIEW_PORT } from '../../mapgl/viewPort';
-import { ACCESS_TOKEN, MAP_STYLE } from '../../constants/mapbox_key';
-import {
   useFetchAllAds,
   useGetAdDetail,
 } from '@business-layer/business-logic/lib/ads';
-import ScreenLoader from '@presentational/atoms/ScreenLoader';
 import DetailLoader from '@presentational/atoms/DetailLoader';
 import CustomImage from '@presentational/atoms/CustomImage';
 import ReportForm from '@presentational/molecules/ReportForm';
 import Announcement from '@presentational/molecules/Announcement';
+import CustomMap from '@presentational/organisms/CustomMap';
 
 import {
   IAdLocation,
@@ -55,7 +38,6 @@ import { useNotification } from '@presentational/atoms/Notification';
 import LocationDetail from '@presentational/molecules/LocationDetail';
 import { ILocation } from '@business-layer/services/entities';
 import ReportHistory from '@presentational/molecules/ReportHistory';
-import CustomSearchBox from '@presentational/atoms/CustomSearchBox';
 import ReportDetailAdsBoard from '@presentational/molecules/ReportDetailAdsBoard';
 import ReportDetailPoint from '@presentational/molecules/ReportDetailPoint';
 
@@ -120,12 +102,6 @@ function Home(): ReactElement {
 
   const [cursor, setCursor] = useState('pointer');
   const { onGetAdDetail, isLoading } = useGetAdDetail();
-  const [currentLocation, setCurrentLocation] =
-    useState<locationType>(undefined);
-  const [searchKey, setSearchKey] = useState<string>('');
-  const [marker, setMarker] = useState<markerParamsType>(undefined);
-  const [userLocationMarker, setUserLocationMarker] =
-    useState<markerParamsType>(undefined);
   const [userClickMarker, setUserClickMarker] =
     useState<markerParamsType>(undefined);
   const [locationOnClickDetail, setLocationOnClickDetail] = useState<
@@ -167,25 +143,6 @@ function Home(): ReactElement {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [idAdsPointClick]);
-
-  useEffect(() => {
-    if (
-      currentLocation &&
-      currentLocation.lat &&
-      currentLocation.lon &&
-      mapRef.current
-    ) {
-      setUserLocationMarker({
-        latitude: currentLocation.lat,
-        longitude: currentLocation.lon,
-      });
-      mapRef.current.flyTo({
-        zoom: 14,
-        center: [currentLocation.lon, currentLocation.lat],
-        duration: 1500,
-      });
-    }
-  }, [currentLocation]);
 
   const handleZoom = useCallback(
     (e: ViewStateChangeEvent) => {
@@ -238,9 +195,10 @@ function Home(): ReactElement {
         featuresAllPoint[0].layer.id === 'unclustered-unknown-point-reported'
       ) {
         setAdsPointReportedDetail(
-          locationReportList?.find((location) => {
-            location.longitude === long && location.latitude === lat;
-          })
+          locationReportList?.find(
+            (location) =>
+              location.longitude === long && location.latitude === lat
+          )
         );
         setIsClickReportedPoint(true);
         return;
@@ -366,132 +324,20 @@ function Home(): ReactElement {
   return (
     <div className="relative w-screen h-screen">
       <div className="relative z-0">
-        <ReactMapGL
-          mapboxAccessToken={ACCESS_TOKEN}
-          initialViewState={MAP_DEFAULT_VIEW_PORT}
-          onZoom={handleZoom}
-          onClick={handleClick}
-          onMouseDown={handleMouseDown}
-          onMouseMove={handleMouseMove}
-          onMouseUp={handleMouseUp}
-          dragRotate={false}
-          maxZoom={18}
-          // maxBounds={[
-          //   [106.317521, 10.321631], // Tọa độ góc dưới cùng bên trái của hình chữ nhật giới hạn
-          //   [107.042629, 11.210448], // Tọa độ góc trên cùng bên phải của hình chữ nhật giới hạn
-          // ]}
-          ref={mapRef}
-          cursor={cursor}
-          style={{ width: '100vw', height: '100vh' }}
-          mapStyle={MAP_STYLE}
-        >
-          <div className="flex flex-row justify-between w-full my-4 z-40 relative gap-3 overflow-hidden">
-            <div className="w-1/2 h-fit pl-4">
-              <CustomSearchBox
-                marker={true}
-                accessToken={ACCESS_TOKEN}
-                placeholder="Tìm kiếm ở đây..."
-                value={searchKey}
-                onChange={(value) => {
-                  setSearchKey(value);
-                }}
-                onRetrieve={(retrieve) => {
-                  const coord = retrieve?.features[0]?.geometry?.coordinates;
-                  if (Array.isArray(coord)) {
-                    setMarker({ longitude: coord[0], latitude: coord[1] });
-                    mapRef.current &&
-                      mapRef.current.flyTo({
-                        zoom: 14,
-                        center: {
-                          lng: coord[0],
-                          lat: coord[1],
-                        },
-                        duration: 5000,
-                      });
-                  }
-                }}
-              />
-            </div>
-
-            <div className="pr-4">
-              <button
-                onClick={() => {
-                  setIsClickAdsPoint(false);
-                  setIsReportHistoryActive(true);
-                  setIsClickReportedAdsBoard(false);
-                  setIsClickReportedPoint(false);
-                }}
-                className=" bg-white rounded px-4 py-0 h-[36px] text-xs font-medium shadow-black hover:bg-gray-300 hover:shadow-lg transition-colors"
-              >
-                <i className="fi fi-ss-triangle-warning mr-1"></i> Báo cáo của
-                bạn
-              </button>
-              <button
-                className="bg-white rounded px-2 py-0 h-[36px] text-xs font-medium ml-2"
-                onClick={() => {
-                  setIsNotifications(!isNotifications);
-                }}
-              >
-                <i className="fi fi-ss-bell"></i>
-              </button>
-              {isNotifications ? (
-                <Announcement
-                  handleClose={() => {
-                    setIsNotifications(false);
-                  }}
-                />
-              ) : (
-                <></>
-              )}
-            </div>
-          </div>
-          {marker ? (
-            <Marker {...marker}>
-              <CustomImage
-                src="/assets/placeholder.png"
-                alt="placeholder"
-                width="30px"
-                height="30px"
-              />
-            </Marker>
-          ) : (
-            <></>
-          )}
-          {userLocationMarker ? (
-            <Marker {...userLocationMarker}>
-              <CustomImage
-                src="/assets/location.png"
-                alt="location"
-                width="30px"
-                height="30px"
-              />
-            </Marker>
-          ) : (
-            <></>
-          )}
-          {userClickMarker ? (
-            <Marker {...userClickMarker}>
-              <CustomImage
-                src="/assets/gps.png"
-                alt="location"
-                width="20px"
-                height="20px"
-              />
-            </Marker>
-          ) : (
-            <></>
-          )}
-
-          {!Array.isArray(adsData) ? (
-            <ScreenLoader />
-          ) : isShowCluster ? (
-            <Source
-              id="earthquakes"
-              type="geojson"
-              data={
-                {
-                  type: 'FeatureCollection',
-                  features: [
+        <CustomMap
+          mapProps={{
+            onZoom: handleZoom,
+            onClick: handleClick,
+            onMouseDown: handleMouseDown,
+            onMouseMove: handleMouseMove,
+            onMouseUp: handleMouseUp,
+            cursor: cursor,
+          }}
+          sourceData={
+            {
+              type: 'FeatureCollection',
+              features: adsData
+                ? [
                     ...adsData.map((m) => ({
                       type: 'Feature',
                       properties: {
@@ -546,31 +392,51 @@ function Home(): ReactElement {
                             },
                           }))
                       : []),
-                  ],
-                } as FeatureCollection<Point>
-              }
-              cluster={true}
-              clusterMaxZoom={14}
-              clusterRadius={40}
+                  ]
+                : [],
+            } as FeatureCollection<Point>
+          }
+          ref={mapRef}
+        >
+          <div className="absolute top-0 right-0 pr-4 my-4">
+            <button
+              onClick={() => {
+                setIsClickAdsPoint(false);
+                setIsReportHistoryActive(true);
+                setIsClickReportedAdsBoard(false);
+                setIsClickReportedPoint(false);
+              }}
+              className=" bg-white rounded px-4 py-0 h-[36px] text-xs font-medium shadow-black hover:bg-gray-300 hover:shadow-lg transition-colors"
             >
-              {/* Cluster layer */}
-              <Layer {...clusterLayer} />
-              <Layer {...clusterCountLayer} />
-
-              {/* Planned ads point layer */}
-              <Layer {...nonClusteredPlannedPointLayer} />
-
-              {/* Unplanned ads point layer */}
-              <Layer {...nonclusteredUnplannedPointLayer} />
-
-              {/* Report layer */}
-              <Layer {...nonclusteredReportedAdsBoardLayer} />
-              <Layer {...nonclusteredReportedPointLayer} />
-              <Layer {...nonclusteredReportedUnknownPointLayer} />
-
-              {/* Symbol "!" for report layer */}
-              <Layer {...nonClusteredReportedPointSymbolLayer} />
-            </Source>
+              <i className="fi fi-ss-triangle-warning mr-1"></i> Báo cáo của bạn
+            </button>
+            <button
+              className="bg-white rounded px-2 py-0 h-[36px] text-xs font-medium ml-2"
+              onClick={() => {
+                setIsNotifications(!isNotifications);
+              }}
+            >
+              <i className="fi fi-ss-bell"></i>
+            </button>
+            {isNotifications ? (
+              <Announcement
+                handleClose={() => {
+                  setIsNotifications(false);
+                }}
+              />
+            ) : (
+              <></>
+            )}
+          </div>
+          {userClickMarker ? (
+            <Marker {...userClickMarker}>
+              <CustomImage
+                src="/assets/gps.png"
+                alt="location"
+                width="20px"
+                height="20px"
+              />
+            </Marker>
           ) : (
             <></>
           )}
@@ -756,24 +622,7 @@ function Home(): ReactElement {
           )}
 
           {isLoading ? <DetailLoader /> : <></>}
-
-          <FullscreenControl position="bottom-right" />
-          <NavigationControl position="bottom-right" />
-          <GeolocateControl
-            positionOptions={{ enableHighAccuracy: true }}
-            trackUserLocation={true}
-            showAccuracyCircle={false}
-            showUserLocation={false}
-            showUserHeading={false}
-            position="bottom-right"
-            onGeolocate={(e) => {
-              setCurrentLocation({
-                lat: e.coords.latitude,
-                lon: e.coords.longitude,
-              });
-            }}
-          />
-        </ReactMapGL>
+        </CustomMap>
       </div>
 
       <LocationDetail

@@ -34,6 +34,7 @@ export const custerRadius = [
   1000,
   50, // bán kính cho nhóm có 1000 điểm trở lên
 ];
+
 export const clusterLayer: LayerProps = {
   id: 'clusters',
   type: 'circle',
@@ -44,7 +45,6 @@ export const clusterLayer: LayerProps = {
     'circle-radius': ['step', ['get', 'point_count'], ...custerRadius],
   },
 };
-
 export const clusterCountLayer: LayerProps = {
   id: 'cluster-count',
   type: 'symbol',
@@ -56,6 +56,7 @@ export const clusterCountLayer: LayerProps = {
     'text-size': fontSize,
   },
 };
+
 export const nonClusteredPlannedPointLayer: LayerProps = {
   id: 'unclustered-point-planned',
   type: 'circle',
@@ -73,6 +74,7 @@ export const nonClusteredPlannedPointLayer: LayerProps = {
     'circle-stroke-color': strokeColor,
   },
 };
+
 export const nonclusteredUnplannedPointLayer: LayerProps = {
   id: 'unclustered-point-unplanned',
   type: 'circle',
@@ -90,6 +92,7 @@ export const nonclusteredUnplannedPointLayer: LayerProps = {
     'circle-stroke-color': strokeColor,
   },
 };
+
 export const nonclusteredReportedAdsBoardLayer: LayerProps = {
   id: 'unclustered-ads-board-reported',
   type: 'circle',
