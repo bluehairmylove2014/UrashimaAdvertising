@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using UrashimaServer.Common.Constant;
+using UrashimaServer.Common.CustomAttribute;
+using UrashimaServer.Common.Helper;
 using UrashimaServer.Database;
 using UrashimaServer.Models;
 
@@ -99,17 +101,47 @@ namespace UrashimaServer.Controllers
         }
 
         // POST: api/ads-board
-        [HttpPut]
+        [HttpPut, AuthorizeRoles(GlobalConstant.HeadQuater)]
         public async Task<ActionResult<AdsBoardBasicDto>> PutAdsBoard(AdsBoardBasicDto adsBoard)
         {
+            //var cookie = Request.Cookies;
+            var acc = await _context.Accounts.FirstOrDefaultAsync(acc => acc.Email == User.Identity!.Name);
             if (_context.AdsBoards == null)
             {
                 return Problem("Không thể kết nối đến cơ sở dữ liệu");
             }
-            _context.AdsBoards.Update(_mapper.Map<AdsBoard>(adsBoard));
+
+            if (acc == null)
+            {
+                return BadRequest(new
+                {
+                    Message = "Vui lòng đăng nhập để tiếp tục"
+                });
+            }
+
+            var point = await _context.AdsPoints
+                .Where(b => b.Id == adsBoard.AdsPointId)
+                .FirstOrDefaultAsync();
+
+            if (point == null)
+            {
+                return BadRequest(new
+                {
+                    Message = "Không thể tìm thấy điểm quảng cáo của bảng quảng cáo này"
+                });
+            }
+
+            if (!Helper.IsUnderAuthority(point!.Address, acc.UnitUnderManagement))
+            {
+                return BadRequest(new
+                {
+                    Message = "Bảng quảng cáo không nằm trong khu vực bạn quản lí"
+                });
+            }
 
             try
             {
+                _context.AdsBoards.Update(_mapper.Map<AdsBoard>(adsBoard));
                 await _context.SaveChangesAsync();
             }
             catch
@@ -124,12 +156,52 @@ namespace UrashimaServer.Controllers
         }
 
         // DELETE: api/ads-board?id=5
-        [HttpDelete]
+        [HttpDelete, AuthorizeRoles(GlobalConstant.HeadQuater)]
         public async Task<IActionResult> DeleteAdsBoard([FromQuery] int id)
         {
             if (_context.AdsBoards == null)
             {
                 return Problem("Không thể kết nối đến cơ sở dữ liệu");
+            }
+
+            var acc = await _context.Accounts.FirstOrDefaultAsync(acc => acc.Email == User.Identity!.Name);
+
+            if (acc == null)
+            {
+                return BadRequest(new
+                {
+                    Message = "Vui lòng đăng nhập để tiếp tục"
+                });
+            }
+
+            var board = await _context.AdsBoards.FirstOrDefaultAsync(board => board.Id == id);
+
+            if (board == null)
+            {
+                return BadRequest(new
+                {
+                    Message = "Không thể tìm thấy bảng quảng cáo"
+                });
+            }
+
+            var point = await _context.AdsPoints
+                .Where(b => b.Id == board.AdsPointId)
+                .FirstOrDefaultAsync();
+
+            if (point == null)
+            {
+                return BadRequest(new
+                {
+                    Message = "Không thể tìm thấy điểm quảng cáo của bảng quảng cáo này"
+                });
+            }
+
+            if (!Helper.IsUnderAuthority(point!.Address, acc.UnitUnderManagement))
+            {
+                return BadRequest(new
+                {
+                    Message = "Bảng quảng cáo không nằm trong khu vực bạn quản lí"
+                });
             }
 
             var adsBoard = await _context.AdsBoards.FindAsync(id);

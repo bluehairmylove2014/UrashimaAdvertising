@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using UrashimaServer.Common.Constant;
+using UrashimaServer.Common.CustomAttribute;
+using UrashimaServer.Common.Helper;
 using UrashimaServer.Database;
 using UrashimaServer.Database.Dtos;
 using UrashimaServer.Models;
@@ -82,14 +84,42 @@ namespace UrashimaServer.Controllers
         }
 
         // POST: api/AdsPoints
-        [HttpPut]
+        [HttpPut, AuthorizeRoles(GlobalConstant.HeadQuater)]
         public async Task<ActionResult<AdsPoint>> PutAdsPoint(PostAdsPointDto adsPoint)
         {
+            var acc = await _context.Accounts.FirstOrDefaultAsync(acc => acc.Email == User.Identity!.Name);
             if (_context.AdsPoints == null)
             {
                 return Problem("Không thể kết nối đến cơ sở dữ liệu");
             }
-            _context.AdsPoints.Update(_mapper.Map<AdsPoint>(adsPoint));
+
+            if (acc == null)
+            {
+                return BadRequest(new
+                {
+                    Message = "Vui lòng đăng nhập để tiếp tục"
+                });
+            }
+
+            var currentPoint = await _context.AdsPoints.FindAsync(adsPoint.Id);
+
+            if (currentPoint == null)
+            {
+                return BadRequest(new
+                {
+                    Message = "Không thể tìm thấy điểm quảng cáo để cập nhật"
+                });
+            }
+
+            if (!Helper.IsUnderAuthority(currentPoint.Address, acc.UnitUnderManagement))
+            {
+                return BadRequest(new
+                {
+                    Message = "Điểm quảng cáo không nằm trong khu vực bạn quản lí"
+                });
+            }
+
+            currentPoint = _mapper.Map<AdsPoint>(adsPoint);
 
             try
             {
@@ -106,20 +136,47 @@ namespace UrashimaServer.Controllers
         }
 
         // DELETE: api/AdsPoints
-        [HttpDelete]
+        [HttpDelete, AuthorizeRoles(GlobalConstant.HeadQuater)]
         public async Task<IActionResult> DeleteAdsPoint([FromQuery] int id)
         {
+            var acc = await _context.Accounts.FirstOrDefaultAsync(acc => acc.Email == User.Identity!.Name);
             if (_context.AdsPoints == null)
             {
-                return NotFound();
+                return Problem("Không thể kết nối đến cơ sở dữ liệu");
             }
-            var adsPoint = await _context.AdsPoints.FindAsync(id);
-            if (adsPoint == null)
+
+            if (acc == null)
+            {
+                return BadRequest(new
+                {
+                    Message = "Vui lòng đăng nhập để tiếp tục"
+                });
+            }
+
+            var currentPoint = await _context.AdsPoints.FindAsync(id);
+
+            if (currentPoint == null)
+            {
+                return BadRequest(new
+                {
+                    Message = "Không thể tìm thấy điểm quảng cáo để xóa"
+                });
+            }
+
+            if (!Helper.IsUnderAuthority(currentPoint.Address, acc.UnitUnderManagement))
+            {
+                return BadRequest(new
+                {
+                    Message = "Điểm quảng cáo không nằm trong khu vực bạn quản lí"
+                });
+            }
+
+            if (currentPoint == null)
             {
                 return NotFound();
             }
 
-            _context.AdsPoints.Remove(adsPoint);
+            _context.AdsPoints.Remove(currentPoint);
             await _context.SaveChangesAsync();
 
             return NoContent();
