@@ -8,6 +8,7 @@ using System.Text.Json.Serialization;
 using UrashimaServer;
 using UrashimaServer.Common.Helper;
 using UrashimaServer.Database;
+using UrashimaServer.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,7 +55,9 @@ builder.Services.AddCors(options => options.AddPolicy(name: "NgOrigins",
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 builder.Services.AddTransient<IEmailService, EmailService>();
-builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("production")));  
+builder.Services.AddTransient<GlobalExceptionHandleMiddleware>();
+builder.Services.AddTransient<ExtractInfoMiddleware>();
+builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("local")));  
 
 var app = builder.Build();
 
@@ -66,6 +69,9 @@ app.UseCors("NgOrigins");
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseMiddleware<GlobalExceptionHandleMiddleware>();
+app.UseMiddleware<ExtractInfoMiddleware>();
 
 app.MapControllers();
 

@@ -7,6 +7,7 @@ using UrashimaServer.Common.Helper;
 using UrashimaServer.Database;
 using UrashimaServer.Database.Dtos;
 using UrashimaServer.Database.Models;
+using UrashimaServer.Middlewares;
 using UrashimaServer.Models;
 
 namespace UrashimaServer.Controllers
@@ -171,7 +172,7 @@ namespace UrashimaServer.Controllers
                 .Include(r => r.Images)
                 .ToListAsync();
 
-            rawResult = rawResult.Where(r => Helper.IsUnderAuthority(r.Address, acc.UnitUnderManagement)).ToList();
+            rawResult = rawResult.Where(r => Helper.IsUnderAuthority(r.Address, acc.UnitUnderManagement, HttpContext.Items["address"] as Address)).ToList();
             
             var result = new List<GetReportDto>();
             foreach (var rawItem in rawResult)
