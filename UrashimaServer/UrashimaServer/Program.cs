@@ -55,7 +55,7 @@ builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("Emai
 builder.Services.AddTransient<IEmailService, EmailService>();
 builder.Services.AddTransient<GlobalExceptionHandleMiddleware>();
 builder.Services.AddTransient<ExtractInfoMiddleware>();
-builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("local")));  
+builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("production")));  
 
 var app = builder.Build();
 
