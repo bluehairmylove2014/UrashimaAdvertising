@@ -83,6 +83,7 @@ export class AdsService extends Services {
           },
           signal: this.abortController.signal,
           transformResponse: (res) => res,
+          withCredentials: true,
         });
         return response;
       } else {

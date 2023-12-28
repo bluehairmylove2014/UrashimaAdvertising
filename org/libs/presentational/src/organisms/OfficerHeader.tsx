@@ -3,9 +3,12 @@ import BellButton from '@presentational/atoms/BellButton';
 import OfficerNavLogoutBtn from '@presentational/atoms/OfficerNavLogoutBtn';
 import OfficerNavAvatar from '@presentational/molecules/OfficerNavAvatar';
 import OfficerNavDropdown from '@presentational/molecules/OfficerNavDropdown';
-import RegionManagementBtnPopup from '@presentational/atoms/RegionManagementBtnPopup';
+import RegionManagementDropdown from '@presentational/molecules/RegionManagementDropdown';
 import Image from 'next/image';
 import Link from 'next/link';
+import { RegionService } from '@business-layer/services';
+import { COOKIE_KEYS } from '@business-layer/business-logic/configs/constants';
+import { cookies } from 'next/dist/client/components/headers';
 
 const officerApproveNavDropdownOptions = [
   {
@@ -28,20 +31,35 @@ const officerAdsNavDropdownOptions = [
   },
 ];
 
-function OfficerHeader() {
+const regionService = new RegionService();
+async function getRegions() {
+  try {
+    const token = cookies().get(COOKIE_KEYS.ACCESS_TOKEN)?.value ?? null;
+    if (token) {
+      return await regionService.getRegions(token);
+    } else {
+      return null;
+    }
+  } catch (error) {
+    return null;
+  }
+}
+
+async function OfficerHeader() {
+  const regionsData = await getRegions();
   return (
     <header className="flex flex-row items-center justify-between bg-indigo-950 w-full h-12 px-4 sticky top-0 z-20">
       <nav>
         <ul className="flex flex-row items-center justify-start gap-5">
-          <div className=" w-20 h-10 object-cover relative">
-            <Link href={OFFICER_PAGES.DASHBOARD}>
-              <Image
-                src={'/assets/images/logo/white.png'}
-                alt="Urashima Ads"
-                fill
-              />
-            </Link>
-          </div>
+          <Link href={OFFICER_PAGES.DASHBOARD}>
+            <Image
+              src={'/assets/images/logo/white.png'}
+              alt="Urashima Ads"
+              width={70}
+              height={35}
+              priority={true}
+            />
+          </Link>
           <li>
             <Link
               href={OFFICER_PAGES.DASHBOARD}
@@ -77,7 +95,7 @@ function OfficerHeader() {
             </OfficerNavDropdown>
           </li>
           <li>
-            <RegionManagementBtnPopup />
+            <RegionManagementDropdown regionData={regionsData} />
           </li>
         </ul>
       </nav>

@@ -8,6 +8,7 @@ export const LOCAL_STORAGE_KEYS = {
 export const COOKIE_KEYS = {
   ACCESS_TOKEN: 'token',
   REFRESH_TOKEN: 'refresh_token',
+  REGIONS: 'regions',
 };
 export enum QUERY_N_MUTATION_KEYS {
   GET_ALL_PRODUCTS,

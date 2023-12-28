@@ -57,6 +57,9 @@ export const officerResetPasswordUrl = '/api/auth/reset-password';
 export const fCaptchaSiteverifyUrl =
   corsProxyUrl + 'https://api.friendlycaptcha.com/api/v1/siteverify';
 
+// REGION
+export const getRegionsUrl = '/api/headquater/ward-district';
+
 // GOOGLE
 export const googleGetUserInfoUrl =
   corsProxyUrl +

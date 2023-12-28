@@ -32,7 +32,6 @@ export class AccountService extends Services {
           transformResponse: (res) => res,
           withCredentials: true,
         });
-        console.log(response);
         return response;
       } else {
         throw new Error('Unauthorized');

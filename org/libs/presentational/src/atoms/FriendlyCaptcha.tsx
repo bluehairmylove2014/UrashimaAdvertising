@@ -8,10 +8,7 @@ const FriendlyCaptcha = ({
 }: {
   onSuccessVerify: () => void;
 }) => {
-  const sitekey = process.env.NEXT_PUBLIC_FRIENDLY_SITE_KEY;
-  if (sitekey === undefined) {
-    throw new Error('No sitekey found in .env file!');
-  }
+  const sitekey = process.env.NEXT_PUBLIC_FRIENDLY_SITE_KEY || '';
   const captchaHook = useCaptchaHook({
     siteKey: sitekey,
     endpoint: 'GLOBAL1',

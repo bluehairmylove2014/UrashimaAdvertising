@@ -13,12 +13,6 @@ export class FCaptchaService extends Services {
   ): Promise<fCaptchaVerifySolutionResponseType> => {
     this.abortController = new AbortController();
     try {
-      if (sitekey === undefined) {
-        throw new Error('FCAPTCHA: No sitekey found in .env file!');
-      }
-      if (secret === undefined) {
-        throw new Error('FCAPTCHA: No secret found in .env file!');
-      }
       const response: AxiosResponse<fCaptchaVerifySolutionResponseType> =
         await getAxiosNormalInstance().post(
           fCaptchaSiteverifyUrl,
