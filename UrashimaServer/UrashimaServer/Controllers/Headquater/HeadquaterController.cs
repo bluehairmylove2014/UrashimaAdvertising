@@ -7,6 +7,9 @@ using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using UrashimaServer.Common.Constant;
+using UrashimaServer.Common.CustomAttribute;
+using UrashimaServer.Common.Helper;
 using UrashimaServer.Database;
 using UrashimaServer.Database.Dtos;
 using UrashimaServer.Database.Models;
@@ -28,24 +31,46 @@ namespace UrashimaServer.Controllers.Headquater
         }
 
         // GET: api/headquater/ward-district
-        [HttpGet("ward-district")]
+        [HttpGet("ward-district"), AuthorizeRoles(GlobalConstant.WardOfficer, GlobalConstant.DistrictOfficer, GlobalConstant.HeadQuater)]
         public async Task<ActionResult<IEnumerable<WardDistrict>>> GetWardDistricts()
         {
-          if (_context.WardDistricts == null)
-          {
-              return NotFound();
-          }
-            return await _context.WardDistricts.ToListAsync();
+            var acc = await _context.Accounts.FirstOrDefaultAsync(acc => acc.Email == User.Identity!.Name);
+
+            if (acc is null)
+            {
+                return BadRequest(new
+                {
+                    Message = "Vui lòng đăng nhập để tiếp tục",
+                });
+            }
+
+            if (_context.WardDistricts == null)
+            {
+                return NotFound();
+            }
+
+            var rawRes = await _context.WardDistricts.ToListAsync();
+            if (acc.Role == GlobalConstant.WardOfficer || acc.Role == GlobalConstant.DistrictOfficer)
+            {
+                var result = rawRes.Where(p => {
+                    return Helper.IsUnderAuthority($"{p.Ward}, {p.District}" , acc.UnitUnderManagement);
+                }).ToList();
+
+                return result;
+            }
+
+            return rawRes;
         }
 
         // POST: api/headquater/ward-district
         [HttpPost("ward-district")]
         public async Task<ActionResult<WardDistrict>> PostWardDistrict(WardDistrict wardDistrict)
         {
-          if (_context.WardDistricts == null)
-          {
-              return Problem("Entity set 'DataContext.WardDistricts'  is null.");
-          }
+            if (_context.WardDistricts == null)
+            {
+                return Problem("Entity set 'DataContext.WardDistricts'  is null.");
+            }
+
             _context.WardDistricts.Add(wardDistrict);
             await _context.SaveChangesAsync();
 
