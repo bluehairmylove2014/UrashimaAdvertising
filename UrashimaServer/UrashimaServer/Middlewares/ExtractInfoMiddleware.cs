@@ -16,6 +16,8 @@ namespace UrashimaServer.Middlewares
             string? encodedData = context.Request.Cookies["regions"];
             context.Items["address"] = HttpUtility.UrlDecode(encodedData!);
 
+            Console.WriteLine(context.Items["address"]);
+
             await next(context);
         }
     }

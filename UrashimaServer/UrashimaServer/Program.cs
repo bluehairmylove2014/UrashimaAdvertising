@@ -45,9 +45,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddCors(options => options.AddPolicy(name: "NgOrigins",
     policy =>
     {
-        policy.WithOrigins("http://localhost:2808").AllowAnyMethod().AllowAnyHeader();
-        policy.WithOrigins("http://localhost:2816").AllowAnyMethod().AllowAnyHeader();
-        policy.WithOrigins("http://localhost:2016").AllowAnyMethod().AllowAnyHeader();
+        policy.WithOrigins("http://localhost:2808").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
+        policy.WithOrigins("http://localhost:2816").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
+        policy.WithOrigins("http://localhost:2016").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
     }));
 // Auto Mapper
 builder.Services.AddAutoMapper(typeof(MappingProfile));
