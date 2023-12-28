@@ -15,6 +15,7 @@ namespace UrashimaServer.Controllers
     public class LocationsController : ControllerBase
     {
         private readonly IMapper _mapper;
+        private readonly string _apiKey = "658dac28274ce196615546rej6e920c";
 
         public LocationsController(IMapper mapper)
         {
@@ -41,7 +42,7 @@ namespace UrashimaServer.Controllers
             {
                 var httpRequestMessage = new HttpRequestMessage
                 {
-                    RequestUri = new Uri($"https://geocode.maps.co/reverse?lat={latitude}&lon={longitude}"),
+                    RequestUri = new Uri($"https://geocode.maps.co/reverse?lat={latitude}&lon={longitude}&api_key={_apiKey}"),
                     Method = HttpMethod.Get,
                     Headers = {
                         { HttpRequestHeader.Accept.ToString(), "application/json" },

@@ -28,18 +28,18 @@ namespace UrashimaServer.Controllers
         }
 
         // GET: api/officer/ads-request
-        [HttpGet] // , AuthorizeRoles(GlobalConstant.WardOfficer, GlobalConstant.DistrictOfficer, GlobalConstant.HeadQuater)
+        [HttpGet, AuthorizeRoles(GlobalConstant.WardOfficer, GlobalConstant.DistrictOfficer, GlobalConstant.HeadQuater)]
         public async Task<ActionResult<IEnumerable<GetAdsCreateRequestDto>>> GetAllCreateRequest()
         {
-            //var acc = await _context.Accounts.FirstOrDefaultAsync(acc => acc.Email == User.Identity!.Name);
+            var acc = await _context.Accounts.FirstOrDefaultAsync(acc => acc.Email == User.Identity!.Name);
 
-            //if (acc is null)
-            //{
-            //    return BadRequest(new
-            //    {
-            //        Message = "Something went wrong with your account. Please login again!",
-            //    });
-            //}
+            if (acc is null)
+            {
+                return BadRequest(new
+                {
+                    Message = "Vui lòng đăng nhập để tiếp tục",
+                });
+            }
 
             var rawResult = await _context.AdsCreationRequests
                 .Include(x => x.AdsBoard)
@@ -53,17 +53,17 @@ namespace UrashimaServer.Controllers
                 myResult.Add(toAddRes);
             }
 
-            //myResult = myResult.Where(item =>
-            //{
-            //    var RequestAddress = _context.AdsPoints.Find(item.AdsPointId)?.Address ?? "No Address";
-            //    return Helper.IsUnderAuthority(RequestAddress, acc.UnitUnderManagement);
-            //}).ToList();
+            myResult = myResult.Where(item =>
+            {
+                var RequestAddress = _context.AdsPoints.Find(item.AdsPointId)?.Address ?? "No Address";
+                return Helper.IsUnderAuthority(RequestAddress, acc.UnitUnderManagement);
+            }).ToList();
 
             return myResult;
         }
 
         //POST: api/officer/ads-request
-        [HttpPost("board")] // , AuthorizeRoles(GlobalConstant.WardOfficer, GlobalConstant.DistrictOfficer)
+        [HttpPost("board"), AuthorizeRoles(GlobalConstant.WardOfficer, GlobalConstant.DistrictOfficer)] 
         public async Task<IActionResult> PostCreateRequestForBoard(AdsCreateBoardRequestDto createRequest)
         {
             var request = _mapper.Map<AdsCreationRequest>(createRequest);
