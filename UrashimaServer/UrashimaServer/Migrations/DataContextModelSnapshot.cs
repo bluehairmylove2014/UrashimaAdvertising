@@ -71,6 +71,23 @@ namespace UrashimaServer.Migrations
                     b.ToTable("AdsCreationRequests");
                 });
 
+            modelBuilder.Entity("UrashimaServer.Database.Models.AdsType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AdsTypes");
+                });
+
             modelBuilder.Entity("UrashimaServer.Database.Models.BoardModify", b =>
                 {
                     b.Property<int>("Id")
@@ -196,6 +213,23 @@ namespace UrashimaServer.Migrations
                     b.HasIndex("AdsPointId");
 
                     b.ToTable("PointModifyImages");
+                });
+
+            modelBuilder.Entity("UrashimaServer.Database.Models.ReportType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ReportTypes");
                 });
 
             modelBuilder.Entity("UrashimaServer.Database.Models.WardDistrict", b =>
