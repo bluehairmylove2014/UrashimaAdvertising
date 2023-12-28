@@ -198,7 +198,7 @@ function Home(): ReactElement {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
-    <div className="relative w-screen h-full">
+    <div className="relative w-screen h-screen">
       <div className="relative z-0">
         <CustomMap
           mapProps={{
