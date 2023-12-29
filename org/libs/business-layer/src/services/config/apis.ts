@@ -10,10 +10,13 @@ export const updateAccountUrl = '/api/auth/login-social';
 // ADS
 export const getAllAdsUrl = '/api/ads-point';
 export const getAdDetailsUrl = '/api/ads-point/detail';
+
 export const getAllOfficerAdsUrl = '/api/officer/ads-point';
 export const getOfficerLocationDetailAdsUrl = '/api/officer/ads-point';
 export const getOfficerAdDetailAdsUrl = '/api/officer/ads-point/detail';
 export const adsPointModificationUrl = '/api/officer/ads-modification/point';
+
+export const getAllHQAdsForm = '/api/ads-type/all';
 
 // REPORT
 export const reportAdUrl = '/api/reports/ads-board';

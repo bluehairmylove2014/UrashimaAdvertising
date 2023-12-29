@@ -1,9 +1,9 @@
-import OfficerMainTemplate from '@presentational/templates/OfficerMainTemplate';
+import HeadquarterTemplate from '@presentational/templates/HeadquarterTemplate';
 
-export default function AuthLayout({
+export default function MainLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return <OfficerMainTemplate>{children}</OfficerMainTemplate>;
+  return <HeadquarterTemplate>{children}</HeadquarterTemplate>;
 }

@@ -5,8 +5,8 @@ import Notification from '@presentational/atoms/Notification';
 import { activeModuleConfig } from '../constants/modules';
 
 export const metadata = {
-  title: 'Officer Urashima Ads',
-  description: 'Urashima Ads authentication hub',
+  title: 'Headquarter UA',
+  description: 'Urashima Ads',
 };
 const montserrat = Montserrat({
   subsets: ['latin'],
