@@ -56,7 +56,8 @@ namespace UrashimaServer.Controllers
             myResult = myResult.Where(item =>
             {
                 var RequestAddress = _context.AdsPoints.Find(item.AdsPointId)?.Address ?? "No Address";
-                return Helper.IsUnderAuthority(RequestAddress, acc.UnitUnderManagement);
+                var region = HttpContext.Items["address"] as string;
+                return Helper.IsUnderAuthority(RequestAddress, acc.UnitUnderManagement, region);
             }).ToList();
 
             return myResult;

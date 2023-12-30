@@ -111,7 +111,8 @@ namespace UrashimaServer.Controllers
                 });
             }
 
-            if (!Helper.IsUnderAuthority(currentPoint.Address, acc.UnitUnderManagement))
+            var region = HttpContext.Items["address"] as string;
+            if (!Helper.IsUnderAuthority(currentPoint.Address, acc.UnitUnderManagement, region))
             {
                 return BadRequest(new
                 {
@@ -163,7 +164,8 @@ namespace UrashimaServer.Controllers
                 });
             }
 
-            if (!Helper.IsUnderAuthority(currentPoint.Address, acc.UnitUnderManagement))
+            var region = HttpContext.Items["address"] as string;
+            if (!Helper.IsUnderAuthority(currentPoint.Address, acc.UnitUnderManagement, region))
             {
                 return BadRequest(new
                 {

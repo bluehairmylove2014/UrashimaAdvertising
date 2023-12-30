@@ -44,34 +44,15 @@ namespace UrashimaServer.Common.Helper
             }
         }
 
-        public static bool IsUnderAuthority(string address, string managementUnit, Address? addressObj = null)
+        public static bool IsUnderAuthority(string address, string managementUnit, string? region)
         {
-            var finalAddress = GetUnitUnderManagement(addressObj);
+            if (string.IsNullOrEmpty(region))
+            {
+                return Regex.IsMatch(address, $@"\b(?i){managementUnit}\b");
+            }
 
-            finalAddress = string.IsNullOrEmpty(finalAddress) ? managementUnit : finalAddress;
-
-            return !string.IsNullOrEmpty(finalAddress) && Regex.IsMatch(address, $@"\b(?i){finalAddress}\b");
-        }
-
-        public static string GetUnitUnderManagement(Address? address)
-        {
-            if (address == null) return string.Empty;
-            if (address.Ward == null && address.District == null)
-            {
-                return string.Empty;
-            }
-            else if (address.Ward == null)
-            {
-                return address.District!;
-            }
-            else if (address.District == null)
-            {
-                return address.Ward;
-            }
-            else
-            {
-                return address.Ward + ", " + address.District;
-            }
+            var regions = region.Split("|");
+            return regions.Any(addr => Regex.IsMatch(address, $@"\b(?i){addr}\b"));
         }
 
         public static bool IsAuthorizedOrigin(string origin, string role)

@@ -18,7 +18,7 @@ namespace UrashimaServer.Middlewares
 
                 string json = JsonSerializer.Serialize(new
                 {
-                    Message = ex.Message
+                    message = ex.Message
                 });
 
                 context.Response.ContentType = "application/json";

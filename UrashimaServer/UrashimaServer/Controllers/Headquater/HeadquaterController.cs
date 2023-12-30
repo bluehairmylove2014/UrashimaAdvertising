@@ -31,7 +31,7 @@ namespace UrashimaServer.Controllers.Headquater
         }
 
         // GET: api/headquater/ward-district
-        [HttpGet("ward-district"), AuthorizeRoles(GlobalConstant.WardOfficer, GlobalConstant.DistrictOfficer, GlobalConstant.HeadQuater)]
+        [HttpGet("ward-district"), AuthorizeRoles(GlobalConstant.HeadQuater)]
         public async Task<ActionResult<IEnumerable<WardDistrict>>> GetWardDistricts()
         {
             var acc = await _context.Accounts.FirstOrDefaultAsync(acc => acc.Email == User.Identity!.Name);
@@ -52,8 +52,9 @@ namespace UrashimaServer.Controllers.Headquater
             var rawRes = await _context.WardDistricts.ToListAsync();
             if (acc.Role == GlobalConstant.WardOfficer || acc.Role == GlobalConstant.DistrictOfficer)
             {
+                var region = HttpContext.Items["address"] as string;
                 var result = rawRes.Where(p => {
-                    return Helper.IsUnderAuthority($"{p.Ward}, {p.District}" , acc.UnitUnderManagement);
+                    return Helper.IsUnderAuthority($"{p.Ward}, {p.District}" , acc.UnitUnderManagement, region);
                 }).ToList();
 
                 return result;

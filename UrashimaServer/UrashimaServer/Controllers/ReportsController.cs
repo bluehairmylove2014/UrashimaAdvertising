@@ -172,7 +172,9 @@ namespace UrashimaServer.Controllers
                 .Include(r => r.Images)
                 .ToListAsync();
 
-            rawResult = rawResult.Where(r => Helper.IsUnderAuthority(r.Address, acc.UnitUnderManagement, HttpContext.Items["address"] as Address)).ToList();
+            var region = HttpContext.Items["address"] as string;
+
+            rawResult = rawResult.Where(r => Helper.IsUnderAuthority(r.Address, acc.UnitUnderManagement, region)).ToList();
             
             var result = new List<GetReportDto>();
             foreach (var rawItem in rawResult)
@@ -230,7 +232,8 @@ namespace UrashimaServer.Controllers
                 .Include(r => r.Images)
                 .ToListAsync();
 
-            var updatedItem = rawResult.FirstOrDefault(r => Helper.IsUnderAuthority(r.Address, acc.UnitUnderManagement) && r.Id == updateReport.Id);
+            var region = HttpContext.Items["address"] as string;
+            var updatedItem = rawResult.FirstOrDefault(r => Helper.IsUnderAuthority(r.Address, acc.UnitUnderManagement, region) && r.Id == updateReport.Id);
 
             if (updatedItem is null)
             {

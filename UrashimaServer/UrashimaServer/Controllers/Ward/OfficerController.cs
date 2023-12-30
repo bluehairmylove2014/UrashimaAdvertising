@@ -45,6 +45,7 @@ namespace UrashimaServer.Controllers.Ward
             var adsBoard = await _context.AdsBoards
                 .Where(b => b.Id == id)
                 .Include(b => b.AdsPoint).FirstOrDefaultAsync();
+            var region = HttpContext.Items["address"] as string;
             if (adsBoard is null)
             {
                 return NotFound(new
@@ -52,7 +53,7 @@ namespace UrashimaServer.Controllers.Ward
                     message = "Không tìm thấy bảng quảng cáo."
                 });
             }
-            else if (!Helper.IsUnderAuthority(adsBoard.AdsPoint!.Address, acc.UnitUnderManagement))
+            else if (!Helper.IsUnderAuthority(adsBoard.AdsPoint!.Address, acc.UnitUnderManagement, region))
             {
                 return BadRequest(new
                 {
@@ -89,8 +90,9 @@ namespace UrashimaServer.Controllers.Ward
                 .Include(s => s.Reports)
                 .ToListAsync();
 
+            var region = HttpContext.Items["address"] as string;
             var result = rawBoards
-                .Where(r => Helper.IsUnderAuthority(r.AdsPoint!.Address, acc.UnitUnderManagement))
+                .Where(r => Helper.IsUnderAuthority(r.AdsPoint!.Address, acc.UnitUnderManagement, region))
                 .Select(board => board.AdsCreateRequest?.RequestStatus);
 
             // map each element
@@ -119,7 +121,8 @@ namespace UrashimaServer.Controllers.Ward
             }
 
             var rawResult = await _context.AdsPoints.ToListAsync();
-            rawResult = rawResult.Where(p => Helper.IsUnderAuthority(p.Address, acc.UnitUnderManagement)).ToList();
+            var region = HttpContext.Items["address"] as string;
+            rawResult = rawResult.Where(p => Helper.IsUnderAuthority(p.Address, acc.UnitUnderManagement, region)).ToList();
 
             var res = new List<UserAdsPointBasicDto>();
             foreach (var item in rawResult)
@@ -154,7 +157,7 @@ namespace UrashimaServer.Controllers.Ward
                 .Include(s => s.AdsBoard)
                 .Include(s => s.Images)
                 .FirstOrDefaultAsync();
-
+            var region = HttpContext.Items["address"] as string;
             if (adsPoint == null)
             {
                 return NotFound(new
@@ -162,7 +165,7 @@ namespace UrashimaServer.Controllers.Ward
                     message = "Không tìm thấy điểm quảng cáo."
                 });
             }
-            else if (!Helper.IsUnderAuthority(adsPoint.Address, acc.UnitUnderManagement))
+            else if (!Helper.IsUnderAuthority(adsPoint.Address, acc.UnitUnderManagement, region))
             {
                 return BadRequest(new
                 {
