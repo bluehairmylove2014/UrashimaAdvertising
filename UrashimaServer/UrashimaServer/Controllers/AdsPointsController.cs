@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Drawing;
 using UrashimaServer.Common.Constant;
 using UrashimaServer.Common.CustomAttribute;
 using UrashimaServer.Common.Helper;
@@ -83,8 +84,114 @@ namespace UrashimaServer.Controllers
             return CreatedAtAction("GetAdsPoint", new { id = adsPoint.Id }, adsPoint);
         }
 
-        // POST: api/AdsPoints
-        [HttpPut, AuthorizeRoles(GlobalConstant.HeadQuater)]
+        // Head quater
+        [HttpGet("/api/headquater/ads-point"), AuthorizeRoles(GlobalConstant.HeadQuater)]
+        public async Task<ActionResult<IEnumerable<UserAdsPointBasicDto>>> GetAllAdsPointsHeadQuater()
+        {
+            var acc = await _context.Accounts.FirstOrDefaultAsync(acc => acc.Email == User.Identity!.Name);
+
+            if (acc is null)
+            {
+                return BadRequest(new
+                {
+                    Message = "Vui lòng đăng nhập để tiếp tục",
+                });
+            }
+
+            var rawResult = await _context.AdsPoints.ToListAsync();
+            var region = HttpContext.Items["address"] as string;
+            var result = rawResult
+                .Where(r => Helper.IsUnderAuthority(r.Address, acc.UnitUnderManagement, region));
+
+            var res = new List<UserAdsPointBasicDto>();
+            foreach (var item in rawResult)
+            {
+                var pointDto = _mapper.Map<UserAdsPointBasicDto>(item);
+                res.Add(pointDto);
+            }
+
+            return res;
+        }
+
+        // Head quater
+        [HttpGet("/api/headquater/ads-point/detail"), AuthorizeRoles(GlobalConstant.HeadQuater)]
+        public async Task<ActionResult<UserAdsPointDetailDto>> GetAdsPointHeadQuater([FromQuery] int id)
+        {
+            var acc = await _context.Accounts.FirstOrDefaultAsync(acc => acc.Email == User.Identity!.Name);
+
+            if (acc is null)
+            {
+                return BadRequest(new
+                {
+                    Message = "Vui lòng đăng nhập để tiếp tục",
+                });
+            }
+
+            if (_context.AdsPoints == null)
+            {
+                return NotFound();
+            }
+
+            var adsPoint = (await _context.AdsPoints
+                .Where(adsPoint => adsPoint.Id == id)
+                .Include(s => s.AdsBoard)
+                .Include(s => s.Images)
+                .ToListAsync()).FirstOrDefault();
+
+            if (adsPoint == null)
+            {
+                return NotFound();
+            }
+
+            var region = HttpContext.Items["address"] as string;
+            if (!Helper.IsUnderAuthority(adsPoint.Address, acc.UnitUnderManagement, region))
+            {
+                return BadRequest(new
+                {
+                    Message = "Điểm quảng cáo không nằm trong khu vực bạn quản lí",
+                });
+            }
+
+            var res = _mapper.Map<UserAdsPointDetailDto>(adsPoint);
+
+            return res;
+        }
+
+        // Head quater
+        [HttpPost("/api/headquater/ads-point"), AuthorizeRoles(GlobalConstant.HeadQuater)]
+        public async Task<ActionResult<AdsPoint>> PostAdsPointHeadQuater(PostAdsPointDto adsPoint)
+        {
+            var acc = await _context.Accounts.FirstOrDefaultAsync(acc => acc.Email == User.Identity!.Name);
+            if (_context.AdsBoards == null)
+            {
+                return Problem("Không thể kết nối đến cơ sở dữ liệu");
+            }
+
+            if (acc == null)
+            {
+                return BadRequest(new
+                {
+                    Message = "Vui lòng đăng nhập để tiếp tục"
+                });
+            }
+
+            var region = HttpContext.Items["address"] as string;
+            if (!Helper.IsUnderAuthority(adsPoint.Address, acc.UnitUnderManagement, region))
+            {
+                return BadRequest(new
+                {
+                    Message = "Điểm quảng cáo không nằm trong khu vực bạn quản lí"
+                });
+            }
+
+            _context.AdsPoints.Add(_mapper.Map<AdsPoint>(adsPoint));
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetAdsPoint", new { id = adsPoint.Id }, adsPoint);
+        }
+
+        // Head quater
+        [HttpPut("/api/headquater/ads-point"), AuthorizeRoles(GlobalConstant.HeadQuater)]
         public async Task<ActionResult<AdsPoint>> PutAdsPoint(PostAdsPointDto adsPoint)
         {
             var acc = await _context.Accounts.FirstOrDefaultAsync(acc => acc.Email == User.Identity!.Name);
@@ -136,8 +243,8 @@ namespace UrashimaServer.Controllers
             return Ok(adsPoint);
         }
 
-        // DELETE: api/AdsPoints
-        [HttpDelete, AuthorizeRoles(GlobalConstant.HeadQuater)]
+        // Head quater
+        [HttpDelete("/api/headquater/ads-point"), AuthorizeRoles(GlobalConstant.HeadQuater)]
         public async Task<IActionResult> DeleteAdsPoint([FromQuery] int id)
         {
             var acc = await _context.Accounts.FirstOrDefaultAsync(acc => acc.Email == User.Identity!.Name);
