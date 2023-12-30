@@ -187,18 +187,18 @@ namespace UrashimaServer.Controllers
         }
 
         [Route("/api/officer/reports/detail")]
-        [HttpGet] // , AuthorizeRoles(GlobalConstant.WardOfficer, GlobalConstant.DistrictOfficer, GlobalConstant.HeadQuater)
+        [HttpGet, AuthorizeRoles(GlobalConstant.WardOfficer, GlobalConstant.DistrictOfficer, GlobalConstant.HeadQuater)]
         public async Task<ActionResult<GetReportDetailDto>> GetReportDetailBasedOnRole(int id) // GetReportDetailDto
         {
-            //var acc = await _context.Accounts.FirstOrDefaultAsync(acc => acc.Email == User.Identity!.Name);
+            var acc = await _context.Accounts.FirstOrDefaultAsync(acc => acc.Email == User.Identity!.Name);
 
-            //if (acc is null)
-            //{
-            //    return BadRequest(new
-            //    {
-            //        Message = "Something went wrong with your account. Please login again!",
-            //    });
-            //}
+            if (acc is null)
+            {
+                return BadRequest(new
+                {
+                    Message = "Vui lòng đăng nhập để tiếp tục",
+                });
+            }
 
             var rawResult = await _context.Reports.Where(r => r.Id == id)
                 .Include(r => r.AdsBoard)
@@ -206,10 +206,14 @@ namespace UrashimaServer.Controllers
                 .Include(r => r.Location)
                 .FirstOrDefaultAsync();
 
-            //if (rawResult is null || !Helper.IsUnderAuthority(rawResult.Address, acc.UnitUnderManagement))
-            //{
-            //    return NotFound();
-            //}
+            var region = HttpContext.Items["address"] as string;
+            if (rawResult is null)
+            {
+                return NotFound("Không tìm thấy report dựa trên id đã cung cấp.");
+            } else if (!Helper.IsUnderAuthority(rawResult.Address, acc.UnitUnderManagement, region))
+            {
+                return BadRequest("Báo cáo này không thuộc quyền quản lý.");
+            }
 
             return Ok(_mapper.Map<GetReportDetailDto>(rawResult));
         }
