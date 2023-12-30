@@ -71,6 +71,23 @@ namespace UrashimaServer.Migrations
                     b.ToTable("AdsCreationRequests");
                 });
 
+            modelBuilder.Entity("UrashimaServer.Database.Models.AdsFormType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AdsFormTypes");
+                });
+
             modelBuilder.Entity("UrashimaServer.Database.Models.AdsType", b =>
                 {
                     b.Property<int>("Id")
@@ -147,6 +164,23 @@ namespace UrashimaServer.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Locations");
+                });
+
+            modelBuilder.Entity("UrashimaServer.Database.Models.LocationType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("LocationTypes");
                 });
 
             modelBuilder.Entity("UrashimaServer.Database.Models.PointModify", b =>

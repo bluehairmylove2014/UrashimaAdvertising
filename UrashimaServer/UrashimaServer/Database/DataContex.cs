@@ -20,6 +20,8 @@ namespace UrashimaServer.Database
         public DbSet<WardDistrict> WardDistricts { get; set; }
         public DbSet<ReportType> ReportTypes { get; set; }
         public DbSet<AdsType> AdsTypes { get; set; }
+        public DbSet<LocationType> LocationTypes { get; set; }
+        public DbSet<AdsFormType> AdsFormTypes { get; set; }
 
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         { }

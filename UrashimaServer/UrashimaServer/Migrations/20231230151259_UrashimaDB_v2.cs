@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace UrashimaServer.Migrations
 {
     /// <inheritdoc />
-    public partial class UrashimaDB_v1 : Migration
+    public partial class UrashimaDB_v2 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -37,6 +37,19 @@ namespace UrashimaServer.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "AdsFormTypes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AdsFormTypes", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AdsPoints",
                 columns: table => new
                 {
@@ -56,6 +69,19 @@ namespace UrashimaServer.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "AdsTypes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AdsTypes", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Locations",
                 columns: table => new
                 {
@@ -68,6 +94,19 @@ namespace UrashimaServer.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Locations", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "LocationTypes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LocationTypes", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -89,6 +128,19 @@ namespace UrashimaServer.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_PointModifies", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ReportTypes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ReportTypes", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -340,16 +392,28 @@ namespace UrashimaServer.Migrations
                 name: "Accounts");
 
             migrationBuilder.DropTable(
+                name: "AdsFormTypes");
+
+            migrationBuilder.DropTable(
                 name: "AdsPointImages");
 
             migrationBuilder.DropTable(
+                name: "AdsTypes");
+
+            migrationBuilder.DropTable(
                 name: "BoardModifies");
+
+            migrationBuilder.DropTable(
+                name: "LocationTypes");
 
             migrationBuilder.DropTable(
                 name: "PointModifyImages");
 
             migrationBuilder.DropTable(
                 name: "ReportImages");
+
+            migrationBuilder.DropTable(
+                name: "ReportTypes");
 
             migrationBuilder.DropTable(
                 name: "WardDistricts");

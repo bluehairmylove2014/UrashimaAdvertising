@@ -206,5 +206,33 @@ namespace UrashimaServer.Controllers.Headquater
 
             return NoContent();
         }
+
+        #region LOCATION_TYPES
+        // GET: api/AdsTypes
+        [HttpGet("location-type"), AuthorizeRoles(GlobalConstant.HeadQuater)]
+        public async Task<ActionResult<IEnumerable<LocationType>>> GetLocationTypes()
+        {
+            if (_context.LocationTypes == null)
+            {
+                return Problem("Không thể kết nối đến cơ sở dữ liệu");
+            }
+            return await _context.LocationTypes.ToListAsync();
+        }
+
+        #endregion
+
+        #region ADS_FORM_TYPES
+        // GET: api/AdsTypes
+        [HttpGet("ads-form-type"), AuthorizeRoles(GlobalConstant.HeadQuater)]
+        public async Task<ActionResult<IEnumerable<AdsFormType>>> GetAdsFormTypes()
+        {
+            if (_context.AdsFormTypes == null)
+            {
+                return Problem("Không thể kết nối đến cơ sở dữ liệu");
+            }
+            return await _context.AdsFormTypes.ToListAsync();
+        }
+
+        #endregion
     }
 }
