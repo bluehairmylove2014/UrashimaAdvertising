@@ -19,12 +19,14 @@ import {
   useYupValidationResolver,
 } from '@utils/validators/yup';
 import ImageInput from '@presentational/atoms/ImageInput';
-import { createRef, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useModifyAdLocationDetail } from './../../../business-layer/src/business-logic/lib/officerAds/process/hooks/useModifyAdLocationDetail';
 import CustomButton from '@presentational/atoms/CustomButton';
 import ModifyReasonPopup from '@presentational/molecules/ModifyReasonPopup';
 import { useUpload } from '@business-layer/business-logic/lib/sirv';
 import { renameImageWithUniqueName } from '@utils/helpers/imageName';
+import { useRouter } from 'next/navigation';
+import { OFFICER_PAGES } from '@constants/officerPages';
 
 const DEFAULT_THUMBNAIL_WIDTH = 120;
 const DEFAULT_THUMBNAIL_HEIGHT = 120;
@@ -40,6 +42,7 @@ function EditAdDetail({
   adsFormOptions: modernSelectOptionType[];
   adsTypeOptions: modernSelectOptionType[];
 }) {
+  const router = useRouter();
   const editLocationResolver = useYupValidationResolver(
     editLocationDetailSchema
   );
@@ -66,10 +69,6 @@ function EditAdDetail({
   const [isReasonPopupOpen, setIsReasonPopupOpen] = useState<boolean>(false);
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const { onUpload } = useUpload();
-
-  useEffect(() => {
-    console.log('log: ', additionLocationImages.current);
-  }, [additionLocationImages.current.length]);
 
   // methods
   const onSuccessSubmit = (data: IAdLocationDetail) => {
@@ -222,7 +221,10 @@ function EditAdDetail({
         ...modifyData,
         reasons: reasons,
       })
-        .then((msg) => showSuccess(msg))
+        .then((msg) => {
+          showSuccess(msg);
+          router.push(OFFICER_PAGES.ADS_BOARD + `/${adData.id}`);
+        })
         .catch((error) => showError(error.message))
         .finally(() => {
           Object.keys(modifyData).forEach((key) =>

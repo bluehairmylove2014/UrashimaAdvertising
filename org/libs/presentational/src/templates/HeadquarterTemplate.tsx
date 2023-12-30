@@ -3,11 +3,11 @@ import React from 'react';
 
 const HeadquarterTemplate = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="w-screen h-screen grid grid-cols-5 grid-rows-1 gap-4">
+    <div className="w-screen h-screen grid grid-cols-5 grid-rows-1 gap-0">
       <div className="col-span-1">
         <HQNavbar />
       </div>
-      <div className="col-span-4">{children}</div>
+      <div className="col-span-4 ml-8">{children}</div>
     </div>
   );
 };

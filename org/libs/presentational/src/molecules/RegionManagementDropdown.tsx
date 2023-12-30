@@ -30,7 +30,7 @@ function RegionManagementDropdown({ regionData }: regionManagementPopup) {
   }, [selectedRegions]);
 
   const handleClickRegion = (region: IRegion): void => {
-    const target = `${region.ward},${region.district}`;
+    const target = `${region.ward}, ${region.district}`;
 
     setRegionsChose(
       regionsChose.includes(target)
@@ -67,7 +67,7 @@ function RegionManagementDropdown({ regionData }: regionManagementPopup) {
   return (
     <>
       <button
-        className="text-xs text-white hover:text-orange-400 transition-colors"
+        className="text-xs text-white hover:text-orange-400 transition-colors font-semibold"
         onClick={() => toggleClass(dropdownRef.current, '!block')}
       >
         Xem khu vực&nbsp;<i className="fi fi-sr-caret-down"></i>
@@ -93,7 +93,7 @@ function RegionManagementDropdown({ regionData }: regionManagementPopup) {
               x
             </button>
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-4 overflow-y-auto max-h-52">
             {regionData ? (
               regionData.map((region) => (
                 <button
@@ -102,7 +102,7 @@ function RegionManagementDropdown({ regionData }: regionManagementPopup) {
                   className={`w-full py-3 text-xs font-semibold  whitespace-normal rounded hover:bg-cyan-200 hover:text-black transition-colors ${
                     regionsChose &&
                     regionsChose.findIndex(
-                      (r) => r === `${region.ward},${region.district}`
+                      (r) => r === `${region.ward}, ${region.district}`
                     ) !== -1
                       ? '!bg-cyan-300 text-black'
                       : 'bg-zinc-100 text-black/60'

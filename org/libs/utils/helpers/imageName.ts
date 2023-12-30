@@ -8,6 +8,6 @@ export function generateUniqueImageName(): string {
 }
 
 export function renameImageWithUniqueName(img: File): File {
-  const newName = generateUniqueImageName();
+  const newName = generateUniqueImageName() + '.' + img.type.split('/')[1];
   return new File([img], newName, { type: img.type });
 }

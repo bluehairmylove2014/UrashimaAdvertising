@@ -1,3 +1,4 @@
+import { getRegionsFromCookie } from '@business-layer/business-logic/lib/regionManagement/process/helpers/regionsCookie';
 import {
   adsPointModificationUrl,
   getAdDetailsUrl,
@@ -71,6 +72,7 @@ export class AdsService extends Services {
     this.abortController = new AbortController();
     try {
       if (token) {
+        console.log('CALL GET WITH: ', getRegionsFromCookie());
         const response = await this.fetchApi<
           typeof getAllOfficerAdsResponseSchema,
           getAllOfficerAdsResponseType
@@ -85,6 +87,7 @@ export class AdsService extends Services {
           transformResponse: (res) => res,
           withCredentials: true,
         });
+        console.log('response data length: ', response);
         return response;
       } else {
         throw new Error('Unauthorized');
