@@ -26,6 +26,7 @@ import {
 import { useUpload } from '@business-layer/business-logic/lib/sirv';
 import { useRouter } from 'next/navigation';
 import { OFFICER_PAGES } from '@constants/officerPages';
+import { renameImageWithUniqueName } from '@utils/helpers/imageName';
 
 type createNewApproveFormType = Pick<
   IApproveBase,
@@ -120,7 +121,10 @@ function CreateNewApproveForm({
       return;
     }
 
-    onUpload({ imgFile: adBoardImage, path: '/UrashimaAds Hub/locations' })
+    onUpload({
+      imgFile: renameImageWithUniqueName(adBoardImage),
+      path: '/UrashimaAds Hub/locations',
+    })
       .then((imgPath) =>
         onCreateNewAdBoardApproveRequest({
           ...data,

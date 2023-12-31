@@ -5,13 +5,13 @@ export interface PaginationState {
 
 export type PaginationAction =
   | {
-      type: 'SET_PAGINATION_DATA';
-      payload: IPagination;
-    }
+    type: 'SET_PAGINATION_DATA';
+    payload: IPagination;
+  }
   | {
-      type: 'SET_CURRENT_PAGE';
-      payload: number;
-    };
+    type: 'SET_CURRENT_PAGE';
+    payload: number;
+  };
 
 export type PaginationContextType = {
   state: PaginationState;

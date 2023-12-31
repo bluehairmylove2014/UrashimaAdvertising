@@ -1,6 +1,8 @@
+import { getRegionsFromCookie } from '@business-layer/business-logic/lib/regionManagement/process/helpers/regionsCookie';
 import {
   editReportUrl,
   getAllOfficerReportsUrl,
+  getOfficerReportDetailUrl,
   reportAdUrl,
   reportLocationUrl,
 } from '../../config/apis';
@@ -79,6 +81,7 @@ export class ReportService extends Services {
           schema: getAllOfficerReportsResponseSchema,
           headers: {
             Authorization: `Bearer ${token}`,
+            Regions: encodeURIComponent(getRegionsFromCookie() || ''),
           },
           signal: this.abortController.signal,
           transformResponse: (res) => res,
@@ -103,13 +106,14 @@ export class ReportService extends Services {
           getOfficerReportDetailResponseType
         >({
           method: 'GET',
-          url: getAllOfficerReportsUrl,
+          url: getOfficerReportDetailUrl,
           schema: getOfficerReportDetailResponseSchema,
           params: {
             id,
           },
           headers: {
             Authorization: `Bearer ${token}`,
+            Regions: encodeURIComponent(getRegionsFromCookie() || ''),
           },
           signal: this.abortController.signal,
           transformResponse: (res) => res,
@@ -122,23 +126,32 @@ export class ReportService extends Services {
       throw this.handleError(error);
     }
   };
-  officerEditReport = async (
-    data: editReportParamsType
-  ): Promise<editReportResponseType> => {
+  officerEditReport = async ({
+    data,
+    token,
+  }: editReportParamsType): Promise<editReportResponseType> => {
     this.abortController = new AbortController();
     try {
-      const response = await this.fetchApi<
-        typeof reportResponseSchema,
-        editReportResponseType
-      >({
-        method: 'PUT',
-        url: editReportUrl,
-        schema: reportResponseSchema,
-        data,
-        signal: this.abortController.signal,
-        transformResponse: (res) => res,
-      });
-      return response;
+      if (token) {
+        const response = await this.fetchApi<
+          typeof reportResponseSchema,
+          editReportResponseType
+        >({
+          method: 'PUT',
+          url: editReportUrl,
+          schema: reportResponseSchema,
+          data,
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Regions: encodeURIComponent(getRegionsFromCookie() || ''),
+          },
+          signal: this.abortController.signal,
+          transformResponse: (res) => res,
+        });
+        return response;
+      } else {
+        throw new Error('Unauthorized');
+      }
     } catch (error) {
       throw this.handleError(error);
     }

@@ -61,9 +61,8 @@ function ModifyReasonPopup({
         </div>
         <div className="flex flex-row justify-end mt-2">
           <small
-            className={`${
-              reasonsWatch.length > 1000 ? 'text-red-600' : 'text-black'
-            }`}
+            className={`${reasonsWatch.length > 1000 ? 'text-red-600' : 'text-black'
+              }`}
           >
             {reasonsWatch.length} / 1000
           </small>

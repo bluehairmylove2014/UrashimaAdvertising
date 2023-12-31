@@ -7,7 +7,7 @@ function isDevelopment(): boolean {
 }
 
 const MOCK_API = {
-  DELAY_RESPONSE_MOCK_API: 1000,
+  DELAY_RESPONSE_MOCK_API: 200,
 };
 const axiosInstance = axiosLib.create();
 const axiosMockInstance = axiosLib.create();

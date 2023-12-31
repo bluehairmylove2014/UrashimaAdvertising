@@ -16,14 +16,5 @@
     "phone": "0337839146",
     "role": "HeadQuater",
     "unitUnderManagement": ""
-  },
-  {
-    "id": 3,
-    "email": "duongminh@gmail.com",
-    "fullName": "Phan Dương Minh",
-    "dateOfBirth": "2002-12-18T14:23:06.947Z",
-    "phone": "0337839146",
-    "role": "DistrictOfficer",
-    "unitUnderManagement": "Da Kao Ward, District 1|Binh Chanh Ward, District 2"
   }
 ]

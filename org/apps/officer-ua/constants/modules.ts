@@ -5,4 +5,5 @@ export const activeModuleConfig: moduleKeyList[] = [
   'officer-ad',
   'pagination',
   'approve',
+  'regions',
 ];

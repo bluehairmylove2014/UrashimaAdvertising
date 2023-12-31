@@ -4,7 +4,7 @@ import { adBoardSchema, adLocationSchema } from '../adsService/schema';
 const reportResponseSchema = z.object({
   message: z.string(),
 });
-const getAllOfficerReportsResponseSchema = z.object({
+const officerReportSchema = z.object({
   id: z.number(),
   address: z.string(),
   reportType: z.string(),
@@ -21,19 +21,19 @@ const getAllOfficerReportsResponseSchema = z.object({
   treatmentProcess: z.string(),
   submissionDate: z.string(),
 });
-const getOfficerReportDetailResponseSchema =
-  getAllOfficerReportsResponseSchema.extend({
-    adsBoard: adBoardSchema.nullable(),
-    adsPoint: adLocationSchema.nullable(),
-    location: z
-      .object({
-        id: z.number(),
-        longitude: z.number(),
-        latitude: z.number(),
-        address: z.string(),
-      })
-      .nullable(),
-  });
+const getAllOfficerReportsResponseSchema = z.array(officerReportSchema);
+const getOfficerReportDetailResponseSchema = officerReportSchema.extend({
+  adsBoard: adBoardSchema.nullable(),
+  adsPoint: adLocationSchema.nullable(),
+  location: z
+    .object({
+      id: z.number(),
+      longitude: z.number(),
+      latitude: z.number(),
+      address: z.string(),
+    })
+    .nullable(),
+});
 
 export {
   reportResponseSchema,

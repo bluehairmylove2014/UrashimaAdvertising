@@ -6,3 +6,5 @@ export * from './sirvService';
 export * from './geocodeService';
 export * from './accountService';
 export * from './approveService';
+export * from './friendlyCaptchaService';
+export * from './regionService';

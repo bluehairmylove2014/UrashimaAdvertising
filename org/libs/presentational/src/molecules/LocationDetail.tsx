@@ -36,9 +36,8 @@ function LocationDetail({
   return (
     <>
       <div
-        className={`fixed ${
-          isActive ? 'bottom-6' : '-bottom-full'
-        } bg-white left-1/2 transform -translate-x-1/2 rounded shadow-sm transition-transform w-4/12 h-fit p-3`}
+        className={`fixed ${isActive ? 'bottom-6' : '-bottom-full'
+          } bg-white left-1/2 transform -translate-x-1/2 rounded shadow-sm transition-transform w-4/12 h-fit p-3`}
         style={{ minHeight: '120px' }}
       >
         {locationData ? (

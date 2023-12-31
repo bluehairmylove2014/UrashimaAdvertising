@@ -1,3 +1,4 @@
+import { getRegionsFromCookie } from '@business-layer/business-logic/lib/regionManagement/process/helpers/regionsCookie';
 import {
   adsPointModificationUrl,
   getAdDetailsUrl,
@@ -80,15 +81,18 @@ export class AdsService extends Services {
           schema: getAllOfficerAdsResponseSchema,
           headers: {
             Authorization: `Bearer ${token}`,
+            Regions: encodeURIComponent(getRegionsFromCookie() || ''),
           },
           signal: this.abortController.signal,
           transformResponse: (res) => res,
         });
+        console.log('response data length: ', response);
         return response;
       } else {
         throw new Error('Unauthorized');
       }
     } catch (error) {
+      console.log('CALL GET ERIOR: ', error);
       throw this.handleError(error);
     }
   };
@@ -111,6 +115,7 @@ export class AdsService extends Services {
           },
           headers: {
             Authorization: `Bearer ${token}`,
+            Regions: encodeURIComponent(getRegionsFromCookie() || ''),
           },
           signal: this.abortController.signal,
           transformResponse: (res) => res,
@@ -120,8 +125,7 @@ export class AdsService extends Services {
         throw new Error('Unauthorized');
       }
     } catch (error) {
-      throw new Error('Unauthorized');
-      // throw this.handleError(error);
+      throw this.handleError(error);
     }
   };
   adsPointModification = async (

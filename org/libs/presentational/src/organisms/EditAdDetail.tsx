@@ -8,7 +8,6 @@ import Thumbnail from '@presentational/atoms/Thumbnail';
 import TableRow from '@presentational/molecules/TableRow';
 import RowLoader from '@presentational/atoms/RowLoader';
 import EmptyIcon from '@presentational/atoms/EmptyIcon';
-import { formatDate } from '@utils/helpers';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import ModernSelect, {
   modernSelectOptionType,
@@ -20,11 +19,14 @@ import {
   useYupValidationResolver,
 } from '@utils/validators/yup';
 import ImageInput from '@presentational/atoms/ImageInput';
-import { createRef, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useModifyAdLocationDetail } from './../../../business-layer/src/business-logic/lib/officerAds/process/hooks/useModifyAdLocationDetail';
 import CustomButton from '@presentational/atoms/CustomButton';
 import ModifyReasonPopup from '@presentational/molecules/ModifyReasonPopup';
 import { useUpload } from '@business-layer/business-logic/lib/sirv';
+import { renameImageWithUniqueName } from '@utils/helpers/imageName';
+import { useRouter } from 'next/navigation';
+import { OFFICER_PAGES } from '@constants/officerPages';
 
 const DEFAULT_THUMBNAIL_WIDTH = 120;
 const DEFAULT_THUMBNAIL_HEIGHT = 120;
@@ -40,6 +42,7 @@ function EditAdDetail({
   adsFormOptions: modernSelectOptionType[];
   adsTypeOptions: modernSelectOptionType[];
 }) {
+  const router = useRouter();
   const editLocationResolver = useYupValidationResolver(
     editLocationDetailSchema
   );
@@ -67,10 +70,6 @@ function EditAdDetail({
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const { onUpload } = useUpload();
 
-  useEffect(() => {
-    console.log('log: ', additionLocationImages.current);
-  }, [additionLocationImages.current.length]);
-
   // methods
   const onSuccessSubmit = (data: IAdLocationDetail) => {
     setIsReasonPopupOpen(true);
@@ -90,11 +89,13 @@ function EditAdDetail({
   const handleAddLocationImage = (images: FileList) => {
     const imgBlobList: { image: string }[] = [];
     Array.from(images).map((img: File) => {
-      const imgBlobUrl = URL.createObjectURL(img);
+      const imgWithNewName = renameImageWithUniqueName(img);
+
+      const imgBlobUrl = URL.createObjectURL(imgWithNewName);
       imgBlobList.push({ image: imgBlobUrl });
       additionLocationImages.current.push({
         blobUrl: imgBlobUrl,
-        file: img,
+        file: imgWithNewName,
       });
     });
     setValue('images', [...locationImagesWatch, ...imgBlobList]);
@@ -220,7 +221,10 @@ function EditAdDetail({
         ...modifyData,
         reasons: reasons,
       })
-        .then((msg) => showSuccess(msg))
+        .then((msg) => {
+          showSuccess(msg);
+          router.push(OFFICER_PAGES.ADS_BOARD + `/${adData.id}`);
+        })
         .catch((error) => showError(error.message))
         .finally(() => {
           Object.keys(modifyData).forEach((key) =>

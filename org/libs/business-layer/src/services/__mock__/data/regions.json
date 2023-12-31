@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "ward": "Phường Tân Định",
+    "district": "Quận 1"
+  },
+  {
+    "id": 2,
+    "ward": "Phường Đa Kao",
+    "district": "Quận 1"
+  },
+  {
+    "id": 3,
+    "ward": "Phường Bến Nghé",
+    "district": "Quận 1"
+  },
+  {
+    "id": 4,
+    "ward": "Phường Bến Thành",
+    "district": "Quận 1"
+  },
+  {
+    "id": 5,
+    "ward": "Phường Nguyễn Thái Bình",
+    "district": "Quận 1"
+  },
+  {
+    "id": 6,
+    "ward": "Phường Phạm Ngũ Lão",
+    "district": "Quận 1"
+  }
+]

@@ -14,7 +14,6 @@ export const userReportSchema = y.object({
   name: y.string().required('Cần bổ sung họ và tên').max(255),
   email: y.string().email('Email không hợp lệ').required('Cần điền email'),
   phone: y.string().matches(vietnamPhoneNumber, 'Số điện thoại không hợp lệ'),
-  content: y.string().required('Cần điền nội dung báo cáo').max(1000),
 });
 
 export const editLocationDetailSchema = y.object({
@@ -48,6 +47,13 @@ export const editLocationDetailSchema = y.object({
 });
 
 export const reasonsInputSchema = y.object({
+  reasons: y
+    .string()
+    .required('Không được để trống nội dung')
+    .max(1000, 'Nội dung tối đa 1000 ký tự'),
+});
+
+export const responseInputSchema = y.object({
   reasons: y
     .string()
     .required('Không được để trống nội dung')

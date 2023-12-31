@@ -5,7 +5,7 @@ import { Control, Controller, FieldValues, FormState } from 'react-hook-form';
 type authInputParams = {
   name: string;
   label: string;
-  type: 'EMAIL' | 'PHONE_NUMBER' | 'TEXT' | 'LONG_TEXT';
+  type: 'EMAIL' | 'PHONE_NUMBER' | 'TEXT';
   control: Control<FieldValues>;
   disabled?: boolean;
   onChange?: (value: string) => void;
@@ -16,7 +16,6 @@ const inputConfig = {
   EMAIL: { inputType: 'email', labelAdditionStyle: 'top-1/2' },
   PHONE_NUMBER: { inputType: 'text', labelAdditionStyle: 'top-1/2' },
   TEXT: { inputType: 'text', labelAdditionStyle: 'top-1/2' },
-  LONG_TEXT: { inputType: null, labelAdditionStyle: 'top-4' },
 };
 
 function ReportInput({
@@ -55,42 +54,24 @@ function ReportInput({
         control={control}
         disabled={disabled}
         rules={{ required: true }}
-        render={({ field }) =>
-          type === 'LONG_TEXT' ? (
-            <textarea
-              id={name}
-              className="relative outline-none w-full h-20 z-10 bg-transparent px-2 py-1 resize-none text-xs"
-              onFocus={(e) => {
-                addClass(labelRef.current, '!opacity-0');
-              }}
-              {...field}
-              onBlur={(e) => {
-                if (e.target.value.trim().length === 0) {
-                  removeClass(labelRef.current, '!opacity-0');
-                }
-              }}
-              autoComplete="off"
-              ref={textareaRef}
-            />
-          ) : (
-            <input
-              type={inputConfig[type].inputType}
-              id={name}
-              className="relative outline-none w-full h-9 z-10 bg-transparent px-2 text-xs"
-              onFocus={(e) => {
-                addClass(labelRef.current, '!opacity-0');
-              }}
-              {...field}
-              onBlur={(e) => {
-                if (e.target.value.trim().length === 0) {
-                  removeClass(labelRef.current, '!opacity-0');
-                }
-              }}
-              autoComplete="off"
-              ref={inputRef}
-            />
-          )
-        }
+        render={({ field }) => (
+          <input
+            type={inputConfig[type].inputType}
+            id={name}
+            className="relative outline-none w-full h-9 z-10 bg-transparent px-2 text-xs"
+            onFocus={(e) => {
+              addClass(labelRef.current, '!opacity-0');
+            }}
+            {...field}
+            onBlur={(e) => {
+              if (e.target.value.trim().length === 0) {
+                removeClass(labelRef.current, '!opacity-0');
+              }
+            }}
+            autoComplete="off"
+            ref={inputRef}
+          />
+        )}
       />
     </div>
   );

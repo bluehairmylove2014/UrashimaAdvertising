@@ -1,17 +1,39 @@
 import { Carousel } from 'react-responsive-carousel';
 import CustomImage from '@presentational/atoms/CustomImage';
 import CustomButtonIcon from '@presentational/atoms/CustomButtonIcon';
-import { ILocationReport } from '@business-layer/services/entities';
+import { ILocation, ILocationReport } from '@business-layer/services/entities';
+import { useGetLocationDetail } from '@business-layer/business-logic/lib/geocode';
+import { useEffect, useState } from 'react';
+import { useNotification } from '@presentational/atoms/Notification';
+import CommonLoader from '@presentational/atoms/CommonLoader';
+import DetailLoader from '@presentational/atoms/DetailLoader';
 
 function ReportDetailPoint({
+  backActive,
   infoPointReport,
   handleClose,
   handleBack,
 }: {
+  backActive: boolean;
   infoPointReport: ILocationReport;
   handleClose: () => void;
   handleBack: () => void;
 }) {
+  const { showError } = useNotification();
+  const { onGetLocationDetail } = useGetLocationDetail();
+  const [infoUnknowPointReported, setInfoUnknowPointReported] = useState<ILocation | undefined>(undefined);
+
+  useEffect(() => {
+    onGetLocationDetail({ latitude: infoPointReport.latitude, longitude: infoPointReport.longitude })
+      .then((data) => {
+        setInfoUnknowPointReported(data);
+      })
+      .catch((error) => {
+        showError('Lỗi lấy dữ liệu địa điểm');
+      });
+  }, [infoUnknowPointReported])
+
+
   return (
     <div
       className="h-[100%] w-[25%] bg-white shadow-md min-w-[45vh] fixed overflow-y-scroll scrollbar z-40"
@@ -34,21 +56,24 @@ function ReportDetailPoint({
       </div>
 
       {/* Back Button */}
-      <div className="absolute top-0 left-0 z-10 mt-2 mx-1">
-        <CustomButtonIcon
-          widthIcon="0.6rem"
-          heightIcon="0.6rem"
-          type="button"
-          pathImage="/assets/undo.png"
-          alt=""
-          border={1}
-          colorBorder="blue"
-          round={4}
-          onClick={handleBack}
-        >
-          {' '}
-        </CustomButtonIcon>
-      </div>
+      {backActive ?
+        <div className="absolute top-0 left-0 z-10 mt-2 mx-1">
+          <CustomButtonIcon
+            widthIcon="0.6rem"
+            heightIcon="0.6rem"
+            type="button"
+            pathImage="/assets/undo.png"
+            alt=""
+            border={1}
+            colorBorder="blue"
+            round={4}
+            onClick={handleBack}
+          >
+            {' '}
+          </CustomButtonIcon>
+        </div>
+        : <></>
+      }
 
       <div className="mx-3 ">
         <p className="text-center text-[0.9rem] font-bold my-4">BÁO CÁO</p>
@@ -200,26 +225,40 @@ function ReportDetailPoint({
           </>
         ) : (
           <>
-            <div className="flex mt-2">
-              <i className="fi fi-ss-star text-sky-500 text-[0.65rem] mr-1"></i>
-              <p className="text-[0.7rem] text-neutral-600">
-                Vĩ độ:
-                <span className="font-semibold ">
-                  {' '}
-                  {infoPointReport.latitude}
-                </span>
-              </p>
-            </div>
-            <div className="flex mt-1">
-              <i className="fi fi-ss-star text-sky-500 text-[0.65rem] mr-1"></i>
-              <p className="text-[0.7rem] text-neutral-600">
-                Kinh độ:
-                <span className="font-semibold ">
-                  {' '}
-                  {infoPointReport.longitude}
-                </span>
-              </p>
-            </div>
+            {infoUnknowPointReported ?
+              <>
+                <div className="flex mt-2">
+                  <i className="fi fi-ss-star text-sky-500 text-[0.65rem] mr-1"></i>
+                  <p className="text-[0.7rem] text-neutral-600">
+                    Địa điểm:
+                    <span className="font-semibold ">
+                      {infoUnknowPointReported?.display_name}
+                    </span>
+                  </p>
+                </div>
+                <div className="flex mt-1">
+                  <i className="fi fi-ss-star text-sky-500 text-[0.65rem] mr-1"></i>
+                  <p className="text-[0.7rem] text-neutral-600">
+                    Kinh độ:
+                    <span className="font-semibold ">
+                      {infoPointReport.longitude}
+                    </span>
+                  </p>
+                </div>
+                <div className="flex mt-1">
+                  <i className="fi fi-ss-star text-sky-500 text-[0.65rem] mr-1"></i>
+                  <p className="text-[0.7rem] text-neutral-600">
+                    Vĩ độ:
+                    <span className="font-semibold ">
+                      {infoPointReport.latitude}
+                    </span>
+                  </p>
+                </div>
+              </>
+              :
+              <DetailLoader />
+            }
+
           </>
         )}
       </div>

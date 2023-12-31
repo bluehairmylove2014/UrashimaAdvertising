@@ -82,7 +82,10 @@ function ImageInput({
         ref={inputRef}
         multiple={true}
         max={limit || 2}
-        onChange={(e) => handleUploadImage(e.target.files)}
+        onChange={(e) => {
+          handleUploadImage(e.target.files);
+          e.target.value = '';
+        }}
       />
     </>
   );
