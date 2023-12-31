@@ -1,4 +1,5 @@
 import './global.scss';
+import '@flaticon/flaticon-uicons/css/all';
 import { Montserrat } from 'next/font/google';
 import { BusinessLogicProvider } from '@business-layer/business-logic/provider';
 import Notification from '@presentational/atoms/Notification';
