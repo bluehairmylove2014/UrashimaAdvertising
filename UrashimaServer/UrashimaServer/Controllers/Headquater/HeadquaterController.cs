@@ -52,9 +52,9 @@ namespace UrashimaServer.Controllers.Headquater
             var rawRes = await _context.WardDistricts.ToListAsync();
             if (acc.Role == GlobalConstant.WardOfficer || acc.Role == GlobalConstant.DistrictOfficer)
             {
-                var region = HttpContext.Items["address"] as string;
+                // var region = HttpContext.Items["address"] as string;
                 var result = rawRes.Where(p => {
-                    return Helper.IsUnderAuthority($"{p.Ward}, {p.District}" , acc.UnitUnderManagement, region);
+                    return Helper.IsUnderAuthority($"{p.Ward}, {p.District}" , acc.UnitUnderManagement);
                 }).ToList();
 
                 return result;
