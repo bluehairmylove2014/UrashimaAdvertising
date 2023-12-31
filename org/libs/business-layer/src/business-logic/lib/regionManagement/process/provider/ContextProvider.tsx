@@ -10,9 +10,8 @@ import { RegionService } from '@business-layer/services';
 import { getToken } from '@business-layer/business-logic/lib/auth/process/hooks/useAccessToken';
 
 const regionService = new RegionService();
-async function getRegions() {
+async function getRegions(token: string | null) {
   try {
-    const token = getToken();
     if (token) {
       return await regionService.getRegions(token);
     } else {
@@ -33,9 +32,10 @@ export const ContextProvider: React.FC<ContextProviderType> = ({
   const [state, dispatch] = useReducer(regionManagementReducer, {
     regions: regionsCookieFormat ? regionsCookieFormat.split('|') : null,
   });
+  const token = getToken();
 
   useEffect(() => {
-    getRegions().then((regionData) => {
+    getRegions(token).then((regionData) => {
       if (regionData) {
         const regionsArr = regionData.map((r) => `${r.ward}, ${r.district}`);
         dispatch({
@@ -45,7 +45,7 @@ export const ContextProvider: React.FC<ContextProviderType> = ({
         setRegionsToCookie(regionsArr);
       }
     });
-  }, []);
+  }, [token]);
 
   return (
     <RegionManagementContext.Provider value={{ state, dispatch }}>

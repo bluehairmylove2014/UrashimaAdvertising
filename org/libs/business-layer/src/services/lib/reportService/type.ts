@@ -20,7 +20,10 @@ export type reportLocationParamsType = Pick<
 export type getAllOfficerReportsResponseType = IOfficerReport[];
 export type getOfficerReportDetailResponseType = IOfficerReportDetail;
 
-export type editReportParamsType = IOfficerReport;
+export type editReportParamsType = {
+  data: IOfficerReport;
+  token: string | null;
+};
 export type editReportResponseType = {
   message: string;
 };

@@ -1,19 +1,18 @@
+import { getToken } from '@business-layer/business-logic/lib/auth/process/hooks/useAccessToken';
 import { useOfficerEditReportMutation } from '../../fetching/mutation';
-import { editReportParamsType } from '@business-layer/services';
+import { IOfficerReport } from '@business-layer/services/entities';
 
 type useOfficerEditReportReturnType = {
-  onOfficerEditReport: (reportData: editReportParamsType) => Promise<string>;
+  onOfficerEditReport: (reportData: IOfficerReport) => Promise<string>;
   isLoading: boolean;
 };
 export const useOfficerEditReport = (): useOfficerEditReportReturnType => {
   const officerEditReportMutation = useOfficerEditReportMutation();
 
-  const onOfficerEditReport = (
-    reportData: editReportParamsType
-  ): Promise<string> => {
+  const onOfficerEditReport = (reportData: IOfficerReport): Promise<string> => {
     return new Promise((resolve, reject) => {
       officerEditReportMutation
-        .mutateAsync(reportData)
+        .mutateAsync({ data: reportData, token: getToken() })
         .then((data) => resolve(data.message))
         .catch((error) => reject(error));
     });

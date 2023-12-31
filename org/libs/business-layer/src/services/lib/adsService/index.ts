@@ -72,7 +72,6 @@ export class AdsService extends Services {
     this.abortController = new AbortController();
     try {
       if (token) {
-        console.log('CALL GET WITH: ', getRegionsFromCookie());
         const response = await this.fetchApi<
           typeof getAllOfficerAdsResponseSchema,
           getAllOfficerAdsResponseType
@@ -82,10 +81,10 @@ export class AdsService extends Services {
           schema: getAllOfficerAdsResponseSchema,
           headers: {
             Authorization: `Bearer ${token}`,
+            Regions: encodeURIComponent(getRegionsFromCookie() || ''),
           },
           signal: this.abortController.signal,
           transformResponse: (res) => res,
-          withCredentials: true,
         });
         console.log('response data length: ', response);
         return response;
@@ -93,6 +92,7 @@ export class AdsService extends Services {
         throw new Error('Unauthorized');
       }
     } catch (error) {
+      console.log('CALL GET ERIOR: ', error);
       throw this.handleError(error);
     }
   };
@@ -115,6 +115,7 @@ export class AdsService extends Services {
           },
           headers: {
             Authorization: `Bearer ${token}`,
+            Regions: encodeURIComponent(getRegionsFromCookie() || ''),
           },
           signal: this.abortController.signal,
           transformResponse: (res) => res,

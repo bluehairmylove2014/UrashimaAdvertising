@@ -1,3 +1,4 @@
+import { getRegionsFromCookie } from '@business-layer/business-logic/lib/regionManagement/process/helpers/regionsCookie';
 import {
   getApproveListUrl,
   createNewAdBoardApproveRequestUrl,
@@ -34,10 +35,10 @@ export class ApproveService extends Services {
           schema: getApproveListResponseSchema,
           headers: {
             Authorization: `Bearer ${token}`,
+            Regions: encodeURIComponent(getRegionsFromCookie() || ''),
           },
           signal: this.abortController.signal,
           transformResponse: (res) => res,
-          withCredentials: true,
         });
         return response;
       } else {
@@ -64,6 +65,7 @@ export class ApproveService extends Services {
           data: approveData,
           headers: {
             Authorization: `Bearer ${token}`,
+            Regions: encodeURIComponent(getRegionsFromCookie() || ''),
           },
           signal: this.abortController.signal,
           transformResponse: (res) => res,
