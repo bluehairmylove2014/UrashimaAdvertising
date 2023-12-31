@@ -48,9 +48,9 @@ builder.Services.AddCors(options => options.AddPolicy(name: "NgOrigins",
         policy.WithOrigins("http://localhost:2808").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
         policy.WithOrigins("http://localhost:2816").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
         policy.WithOrigins("http://localhost:2016").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
-        policy.WithOrigins("http://www.urashima-ua.site").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
-        policy.WithOrigins("http://www.officer.urashima-ua.site").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
-        policy.WithOrigins("http://www.hq.urashima-ua.site").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
+        policy.WithOrigins("https://www.urashima-ua.site").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
+        policy.WithOrigins("https://www.officer.urashima-ua.site").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
+        policy.WithOrigins("https://www.hq.urashima-ua.site").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
     }));
 // Auto Mapper
 builder.Services.AddAutoMapper(typeof(MappingProfile));
