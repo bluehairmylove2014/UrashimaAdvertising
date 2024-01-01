@@ -92,7 +92,6 @@ export class AdsService extends Services {
         throw new Error('Unauthorized');
       }
     } catch (error) {
-      console.log('CALL GET ERIOR: ', error);
       throw this.handleError(error);
     }
   };
