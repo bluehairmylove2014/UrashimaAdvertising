@@ -20,7 +20,7 @@ namespace UrashimaServer.Controllers.Headquater
             _context = context;
         }
 
-        // GET: api/AdsTypes
+        // GET: api/ads-type
         [HttpGet("ads-type"), AuthorizeRoles(GlobalConstant.HeadQuater)]
         public async Task<ActionResult<IEnumerable<AdsType>>> GetAdsTypes()
         {
@@ -114,7 +114,7 @@ namespace UrashimaServer.Controllers.Headquater
             return NoContent();
         }
 
-        // GET: api/ReportTypes
+        // GET: api/report-type
         [HttpGet("report-type"), AuthorizeRoles(GlobalConstant.HeadQuater)]
         public async Task<ActionResult<IEnumerable<ReportType>>> GetReportTypes()
         {

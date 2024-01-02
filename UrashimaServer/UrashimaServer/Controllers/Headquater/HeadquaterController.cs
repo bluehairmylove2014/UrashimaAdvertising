@@ -122,7 +122,8 @@ namespace UrashimaServer.Controllers.Headquater
             var res = new List<PointModifyDto>();
             foreach (var item in result)
             {
-                res.Add(_mapper.Map<PointModifyDto>(item));
+                var dataToAdd = _mapper.Map<PointModifyDto>(item);
+                res.Add(dataToAdd);
             }
 
             return res;
@@ -196,7 +197,7 @@ namespace UrashimaServer.Controllers.Headquater
             });
         }
 
-        // POST: api/headquater/ads-modification/status
+        // POST: api/headquater/ads-request/status
         [HttpDelete("ads-request/status"), Authorize(Roles = GlobalConstant.HeadQuater)]
         public async Task<IActionResult> ChangeAdsCreateRequestStatus(
             [FromQuery, Required] int id,
