@@ -16,6 +16,7 @@ type regionManagementPopup = {
 };
 
 function RegionManagementDropdown({ regionData }: regionManagementPopup) {
+  const [isFirstRender, setIsFirstRender] = useState<boolean>(true);
   const selectedRegions = useGetRegions();
   const { setRegions } = useSetRegions();
   const { showSuccess } = useNotification();
@@ -24,6 +25,12 @@ function RegionManagementDropdown({ regionData }: regionManagementPopup) {
   const [regionsChose, setRegionsChose] = useState<string[]>(
     selectedRegions ? [...selectedRegions] : []
   );
+
+  useEffect(() => {
+    if (regionData && isFirstRender) {
+      setRegions(regionData.map((r) => `${r.ward}, ${r.district}`));
+    }
+  }, [regionData]);
 
   useEffect(() => {
     setRegionsChose(selectedRegions ? [...selectedRegions] : []);
