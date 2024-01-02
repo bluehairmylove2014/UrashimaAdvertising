@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using System.ComponentModel.DataAnnotations;
 using UrashimaServer.Common.Constant;
 using UrashimaServer.Common.CustomAttribute;
@@ -9,8 +8,6 @@ using UrashimaServer.Common.Helper;
 using UrashimaServer.Database;
 using UrashimaServer.Database.Dtos;
 using UrashimaServer.Database.Models;
-using UrashimaServer.Models;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace UrashimaServer.Controllers
 {
@@ -63,7 +60,7 @@ namespace UrashimaServer.Controllers
             return myResult;
         }
 
-        //POST: api/officer/ads-request
+        //POST: api/officer/ads-request/board
         [HttpPost("board"), AuthorizeRoles(GlobalConstant.WardOfficer, GlobalConstant.DistrictOfficer)] 
         public async Task<IActionResult> PostCreateRequestForBoard(AdsCreateBoardRequestDto createRequest)
         {
@@ -77,13 +74,15 @@ namespace UrashimaServer.Controllers
 
             if (_context.AdsCreationRequests == null)
             {
-                return Problem("'DataContext.AdsCreationRequest' là null.");
+                return Problem("Không thể kết nối đến cơ sở dữ liệu");
             }
 
             var tempPoint = await _context.AdsPoints.FindAsync(request.AdsPointId);
             if (tempPoint == null)
             {
-                return BadRequest("Điểm quảng cáo không tồn tại");
+                return BadRequest(new {
+                    message = "Điểm quảng cáo không tồn tại"
+                });
             }
 
             request.RequestStatus = RequestConstant.Inprogress;
@@ -139,19 +138,26 @@ namespace UrashimaServer.Controllers
 
             if (_context.AdsCreationRequests == null)
             {
-                return NotFound();
+                return NotFound(new
+                {
+                    Message = "Không thể kết nối đến cơ sở dữ liệu",
+                });
             }
+
             var adsCreateRequest = await _context.AdsCreationRequests.FindAsync(id);
             if (adsCreateRequest == null)
             {
-                return NotFound();
+                return NotFound(new
+                {
+                    Message = $"Không tìm thấy Yêu cầu với id={id}",
+                });
             }
 
             if (adsCreateRequest.RequestStatus == RequestConstant.Inprogress)
             {
                 if (acc.Role == GlobalConstant.HeadQuater)
                 {
-                    adsCreateRequest.RequestStatus = RequestConstant.Rejected;
+                    
                 } else
                 {
                     _context.AdsCreationRequests.Remove(adsCreateRequest);
@@ -161,7 +167,7 @@ namespace UrashimaServer.Controllers
 
             return Ok(new
             {
-                message = "Thành công."
+                message = $"Thành công xóa yêu cầu id={id}."
             });
         }
 
