@@ -5,156 +5,137 @@ import CustomButton from '@presentational/atoms/CustomButton';
 import { useNotification } from '@presentational/atoms/Notification';
 import { useForm } from 'react-hook-form';
 import YesNoPopup from './YesNoPopup';
-import { useRef, useState } from 'react';
-const formTypeSetting = {
-  location: {
-    boxTitle: (
-      <>
-        <i className="fi fi-sr-map-marker-home mr-2"></i>
-        <span>Loại địa điểm</span>
-      </>
-    ),
-    bgColor: 'bg-cyan-50',
-  },
-  ad: {
-    boxTitle: (
-      <>
-        <i className="fi fi-sr-ad mr-2"></i>
-        <span>Hình thức quảng cáo</span>
-      </>
-    ),
-    bgColor: 'bg-cyan-50',
-  },
-  adBoard: {
-    boxTitle: (
-      <>
-        <i className="fi fi-sr-lamp mr-2"></i>
-        <span>Loại bảng quảng cáo</span>
-      </>
-    ),
-    bgColor: 'bg-cyan-50',
-  },
-  report: {
-    boxTitle: (
-      <>
-        <i className="fi fi-ss-triangle-warning mr-2"></i>
-        <span>Hình thức báo cáo</span>
-      </>
-    ),
-    bgColor: 'bg-cyan-50',
-  },
+import { forwardRef, useEffect, useRef, useState } from 'react';
+import CommonLoader from '@presentational/atoms/CommonLoader';
+import { useSettingContext } from '@business-layer/business-logic/lib/setting/process/context';
+
+export type hqFormBoxProps = {
+  contextData: ISetting[] | null;
+  getter: (() => Promise<ISetting[]>) | null;
+  setter: ((setting: ISetting[]) => Promise<string>) | null;
+  isGetting?: boolean;
+  isModifying?: boolean;
 };
 
-type hqFormBoxProps = {
-  formType: 'location' | 'ad' | 'adBoard' | 'report';
-  data: ISetting[] | undefined;
-};
+const HQFormsBox = forwardRef(
+  (
+    { contextData, getter, setter, isGetting, isModifying }: hqFormBoxProps,
+    ref: any
+  ) => {
+    const { state } = useSettingContext();
+    const { showReactHookFormError } = useNotification();
+    const [isPopupActive, setIsPopupActive] = useState<boolean>(false);
+    const deleteTargetId = useRef<number | null>(null);
+    const { showError, showSuccess } = useNotification();
+    const { handleSubmit, register, reset } = useForm<{ name: string }>({
+      defaultValues: {
+        name: '',
+      },
+    });
 
-function HQFormsBox({ formType, data }: hqFormBoxProps) {
-  const { showReactHookFormError } = useNotification();
-  const [isPopupActive, setIsPopupActive] = useState<boolean>(false);
-  const [isMakingNew, setIsMakingNew] = useState<boolean>(false);
-  const deleteTarget = useRef<number | null>(null);
-  const { handleSubmit, register, reset } = useForm<{ name: string }>({
-    defaultValues: {
-      name: '',
-    },
-  });
-  //   const nameWatch = watch('name');
+    const handleCreate = ({ name }: { name: string }) => {
+      contextData &&
+        deleteTargetId &&
+        setter &&
+        setter([
+          ...contextData,
+          { id: contextData[contextData.length - 1].id + 1, name },
+        ])
+          .then((msg) => showSuccess(msg))
+          .catch((error) => showError(error.message))
+          .finally(() => handleGetNewData());
+      reset();
+    };
 
-  const handleCreate = ({ name }: { name: string }) => {
-    console.log(name);
-    reset();
-    setIsMakingNew(false);
-  };
+    const openPopupConfirmDelete = (id: number) => {
+      deleteTargetId.current = id;
+      setIsPopupActive(true);
+    };
 
-  const openPopupConfirmDelete = (id: number) => {
-    deleteTarget.current = id;
-    setIsPopupActive(true);
-  };
+    const handleDelete = (result: boolean) => {
+      if (result) {
+        contextData &&
+          deleteTargetId &&
+          setter &&
+          setter(contextData.filter((d) => d.id !== deleteTargetId.current))
+            .then((msg) => showSuccess(msg))
+            .catch((error) => showError(error.message))
+            .finally(() => handleGetNewData());
+      }
+      setIsPopupActive(false);
+      deleteTargetId.current = null;
+    };
 
-  const handleDelete = (result: boolean) => {
-    if (result) {
-    }
-    setIsPopupActive(false);
-    deleteTarget.current = null;
-  };
+    const handleGetNewData = () => {
+      getter && getter();
+    };
 
-  return (
-    <div
-      className={`overflow-hidden rounded shadow-md p-6 ${formTypeSetting[formType].bgColor}`}
-    >
-      <h4 className="text-black mb-4">{formTypeSetting[formType].boxTitle}</h4>
-      <div className="mb-3">
-        {data ? (
-          data.map((d) => (
-            <div
-              key={`${formType}@${d.id}`}
-              className="mb-2 w-full rounded flex flex-row justify-between items-center bg-white pr-3 pl-4 py-2 shadow"
-            >
-              <p className="text-xs font-medium line-clamp-1">{d.name}</p>
-              <button
-                onClick={() => openPopupConfirmDelete(d.id)}
-                className="text-white w-5 h-5 text-[0.5rem] rounded bg-rose-600 hover:bg-red-400 transition-colors"
-              >
-                <i className="fi fi-ss-trash"></i>
-              </button>
-            </div>
-          ))
-        ) : (
-          <></>
-        )}
-      </div>
-      <form
-        onSubmit={handleSubmit(handleCreate, showReactHookFormError)}
-        className={`${
-          isMakingNew
-            ? 'border border-solid border-zinc-300 rounded bg-white '
-            : ''
-        } w-full h-10 relative`}
+    useEffect(() => {
+      handleGetNewData();
+    }, [getter]);
+
+    useEffect(() => {
+      console.log(contextData);
+    }, [contextData]);
+
+    return (
+      <div
+        className={`bg-rose-100 overflow-hidden rounded shadow-[-10px_0px_25px_-15px_rgba(0,0,0,0.1)] p-6 fixed top-0 right-0 w-0 opacity-0 pointer-events-none invisible transition-all z-30 h-screen`}
+        ref={ref}
       >
-        {isMakingNew ? (
-          <>
-            <input
-              type="text"
-              {...register('name')}
-              placeholder="+  Thêm mới"
-              className="w-full h-full bg-transparent text-xs font-medium px-4 outline-none"
-            />
-            <div
-              //   style={{ display: nameWatch.trim().length > 0 ? 'block' : 'none' }}
-              className="absolute top-1/2 right-1 -translate-y-1/2 w-10"
-            >
-              <CustomButton style="fill-green" type="submit">
-                <i className="fi fi-bs-check"></i>
-              </CustomButton>
-            </div>
-          </>
-        ) : (
-          <>
-            <div className="w-full flex flex-row justify-end items-center">
-              <div className="w-24">
-                <CustomButton
-                  style="fill-green"
-                  type="button"
-                  onClick={() => {
-                    setIsMakingNew(true);
-                  }}
+        <h4 className="text-black mb-4 text-center">Tuỳ chỉnh</h4>
+        <div className="mb-3">
+          {Array.isArray(contextData) ? (
+            contextData.map((d) => (
+              <div
+                key={`${d.id}`}
+                className="mb-2 w-full rounded flex flex-row justify-between items-center gap-4 bg-white pr-3 pl-4 py-2 shadow"
+              >
+                <p className="text-xs font-medium line-clamp-1 flex-shrink max-w-[80%]">
+                  {d.name}
+                </p>
+                <button
+                  onClick={() => openPopupConfirmDelete(d.id)}
+                  className="text-white text-[0.5rem] rounded bg-rose-600 hover:bg-red-400 transition-colors w-5 h-5 max-w-[1.25rem] flex-grow"
                 >
-                  + Thêm mới
-                </CustomButton>
+                  <i className="fi fi-ss-trash"></i>
+                </button>
               </div>
-            </div>
-          </>
-        )}
-      </form>
-      <YesNoPopup
-        isActive={isPopupActive}
-        onResult={handleDelete}
-        message={'Bạn chắc chắn muốn xoá chứ?'}
-      />
-    </div>
-  );
-}
+            ))
+          ) : (
+            <CommonLoader />
+          )}
+        </div>
+        <form
+          onSubmit={handleSubmit(handleCreate, showReactHookFormError)}
+          className={`border border-solid border-zinc-300 rounded bg-white w-full h-10 relative`}
+        >
+          <input
+            type="text"
+            {...register('name')}
+            placeholder="+  Thêm mới"
+            disabled={isModifying}
+            className="w-full h-full bg-transparent text-xs font-medium px-4 outline-none"
+          />
+          <div className="absolute top-1/2 right-1 -translate-y-1/2 w-10">
+            <CustomButton
+              style="fill-green"
+              type="submit"
+              loading={isModifying}
+            >
+              <i className="fi fi-bs-check"></i>
+            </CustomButton>
+          </div>
+        </form>
+
+        <YesNoPopup
+          isActive={isPopupActive}
+          onResult={handleDelete}
+          message={'Bạn chắc chắn muốn xoá chứ?'}
+        />
+      </div>
+    );
+  }
+);
 
 export default HQFormsBox;

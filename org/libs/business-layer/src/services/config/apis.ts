@@ -63,6 +63,16 @@ export const fCaptchaSiteverifyUrl =
 // REGION
 export const getRegionsUrl = '/api/headquater/ward-district';
 
+// SETTING
+export const getLocationSettingsUrl = '/api/location-type';
+export const getAdFormsSettingsUrl = '/api/ads-form-type';
+export const getAdBoardTypesSettingsUrl = '/api/ads-type';
+export const getReportTypesSettingsUrl = '/api/report-type';
+export const modifyLocationSettingsUrl = '/api/location-type';
+export const modifyAdFormsSettingsUrl = '/api/ads-form-type';
+export const modifyAdBoardTypesSettingsUrl = '/api/ads-type';
+export const modifyReportTypesSettingsUrl = '/api/report-type';
+
 // GOOGLE
 export const googleGetUserInfoUrl =
   corsProxyUrl +

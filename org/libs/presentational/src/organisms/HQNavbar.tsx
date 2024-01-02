@@ -40,7 +40,7 @@ const tabs = [
 
 function HQNavbar() {
   return (
-    <nav className="bg-rose-50 px-4 py-6 flex flex-col justify-between w-full h-full shadow-[10px_0px_25px_-15px_rgba(0,0,0,0.1)]">
+    <nav className="bg-rose-100 px-4 py-6 flex flex-col justify-between w-full h-full shadow-[10px_0px_25px_-15px_rgba(0,0,0,0.1)]">
       <ul className="w-full">
         <li>
           <Link

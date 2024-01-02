@@ -5,3 +5,4 @@ export * from './report';
 export * from './user';
 export * from './approve';
 export * from './regions';
+export * from './setting';

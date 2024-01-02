@@ -8,3 +8,4 @@ export * from './accountService';
 export * from './approveService';
 export * from './friendlyCaptchaService';
 export * from './regionService';
+export * from './settingService';
