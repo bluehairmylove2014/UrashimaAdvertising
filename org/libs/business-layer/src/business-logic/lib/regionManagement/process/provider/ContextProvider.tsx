@@ -6,21 +6,7 @@ import {
   getRegionsFromCookie,
   setRegionsToCookie,
 } from '../helpers/regionsCookie';
-import { RegionService } from '@business-layer/services';
-import { getToken } from '@business-layer/business-logic/lib/auth/process/hooks/useAccessToken';
-
-const regionService = new RegionService();
-async function getRegions(token: string | null) {
-  try {
-    if (token) {
-      return await regionService.getRegions(token);
-    } else {
-      return null;
-    }
-  } catch (error) {
-    return null;
-  }
-}
+import { useFetchRegions } from '../hooks';
 
 type ContextProviderType = {
   children: React.ReactNode;
@@ -32,20 +18,20 @@ export const ContextProvider: React.FC<ContextProviderType> = ({
   const [state, dispatch] = useReducer(regionManagementReducer, {
     regions: regionsCookieFormat ? regionsCookieFormat.split('|') : null,
   });
-  const token = getToken();
+  const { data: regionsFetchData } = useFetchRegions();
 
   useEffect(() => {
-    getRegions(token).then((regionData) => {
-      if (regionData) {
-        const regionsArr = regionData.map((r) => `${r.ward}, ${r.district}`);
-        dispatch({
-          type: 'SET_REGIONS',
-          payload: regionsArr,
-        });
-        setRegionsToCookie(regionsArr);
-      }
-    });
-  }, [token]);
+    if (regionsFetchData) {
+      const regionsFormatData = regionsFetchData.map(
+        (region) => `${region.ward}, ${region.district}`
+      );
+      dispatch({
+        type: 'SET_REGIONS',
+        payload: regionsFormatData,
+      });
+      setRegionsToCookie(regionsFormatData);
+    }
+  }, [regionsFetchData]);
 
   return (
     <RegionManagementContext.Provider value={{ state, dispatch }}>
