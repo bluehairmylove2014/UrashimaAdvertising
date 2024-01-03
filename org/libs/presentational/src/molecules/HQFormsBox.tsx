@@ -7,7 +7,6 @@ import { useForm } from 'react-hook-form';
 import YesNoPopup from './YesNoPopup';
 import { forwardRef, useEffect, useRef, useState } from 'react';
 import CommonLoader from '@presentational/atoms/CommonLoader';
-import { useSettingContext } from '@business-layer/business-logic/lib/setting/process/context';
 
 export type hqFormBoxProps = {
   contextData: ISetting[] | null;
@@ -22,7 +21,6 @@ const HQFormsBox = forwardRef(
     { contextData, getter, setter, isGetting, isModifying }: hqFormBoxProps,
     ref: any
   ) => {
-    const { state } = useSettingContext();
     const { showReactHookFormError } = useNotification();
     const [isPopupActive, setIsPopupActive] = useState<boolean>(false);
     const deleteTargetId = useRef<number | null>(null);
@@ -34,17 +32,20 @@ const HQFormsBox = forwardRef(
     });
 
     const handleCreate = ({ name }: { name: string }) => {
-      contextData &&
-        deleteTargetId &&
-        setter &&
-        setter([
-          ...contextData,
-          { id: contextData[contextData.length - 1].id + 1, name },
-        ])
-          .then((msg) => showSuccess(msg))
-          .catch((error) => showError(error.message))
-          .finally(() => handleGetNewData());
-      reset();
+      if (contextData) {
+        if (contextData.some((c) => c.name === name)) {
+          showError('Tên đối tượng đã có sẵn rồi!');
+        } else {
+          setter &&
+            setter([
+              ...contextData,
+              { id: contextData[contextData.length - 1].id + 1, name },
+            ])
+              .then((msg) => showSuccess(msg))
+              .catch((error) => showError(error.message));
+          reset();
+        }
+      }
     };
 
     const openPopupConfirmDelete = (id: number) => {
@@ -59,20 +60,11 @@ const HQFormsBox = forwardRef(
           setter &&
           setter(contextData.filter((d) => d.id !== deleteTargetId.current))
             .then((msg) => showSuccess(msg))
-            .catch((error) => showError(error.message))
-            .finally(() => handleGetNewData());
+            .catch((error) => showError(error.message));
       }
       setIsPopupActive(false);
       deleteTargetId.current = null;
     };
-
-    const handleGetNewData = () => {
-      getter && getter();
-    };
-
-    useEffect(() => {
-      handleGetNewData();
-    }, [getter]);
 
     useEffect(() => {
       console.log(contextData);
@@ -80,7 +72,7 @@ const HQFormsBox = forwardRef(
 
     return (
       <div
-        className={`bg-rose-100 overflow-hidden rounded shadow-[-10px_0px_25px_-15px_rgba(0,0,0,0.1)] p-6 fixed top-0 right-0 w-0 opacity-0 pointer-events-none invisible transition-all z-30 h-screen`}
+        className={`bg-rose-100 overflow-auto rounded shadow-[-10px_0px_25px_-15px_rgba(0,0,0,0.1)] p-6 fixed top-0 right-0 w-0 opacity-0 pointer-events-none invisible transition-all z-30 h-screen`}
         ref={ref}
       >
         <h4 className="text-black mb-4 text-center">Tuỳ chỉnh</h4>
@@ -122,6 +114,7 @@ const HQFormsBox = forwardRef(
               style="fill-green"
               type="submit"
               loading={isModifying}
+              isShortLoading={true}
             >
               <i className="fi fi-bs-check"></i>
             </CustomButton>

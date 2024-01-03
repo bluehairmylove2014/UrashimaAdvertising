@@ -19,7 +19,7 @@ import {
   useYupValidationResolver,
 } from '@utils/validators/yup';
 import ImageInput from '@presentational/atoms/ImageInput';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useModifyAdLocationDetail } from './../../../business-layer/src/business-logic/lib/officerAds/process/hooks/useModifyAdLocationDetail';
 import CustomButton from '@presentational/atoms/CustomButton';
 import ModifyReasonPopup from '@presentational/molecules/ModifyReasonPopup';
@@ -27,6 +27,7 @@ import { useUpload } from '@business-layer/business-logic/lib/sirv';
 import { renameImageWithUniqueName } from '@utils/helpers/imageName';
 import { useRouter } from 'next/navigation';
 import { OFFICER_PAGES } from '@constants/officerPages';
+import CommonLoader from '@presentational/atoms/CommonLoader';
 
 const DEFAULT_THUMBNAIL_WIDTH = 120;
 const DEFAULT_THUMBNAIL_HEIGHT = 120;
@@ -36,11 +37,13 @@ function EditAdDetail({
   locationOptions,
   adsFormOptions,
   adsTypeOptions,
+  customBackHref,
 }: {
   adData: IAdLocationDetail;
-  locationOptions: modernSelectOptionType[];
-  adsFormOptions: modernSelectOptionType[];
-  adsTypeOptions: modernSelectOptionType[];
+  locationOptions: modernSelectOptionType[] | null;
+  adsFormOptions: modernSelectOptionType[] | null;
+  adsTypeOptions: modernSelectOptionType[] | null;
+  customBackHref?: string;
 }) {
   const router = useRouter();
   const editLocationResolver = useYupValidationResolver(
@@ -223,7 +226,9 @@ function EditAdDetail({
       })
         .then((msg) => {
           showSuccess(msg);
-          router.push(OFFICER_PAGES.ADS_BOARD + `/${adData.id}`);
+          router.push(
+            customBackHref ?? OFFICER_PAGES.ADS_BOARD + `/${adData.id}`
+          );
         })
         .catch((error) => showError(error.message))
         .finally(() => {
@@ -500,11 +505,18 @@ function EditAdDetail({
                             {...register(`adsBoard.${index}.adsType`)}
                             className="disabled:cursor-not-allowed border-solid border-[1px] border-zinc-400 px-3 py-2 w-auto col-start-2 row-start-2 col-span-1 row-span-1"
                           >
-                            {adsTypeOptions.map((at) => (
-                              <option key={at.name} value={at.value as string}>
-                                {at.name}
-                              </option>
-                            ))}
+                            {adsTypeOptions ? (
+                              adsTypeOptions.map((at) => (
+                                <option
+                                  key={at.name}
+                                  value={at.value as string}
+                                >
+                                  {at.name}
+                                </option>
+                              ))
+                            ) : (
+                              <CommonLoader />
+                            )}
                           </select>,
                           <input
                             key={`expiredDate${ad.id}`}

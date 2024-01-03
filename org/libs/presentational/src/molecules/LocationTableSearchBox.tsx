@@ -17,7 +17,7 @@ function LocationTableSearchBox() {
         name="searchBox"
         type="text"
         className="px-8 py-2 w-full text-[0.65rem] outline-none"
-        placeholder="Search..."
+        placeholder="Tìm kiếm theo địa chỉ..."
         onChange={onSearch}
       />
     </form>

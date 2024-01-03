@@ -31,21 +31,21 @@ $container-width: 1400px;
 @media (min-width: $desktop-breakpoint) {
     :root {
         font-size: 20px;
-        /* Font size desktop */
+        /* Above desktop */
     }
 }
 
 @media (max-width: $desktop-breakpoint) {
     :root {
         font-size: 14px;
-        /* Font size tablet */
+        /* Font size desktop */
     }
 }
 
 @media (max-width: $tablet-breakpoint) {
     :root {
         font-size: 12px;
-        /* Font size mobile */
+        /* Font size tablet */
     }
 }
 

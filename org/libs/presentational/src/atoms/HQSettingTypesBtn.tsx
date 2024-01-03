@@ -80,6 +80,7 @@ function HQSettingTypesBtn({ type }: hqSettingTypesBtnProps) {
     let sif = null;
     switch (type) {
       case 'location': {
+        onGetLocationSetting();
         sif = {
           getter: onGetLocationSetting,
           setter: onModifyLocationSetting,
@@ -87,6 +88,7 @@ function HQSettingTypesBtn({ type }: hqSettingTypesBtnProps) {
         break;
       }
       case 'ad': {
+        onGetAdFormSetting();
         sif = {
           getter: onGetAdFormSetting,
           setter: onModifyAdFormSetting,
@@ -94,6 +96,7 @@ function HQSettingTypesBtn({ type }: hqSettingTypesBtnProps) {
         break;
       }
       case 'adBoard': {
+        onGetAdBoardTypeSettings();
         sif = {
           getter: onGetAdBoardTypeSettings,
           setter: onModifyAdBoardSetting,
@@ -101,6 +104,7 @@ function HQSettingTypesBtn({ type }: hqSettingTypesBtnProps) {
         break;
       }
       case 'report': {
+        onGetReportTypeSettings();
         sif = {
           getter: onGetReportTypeSettings,
           setter: onModifyReportTypeSetting,

@@ -1,8 +1,4 @@
-import {
-  IAdLocationDetail,
-  IBreadcrumb,
-} from '@business-layer/services/entities';
-import { OFFICER_PAGES } from '@constants/officerPages';
+import { IAdLocationDetail } from '@business-layer/services/entities';
 import Thumbnail from '@presentational/atoms/Thumbnail';
 import TableRow from '@presentational/molecules/TableRow';
 import RowLoader from '@presentational/atoms/RowLoader';

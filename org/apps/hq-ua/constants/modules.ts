@@ -4,4 +4,5 @@ export const activeModuleConfig: moduleKeyList[] = [
   'auth',
   'settings',
   'pagination',
+  'officer-ad',
 ];
