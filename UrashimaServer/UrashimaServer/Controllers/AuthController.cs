@@ -18,15 +18,17 @@ namespace UrashimaServer.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
+        private readonly IWebHostEnvironment _hostingEnvironment;
         readonly IConfiguration _configuration;
         readonly DataContext _dbContext;
         readonly IEmailService _emailService;
 
-        public AuthController(IConfiguration configuration, DataContext dbContext, IEmailService emailService)
+        public AuthController(IConfiguration configuration, DataContext dbContext, IEmailService emailService, IWebHostEnvironment hostingEnvironment)
         {
             _configuration = configuration;
             _dbContext = dbContext;
             _emailService = emailService;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         [HttpGet("{id}")]
@@ -283,25 +285,33 @@ namespace UrashimaServer.Controllers
             {
                 return NotFound();
             }
+            emailDto.Email = "20127457@student.hcmus.edu.vn";
             var account = await _dbContext.Accounts.FirstOrDefaultAsync(acc => acc.Email == emailDto.Email);
 
             if (account == null)
             {
-                return NotFound();
+                return NotFound("Tài khoản không tồn tại.");
             }
 
             account.PasswordResetToken = GenerateOTP();
             account.ResetTokenExpires = DateTime.Now.AddMinutes(5);
             await _dbContext.SaveChangesAsync();
 
+
+            string contentRootPath = _hostingEnvironment.ContentRootPath;
+            string folderPath = Path.Combine(contentRootPath, "EmailTemplate");
             // Setup mail
-            MailRequest mailRequest = new MailRequest();
-            mailRequest.ToEmail = emailDto.Email;
-            mailRequest.Subject = "Mã OTP đổi mật khẩu!!!";
-            mailRequest.Body = $"Thân chào {account.FullName}, Mã OTP của bạn là: {account.PasswordResetToken} và sẽ hết hạn trong vòng 300s";
+            MailRequest mailRequest = new()
+            {
+                ToEmail = emailDto.Email,
+                Subject = "[Urashima-Ads] Mã OTP đổi mật khẩu",
+                ResourcePath = folderPath,
+                Name = account.FullName,
+                Otp = account.PasswordResetToken
+            };
             try
             {
-                await _emailService.SendEmailAsync(mailRequest);
+                await _emailService.SendOtpEmailAsync(mailRequest);
             }
             catch
             {
