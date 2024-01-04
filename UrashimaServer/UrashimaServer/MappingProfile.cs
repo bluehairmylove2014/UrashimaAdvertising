@@ -52,6 +52,7 @@ namespace UrashimaServer
             CreateMap<BoardModify, AdsBoardBasicDto>().ReverseMap();
             CreateMap<PointModifyImage, PointModifyImageDto>().ReverseMap();
 
+            CreateMap<UserAdsPointDetailDto, UserAdsPointBasicDto>().ReverseMap();
 
             // Map Account
             CreateMap<Account, AccountBasicInfoDto>().ReverseMap();

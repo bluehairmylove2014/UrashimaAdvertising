@@ -51,7 +51,7 @@ namespace UrashimaServer.Database
                 .HasOne<AdsCreationRequest>(e => e.AdsCreateRequest)
                 .WithOne(req => req.AdsBoard)
                 .HasForeignKey<AdsBoard>(e => e.AdsCreateRequestId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Report>(entity =>
             {
@@ -76,11 +76,12 @@ namespace UrashimaServer.Database
 
             modelBuilder.Entity<Account>();
 
-            modelBuilder.Entity<AdsCreationRequest>()
-                .HasOne<AdsPoint>(e => e.AdsPoint)
-                .WithOne(point => point.AdsCreateRequest)
-                .HasForeignKey<AdsCreationRequest>(e => e.AdsPointId)
-                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<AdsPoint>()
+                .HasOne<AdsCreationRequest>(e => e.AdsCreateRequest)
+                .WithOne(req => req.AdsPoint)
+                .HasForeignKey<AdsPoint>(e => e.AdsCreateRequestId)
+                .OnDelete(DeleteBehavior.SetNull);
 
             modelBuilder.Entity<BoardModify>()
                 .HasOne(e => e.AdsPoint)

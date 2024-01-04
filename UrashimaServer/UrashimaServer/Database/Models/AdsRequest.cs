@@ -7,7 +7,6 @@ namespace UrashimaServer.Database.Models
     {
         [Key]
         public int Id { get; set; }
-        public int AdsPointId { get; set; }
         public string AdsContent { get; set; } = string.Empty;
         public string CompanyName { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
@@ -17,6 +16,7 @@ namespace UrashimaServer.Database.Models
         public DateTime ContractEnd { get; set; }
         public string RequestStatus { get; set; } = string.Empty;
 
+        public int? AdsPointId { get; set; }
         public AdsPoint? AdsPoint { get; set; }
         public AdsBoard? AdsBoard { get; set; }
     }

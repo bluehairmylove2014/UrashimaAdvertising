@@ -188,10 +188,10 @@ namespace UrashimaServer.Controllers.Ward
 
 
 
-        [HttpPost("ads-modification/point")] // , AuthorizeRoles(GlobalConstant.WardOfficer, GlobalConstant.DistrictOfficer, GlobalConstant.HeadQuater)
-        public async Task<ActionResult<PointModifyDto>> PointModify(PointModifyDto PointModifyRequest)
+        [HttpPost("ads-modification/point"), AuthorizeRoles(GlobalConstant.WardOfficer, GlobalConstant.DistrictOfficer, GlobalConstant.HeadQuater)]
+        public async Task<ActionResult<PointModifyDto>> PointModify(PointModifyDto pointModifyRequest)
         {
-            var result = _mapper.Map<PointModify>(PointModifyRequest);
+            var result = _mapper.Map<PointModify>(pointModifyRequest);
 
 
             result.AdsPointId = result.Id;
@@ -201,7 +201,7 @@ namespace UrashimaServer.Controllers.Ward
             {
                 foreach (var item in result.Images)
                 {
-                    item.AdsPointId = PointModifyRequest.Id;
+                    item.AdsPointId = pointModifyRequest.Id;
                 }
             }
             if (result.AdsBoard != null)

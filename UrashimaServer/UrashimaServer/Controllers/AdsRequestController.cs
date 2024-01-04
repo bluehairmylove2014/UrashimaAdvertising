@@ -54,7 +54,8 @@ namespace UrashimaServer.Controllers
             {
                 var RequestAddress = _context.AdsPoints.Find(item.AdsPointId)?.Address ?? "No Address";
                 var region = HttpContext.Items["address"] as string;
-                return Helper.IsUnderAuthority(RequestAddress, acc.UnitUnderManagement, region);
+                return Helper.IsUnderAuthority(RequestAddress, acc.UnitUnderManagement, region) 
+                    || acc.Role == GlobalConstant.HeadQuater;
             }).ToList();
 
             return myResult;
@@ -77,7 +78,7 @@ namespace UrashimaServer.Controllers
                 return Problem("Không thể kết nối đến cơ sở dữ liệu");
             }
 
-            var tempPoint = await _context.AdsPoints.FindAsync(request.AdsPointId);
+            var tempPoint = await _context.AdsPoints.FindAsync(createRequest.AdsPointId);
             if (tempPoint == null)
             {
                 return BadRequest(new {
@@ -118,7 +119,7 @@ namespace UrashimaServer.Controllers
             }
 
             return Ok(new {
-                message = "Ok"
+                message = "Gửi yêu cầu tạo bảng quảng cáo cho công ty thành công."
             });
         }
 
