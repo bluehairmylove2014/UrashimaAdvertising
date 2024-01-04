@@ -12,8 +12,8 @@ using UrashimaServer.Database;
 namespace UrashimaServer.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20231230151259_UrashimaDB_v2")]
-    partial class UrashimaDB_v2
+    [Migration("20240104171055_UrashimaDB_v3")]
+    partial class UrashimaDB_v3
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -41,7 +41,7 @@ namespace UrashimaServer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("AdsPointId")
+                    b.Property<int?>("AdsPointId")
                         .HasColumnType("int");
 
                     b.Property<string>("CompanyName")
@@ -67,9 +67,6 @@ namespace UrashimaServer.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AdsPointId")
-                        .IsUnique();
 
                     b.ToTable("AdsCreationRequests");
                 });
@@ -427,6 +424,10 @@ namespace UrashimaServer.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AdsCreateRequestId")
+                        .IsUnique()
+                        .HasFilter("[AdsCreateRequestId] IS NOT NULL");
+
                     b.ToTable("AdsPoints");
                 });
 
@@ -522,17 +523,6 @@ namespace UrashimaServer.Migrations
                     b.ToTable("ReportImages");
                 });
 
-            modelBuilder.Entity("UrashimaServer.Database.Models.AdsCreationRequest", b =>
-                {
-                    b.HasOne("UrashimaServer.Models.AdsPoint", "AdsPoint")
-                        .WithOne("AdsCreateRequest")
-                        .HasForeignKey("UrashimaServer.Database.Models.AdsCreationRequest", "AdsPointId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("AdsPoint");
-                });
-
             modelBuilder.Entity("UrashimaServer.Database.Models.BoardModify", b =>
                 {
                     b.HasOne("UrashimaServer.Database.Models.PointModify", "AdsPoint")
@@ -560,7 +550,7 @@ namespace UrashimaServer.Migrations
                     b.HasOne("UrashimaServer.Database.Models.AdsCreationRequest", "AdsCreateRequest")
                         .WithOne("AdsBoard")
                         .HasForeignKey("UrashimaServer.Models.AdsBoard", "AdsCreateRequestId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("UrashimaServer.Models.AdsPoint", "AdsPoint")
                         .WithMany("AdsBoard")
@@ -571,6 +561,16 @@ namespace UrashimaServer.Migrations
                     b.Navigation("AdsCreateRequest");
 
                     b.Navigation("AdsPoint");
+                });
+
+            modelBuilder.Entity("UrashimaServer.Models.AdsPoint", b =>
+                {
+                    b.HasOne("UrashimaServer.Database.Models.AdsCreationRequest", "AdsCreateRequest")
+                        .WithOne("AdsPoint")
+                        .HasForeignKey("UrashimaServer.Models.AdsPoint", "AdsCreateRequestId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("AdsCreateRequest");
                 });
 
             modelBuilder.Entity("UrashimaServer.Models.AdsPointImage", b =>
@@ -619,6 +619,8 @@ namespace UrashimaServer.Migrations
             modelBuilder.Entity("UrashimaServer.Database.Models.AdsCreationRequest", b =>
                 {
                     b.Navigation("AdsBoard");
+
+                    b.Navigation("AdsPoint");
                 });
 
             modelBuilder.Entity("UrashimaServer.Database.Models.Location", b =>
@@ -641,8 +643,6 @@ namespace UrashimaServer.Migrations
             modelBuilder.Entity("UrashimaServer.Models.AdsPoint", b =>
                 {
                     b.Navigation("AdsBoard");
-
-                    b.Navigation("AdsCreateRequest");
 
                     b.Navigation("Images");
 

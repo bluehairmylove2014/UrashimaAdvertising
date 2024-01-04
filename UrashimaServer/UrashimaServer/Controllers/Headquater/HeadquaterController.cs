@@ -198,7 +198,7 @@ namespace UrashimaServer.Controllers.Headquater
         }
 
         // POST: api/headquater/ads-request/status
-        [HttpDelete("ads-request/status"), Authorize(Roles = GlobalConstant.HeadQuater)]
+        [HttpPost("ads-request/status"), Authorize(Roles = GlobalConstant.HeadQuater)]
         public async Task<IActionResult> ChangeAdsCreateRequestStatus(
             [FromQuery, Required] int id,
             [FromQuery, Required] string status)
@@ -220,5 +220,84 @@ namespace UrashimaServer.Controllers.Headquater
                 message = $"Thay đổi trạng thái của yêu cầu id={id} thành công."
             });
         }
+
+        // PUT: api/headquater/ads-point
+        [HttpPut("ads-point"), AuthorizeRoles(GlobalConstant.HeadQuater)]
+        public async Task<IActionResult> UpdateAdsPointWithBoard(UserAdsPointDetailDto updatedPoint)
+        {
+            if (updatedPoint == null)
+            {
+                return BadRequest(new
+                {
+                    message = "Dữ liệu cung cấp không đầy đủ."
+                });
+            }
+
+            // Point
+            var pointToModify = await _context.AdsPoints.FindAsync(updatedPoint.Id);
+            if (pointToModify != null)
+            {
+                var tempPointData = _mapper.Map<UserAdsPointBasicDto>(updatedPoint);
+                _mapper.Map<UserAdsPointBasicDto, AdsPoint>(tempPointData, pointToModify);
+
+                await _context.SaveChangesAsync();
+            }
+            // Chỉ save data trên bảng AdsPoint, không liên quan các bảng khác.
+
+            // AdsBoard
+            if (updatedPoint.AdsBoard != null)
+            {
+                var boardData = new List<AdsBoard>();
+                var updatedBoardIds = new List<int>();
+
+                foreach (var item in updatedPoint.AdsBoard)
+                {
+                    var boardToModify = _context.AdsBoards.Find(item.Id);
+                    if (boardToModify != null)
+                    {
+                        _mapper.Map<GetPointAdsBoardDto, AdsBoard>(item, boardToModify);
+                        updatedBoardIds.Add(boardToModify.Id);
+                    }
+                    else
+                    {
+                        boardData.Add(_mapper.Map<AdsBoard>(item));
+                    }
+                }
+                _context.SaveChanges();
+
+                var removedData = _context.AdsBoards
+                    .Where(board => board.AdsPointId == updatedPoint.Id && !updatedBoardIds.Contains(board.Id)).ToList();
+
+                _context.AdsBoards.RemoveRange(removedData);
+                _context.AdsBoards.AddRange(boardData);
+
+                await _context.SaveChangesAsync();
+            }
+
+            // Image
+            if (updatedPoint.Images != null)
+            {
+                var imagesToModify = _context.AdsPointImages
+                    .Where(img => img.AdsPointId == updatedPoint.Id).ToList();
+                _context.AdsPointImages.RemoveRange(imagesToModify);
+                _context.SaveChanges();
+
+                foreach (var item in updatedPoint.Images)
+                {
+                    _context.AdsPointImages.Add(new AdsPointImage
+                    {
+                        Image = item.Image,
+                        AdsPointId = updatedPoint.Id
+                    });
+                }
+                await _context.SaveChangesAsync();
+            }
+
+            return Ok(new
+            {
+                message = $"Áp dụng thay đổi của điểm quảng cáo id={updatedPoint.Id} thành công."
+            });
+        }
+
     }
 }
