@@ -258,7 +258,7 @@ namespace UrashimaServer.Controllers
             mailRequest.Body = $"Thân chào {acc.FullName}, We are writing to inform you that your report is currently being processed. Our team is working hard to ensure that your order is handled as soon as possible.\r\n\r\nReport status: {updatedItem.ReportStatus}, Treatment: {updatedItem.TreatmentProcess}\r\n\r\n. If you have any questions or concerns about your report, please don't hesitate to contact us. We're always here to help.\r\n\r\nThank you for reporting the problem to us.\r\n\r\nBest regards,\r\n\r\nUrashima Map";
             try
             {
-                await _emailService.SendEmailAsync(mailRequest);
+                await _emailService.SendReportEmailAsync(mailRequest);
             } catch
             {
                 return BadRequest(new
