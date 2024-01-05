@@ -1,0 +1,8 @@
+[
+  { "id": 1, "name": "Đất công/Công viên/Hành lang an toàn giao thông" },
+  { "id": 2, "name": "Đất tư nhân/Nhà ở riêng lẻ" },
+  { "id": 3, "name": "Trung tâm thương mại" },
+  { "id": 4, "name": "Chợ" },
+  { "id": 5, "name": "Cây xăng" },
+  { "id": 6, "name": "Nhà chờ xe buýt" }
+]

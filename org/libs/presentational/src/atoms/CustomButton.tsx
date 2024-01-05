@@ -14,6 +14,7 @@ type commonButtonType = {
   type?: buttonType;
   loading?: boolean;
   onClick?: (arg0: any) => void;
+  isShortLoading?: boolean;
 };
 
 const defaultType = 'button';
@@ -60,6 +61,7 @@ function CustomButton({
   loading,
   type,
   onClick,
+  isShortLoading,
 }: commonButtonType): JSX.Element {
   const {
     normal: normalStyle,
@@ -74,7 +76,11 @@ function CustomButton({
       disabled={disabled || loading}
       type={type ?? defaultType}
     >
-      {loading ? <ButtonLoader label="Chờ chút..." /> : <>{children}</>}
+      {loading ? (
+        <ButtonLoader label={isShortLoading ? '' : 'Chờ chút...'} />
+      ) : (
+        <>{children}</>
+      )}
     </button>
   );
 }

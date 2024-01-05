@@ -9,7 +9,7 @@ import ModernSelect, {
 } from '@presentational/atoms/ModernSelect';
 
 type locationTableFilterSelectParamsType = {
-  options: modernSelectOptionType[];
+  options: modernSelectOptionType[] | null;
   type: 'adsForm' | 'locationType';
   defaultValue?: any;
 };

@@ -10,7 +10,9 @@ module.exports = {
     ...createGlobPatternsForDependencies(__dirname),
   ],
   theme: {
-    extend: {},
+    extend: {
+      activeHQFormBox: '!w-80 !opacity-100',
+    },
   },
   plugins: [],
 };

@@ -22,9 +22,14 @@ const MAX_ELEMENT_PER_PAGE = 6;
 type additionFuncParamsType = {
   isChoosing?: boolean;
   onChoosing?: (locationData: IAdLocation) => void;
+  customDetailHref?: string;
 };
 
-function AdLocationsTable({ isChoosing, onChoosing }: additionFuncParamsType) {
+function AdLocationsTable({
+  isChoosing,
+  onChoosing,
+  customDetailHref,
+}: additionFuncParamsType) {
   const router = useRouter();
   const officerAdData = useGetAllOfficerAdsFromContext();
   const { setPaginationData } = useSetPaginationData();
@@ -52,14 +57,14 @@ function AdLocationsTable({ isChoosing, onChoosing }: additionFuncParamsType) {
             <th scope="col" className="px-2 py-3 w-[30%]">
               Địa Điểm
             </th>
+            <th scope="col" className="px-2 py-3 w-[10%]">
+              Quy Hoạch
+            </th>
             <th scope="col" className="px-2 py-3 w-[20%]">
               Loại Vị Trí
             </th>
             <th scope="col" className="px-2 py-3 w-[20%]">
               Hình Thức
-            </th>
-            <th scope="col" className="px-2 py-3 w-[10%]">
-              Quy Hoạch
             </th>
             <th scope="col" className="px-2 py-3 w-[10%]">
               Hành động
@@ -83,13 +88,13 @@ function AdLocationsTable({ isChoosing, onChoosing }: additionFuncParamsType) {
                     listData={[
                       (adIndex + 1).toString(),
                       ad.address,
-                      ad.locationType,
-                      ad.adsForm,
                       ad.planned ? (
                         <i className="fi fi-br-check text-red-600"></i>
                       ) : (
                         <i className="fi fi-br-cross text-red-600"></i>
                       ),
+                      ad.locationType,
+                      ad.adsForm,
                       isChoosing ? (
                         <button
                           className="bg-transparent border-solid border-2 border-green-600 rounded hover:bg-green-600 hover:text-white transition-colors text-[0.6rem] px-4 py-1"
@@ -103,7 +108,10 @@ function AdLocationsTable({ isChoosing, onChoosing }: additionFuncParamsType) {
                           type="button"
                           shape="square"
                           callback={() => {
-                            router.push(OFFICER_PAGES.ADS_BOARD + `/${ad.id}`);
+                            router.push(
+                              (customDetailHref ?? OFFICER_PAGES.ADS_BOARD) +
+                                `/${ad.id}`
+                            );
                           }}
                         >
                           <i className="fi fi-sr-file-circle-info text-blue-600 text-sm hover:text-blue-400 transition-colors"></i>
