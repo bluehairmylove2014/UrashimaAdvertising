@@ -1,6 +1,5 @@
 'use client';
 
-import { useGetAllOfficerAdsFromContext } from '@business-layer/business-logic/lib/officerAds/process/hooks';
 import EmptyIcon from '@presentational/atoms/EmptyIcon';
 import RowLoader from '@presentational/atoms/RowLoader';
 import Pagination from '@presentational/molecules/Pagination';
@@ -11,7 +10,7 @@ import {
   isDateGreaterThan,
   getCurrentDateTime,
 } from '@utils/helpers';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   useGetPagination,
   useSetPaginationData,
@@ -20,15 +19,19 @@ import TableRow from '@presentational/molecules/TableRow';
 import IconButton from '@presentational/atoms/IconButton';
 import { useRouter } from 'next/navigation';
 import { OFFICER_PAGES } from '@constants/officerPages';
-import { IAdLocation } from '@business-layer/services/entities';
 import {
   useGetAllAdModificationRequest,
   useGetAllCreationRequest,
 } from '@business-layer/business-logic/lib/approve/process/hooks';
 import { HQ_PAGES } from '@constants/hqPages';
+import ModernSelect from '@presentational/atoms/ModernSelect';
+import { regionResponseType } from '@business-layer/services';
+import MultipleLayerSelect, {
+  mulSelectOptionType,
+} from '@presentational/atoms/MultipleLayerSelect';
 
 const START_PAGE = 1;
-const MAX_ELEMENT_PER_PAGE = 6;
+const MAX_ELEMENT_PER_PAGE = 4;
 const REQUEST_TYPES = {
   MOD: 'Chỉnh sửa',
   CRE: 'Thêm mới',
@@ -54,14 +57,11 @@ type displayDataType = {
 };
 
 type additionFuncParamsType = {
-  isChoosing?: boolean;
-  onChoosing?: (locationData: IAdLocation) => void;
+  regionsData: regionResponseType | null;
   customDetailHref?: string;
 };
-
 function AdRequestTable({
-  isChoosing,
-  onChoosing,
+  regionsData,
   customDetailHref,
 }: additionFuncParamsType) {
   const router = useRouter();
@@ -72,6 +72,23 @@ function AdRequestTable({
   const [requestData, setRequestData] = useState<displayDataType[] | null>(
     null
   );
+  const backupRequestData = useRef<displayDataType[] | null>(null);
+  const [districts, setDistricts] = useState<mulSelectOptionType | null>(null);
+
+  useEffect(() => {
+    if (regionsData) {
+      const districts: mulSelectOptionType = { ['Tất cả các quận']: [] };
+      regionsData.forEach((r) => {
+        const sameKey = Object.keys(districts).find((dk) => dk === r.district);
+        if (sameKey) {
+          districts[sameKey].push(r.ward);
+        } else {
+          districts[r.district] = ['Tất cả', r.ward];
+        }
+      });
+      setDistricts(districts);
+    }
+  }, [regionsData]);
 
   useEffect(() => {
     if (Array.isArray(requestData)) {
@@ -124,162 +141,220 @@ function AdRequestTable({
         })
       );
       setRequestData(displayData);
+      backupRequestData.current = displayData;
     }
   }, [modificationRequests, creationRequests]);
 
+  const handleFilterByRegion = ({
+    district,
+    ward,
+  }: {
+    district: string | null;
+    ward: string | null;
+  }) => {
+    if (backupRequestData.current) {
+      if (district === null) {
+        setRequestData(backupRequestData.current);
+      } else if (ward === null) {
+        setRequestData(
+          backupRequestData.current.filter((r) =>
+            r.pointData.address.toLowerCase().includes(district.toLowerCase())
+          )
+        );
+      } else {
+        setRequestData(
+          backupRequestData.current.filter(
+            (r) =>
+              r.pointData.address
+                .toLowerCase()
+                .includes(district.toLowerCase()) &&
+              r.pointData.address.toLowerCase().includes(ward.toLowerCase())
+          )
+        );
+      }
+    }
+  };
+
   return (
-    <div className="shadow-sm overflow-x-auto overflow-y-hidden rounded-md">
-      <table className="w-full table-fixed text-xs text-center">
-        <thead className="bg-indigo-950 text-white font-semibold">
-          <tr>
-            <th scope="col" className="px-2 py-3 w-[10%]">
-              STT
-            </th>
-            <th scope="col" className="px-2 py-3 w-[30%]">
-              Điểm quảng cáo
-            </th>
-            <th scope="col" className="px-2 py-3 w-[30%]">
-              Thông tin thêm
-            </th>
-            <th scope="col" className="px-2 py-3 w-[20%]">
-              Loại yêu cầu
-            </th>
-            <th scope="col" className="px-2 py-3 w-[10%]">
-              Hành động
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {Array.isArray(requestData) ? (
-            requestData.length > 0 ? (
-              slicePaginationData<displayDataType>(
-                requestData,
-                paginationData.currentPage,
-                paginationData.maxPage,
-                paginationData.maxElementPerPage
-              ).map((request, requestIndex) => (
-                <tr
-                  className="py-4 even:bg-gray-100"
-                  key={`request@${request.id}`}
-                >
-                  <TableRow
-                    listData={[
-                      request.id + 1,
-                      <span>
-                        <span className="line-clamp-2">
-                          {request.pointData.address}
-                        </span>
-                        <button className="w-full text-center hover:underline">
-                          <span className="line-clamp-1 font-medium text-xs ">
-                            <b>Lat:</b>{' '}
-                            <span className="text-blue-600">
-                              {request.pointData.latitude}
-                            </span>
-                          </span>
-                          <span className="line-clamp-1 font-medium text-xs ">
-                            <b>Long:</b>{' '}
-                            <span className="text-blue-600">
-                              {request.pointData.latitude}
-                            </span>
-                          </span>
-                        </button>
-                      </span>,
-                      /**
-                         * 
-                          companyName: string;
-                          phone: string;
-                          address: string;
-                          contractStart: string;
-                          contractEnd: string;
-                         */
-                      request.requestTypes === REQUEST_TYPES.MOD ? (
-                        <span className="line-clamp-4">
-                          {request.reasonsData.trim().length > 0
-                            ? request.reasonsData
-                            : 'Không có'}
-                        </span>
-                      ) : request.additionData ? (
+    <>
+      <div className="flex flex-row gap-4 justify-between mt-4 mb-8 w-full h-8">
+        <></>
+        <div className="flex flex-row justify-end flex-grow gap-2">
+          <MultipleLayerSelect
+            label="Tất cả các quận"
+            onOptionSelect={handleFilterByRegion}
+            options={districts}
+            style="softCyan"
+            disabled={false}
+          />
+          {/* <ModernSelect
+            onOptionSelect={handleFilter}
+            options={options}
+            defaultValue={defaultValue}
+          /> */}
+        </div>
+      </div>
+      <div className="shadow-sm overflow-x-auto overflow-y-auto rounded-md h-full">
+        <table className="w-full table-fixed text-xs text-center">
+          <thead className="bg-indigo-950 text-white font-semibold">
+            <tr>
+              <th scope="col" className="px-2 py-3 w-[10%]">
+                STT
+              </th>
+              <th scope="col" className="px-2 py-3 w-[30%]">
+                Điểm quảng cáo
+              </th>
+              <th scope="col" className="px-2 py-3 w-[35%]">
+                Thông tin thêm
+              </th>
+              <th scope="col" className="px-2 py-3 w-[15%]">
+                Loại yêu cầu
+              </th>
+              <th scope="col" className="px-2 py-3 w-[10%]">
+                Hành động
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {Array.isArray(requestData) ? (
+              requestData.length > 0 ? (
+                slicePaginationData<displayDataType>(
+                  requestData,
+                  paginationData.currentPage,
+                  paginationData.maxPage,
+                  paginationData.maxElementPerPage
+                ).map((request, requestIndex) => (
+                  <tr
+                    className="py-4 even:bg-gray-100"
+                    key={`request@${request.id}`}
+                  >
+                    <TableRow
+                      listData={[
+                        request.id + 1,
                         <span>
                           <span className="line-clamp-2">
-                            <b>Công ty:</b> {request.additionData.companyName}
+                            {request.pointData.address}
                           </span>
-                          <span className="line-clamp-2">
-                            <b>Địa chỉ:</b> {request.additionData.address}
+                          <button className="w-full text-center hover:underline">
+                            <span className="line-clamp-1 font-medium text-xs ">
+                              <b>Lat:</b>{' '}
+                              <span className="text-blue-600">
+                                {request.pointData.latitude}
+                              </span>
+                            </span>
+                            <span className="line-clamp-1 font-medium text-xs ">
+                              <b>Long:</b>{' '}
+                              <span className="text-blue-600">
+                                {request.pointData.latitude}
+                              </span>
+                            </span>
+                          </button>
+                        </span>,
+                        request.requestTypes === REQUEST_TYPES.MOD ? (
+                          <span className="line-clamp-4">
+                            {request.reasonsData.trim().length > 0
+                              ? request.reasonsData
+                              : 'Không có'}
                           </span>
-                          <span className="line-clamp-1">
-                            <b>Điện thoại:</b> {request.additionData.phone}
-                          </span>
-                          <span className="line-clamp-2">
-                            <b>Thời hạn hợp đồng:</b>
-                            <br />
-                            <span
-                              className={
-                                isDateGreaterThan(
-                                  getCurrentDateTime(),
-                                  request.additionData.contractEnd
-                                )
-                                  ? 'text-green-600'
-                                  : 'text-rose-600'
-                              }
-                            >
-                              <b>
-                                {
-                                  formatDate(
-                                    new Date(request.additionData.contractStart)
-                                  ).dateMonthYear
+                        ) : request.additionData ? (
+                          <span>
+                            <span className="line-clamp-1">
+                              <b>Công ty:</b> {request.additionData.companyName}
+                            </span>
+                            <span className="line-clamp-2">
+                              <b>Địa chỉ:</b> {request.additionData.address}
+                            </span>
+                            <span className="line-clamp-1">
+                              <b>Điện thoại:</b> {request.additionData.phone}
+                            </span>
+                            <span className="line-clamp-3">
+                              <b>Thời hạn hợp đồng:</b>
+                              <br />
+                              <span
+                                className={
+                                  isDateGreaterThan(
+                                    getCurrentDateTime(),
+                                    request.additionData.contractEnd
+                                  )
+                                    ? 'text-green-600'
+                                    : 'text-rose-600'
                                 }
-                                <i className="fi fi-rr-arrow-small-right mx-2"></i>
-                                {
-                                  formatDate(
-                                    new Date(request.additionData.contractEnd)
-                                  ).dateMonthYear
-                                }
-                              </b>
+                              >
+                                <b>
+                                  {
+                                    formatDate(
+                                      new Date(
+                                        request.additionData.contractStart
+                                      )
+                                    ).time24
+                                  }
+                                  &nbsp;|&nbsp;
+                                  {
+                                    formatDate(
+                                      new Date(
+                                        request.additionData.contractStart
+                                      )
+                                    ).dateMonthYear
+                                  }
+                                  <i className="fi fi-rr-arrow-small-right mx-2"></i>
+                                  {
+                                    formatDate(
+                                      new Date(request.additionData.contractEnd)
+                                    ).time24
+                                  }
+                                  &nbsp;|&nbsp;
+                                  {
+                                    formatDate(
+                                      new Date(request.additionData.contractEnd)
+                                    ).dateMonthYear
+                                  }
+                                </b>
+                              </span>
                             </span>
                           </span>
-                        </span>
-                      ) : (
-                        <></>
-                      ),
-                      <span
-                        className={
-                          request.requestTypes === REQUEST_TYPES.CRE
-                            ? 'text-green-600 font-semibold'
-                            : 'text-blue-600 font-semibold'
-                        }
-                      >
-                        {request.requestTypes}
-                      </span>,
-                      <IconButton
-                        type="button"
-                        shape="square"
-                        callback={() => {
-                          router.push(
-                            (customDetailHref ?? OFFICER_PAGES.ADS_BOARD) +
-                              `/${request.id}`
-                          );
-                        }}
-                      >
-                        <i className="fi fi-sr-file-circle-info text-blue-600 text-sm hover:text-blue-400 transition-colors"></i>
-                      </IconButton>,
-                    ]}
-                  />
+                        ) : (
+                          <></>
+                        ),
+                        <span
+                          className={
+                            request.requestTypes === REQUEST_TYPES.CRE
+                              ? 'text-green-600 font-semibold'
+                              : 'text-blue-600 font-semibold'
+                          }
+                        >
+                          {request.requestTypes}
+                        </span>,
+                        <IconButton
+                          type="button"
+                          shape="square"
+                          callback={() => {
+                            router.push(
+                              (customDetailHref ?? OFFICER_PAGES.ADS_BOARD) +
+                                `/${request.id}`
+                            );
+                          }}
+                        >
+                          <i className="fi fi-sr-file-circle-info text-blue-600 text-sm hover:text-blue-400 transition-colors"></i>
+                        </IconButton>,
+                      ]}
+                    />
+                  </tr>
+                ))
+              ) : (
+                <tr className="py-4">
+                  <td colSpan={6} className="py-12">
+                    <EmptyIcon label="Không tìm thấy yêu cầu nào" />
+                  </td>
                 </tr>
-              ))
+              )
             ) : (
-              <tr className="py-4">
-                <td colSpan={6} className="py-12">
-                  <EmptyIcon label="Không tìm thấy yêu cầu nào" />
-                </td>
-              </tr>
-            )
-          ) : (
-            <RowLoader colNumber={5} />
-          )}
-        </tbody>
-      </table>
-      {paginationData.maxPage > 0 ? <Pagination /> : <></>}
-    </div>
+              <RowLoader colNumber={5} />
+            )}
+          </tbody>
+        </table>
+        {paginationData.maxPage > 0 ? <Pagination /> : <></>}
+      </div>
+    </>
   );
 }
 
