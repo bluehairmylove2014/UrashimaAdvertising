@@ -36,6 +36,11 @@ const tabs = [
     name: 'Các báo cáo',
     href: HQ_PAGES.REPORTS,
   },
+  {
+    iconCls: 'fi fi-sr-portrait',
+    name: 'Tài khoản',
+    href: HQ_PAGES.ACCOUNT_MANAGEMENT,
+  },
 ];
 
 function HQNavbar() {

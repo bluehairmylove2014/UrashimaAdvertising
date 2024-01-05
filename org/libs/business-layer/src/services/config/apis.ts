@@ -73,6 +73,14 @@ export const modifyAdFormsSettingsUrl = '/api/ads-form-type';
 export const modifyAdBoardTypesSettingsUrl = '/api/ads-type';
 export const modifyReportTypesSettingsUrl = '/api/report-type';
 
+// REQUEST
+export const getAllAdModificationRequestEndpoint =
+  '/api/headquater/ads-modification';
+export const approveAdModificationRequestEndpoint =
+  '/api/headquater/ads-modification/approve';
+export const approveAdCreationRequestEndpoint =
+  '/api/headquater/ads-request/status';
+
 // GOOGLE
 export const googleGetUserInfoUrl =
   corsProxyUrl +

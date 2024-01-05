@@ -16,8 +16,9 @@ export const HQ_PAGES = {
   AD_BOARDS: '/ad-boards',
 
   AD_REQUESTS: '/ad-requests',
-  AD_LOCATION_MODIFICATION_REQUESTS: '/ad-requests/modification/location',
-  AD_BOARD_MODIFICATION_REQUESTS: '/ad-requests/modification/board',
+  AD_MODIFICATION_REQUESTS: '/ad-requests/modification',
+  // AD_LOCATION_MODIFICATION_REQUESTS: '/ad-requests/modification/location',
+  // AD_BOARD_MODIFICATION_REQUESTS: '/ad-requests/modification/board',
   AD_APPROVE_REQUESTS: '/ad-requests/approve',
 
   REPORTS: '/reports',
