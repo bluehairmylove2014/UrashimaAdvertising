@@ -60,6 +60,7 @@ function LoginForm() {
     onLogin({ email, password })
       .then((msg) => {
         router.push(OFFICER_PAGES.DASHBOARD);
+        router.refresh();
         showSuccess(msg);
       })
       .catch((error) => showError(error.message));

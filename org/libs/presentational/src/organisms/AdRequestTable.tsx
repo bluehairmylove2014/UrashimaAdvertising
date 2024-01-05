@@ -48,6 +48,7 @@ type displayDataType = {
     contractStart: string;
     contractEnd: string;
   };
+  reasonsData: string;
   requestTypes: string;
   href: string;
 };
@@ -97,6 +98,7 @@ function AdRequestTable({
             longitude: mr.longitude,
             address: mr.address,
           },
+          reasonsData: mr.reasons,
           requestTypes: REQUEST_TYPES.MOD,
           href: HQ_PAGES.AD_MODIFICATION_REQUESTS + `?id=${mr.id}`,
         })
@@ -116,6 +118,7 @@ function AdRequestTable({
             contractStart: cr.contractStart,
             contractEnd: cr.contractEnd,
           },
+          reasonsData: '',
           requestTypes: REQUEST_TYPES.CRE,
           href: HQ_PAGES.AD_APPROVE_REQUESTS + `?id=${cr.id}`,
         })
@@ -190,7 +193,11 @@ function AdRequestTable({
                           contractEnd: string;
                          */
                       request.requestTypes === REQUEST_TYPES.MOD ? (
-                        <span></span>
+                        <span className="line-clamp-4">
+                          {request.reasonsData.trim().length > 0
+                            ? request.reasonsData
+                            : 'Không có'}
+                        </span>
                       ) : request.additionData ? (
                         <span>
                           <span className="line-clamp-2">
@@ -220,8 +227,8 @@ function AdRequestTable({
                                   formatDate(
                                     new Date(request.additionData.contractStart)
                                   ).dateMonthYear
-                                }{' '}
-                                Tới{' '}
+                                }
+                                <i className="fi fi-rr-arrow-small-right mx-2"></i>
                                 {
                                   formatDate(
                                     new Date(request.additionData.contractEnd)
@@ -234,7 +241,15 @@ function AdRequestTable({
                       ) : (
                         <></>
                       ),
-                      request.requestTypes,
+                      <span
+                        className={
+                          request.requestTypes === REQUEST_TYPES.CRE
+                            ? 'text-green-600 font-semibold'
+                            : 'text-blue-600 font-semibold'
+                        }
+                      >
+                        {request.requestTypes}
+                      </span>,
                       <IconButton
                         type="button"
                         shape="square"
