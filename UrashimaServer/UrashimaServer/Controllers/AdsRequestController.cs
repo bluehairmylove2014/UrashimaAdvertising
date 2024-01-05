@@ -47,6 +47,8 @@ namespace UrashimaServer.Controllers
             foreach (var item in rawResult)
             {
                 var toAddRes = _mapper.Map<GetAdsCreateRequestDto>(item);
+                var pointToFind = _context.AdsPoints.Find(item.AdsPointId);
+                toAddRes.AdsPoint = _mapper.Map<AdsCreateRequestPointDto>(pointToFind!);
                 myResult.Add(toAddRes);
             }
 
@@ -55,7 +57,7 @@ namespace UrashimaServer.Controllers
                 var RequestAddress = _context.AdsPoints.Find(item.AdsPointId)?.Address ?? "No Address";
                 var region = HttpContext.Items["address"] as string;
                 return Helper.IsUnderAuthority(RequestAddress, acc.UnitUnderManagement, region) 
-                    || acc.Role == GlobalConstant.HeadQuater;
+                    || acc.Role.Equals(GlobalConstant.HeadQuater);
             }).ToList();
 
             return myResult;

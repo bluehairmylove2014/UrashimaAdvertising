@@ -48,7 +48,7 @@ namespace UrashimaServer.Controllers
             return acc;
         }
 
-        [HttpPost("register")]
+        [HttpPost("register"), AuthorizeRoles(GlobalConstant.HeadQuater)]
         public async Task<ActionResult<Account>> Register(RegisterDto request)
         {
             if (request.Password.Length < 6)
@@ -56,12 +56,13 @@ namespace UrashimaServer.Controllers
                     message = "Password must contain at least 6 characters!"
                 });
 
-            var acc = await _dbContext.Accounts.FirstOrDefaultAsync(acc => acc.Email.Equals(request.Email));
+            var acc = await _dbContext.Accounts
+                .FirstOrDefaultAsync(acc => acc.Email.Equals(request.Email) && (!request.IsSocial || acc.PasswordHash.Equals("social")));
 
             if (acc != null)
             {
                 return BadRequest(new {
-                    message = "Account has already existed!"
+                    message = "Tài khoản đã tồn tại!"
                 });
             }
 
@@ -79,8 +80,8 @@ namespace UrashimaServer.Controllers
             {
                 Email = request.Email,
                 FullName = request.FullName,
-                PasswordHash = Helper.ByteArrayToString(passwordHash),
-                PasswordSalt = Helper.ByteArrayToString(passwordSalt),
+                PasswordHash = request.IsSocial ? Helper.ByteArrayToString(passwordHash) : "social",
+                PasswordSalt = request.IsSocial ? Helper.ByteArrayToString(passwordSalt) : "social",
                 Role = request.Role
             };
 
@@ -102,7 +103,8 @@ namespace UrashimaServer.Controllers
         {
             var hasOrigin = this.Request.Headers.TryGetValue("Origin", out var requestOrigin);
 
-            var account = await _dbContext.Accounts.FirstOrDefaultAsync(acc => acc.Email.Equals(request.Email));
+            var account = await _dbContext.Accounts
+                .FirstOrDefaultAsync(acc => acc.Email.Equals(request.Email) && !acc.PasswordHash.Equals("social"));
 
             if (account == null)
             {
@@ -146,48 +148,37 @@ namespace UrashimaServer.Controllers
         [HttpPost("login-social")]
         public async Task<ActionResult<string>> LoginSocial(RegisterSocialDto request)
         {
-            if (!GlobalConstant.Roles.Contains(request.Role))
+            var account = await _dbContext.Accounts
+                .FirstOrDefaultAsync(acc => acc.Email.Equals(request.Email) && acc.PasswordHash.Equals("social"));
+
+            if (account == null)
             {
-                return BadRequest(new
+                return NotFound(new
                 {
-                    message = "Unsupported role!"
+                    Message = "Tài khoản không tồn tại."
                 });
             }
 
-            var acc = await _dbContext.Accounts.FirstOrDefaultAsync(acc => acc.Email.Equals(request.Email));
+            //if (!Helper.IsAuthorizedOrigin(requestOrigin.ToString(), account.Role))
+            //{
+            //    return BadRequest(new
+            //    {
+            //        message = "Invalid origin!",
+            //    });
+            //}
 
-            Account newAcc = acc ?? new Account ()
-            {
-                Email = request.Email,
-                FullName = request.FullName,
-                Role = request.Role
-            };
+            string token = CreateToken(account, account.Role);
 
-            var hasOrigin = this.Request.Headers.TryGetValue("Origin", out var requestOrigin);
-            if (!Helper.IsAuthorizedOrigin(requestOrigin.ToString(), newAcc.Role))
-            {
-                return BadRequest(new
-                {
-                    message = "Invalid origin!",
-                });
-            }
-
-            var token = CreateToken(newAcc, request.Role);
             var refreshToken = GenerateRefreshToken();
-            SetRefreshToken(refreshToken, newAcc);
-
-            if (acc is null)
-            {
-                await _dbContext.Accounts.AddAsync(newAcc);
-                await _dbContext.SaveChangesAsync();
-            }
+            SetRefreshToken(refreshToken, account);
+            await _dbContext.SaveChangesAsync();
 
             return Ok(new {
-                accountId = newAcc.Id,
+                accountId = account.Id,
                 message = "Login successfully!",
                 token,
                 refreshToken = refreshToken.Token,
-                role = request.Role
+                role = account.Role
             });
         }
 

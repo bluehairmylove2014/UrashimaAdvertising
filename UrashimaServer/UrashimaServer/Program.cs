@@ -48,6 +48,7 @@ builder.Services.AddCors(options => options.AddPolicy(name: "NgOrigins",
         policy.WithOrigins("http://localhost:2808").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
         policy.WithOrigins("http://localhost:2816").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
         policy.WithOrigins("http://localhost:2016").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
+        policy.WithOrigins("http://localhost:4200").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
         policy.WithOrigins("https://www.urashima-ads.site").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
         policy.WithOrigins("https://www.officer.urashima-ads.site").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
         policy.WithOrigins("https://www.hq.urashima-ads.site").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
