@@ -58,12 +58,8 @@ type displayDataType = {
 
 type additionFuncParamsType = {
   regionsData: regionResponseType | null;
-  customDetailHref?: string;
 };
-function AdRequestTable({
-  regionsData,
-  customDetailHref,
-}: additionFuncParamsType) {
+function AdRequestTable({ regionsData }: additionFuncParamsType) {
   const router = useRouter();
   const modificationRequests = useGetAllAdModificationRequest();
   const creationRequests = useGetAllCreationRequest();
@@ -145,6 +141,22 @@ function AdRequestTable({
     }
   }, [modificationRequests, creationRequests]);
 
+  function escapeRegExp(str: string) {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+
+  function filterByArea(requestData: displayDataType[], specificArea: string) {
+    const escapedArea = escapeRegExp(specificArea);
+    const regex = new RegExp(
+      `(?:[.,\\s]*\\b${escapedArea}\\b[.,\\s]*([\\w\\s]+)(?:[.,\\s]*|$))`,
+      'i'
+    );
+
+    return requestData.filter((r) => {
+      return regex.test(r.pointData.address);
+    });
+  }
+
   const handleFilterByRegion = ({
     district,
     ward,
@@ -156,20 +168,10 @@ function AdRequestTable({
       if (district === null) {
         setRequestData(backupRequestData.current);
       } else if (ward === null) {
-        setRequestData(
-          backupRequestData.current.filter((r) =>
-            r.pointData.address.toLowerCase().includes(district.toLowerCase())
-          )
-        );
+        setRequestData(filterByArea(backupRequestData.current, district));
       } else {
         setRequestData(
-          backupRequestData.current.filter(
-            (r) =>
-              r.pointData.address
-                .toLowerCase()
-                .includes(district.toLowerCase()) &&
-              r.pointData.address.toLowerCase().includes(ward.toLowerCase())
-          )
+          filterByArea(filterByArea(backupRequestData.current, district), ward)
         );
       }
     }
@@ -329,8 +331,10 @@ function AdRequestTable({
                           shape="square"
                           callback={() => {
                             router.push(
-                              (customDetailHref ?? OFFICER_PAGES.ADS_BOARD) +
-                                `/${request.id}`
+                              (request.requestTypes === REQUEST_TYPES.MOD
+                                ? HQ_PAGES.AD_MODIFICATION_REQUESTS
+                                : HQ_PAGES.AD_APPROVE_REQUESTS) +
+                                `?id=${request.id}`
                             );
                           }}
                         >

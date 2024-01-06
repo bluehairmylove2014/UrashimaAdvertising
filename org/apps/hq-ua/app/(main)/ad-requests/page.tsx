@@ -21,7 +21,7 @@ async function getRegions() {
 async function AdRequests() {
   const regionsData = await getRegions();
   return (
-    <div className="py-6 w-full h-screen">
+    <div className="py-6 w-full h-screen overflow-y-auto scrollbar-hide">
       <HQPageTitle title="Các yêu cầu từ Phường, Quận" />
       <AdRequestTable regionsData={regionsData} />
     </div>
