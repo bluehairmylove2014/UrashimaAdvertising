@@ -52,7 +52,9 @@ function Home(): ReactElement {
   const [posPrevMouse, setPosPrevMouse] = useState<locationType>(undefined);
 
   //Create state for checking ads is reported
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isAdsPointReported, setIsAdsPointReported] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isClickReported, setIsClickReported] = useState(false);
 
   const { onGetAdDetail, isLoading } = useGetAdDetail();

@@ -15,9 +15,9 @@ function YesNoPopup({ isActive, onResult, message }: yesNoPopupParamsType) {
       <div className="bg-white p-4 rounded overflow-hidden w-56 flex flex-col justify-between items-center">
         <div className="flex flex-row items-center justify-center gap-3 mb-4">
           <i className="fi fi-ss-interrogation text-orange-400 text-2xl"></i>
-          <p>{message}</p>
+          <p className="font-semibold">{message}</p>
         </div>
-        <div className="flex flex-row justify-around items-end gap-4 w-full">
+        <div className="flex flex-row justify-evenly items-end gap-4 w-full">
           <div className="w-16">
             <CustomButton
               style="fill-secondary"

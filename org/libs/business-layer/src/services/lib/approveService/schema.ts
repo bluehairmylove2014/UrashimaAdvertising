@@ -23,8 +23,32 @@ const createNewApproveRequestResponseSchema = z.object({
 const deleteApproveRequestResponseSchema = z.object({
   message: z.string(),
 });
+const getAllAdModificationRequestResponseSchema = z.array(
+  z.object({
+    id: z.number(),
+    longitude: z.number(),
+    latitude: z.number(),
+    address: z.string(),
+    locationType: z.string(),
+    adsForm: z.string(),
+    planned: z.boolean(),
+    images: z.array(z.object({ image: z.string() })),
+    adsBoard: z.array(adBoardSchema),
+    adsPointId: z.number(),
+    modifyTime: z.string(),
+    reasons: z.string(),
+  })
+);
+const approveAdModificationRequestResponseSchema =
+  deleteApproveRequestResponseSchema;
+const approveAdCreationRequestResponseSchema =
+  deleteApproveRequestResponseSchema;
+
 export {
   getApproveListResponseSchema,
   createNewApproveRequestResponseSchema,
   deleteApproveRequestResponseSchema,
+  getAllAdModificationRequestResponseSchema,
+  approveAdModificationRequestResponseSchema,
+  approveAdCreationRequestResponseSchema,
 };

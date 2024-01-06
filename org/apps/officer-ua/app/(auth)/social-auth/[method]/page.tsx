@@ -61,7 +61,8 @@ function SocialAuth() {
             // Handle get redirect url here
             setTimeout(() => {
               router.push(OFFICER_PAGES.DASHBOARD);
-            }, 2000);
+              router.refresh();
+            }, 1000);
           })
           .catch((error) => {
             setErrorMsg(error.message);
