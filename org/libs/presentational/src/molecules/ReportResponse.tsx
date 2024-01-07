@@ -9,12 +9,14 @@ import {
 import { Controller, useForm } from 'react-hook-form';
 import { IOfficerReportDetail } from '@business-layer/services/entities';
 import { useOfficerEditReport } from '../../../business-layer/src/business-logic/lib/officerReport/process/hooks/useOfficerEditReport'
+import { boolean } from 'zod';
+import { useState } from 'react';
 
 type formData = {
     response: string;
 };
 
-function ReportResponse({ reportData }: { reportData: IOfficerReportDetail }) {
+function ReportResponse({ reportData, handleClose }: { reportData: IOfficerReportDetail, handleClose: () => void }) {
     const reasonsInputResolver = useYupValidationResolver(responseInputSchema);
     const { showError, showReactHookFormError, showSuccess } = useNotification();
     const { control, handleSubmit, reset, watch, register } = useForm({
@@ -28,17 +30,17 @@ function ReportResponse({ reportData }: { reportData: IOfficerReportDetail }) {
     const onModify = (formData: formData) => {
         const response = formData;
         console.log("Data: " + response);
-        // onOfficerEditReport({
-        //     ...reportData,
-        // })
-        //     .then((msg) => {
-        //         showSuccess(msg)
-        //         reset();
-        //     })
-        //     .catch((error) => showError(error.message))
-        //     .finally(() => {
+        onOfficerEditReport({
+            ...reportData,
+        })
+            .then((msg) => {
+                showSuccess(msg)
+                reset();
+            })
+            .catch((error) => showError(error.message))
+            .finally(() => {
 
-        //     });
+            });
     };
 
     const responseWatch = watch('response');
@@ -46,7 +48,7 @@ function ReportResponse({ reportData }: { reportData: IOfficerReportDetail }) {
 
     return (
         <div className='fixed w-screen h-screen top-0 left-0 bg-black/60 p-6 rounded-md z-30 grid place-items-center'>
-            <form
+            < form
                 onSubmit={handleSubmit(onModify, showReactHookFormError)}
                 noValidate
                 className="bg-white rounded overflow-hidden p-6 w-1/2 h-fit"
@@ -79,6 +81,7 @@ function ReportResponse({ reportData }: { reportData: IOfficerReportDetail }) {
                         style="fill-secondary"
                         type="button"
                         onClick={() => {
+                            handleClose();
                             reset();
                         }}
                     >
@@ -88,7 +91,7 @@ function ReportResponse({ reportData }: { reportData: IOfficerReportDetail }) {
                         Xác nhận
                     </CustomButton>
                 </div>
-            </form>
+            </form >
         </div >
     )
 }

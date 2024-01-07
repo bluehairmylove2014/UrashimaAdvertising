@@ -1,7 +1,7 @@
 'use client'
 import { COOKIE_KEYS } from "@business-layer/business-logic/configs/constants";
 import { useGetPagination, useSetPaginationData } from "@business-layer/business-logic/non-service-lib/pagination";
-import { ReportService, getAllOfficerReportsResponseType } from "@business-layer/services";
+import { ReportService, getAllOfficerReportsResponseType, regionResponseType } from "@business-layer/services";
 import { IOfficerReport } from "@business-layer/services/entities";
 import EmptyIcon from "@presentational/atoms/EmptyIcon";
 import IconButton from "@presentational/atoms/IconButton";
@@ -15,10 +15,11 @@ import { Listbox, Transition } from "@headlessui/react";
 import CustomImage from "@presentational/atoms/CustomImage";
 import { useRouter } from "next/navigation";
 import { OFFICER_PAGES } from "@constants/officerPages";
+import DistrictWardPopUp from "@presentational/molecules/DistrictWardPopUp";
 
 
 const formReport = [
-    'Tất cả hình thức báo cáo',
+    'Tất cả hình thức',
     'Tố giác sai phạm',
     'Đóng góp ý kiến',
     'Đăng ký nội dung',
@@ -28,7 +29,8 @@ const formReport = [
 const START_PAGE = 1;
 const MAX_ELEMENT_PER_PAGE = 6;
 
-function ReportTable({ reportData }: { reportData: getAllOfficerReportsResponseType }) {
+function ReportTable({ reportData, isHeadQuarter, regionsData }: { reportData: getAllOfficerReportsResponseType, isHeadQuarter: boolean, regionsData: regionResponseType | null }) {
+    const [isActiveDistrictWardPopUp, setIsActiveDistrictWardPopUp] = useState(false);
     const [selectedFormReport, setSelectedFormReport] = useState(formReport[0]);
     const [searchValue, setSearchValue] = useState("");
     const router = useRouter();
@@ -40,7 +42,7 @@ function ReportTable({ reportData }: { reportData: getAllOfficerReportsResponseT
         let filteredData = reportData || [];
 
         // Filter by report type
-        if (selectedFormReport !== 'Tất cả hình thức báo cáo') {
+        if (selectedFormReport !== 'Tất cả hình thức') {
             filteredData = filteredData.filter((report) => report.reportType === selectedFormReport);
         }
 
@@ -68,6 +70,13 @@ function ReportTable({ reportData }: { reportData: getAllOfficerReportsResponseT
 
     return (
         <>
+            {isActiveDistrictWardPopUp ?
+                <DistrictWardPopUp regionsData={regionsData} handleClosePopUp={() => {
+                    setIsActiveDistrictWardPopUp(false);
+                }} />
+
+                : <></>
+            }
             <div className="flex flex-row gap-4 justify-between mb-8 w-full">
                 <form className="flex-shrink w-96 relative border-solid border-[1px] border-zinc-400 rounded overflow-hidden">
                     <i className="fi fi-rr-search absolute top-1/2 left-4 transform -translate-y-1/2 bottom-[4px] text-[0.65rem]"></i>
@@ -79,47 +88,63 @@ function ReportTable({ reportData }: { reportData: getAllOfficerReportsResponseT
                         onChange={(e) => setSearchValue(e.target.value)}
                     />
                 </form>
-                <Listbox value={selectedFormReport} onChange={setSelectedFormReport}>
-                    <div className="relative w-[40vh]">
-                        <Listbox.Button className="relative  text-[0.7rem] w-[100%] cursor-default rounded-sm bg-white border-solid border-[0.6px] border-gray-200 py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-blue-500 focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-blue-300">
-                            <span className="block truncate font-semibold ">{selectedFormReport}</span>
-                            <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-                                <CustomImage
-                                    src="/assets/down.png"
-                                    alt="Ads Form"
-                                    width="0.5rem"
-                                    height="0.5rem"
-                                />
-                            </span>
-                        </Listbox.Button>
-                        <Transition
-                            as={Fragment}
-                            leave="transition ease-in duration-100"
-                            leaveFrom="opacity-100"
-                            leaveTo="opacity-0"
+                <div className='flex'>
+                    {isHeadQuarter ?
+                        <button
+                            className='relative bg-indigo-900 hover:bg-indigo-950 text-white font-bold py-2 px-4 rounded text-[0.7rem] w-[100%] mr-3 overflow-auto shadow-lg ring-1 ring-black/5 focus:outline-none'
+                            onClick={() => {
+                                setIsActiveDistrictWardPopUp(true);
+                            }}
                         >
-                            <Listbox.Options className="absolute z-40 text-[0.7rem] mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 focus:outline-none z-199">
-                                {formReport.map((form, formIdx) => (
-                                    <Listbox.Option
-                                        key={formIdx}
-                                        className={({ active }) =>
-                                            `relative cursor-default select-none py-2 pl-3 ${active ? 'bg-blue-100 text-blue-900' : 'text-gray-900'
-                                            }`
-                                        }
-                                        value={form}
-                                    >
-                                        <span
-                                            className={`block truncate ${selectedFormReport ? 'font-medium' : 'font-normal'
-                                                }`}
+                            Chọn khu vực báo cáo
+                        </button>
+                        :
+                        <></>
+                    }
+
+                    <Listbox value={selectedFormReport} onChange={setSelectedFormReport}>
+                        <div className="relative w-[35vh]">
+                            <Listbox.Button className="relative  text-[0.7rem] w-[100%] cursor-default rounded-sm bg-white border-solid border-[0.6px] border-gray-200 py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-blue-500 focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-blue-300">
+                                <span className="block truncate font-semibold ">{selectedFormReport}</span>
+                                <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+                                    <CustomImage
+                                        src="/assets/down.png"
+                                        alt="Ads Form"
+                                        width="0.5rem"
+                                        height="0.5rem"
+                                    />
+                                </span>
+                            </Listbox.Button>
+                            <Transition
+                                as={Fragment}
+                                leave="transition ease-in duration-100"
+                                leaveFrom="opacity-100"
+                                leaveTo="opacity-0"
+                            >
+                                <Listbox.Options className="absolute z-40 text-[0.7rem] mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 focus:outline-none z-199">
+                                    {formReport.map((form, formIdx) => (
+                                        <Listbox.Option
+                                            key={formIdx}
+                                            className={({ active }) =>
+                                                `relative cursor-default select-none py-2 pl-3 ${active ? 'bg-blue-100 text-blue-900' : 'text-gray-900'
+                                                }`
+                                            }
+                                            value={form}
                                         >
-                                            {form}
-                                        </span>
-                                    </Listbox.Option>
-                                ))}
-                            </Listbox.Options>
-                        </Transition>
-                    </div>
-                </Listbox>
+                                            <span
+                                                className={`block truncate ${selectedFormReport ? 'font-medium' : 'font-normal'
+                                                    }`}
+                                            >
+                                                {form}
+                                            </span>
+                                        </Listbox.Option>
+                                    ))}
+                                </Listbox.Options>
+                            </Transition>
+                        </div>
+                    </Listbox>
+
+                </div>
             </div>
 
             <div className="shadow-sm overflow-x-auto overflow-y-hidden rounded-md">
@@ -129,17 +154,8 @@ function ReportTable({ reportData }: { reportData: getAllOfficerReportsResponseT
                             <th scope="col" className="px-2 py-3 w-[5%]">
                                 STT
                             </th>
-                            <th scope="col" className="px-2 py-3 w-[10%]">
-                                Thời Điểm
-                            </th>
-                            <th scope="col" className="px-2 py-3 w-[15%]">
-                                Tên Người Gửi
-                            </th>
-                            <th scope="col" className="px-2 py-3 w-[15%]">
-                                Email
-                            </th>
-                            <th scope="col" className="px-2 py-3 w-[10%]">
-                                Số Điện Thoại
+                            <th scope="col" className="px-2 py-3 w-[20%]">
+                                Thông Tin Người Gửi
                             </th>
                             <th scope="col" className="px-2 py-3 w-[20%]">
                                 Địa Điểm
@@ -171,22 +187,32 @@ function ReportTable({ reportData }: { reportData: getAllOfficerReportsResponseT
                                         <TableRow
                                             listData={[
                                                 (reportIndex + 1).toString(),
-                                                report.submissionDate ? (
-                                                    <>
-                                                        <p>{formatDate(new Date(report.submissionDate)).dateMonthYear} </p>
-                                                        <p>{formatDate(new Date(report.submissionDate)).time24}</p>
-                                                    </>
-                                                ) :
-                                                    ('N/A'),
-                                                report.name,
-                                                report.email,
-                                                report.phone,
+                                                <span className='font-semibold'>
+                                                    <span className="line-clamp-1 font-medium text-xs ">
+                                                        <b>Tên:</b>{' '}
+                                                        <span className="font-normal">
+                                                            {report.name}
+                                                        </span>
+                                                    </span>
+                                                    <span className="line-clamp-1 font-medium text-xs ">
+                                                        <b>Email:</b>{' '}
+                                                        <span className="font-normal">
+                                                            {report.email}
+                                                        </span>
+                                                    </span>
+                                                    <span className="line-clamp-1 font-medium text-xs ">
+                                                        <b>Số điện thoại:</b>{' '}
+                                                        <span className="font-normal">
+                                                            {report.phone}
+                                                        </span>
+                                                    </span>
+                                                </span>,
                                                 report.address,
                                                 report.reportType,
                                                 report.reportStatus ? (
-                                                    <i className="fi fi-ss-badge-check text-green-600"></i>
+                                                    <span className="text-green-600 font-bold">ĐÃ XÉT DUYỆT</span>
                                                 ) : (
-                                                    <i className="fi fi-sr-cross-circle text-rose-600"></i>
+                                                    <span className="text-rose-600 font-bold">CHƯA XÉT DUYỆT</span>
                                                 ),
                                                 <IconButton
                                                     type="button"
@@ -215,6 +241,8 @@ function ReportTable({ reportData }: { reportData: getAllOfficerReportsResponseT
                 </table>
                 {paginationData.maxPage > 0 ? <Pagination /> : <></>}
             </div >
+
+
         </>
 
     )

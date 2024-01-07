@@ -46,7 +46,7 @@ async function Reports() {
         <Breadcrumbs bcList={breadcrumbsData} />
       </div>
       {reportData ?
-        <ReportTable reportData={reportData} />
+        <ReportTable reportData={reportData} isHeadQuarter={false} regionsData={null} />
         : <></>}
     </div>
   );

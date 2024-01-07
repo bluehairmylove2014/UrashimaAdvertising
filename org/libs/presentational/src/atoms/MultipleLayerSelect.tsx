@@ -88,9 +88,8 @@ function MultipleLayerSelect({
 
   return (
     <div
-      className={`${
-        styleConfig[style ?? DEFAULT_STYLE]
-      } h-full relative border-solid border-[1px] border-zinc-400 transition-colors text-black font-semibold rounded text-[0.65rem]`}
+      className={`${styleConfig[style ?? DEFAULT_STYLE]
+        } h-full relative border-solid border-[1px] border-zinc-400 transition-colors text-black font-semibold rounded text-[0.65rem]`}
     >
       <button
         type="button"
@@ -155,15 +154,14 @@ function MultipleLayerSelect({
             <button
               key={op}
               type="button"
-              className={`${
-                (
-                  i === 0
-                    ? selectedMulLayerOption === null
-                    : op === selectedMulLayerOption
-                )
-                  ? '!bg-blue-100'
-                  : ''
-              } bg-white hover:bg-zinc-100 transition-colors w-full text-center py-3 px-2 text-[0.65rem] scrollbar-hide`}
+              className={`${(
+                i === 0
+                  ? selectedMulLayerOption === null
+                  : op === selectedMulLayerOption
+              )
+                ? '!bg-blue-100'
+                : ''
+                } bg-white hover:bg-zinc-100 transition-colors w-full text-center py-3 px-2 text-[0.65rem] scrollbar-hide`}
               onClick={() => {
                 if (i > 0) {
                   setSelectedMulLayerOption(op);

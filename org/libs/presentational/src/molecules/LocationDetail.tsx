@@ -11,10 +11,12 @@ function LocationDetail({
   locationData,
   isActive,
   handleClose,
+  isOfficer
 }: {
   locationData: ILocation | undefined;
   isActive: boolean;
   handleClose: () => void;
+  isOfficer: boolean
 }) {
   const {
     isReportFormActive,
@@ -59,15 +61,19 @@ function LocationDetail({
                 <span>{locationData.latt}</span>,{' '}
                 <span>{locationData.longt}</span>
               </p>
-              <button
-                onClick={() =>
-                  handleActivateReport(locationData.latt, locationData.longt)
-                }
-                className="flex flex-nowrap justify-center py-1 px-3 rounded text-[0.6rem] text-red-500 border-solid border-[1px] border-red-500"
-              >
-                <i className="fi fi-ss-triangle-warning"></i>
-                <span className="ml-2 whitespace-nowrap">Báo cáo vi phạm</span>
-              </button>
+              {isOfficer ?
+                <></>
+                :
+                <button
+                  onClick={() =>
+                    handleActivateReport(locationData.latt, locationData.longt)
+                  }
+                  className="flex flex-nowrap justify-center py-1 px-3 rounded text-[0.6rem] text-red-500 border-solid border-[1px] border-red-500"
+                >
+                  <i className="fi fi-ss-triangle-warning"></i>
+                  <span className="ml-2 whitespace-nowrap">Báo cáo vi phạm</span>
+                </button>
+              }
             </div>
           </>
         ) : (

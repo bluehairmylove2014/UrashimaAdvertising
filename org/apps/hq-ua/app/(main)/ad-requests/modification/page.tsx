@@ -19,7 +19,7 @@ import { formatDate } from '@utils/helpers';
 import CommonLoader from '@presentational/atoms/CommonLoader';
 import { useNotification } from '@presentational/atoms/Notification';
 
-async function ModificationRequestDetail() {
+function ModificationRequestDetail() {
   const { get: getId } = useSearchParams();
   const requestId = getId('id');
   const modificationRequests = useGetAllAdModificationRequest();
@@ -50,12 +50,16 @@ async function ModificationRequestDetail() {
   useEffect(() => {
     if (requestId && modificationRequests) {
       const id = Number.parseInt(requestId);
-      !requestData &&
-        setRequestData(modificationRequests.find((r) => r.id === id) ?? null);
+      const request = modificationRequests.find((r) => r.id === id) ?? null;
+      !requestData && setRequestData(request);
 
-      onGetOfficerAdDetail(id)
-        .then((data) => setAdDetailData(data))
-        .catch((error) => console.error(error));
+      if (request) {
+        onGetOfficerAdDetail(request.adsPointId)
+          .then((data) => setAdDetailData(data))
+          .catch((error) => console.error(error));
+      } else {
+        console.error('Cannot found request');
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [modificationRequests, requestId]);
@@ -77,37 +81,27 @@ async function ModificationRequestDetail() {
 
   return (
     <main className="container mx-auto px-4 py-12 h-screen overflow-y-auto scrollbar-hide">
-      <div className="flex flex-row justify-between items-start ">
-        <HQPageTitle
-          title="Chi tiết yêu cầu chỉnh sửa"
-          breadcrumbsData={breadcrumbsData}
-        />
-        <div className="w-28">
-          <CustomButton
-            style="fill-green"
-            type="button"
-            loading={isLoading}
-            onClick={handleApprove}
-          >
-            <i className="fi fi-sr-badge-check mr-2"></i>
-            Cấp phép
-          </CustomButton>
-        </div>
-      </div>
-
-      {requestData ? (
+      {requestData && adDetailData ? (
         <>
+          {' '}
+          <div className="flex flex-row justify-between items-start ">
+            <HQPageTitle
+              title="Chi tiết yêu cầu chỉnh sửa"
+              breadcrumbsData={breadcrumbsData}
+            />
+            <div className="w-28">
+              <CustomButton
+                style="fill-green"
+                type="button"
+                loading={isLoading}
+                onClick={handleApprove}
+              >
+                <i className="fi fi-sr-badge-check mr-2"></i>
+                Cấp phép
+              </CustomButton>
+            </div>
+          </div>
           <h3>Thông tin chung</h3>
-          <button className="w-fit text-left hover:underline">
-            <span className="line-clamp-1 font-medium text-xs ">
-              <b>Kinh Độ:</b>{' '}
-              <span className="text-blue-600">{requestData.latitude}</span>
-            </span>
-            <span className="line-clamp-1 font-medium text-xs ">
-              <b>Vĩ Độ:</b>{' '}
-              <span className="text-blue-600">{requestData.latitude}</span>
-            </span>
-          </button>
           <p>
             <b>Thời điểm chỉnh sửa:</b>&nbsp;
             <span>
@@ -122,14 +116,10 @@ async function ModificationRequestDetail() {
           <hr className="my-8" />
           <h3 className="text-blue-600 mb-4">SAU KHI THAY ĐỔI</h3>
           <DisplayAdDetail adData={requestData} />
+          <hr className="my-8" />
+          <h3 className="text-rose-600 mb-4">TRƯỚC KHI THAY ĐỔI</h3>
+          <DisplayAdDetail adData={adDetailData} />
         </>
-      ) : (
-        <CommonLoader />
-      )}
-      <hr className="my-8" />
-      <h3 className="text-rose-600 mb-4">TRƯỚC KHI THAY ĐỔI</h3>
-      {adDetailData ? (
-        <DisplayAdDetail adData={adDetailData} />
       ) : (
         <CommonLoader />
       )}
