@@ -29,7 +29,7 @@ const formReport = [
 const START_PAGE = 1;
 const MAX_ELEMENT_PER_PAGE = 6;
 
-function ReportTable({ reportData, isHeadQuarter, regionsData }: { reportData: getAllOfficerReportsResponseType, isHeadQuarter: boolean, regionsData: regionResponseType }) {
+function ReportTable({ reportData, isHeadQuarter, regionsData }: { reportData: getAllOfficerReportsResponseType, isHeadQuarter: boolean, regionsData: regionResponseType | null }) {
     const [isActiveDistrictWardPopUp, setIsActiveDistrictWardPopUp] = useState(false);
     const [selectedFormReport, setSelectedFormReport] = useState(formReport[0]);
     const [searchValue, setSearchValue] = useState("");

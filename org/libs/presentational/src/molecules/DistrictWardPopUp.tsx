@@ -7,7 +7,7 @@ function DistrictWardPopUp({
     regionsData,
     handleClosePopUp
 }: {
-    regionsData: regionResponseType,
+    regionsData: regionResponseType | null,
     handleClosePopUp: () => void
 }) {
     const [isChooseDistrict, setIsChooseDistrict] = useState(false);
