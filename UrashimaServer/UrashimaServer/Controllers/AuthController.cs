@@ -53,11 +53,11 @@ namespace UrashimaServer.Controllers
         {
             if (request.Password.Length < 6)
                 return BadRequest(new {
-                    message = "Password must contain at least 6 characters!"
+                    message = "Mật khẩu phải có ít nhất 6 ký tự."
                 });
 
             var acc = await _dbContext.Accounts
-                .FirstOrDefaultAsync(acc => acc.Email.Equals(request.Email) && (!request.IsSocial || acc.PasswordHash.Equals("social")));
+                .FirstOrDefaultAsync(acc => acc.Email.Equals(request.Email)); //  && (!request.IsSocial || acc.PasswordHash.Equals("social"))
 
             if (acc != null)
             {
@@ -70,7 +70,7 @@ namespace UrashimaServer.Controllers
             {
                 return BadRequest(new
                 {
-                    message = "Unsupported role!"
+                    message = "Hệ thống không hỗ trợ tạo Vai trò này"
                 });
             }
 
@@ -80,12 +80,14 @@ namespace UrashimaServer.Controllers
             {
                 Email = request.Email,
                 FullName = request.FullName,
-                PasswordHash = request.IsSocial ? Helper.ByteArrayToString(passwordHash) : "social",
-                PasswordSalt = request.IsSocial ? Helper.ByteArrayToString(passwordSalt) : "social",
-                Role = request.Role
+                PasswordHash = Helper.ByteArrayToString(passwordHash), // request.IsSocial ? "social" :
+                PasswordSalt = Helper.ByteArrayToString(passwordSalt), // request.IsSocial ? "social" :
+                Role = request.Role,
+                UnitUnderManagement = request.Role.Equals(GlobalConstant.HeadQuater) ? 
+                    GlobalConstant.ManagementUnitHQ : request.UnitUnderManagement,
             };
 
-            var token = CreateToken(acc, GlobalConstant.WardOfficer);
+            var token = CreateToken(acc, request.Role);
             var refreshToken = GenerateRefreshToken();
             SetRefreshToken(refreshToken, acc);
             await _dbContext.Accounts.AddAsync(acc);
@@ -104,7 +106,7 @@ namespace UrashimaServer.Controllers
             var hasOrigin = this.Request.Headers.TryGetValue("Origin", out var requestOrigin);
 
             var account = await _dbContext.Accounts
-                .FirstOrDefaultAsync(acc => acc.Email.Equals(request.Email) && !acc.PasswordHash.Equals("social"));
+                .FirstOrDefaultAsync(acc => acc.Email.Equals(request.Email));
 
             if (account == null)
             {
@@ -149,7 +151,7 @@ namespace UrashimaServer.Controllers
         public async Task<ActionResult<string>> LoginSocial(RegisterSocialDto request)
         {
             var account = await _dbContext.Accounts
-                .FirstOrDefaultAsync(acc => acc.Email.Equals(request.Email) && acc.PasswordHash.Equals("social"));
+                .FirstOrDefaultAsync(acc => acc.Email.Equals(request.Email));
 
             if (account == null)
             {

@@ -56,7 +56,7 @@ namespace UrashimaServer.Common.Helper
                 return Regex.IsMatch(address, $@"(?i){managementUnit}");
             }
 
-            return Regex.IsMatch(address, $@"(?i){region}");
+            return Regex.IsMatch(address, $@"(?i){region}") || managementUnit.Equals(GlobalConstant.ManagementUnitHQ);
         }
 
         public static bool IsAuthorizedOrigin(string origin, string role)
