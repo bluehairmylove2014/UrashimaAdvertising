@@ -7,7 +7,7 @@ const HeadquarterTemplate = ({ children }: { children: React.ReactNode }) => {
       <div className="col-span-1">
         <HQNavbar />
       </div>
-      <div className="col-span-4 ml-8">{children}</div>
+      <div className="col-span-4 mx-8">{children}</div>
     </div>
   );
 };

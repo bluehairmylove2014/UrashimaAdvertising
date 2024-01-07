@@ -1,13 +1,12 @@
 import * as y from 'yup';
 import { vietnamPhoneNumber } from './../regex/phoneNumber';
-import { nMonthsFromToday } from '@utils/helpers';
 
 export const loginSchema = y.object({
-  email: y.string().email('Invalid email').required('Email is required'),
+  email: y.string().email('Email không hợp lệ').required('Cần điền email'),
   password: y
     .string()
-    .min(6, 'Password must be at least 6 characters')
-    .required('Password is required'),
+    .min(6, 'Mật khẩu ít nhất 6 ký tự')
+    .required('Cần điền mật khẩu'),
 });
 
 export const userReportSchema = y.object({
@@ -54,7 +53,7 @@ export const reasonsInputSchema = y.object({
 });
 
 export const responseInputSchema = y.object({
-  reasons: y
+  response: y
     .string()
     .required('Không được để trống nội dung')
     .max(1000, 'Nội dung tối đa 1000 ký tự'),
