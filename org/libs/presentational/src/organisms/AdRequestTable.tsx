@@ -334,7 +334,7 @@ function AdRequestTable({ regionsData }: additionFuncParamsType) {
                               (request.requestTypes === REQUEST_TYPES.MOD
                                 ? HQ_PAGES.AD_MODIFICATION_REQUESTS
                                 : HQ_PAGES.AD_APPROVE_REQUESTS) +
-                                `?id=${request.id}`
+                              `?id=${request.id}`
                             );
                           }}
                         >

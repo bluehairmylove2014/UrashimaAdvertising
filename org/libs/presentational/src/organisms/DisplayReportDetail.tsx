@@ -8,18 +8,25 @@ import { useState } from 'react';
 const DEFAULT_THUMBNAIL_WIDTH = 120;
 const DEFAULT_THUMBNAIL_HEIGHT = 120;
 
-function DisplayReportDetail({ reportDetail }: { reportDetail: IOfficerReportDetail }) {
+function DisplayReportDetail({ reportDetail, isHeadQuarter }: { reportDetail: IOfficerReportDetail, isHeadQuarter: boolean }) {
     const [handleReportActive, setHandleReportActive] = useState<boolean>(false);
 
     return (
         <>
             {handleReportActive ?
-                <ReportResponse reportData={reportDetail} />
+                <ReportResponse
+                    reportData={reportDetail}
+                    handleClose={() => {
+                        setHandleReportActive(false);
+                    }} />
                 :
                 <></>
             }
 
-            <div className='flex justify-end items-end mt-[-5rem] mb-9'>
+            {/* {isHeadQuarter ?
+                <></>
+                : */}
+            <div className='flex justify-end items-end mt-[-4rem] mb-9'>
                 {reportDetail?.reportStatus ?
                     <></>
                     :
@@ -34,6 +41,8 @@ function DisplayReportDetail({ reportDetail }: { reportDetail: IOfficerReportDet
                     </button>
                 }
             </div >
+            {/* } */}
+
             <div className="grid grid-cols-2 border-solid border-b-[1px] border-b-zinc-300 pb-5 mb-5">
                 <div className="col-span-1 col-start-1 row-start-1 w-full overflow-hidden">
                     {reportDetail.reportStatus ?
