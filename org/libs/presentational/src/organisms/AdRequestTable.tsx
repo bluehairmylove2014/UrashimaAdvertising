@@ -330,7 +330,7 @@ function AdRequestTable({
                           callback={() => {
                             router.push(
                               (customDetailHref ?? OFFICER_PAGES.ADS_BOARD) +
-                                `/${request.id}`
+                              `/${request.id}`
                             );
                           }}
                         >
