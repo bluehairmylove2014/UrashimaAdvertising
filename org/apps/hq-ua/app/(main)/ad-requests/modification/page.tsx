@@ -50,12 +50,16 @@ async function ModificationRequestDetail() {
   useEffect(() => {
     if (requestId && modificationRequests) {
       const id = Number.parseInt(requestId);
-      !requestData &&
-        setRequestData(modificationRequests.find((r) => r.id === id) ?? null);
+      const request = modificationRequests.find((r) => r.id === id) ?? null;
+      !requestData && setRequestData(request);
 
-      onGetOfficerAdDetail(id)
-        .then((data) => setAdDetailData(data))
-        .catch((error) => console.error(error));
+      if (request) {
+        onGetOfficerAdDetail(request.adsPointId)
+          .then((data) => setAdDetailData(data))
+          .catch((error) => console.error(error));
+      } else {
+        console.error('Cannot found request');
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [modificationRequests, requestId]);

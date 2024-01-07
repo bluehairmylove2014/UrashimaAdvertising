@@ -105,7 +105,7 @@ function AdRequestTable({ regionsData }: additionFuncParamsType) {
       let displayData: displayDataType[] = [];
       modificationRequests.forEach((mr, i) =>
         displayData.push({
-          id: i,
+          id: mr.id,
           pointData: {
             latitude: mr.latitude,
             longitude: mr.longitude,
@@ -118,7 +118,7 @@ function AdRequestTable({ regionsData }: additionFuncParamsType) {
       );
       creationRequests.forEach((cr, i) =>
         displayData.push({
-          id: i + modificationRequests.length,
+          id: cr.id,
           pointData: {
             latitude: cr.adsPoint.latitude,
             longitude: cr.adsPoint.longitude,
@@ -228,7 +228,7 @@ function AdRequestTable({ regionsData }: additionFuncParamsType) {
                 ).map((request, requestIndex) => (
                   <tr
                     className="py-4 even:bg-gray-100"
-                    key={`request@${request.id}`}
+                    key={`request@${request.requestTypes}@${request.id}`}
                   >
                     <TableRow
                       listData={[
