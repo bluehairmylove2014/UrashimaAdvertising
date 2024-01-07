@@ -13,6 +13,8 @@
             "DistrictOfficer",
             "HeadQuater"
         };
+
+        public const string ManagementUnitHQ = "all";
     }
 
     public static class OriginConstant
