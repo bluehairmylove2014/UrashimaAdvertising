@@ -140,6 +140,27 @@ namespace UrashimaServer.Migrations
                     b.ToTable("BoardModifies");
                 });
 
+            modelBuilder.Entity("UrashimaServer.Database.Models.Connection", b =>
+                {
+                    b.Property<string>("ConnectionId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("Connected")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserAgent")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserEmail")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("ConnectionId");
+
+                    b.HasIndex("UserEmail");
+
+                    b.ToTable("Connections");
+                });
+
             modelBuilder.Entity("UrashimaServer.Database.Models.Location", b =>
                 {
                     b.Property<int>("Id")
@@ -261,6 +282,16 @@ namespace UrashimaServer.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ReportTypes");
+                });
+
+            modelBuilder.Entity("UrashimaServer.Database.Models.User", b =>
+                {
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Email");
+
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("UrashimaServer.Database.Models.WardDistrict", b =>
@@ -531,6 +562,13 @@ namespace UrashimaServer.Migrations
                     b.Navigation("AdsPoint");
                 });
 
+            modelBuilder.Entity("UrashimaServer.Database.Models.Connection", b =>
+                {
+                    b.HasOne("UrashimaServer.Database.Models.User", null)
+                        .WithMany("Connections")
+                        .HasForeignKey("UserEmail");
+                });
+
             modelBuilder.Entity("UrashimaServer.Database.Models.PointModifyImage", b =>
                 {
                     b.HasOne("UrashimaServer.Database.Models.PointModify", "AdsPoint")
@@ -630,6 +668,11 @@ namespace UrashimaServer.Migrations
                     b.Navigation("AdsBoard");
 
                     b.Navigation("Images");
+                });
+
+            modelBuilder.Entity("UrashimaServer.Database.Models.User", b =>
+                {
+                    b.Navigation("Connections");
                 });
 
             modelBuilder.Entity("UrashimaServer.Models.AdsBoard", b =>

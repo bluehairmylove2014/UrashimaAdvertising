@@ -46,6 +46,11 @@ namespace UrashimaServer.Common.Helper
 
         public static bool IsUnderAuthority(string address, string managementUnit, string? region = null)
         {
+            if (string.IsNullOrEmpty(managementUnit))
+            {
+                return false;
+            }
+
             if (string.IsNullOrEmpty(region))
             {
                 return Regex.IsMatch(address, $@"(?i){managementUnit}");

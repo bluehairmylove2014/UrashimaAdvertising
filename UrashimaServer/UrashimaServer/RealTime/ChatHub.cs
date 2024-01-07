@@ -46,26 +46,26 @@ namespace UrashimaServer.RealTime
             }
         }
 
-        public async Task SendMessageToOfficer(string message)
+        public async Task SendMessageToGuest(string message)
         {
             await Clients.Group("guests").AddMessage(message);
         }
 
         public override async Task OnConnectedAsync()
         {
-            var name = Context.GetHttpContext()?.Request.Query["name"].ToString();
+            var email = Context.GetHttpContext()?.Request.Query["email"].ToString();
 
-            if (!string.IsNullOrEmpty(name))
+            if (!string.IsNullOrEmpty(email))
             {
                 var user = _context.Users
                 .Include(u => u.Connections)
-                .SingleOrDefault(u => u.Email == name);
+                .SingleOrDefault(u => u.Email == email);
 
                 if (user == null)
                 {
                     user = new User
                     {
-                        Email = name,
+                        Email = email,
                         Connections = new List<Connection>()
                     };
                     _context.Users.Add(user);
@@ -89,7 +89,7 @@ namespace UrashimaServer.RealTime
 
         public override async Task OnDisconnectedAsync(Exception? ex)
         {
-            var name = Context.GetHttpContext()?.Request.Query["name"].ToString();
+            var email = Context.GetHttpContext()?.Request.Query["email"].ToString();
             var connection = _context.Connections.Find(Context.ConnectionId);
 
             // Remove officers' connection from the db
@@ -98,7 +98,7 @@ namespace UrashimaServer.RealTime
             }
 
             // Remove guests from the guests group
-            if (string.IsNullOrEmpty(name))
+            if (string.IsNullOrEmpty(email))
             {
                 await Groups.RemoveFromGroupAsync(Context.ConnectionId, "guests");
             }
