@@ -56,7 +56,7 @@ async function Reports({ params }: { params: { reportId: string } }) {
                                 <Breadcrumbs bcList={breadcrumbsData} />
                             </div>
                         </div>
-                        <DisplayReportDetail reportDetail={reportDetail} />
+                        <DisplayReportDetail reportDetail={reportDetail} isHeadQuarter={false} />
                     </>
                     : <></>}
 

@@ -1,19 +1,15 @@
-import HQPageTitle from '@presentational/molecules/HQPageTitle';
-import LocationTableFilterSelect from '@presentational/molecules/LocationTableFilterSelect';
-import LocationTableSearchBox from '@presentational/molecules/LocationTableSearchBox';
-import { SettingService } from '@business-layer/services';
-import { cookies } from 'next/dist/client/components/headers';
 import { COOKIE_KEYS } from '@business-layer/business-logic/configs/constants';
+import { RegionService } from '@business-layer/services';
+import HQPageTitle from '@presentational/molecules/HQPageTitle';
 import AdRequestTable from '@presentational/organisms/AdRequestTable';
+import { cookies } from 'next/headers';
 
-const settingService = new SettingService();
-async function getLocationTypes() {
+const regionService = new RegionService();
+async function getRegions() {
   try {
     const token = cookies().get(COOKIE_KEYS.ACCESS_TOKEN)?.value ?? null;
     if (token) {
-      return await settingService.getLocationSettings({
-        token,
-      });
+      return await regionService.getRegions(token);
     } else {
       return null;
     }
@@ -21,70 +17,13 @@ async function getLocationTypes() {
     return null;
   }
 }
-async function getAdForms() {
-  try {
-    const token = cookies().get(COOKIE_KEYS.ACCESS_TOKEN)?.value ?? null;
-    if (token) {
-      return await settingService.getAdFormsSettings({
-        token,
-      });
-    } else {
-      return null;
-    }
-  } catch (error) {
-    return null;
-  }
-}
+
 async function AdRequests() {
-  const locationTypes = await getLocationTypes();
-  const adForms = await getAdForms();
+  const regionsData = await getRegions();
   return (
-    <div className="py-6 w-full h-screen">
+    <div className="py-6 w-full h-screen overflow-y-auto scrollbar-hide">
       <HQPageTitle title="Các yêu cầu từ Phường, Quận" />
-      <div className="flex flex-row gap-4 justify-between mt-4 mb-8 w-full">
-        <LocationTableSearchBox />
-        <div className="flex flex-row justify-end flex-grow gap-2">
-          <LocationTableFilterSelect
-            type="adsForm"
-            options={
-              Array.isArray(adForms)
-                ? [
-                    ...adForms.map((adf) => ({
-                      name: adf.name,
-                      value: adf.name,
-                      defaultChecked: false,
-                    })),
-                    {
-                      name: 'Tất cả hình thức',
-                      value: null,
-                      defaultChecked: true,
-                    },
-                  ]
-                : null
-            }
-          />
-          <LocationTableFilterSelect
-            type="locationType"
-            options={
-              Array.isArray(locationTypes)
-                ? [
-                    ...locationTypes.map((lot) => ({
-                      name: lot.name,
-                      value: lot.name,
-                      defaultChecked: false,
-                    })),
-                    {
-                      name: 'Tất cả loại địa điểm',
-                      value: null,
-                      defaultChecked: true,
-                    },
-                  ]
-                : null
-            }
-          />
-        </div>
-      </div>
-      <AdRequestTable />
+      <AdRequestTable regionsData={regionsData} />
     </div>
   );
 }

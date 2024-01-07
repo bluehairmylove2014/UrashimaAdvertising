@@ -26,9 +26,9 @@ import CustomMap from '@presentational/organisms/CustomMap';
 
 type locationType =
   | {
-      latitude: number;
-      longitude: number;
-    }
+    latitude: number;
+    longitude: number;
+  }
   | undefined;
 
 function Home(): ReactElement {
@@ -52,7 +52,9 @@ function Home(): ReactElement {
   const [posPrevMouse, setPosPrevMouse] = useState<locationType>(undefined);
 
   //Create state for checking ads is reported
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isAdsPointReported, setIsAdsPointReported] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isClickReported, setIsClickReported] = useState(false);
 
   const { onGetAdDetail, isLoading } = useGetAdDetail();
@@ -164,8 +166,7 @@ function Home(): ReactElement {
     const adsPoint = features.find(
       (f) =>
         f.layer.id === 'unclustered-point-planned' ||
-        f.layer.id === 'unclustered-point-unplanned' ||
-        f.layer.id === 'unclustered-point-reported'
+        f.layer.id === 'unclustered-point-unplanned'
     );
 
     if (!adsPoint) {
@@ -209,25 +210,25 @@ function Home(): ReactElement {
             type: 'FeatureCollection',
             features: adsData
               ? adsData.map((m) => ({
-                  type: 'Feature',
-                  properties: {
-                    id: m.id,
-                    cluster: false,
-                    name: m.address,
-                    planned: m.planned,
-                    reported: locationReportList
-                      ? locationReportList.findIndex(
-                          (lr) =>
-                            lr.latitude === m.latitude &&
-                            lr.longitude === m.longitude
-                        ) !== -1
-                      : false,
-                  },
-                  geometry: {
-                    type: 'Point',
-                    coordinates: [m.longitude, m.latitude],
-                  },
-                }))
+                type: 'Feature',
+                properties: {
+                  id: m.id,
+                  cluster: false,
+                  name: m.address,
+                  planned: m.planned,
+                  reported: locationReportList
+                    ? locationReportList.findIndex(
+                      (lr) =>
+                        lr.latitude === m.latitude &&
+                        lr.longitude === m.longitude
+                    ) !== -1
+                    : false,
+                },
+                geometry: {
+                  type: 'Point',
+                  coordinates: [m.longitude, m.latitude],
+                },
+              }))
               : [],
           }}
           ref={mapRef}
@@ -262,7 +263,6 @@ function Home(): ReactElement {
           ) : (
             <></>
           )}
-
           {/* Check Loading Ads Point*/}
           {isClickAdsPoint ? (
             infoClickAdsPoint ? (
@@ -272,11 +272,12 @@ function Home(): ReactElement {
                 onClick={(id) => {
                   setIdAdsBoard(id);
                   setIsActiveAdsBoard(true);
+                  setIsClickAdsPoint(false);
                 }}
                 handleClose={() => {
                   setIsClickAdsPoint(false);
                 }}
-                handleDetailReport={() => {}}
+                handleDetailReport={() => { }}
               />
             ) : (
               <></>
@@ -299,7 +300,7 @@ function Home(): ReactElement {
                   setIsActiveAdsBoard(false);
                   setIsClickAdsPoint(true);
                 }}
-                handleDetailReportAdsBoard={() => {}}
+                handleDetailReportAdsBoard={() => { }}
               ></DetailAds>
             ) : (
               <></>
@@ -318,6 +319,7 @@ function Home(): ReactElement {
           setIsLocationOnClickPopupActive(false);
           setUserClickMarker(undefined);
         }}
+        isOfficer={true}
       />
     </div>
   );

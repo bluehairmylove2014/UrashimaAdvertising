@@ -109,9 +109,8 @@ const CustomMap: ForwardRefRenderFunction<MapRef, customMapProps> = (
 
   return (
     <ReactMapGL
-      {...mapProps}
       ref={ref}
-      style={{ width: '100vw', height: '100vh' }}
+      style={{ width: '100%', height: '100vh' }}
       mapStyle={MAP_STYLE}
       mapboxAccessToken={ACCESS_TOKEN}
       initialViewState={MAP_DEFAULT_VIEW_PORT}
@@ -121,6 +120,7 @@ const CustomMap: ForwardRefRenderFunction<MapRef, customMapProps> = (
       onMouseUp={handleMouseUp}
       onMouseDown={handleMouseDown}
       onZoom={handleZoom}
+      {...mapProps}
       // maxBounds={[
       //   [106.317521, 10.321631], // Tọa độ góc dưới cùng bên trái của hình chữ nhật giới hạn
       //   [107.042629, 11.210448], // Tọa độ góc trên cùng bên phải của hình chữ nhật giới hạn
