@@ -102,16 +102,6 @@ function ModificationRequestDetail() {
             </div>
           </div>
           <h3>Thông tin chung</h3>
-          <button className="w-fit text-left hover:underline">
-            <span className="line-clamp-1 font-medium text-xs ">
-              <b>Kinh Độ:</b>{' '}
-              <span className="text-blue-600">{requestData.latitude}</span>
-            </span>
-            <span className="line-clamp-1 font-medium text-xs ">
-              <b>Vĩ Độ:</b>{' '}
-              <span className="text-blue-600">{requestData.latitude}</span>
-            </span>
-          </button>
           <p>
             <b>Thời điểm chỉnh sửa:</b>&nbsp;
             <span>
