@@ -41,9 +41,9 @@ import { FeatureCollection, Point } from 'geojson';
 
 type locationType =
   | {
-      latitude: number;
-      longitude: number;
-    }
+    latitude: number;
+    longitude: number;
+  }
   | undefined;
 
 function Home(): ReactElement {
@@ -335,61 +335,61 @@ function Home(): ReactElement {
               type: 'FeatureCollection',
               features: adsData
                 ? [
-                    ...adsData.map((m) => ({
-                      type: 'Feature',
-                      properties: {
-                        id: m.id,
-                        cluster: false,
-                        name: m.address,
-                        planned: m.planned,
-                        isAdsLocation: true,
-                        isAdsBoardReport: adsReportList
-                          ? adsReportList.some((ar) => ar.adsPointID === m.id)
-                          : false,
-                        reported: Boolean(
-                          (locationReportList &&
-                            locationReportList.some(
-                              (lr) =>
-                                lr.latitude === m.latitude &&
-                                lr.longitude === m.longitude
-                            )) ||
-                            (adsReportList &&
-                              adsReportList.some(
-                                (ar) => ar.adsPointID === m.id
-                              ))
-                        ),
-                        longLatArr: [m.longitude, m.latitude],
-                      },
-                      geometry: {
-                        type: 'Point',
-                        coordinates: [m.longitude, m.latitude],
-                      },
-                    })),
-                    ...(locationReportList
-                      ? locationReportList
-                          .filter(
-                            (locationReport) =>
-                              locationReport.reportData === null
-                          )
-                          .map((m, index) => ({
-                            type: 'Feature',
-                            properties: {
-                              id: adsData.length + index + 1,
-                              cluster: false,
-                              name: '',
-                              planned: false,
-                              reported: true,
-                              isAdsLocation: false,
-                              isAdsBoardReport: false,
-                              longLatArr: [m.longitude, m.latitude],
-                            },
-                            geometry: {
-                              type: 'Point',
-                              coordinates: [m.longitude, m.latitude],
-                            },
-                          }))
-                      : []),
-                  ]
+                  ...adsData.map((m) => ({
+                    type: 'Feature',
+                    properties: {
+                      id: m.id,
+                      cluster: false,
+                      name: m.address,
+                      planned: m.planned,
+                      isAdsLocation: true,
+                      isAdsBoardReport: adsReportList
+                        ? adsReportList.some((ar) => ar.adsPointID === m.id)
+                        : false,
+                      reported: Boolean(
+                        (locationReportList &&
+                          locationReportList.some(
+                            (lr) =>
+                              lr.latitude === m.latitude &&
+                              lr.longitude === m.longitude
+                          )) ||
+                        (adsReportList &&
+                          adsReportList.some(
+                            (ar) => ar.adsPointID === m.id
+                          ))
+                      ),
+                      longLatArr: [m.longitude, m.latitude],
+                    },
+                    geometry: {
+                      type: 'Point',
+                      coordinates: [m.longitude, m.latitude],
+                    },
+                  })),
+                  ...(locationReportList
+                    ? locationReportList
+                      .filter(
+                        (locationReport) =>
+                          locationReport.reportData === null
+                      )
+                      .map((m, index) => ({
+                        type: 'Feature',
+                        properties: {
+                          id: adsData.length + index + 1,
+                          cluster: false,
+                          name: '',
+                          planned: false,
+                          reported: true,
+                          isAdsLocation: false,
+                          isAdsBoardReport: false,
+                          longLatArr: [m.longitude, m.latitude],
+                        },
+                        geometry: {
+                          type: 'Point',
+                          coordinates: [m.longitude, m.latitude],
+                        },
+                      }))
+                    : []),
+                ]
                 : [],
             } as FeatureCollection<Point>
           }
@@ -664,6 +664,7 @@ function Home(): ReactElement {
           setIsLocationOnClickPopupActive(false);
           setUserClickMarker(undefined);
         }}
+        isOfficer={false}
       />
 
       <ReportForm

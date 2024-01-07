@@ -59,8 +59,9 @@ function LoginForm() {
   const handleLogin = ({ email, password }: loginFormData) => {
     onLogin({ email, password })
       .then((msg) => {
-        showSuccess(msg);
         router.push(OFFICER_PAGES.DASHBOARD);
+        router.refresh();
+        showSuccess(msg);
       })
       .catch((error) => showError(error.message));
   };

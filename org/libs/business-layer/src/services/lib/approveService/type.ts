@@ -1,8 +1,12 @@
-import { IAdsBoard } from '@business-layer/services/entities';
+import {
+  IAdLocationDetail,
+  IAdsBoard,
+} from '@business-layer/services/entities';
 import {
   IApprove,
   IApproveBase,
 } from '@business-layer/services/entities/approve';
+import { IAdModificationRequest } from '@business-layer/services/entities/request';
 
 export type getApproveListResponseType = IApprove[];
 
@@ -20,3 +24,9 @@ export type deleteApproveRequestParamsType = {
   token: string | null;
 };
 export type deleteApproveRequestResponseType = { message: string };
+
+export type getAllAdModificationRequestResponseType = IAdModificationRequest[];
+export type approveAdModificationRequestParamsType = { id: number };
+export type approveAdModificationRequestResponseType = { message: string };
+export type approveAdCreationRequestParamsType = { id: number; status: string };
+export type approveAdCreationRequestResponseType = { message: string };

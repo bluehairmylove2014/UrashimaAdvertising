@@ -19,6 +19,10 @@ import {
 } from '../lib/regionManagement/process/provider/RegionManagementProvider';
 import { ReportFormProvider } from '../non-service-lib/reportForm';
 import { reportFormProviderType } from '../non-service-lib/reportForm/process/provider/ReportFormProvider';
+import {
+  SettingProvider,
+  settingProviderType,
+} from '../lib/setting/process/provider/SettingProvider';
 
 /**
  * REACT-QUERY-DEVTOOLS
@@ -54,7 +58,8 @@ export type moduleKeyList =
   | 'officer-ad'
   | 'pagination'
   | 'approve'
-  | 'regions';
+  | 'regions'
+  | 'settings';
 export type providerList = React.FC<
   | AuthProviderType
   | reportProviderType
@@ -63,11 +68,16 @@ export type providerList = React.FC<
   | reportFormProviderType
   | approveProviderType
   | regionManagementProviderType
+  | settingProviderType
 >;
 export const providerConfig: {
   key: moduleKeyList;
   provider: providerList;
 }[] = [
+  {
+    key: 'settings',
+    provider: SettingProvider,
+  },
   {
     key: 'regions',
     provider: RegionManagementProvider,

@@ -280,7 +280,7 @@ function CreateNewApproveForm({
             placeholder="Mô tả ngắn gọn về quảng cáo của bạn..."
             {...register('adsContent')}
             disabled={isCreatingRequest || isUploading}
-            className="disabled:cursor-not-allowed disabled:bg-zinc-100 border-solid border-[1px] border-zinc-400 px-4 py-3 h-24 rounded outline-none bg-transparent text-xs font-medium resize-none w-full"
+            className="disabled:cursor-not-allowed disabled:bg-zinc-100 border-solid border-[1px] border-zinc-400 px-4 py-3 h-24 rounded outline-none bg-transparent text-xs font-medium resize-none w-full !block"
           />
         </div>
 

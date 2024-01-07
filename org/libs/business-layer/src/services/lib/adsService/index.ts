@@ -86,7 +86,6 @@ export class AdsService extends Services {
           signal: this.abortController.signal,
           transformResponse: (res) => res,
         });
-        console.log('response data length: ', response);
         return response;
       } else {
         throw new Error('Unauthorized');

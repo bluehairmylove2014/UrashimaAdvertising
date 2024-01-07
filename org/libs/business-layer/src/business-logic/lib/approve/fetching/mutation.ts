@@ -1,6 +1,10 @@
 import { useMutation } from '@tanstack/react-query';
 import {
   ApproveService,
+  approveAdCreationRequestParamsType,
+  approveAdCreationRequestResponseType,
+  approveAdModificationRequestParamsType,
+  approveAdModificationRequestResponseType,
   createNewAdBoardApproveRequestParamsType,
   createNewApproveRequestResponseType,
   deleteApproveRequestParamsType,
@@ -27,5 +31,31 @@ export const useDeleteApproveRequestMutation = () => {
     unknown
   >({
     mutationFn: approveService.deleteApproveRequest,
+  });
+};
+export const useApproveAdModificationRequestMutation = () => {
+  return useMutation<
+    approveAdModificationRequestResponseType,
+    Error,
+    {
+      data: approveAdModificationRequestParamsType;
+      token: string | null;
+    },
+    unknown
+  >({
+    mutationFn: approveService.approveAdModificationRequest,
+  });
+};
+export const useApproveAdCreationRequestMutation = () => {
+  return useMutation<
+    approveAdCreationRequestResponseType,
+    Error,
+    {
+      data: approveAdCreationRequestParamsType;
+      token: string | null;
+    },
+    unknown
+  >({
+    mutationFn: approveService.approveAdCreationRequest,
   });
 };
