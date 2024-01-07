@@ -56,6 +56,7 @@ namespace UrashimaServer
 
             // Map Account
             CreateMap<Account, AccountBasicInfoDto>().ReverseMap();
+            CreateMap<Account, AccountDTO>().ReverseMap();
         }
     }
 }

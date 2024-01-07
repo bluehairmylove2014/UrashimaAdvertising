@@ -80,5 +80,51 @@ namespace UrashimaServer.Controllers
                 message = "Cập nhật thông tin cá nhân thành công."
             }); ;
         }
+
+        // GET: api/account/all
+        [HttpGet("all"), AuthorizeRoles(GlobalConstant.HeadQuater)]
+        public async Task<IEnumerable<AccountDTO>> GetAllAccount()
+        {
+            var accounts = await _context.Accounts.ToListAsync();
+            return _mapper.Map<List<AccountDTO>>(accounts);
+        }
+
+        // PUT: api/account/unit-modify
+        [HttpPut("unit-modify"), AuthorizeRoles(GlobalConstant.HeadQuater)]
+        public async Task<IActionResult> ModAccount(AccountDTO accountDto)
+        {
+            var account = await _context.Accounts.FirstOrDefaultAsync(acc => acc.Id == accountDto.Id);
+
+            if (account is null)
+            {
+                return BadRequest(new
+                {
+                    Message = "Đã có lỗi xảy ra với tài khoản của bạn. Hãy đăng nhập lại!",
+                });
+            }
+
+            _context.Entry(account).State = EntityState.Modified;
+
+            account.Email = accountDto.Email;
+            account.FullName = accountDto.FullName;
+            account.DateOfBirth = accountDto.DateOfBirth;
+            account.Phone = accountDto.Phone;
+            account.Role = accountDto.Role;
+            account.UnitUnderManagement = accountDto.UnitUnderManagement;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+
+            return Ok(new
+            {
+                message = "Cập nhật thông tin cá nhân thành công."
+            }); ;
+        }
     }
 }
