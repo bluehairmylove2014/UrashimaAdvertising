@@ -16,7 +16,7 @@ function HQTabButton({
     <li className="w-full mb-2">
       <Link
         href={href}
-        prefetch={false}
+        prefetch={true}
         className={`${
           pathName.startsWith(href)
             ? 'bg-rose-500 opacity-100 text-white'
