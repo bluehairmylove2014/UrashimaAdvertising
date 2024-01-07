@@ -22,6 +22,8 @@ namespace UrashimaServer.Database
         public DbSet<AdsType> AdsTypes { get; set; }
         public DbSet<LocationType> LocationTypes { get; set; }
         public DbSet<AdsFormType> AdsFormTypes { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Connection> Connections { get; set; }
 
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         { }
