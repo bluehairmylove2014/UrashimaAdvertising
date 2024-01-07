@@ -319,6 +319,7 @@ function Home(): ReactElement {
           setIsLocationOnClickPopupActive(false);
           setUserClickMarker(undefined);
         }}
+        isOfficer={true}
       />
     </div>
   );
