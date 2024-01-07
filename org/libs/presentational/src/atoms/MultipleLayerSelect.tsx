@@ -74,6 +74,18 @@ function MultipleLayerSelect({
     };
   }, []);
 
+  const renderLabel = () => {
+    if (selectedOption) {
+      if (selectedMulLayerOption) {
+        return `${selectedMulLayerOption} | ${selectedOption}`;
+      } else {
+        return selectedOption;
+      }
+    } else {
+      return label;
+    }
+  };
+
   return (
     <div
       className={`${styleConfig[style ?? DEFAULT_STYLE]
@@ -86,9 +98,7 @@ function MultipleLayerSelect({
         className="h-full flex flex-row items-center text-[0.65rem] min-w-[10rem] disabled:cursor-not-allowed disabled:bg-zinc-100"
       >
         <span className="flex-grow mr-2 ml-3 max-w-[200px] whitespace-nowrap overflow-hidden text-ellipsis line-clamp-1">
-          {selectedMulLayerOption
-            ? `${selectedMulLayerOption} | ${selectedOption}`
-            : label}
+          {renderLabel()}
         </span>
         <div className="flex-shrink border-solid border-l-[1px] border-zinc-400 w-fit h-full bg-inherit grid place-items-center">
           <i className="fi fi-bs-angle-small-down px-2"></i>
@@ -96,17 +106,18 @@ function MultipleLayerSelect({
       </button>
       <div
         ref={selectRef}
-        className={`absolute top-full left-0 z-30 w-full h-fit bg-white overflow-x-hidden hidden overflow-y-auto rounded-b-sm shadow-md max-h-[21rem]`}
+        className={`absolute top-full left-0 z-30 w-full h-fit bg-white overflow-x-hidden hidden overflow-y-auto rounded-b-sm shadow-md max-h-[21rem] scrollbar-hide`}
       >
         {options ? (
           Object.keys(options).map((op, i) => (
             <button
               key={op}
               type="button"
-              disabled={
-                i === 0 ? selectedOption === null : op === selectedOption
-              }
-              className="bg-white hover:bg-zinc-100 disabled:cursor-not-allowed disabled:bg-blue-100 transition-colors w-full text-center py-3 px-2 text-[0.65rem]"
+              className={`${
+                (i === 0 ? selectedOption === null : op === selectedOption)
+                  ? 'bg-blue-100'
+                  : 'bg-white'
+              }  hover:bg-zinc-100 transition-colors w-full text-center py-3 px-2 text-[0.65rem]`}
               onClick={() => {
                 if (i > 0) {
                   setSelectedOption(op);
@@ -136,7 +147,7 @@ function MultipleLayerSelect({
       </div>
       <div
         ref={secondLayerRef}
-        className={`absolute top-full right-full z-30 w-full h-fit bg-white overflow-x-hidden overflow-y-auto hidden rounded-b-sm shadow-md max-h-[21rem]`}
+        className={`absolute top-full right-full z-30 w-full h-fit bg-white overflow-x-hidden overflow-y-auto hidden rounded-b-sm shadow-md max-h-[21rem] scrollbar-hide`}
       >
         {options && selectedOption ? (
           options[selectedOption].map((op, i) => (

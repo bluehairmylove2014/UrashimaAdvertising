@@ -26,12 +26,16 @@ import CustomMap from '@presentational/organisms/CustomMap';
 
 type locationType =
   | {
-    latitude: number;
-    longitude: number;
-  }
+      latitude: number;
+      longitude: number;
+    }
   | undefined;
 
-function Home(): ReactElement {
+function ViewLocationMap({
+  initialLatLong,
+}: {
+  initialLatLong: number[];
+}): ReactElement {
   const { showError } = useNotification();
   const { data: adsData } = useFetchAllOfficerAds();
   const mapRef = useRef<MapRef>(null);
@@ -52,9 +56,7 @@ function Home(): ReactElement {
   const [posPrevMouse, setPosPrevMouse] = useState<locationType>(undefined);
 
   //Create state for checking ads is reported
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isAdsPointReported, setIsAdsPointReported] = useState(false);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isClickReported, setIsClickReported] = useState(false);
 
   const { onGetAdDetail, isLoading } = useGetAdDetail();
@@ -68,6 +70,7 @@ function Home(): ReactElement {
 
   const locationReportList = useGetLocationReports();
   const { onGetLocationDetail } = useGetLocationDetail();
+  const isFirstLoad = useRef<boolean>(true);
 
   useEffect(() => {
     if (idAdsPoint > -1) {
@@ -124,7 +127,7 @@ function Home(): ReactElement {
       else setIsClickReported(false);
 
       mapRef.current.flyTo({
-        zoom: 14,
+        zoom: 16,
         center: [event.lngLat.lng, event.lngLat.lat],
         duration: 1500,
       });
@@ -166,7 +169,8 @@ function Home(): ReactElement {
     const adsPoint = features.find(
       (f) =>
         f.layer.id === 'unclustered-point-planned' ||
-        f.layer.id === 'unclustered-point-unplanned'
+        f.layer.id === 'unclustered-point-unplanned' ||
+        f.layer.id === 'unclustered-point-reported'
     );
 
     if (!adsPoint) {
@@ -199,40 +203,58 @@ function Home(): ReactElement {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
-    <div className="relative w-screen h-full">
+    <>
       <div className="relative z-0">
         <CustomMap
           mapProps={{
             onClick: handleClick,
             onMouseMove: handleMouseMove,
+            initialViewState: {
+              ...{
+                zoom: 17,
+                bearing: 90, // look to east
+                pitch: 0, // 2D view
+                padding: { top: 0, bottom: 0, left: 0, right: 0 },
+              },
+              longitude: initialLatLong[1],
+              latitude: initialLatLong[0],
+            },
           }}
           sourceData={{
             type: 'FeatureCollection',
             features: adsData
               ? adsData.map((m) => ({
-                type: 'Feature',
-                properties: {
-                  id: m.id,
-                  cluster: false,
-                  name: m.address,
-                  planned: m.planned,
-                  reported: locationReportList
-                    ? locationReportList.findIndex(
-                      (lr) =>
-                        lr.latitude === m.latitude &&
-                        lr.longitude === m.longitude
-                    ) !== -1
-                    : false,
-                },
-                geometry: {
-                  type: 'Point',
-                  coordinates: [m.longitude, m.latitude],
-                },
-              }))
+                  type: 'Feature',
+                  properties: {
+                    id: m.id,
+                    cluster: false,
+                    name: m.address,
+                    planned: m.planned,
+                    reported: locationReportList
+                      ? locationReportList.findIndex(
+                          (lr) =>
+                            lr.latitude === m.latitude &&
+                            lr.longitude === m.longitude
+                        ) !== -1
+                      : false,
+                  },
+                  geometry: {
+                    type: 'Point',
+                    coordinates: [m.longitude, m.latitude],
+                  },
+                }))
               : [],
           }}
           ref={mapRef}
         >
+          <Marker latitude={initialLatLong[0]} longitude={initialLatLong[1]}>
+            <CustomImage
+              src="/assets/circle.png"
+              alt="location"
+              width="40px"
+              height="40px"
+            />
+          </Marker>
           {userClickMarker ? (
             <Marker {...userClickMarker}>
               <CustomImage
@@ -263,6 +285,7 @@ function Home(): ReactElement {
           ) : (
             <></>
           )}
+
           {/* Check Loading Ads Point*/}
           {isClickAdsPoint ? (
             infoClickAdsPoint ? (
@@ -272,12 +295,11 @@ function Home(): ReactElement {
                 onClick={(id) => {
                   setIdAdsBoard(id);
                   setIsActiveAdsBoard(true);
-                  setIsClickAdsPoint(false);
                 }}
                 handleClose={() => {
                   setIsClickAdsPoint(false);
                 }}
-                handleDetailReport={() => { }}
+                handleDetailReport={() => {}}
               />
             ) : (
               <></>
@@ -300,7 +322,7 @@ function Home(): ReactElement {
                   setIsActiveAdsBoard(false);
                   setIsClickAdsPoint(true);
                 }}
-                handleDetailReportAdsBoard={() => { }}
+                handleDetailReportAdsBoard={() => {}}
               ></DetailAds>
             ) : (
               <></>
@@ -320,8 +342,8 @@ function Home(): ReactElement {
           setUserClickMarker(undefined);
         }}
       />
-    </div>
+    </>
   );
 }
 
-export default Home;
+export default ViewLocationMap;
