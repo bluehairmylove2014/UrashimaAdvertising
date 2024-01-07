@@ -53,7 +53,7 @@ export const reasonsInputSchema = y.object({
 });
 
 export const responseInputSchema = y.object({
-  reasons: y
+  response: y
     .string()
     .required('Không được để trống nội dung')
     .max(1000, 'Nội dung tối đa 1000 ký tự'),
