@@ -98,7 +98,6 @@ namespace UrashimaServer.Controllers.Ward
             var region = HttpContext.Items["address"] as string;
             var result = rawBoards
                 .Where(r =>
-                    acc.Role.Equals(GlobalConstant.HeadQuater) ||
                     Helper.IsUnderAuthority(r.AdsPoint!.Address, acc.UnitUnderManagement, region))
                 .Select(board => board.AdsCreateRequest?.RequestStatus);
 
@@ -134,7 +133,6 @@ namespace UrashimaServer.Controllers.Ward
 
             var region = HttpContext.Items["address"] as string;
             rawResult = rawResult.Where(p =>
-                acc.Role.Equals(GlobalConstant.HeadQuater) ||
                 Helper.IsUnderAuthority(p.Address, acc.UnitUnderManagement, region))
             .ToList();
 

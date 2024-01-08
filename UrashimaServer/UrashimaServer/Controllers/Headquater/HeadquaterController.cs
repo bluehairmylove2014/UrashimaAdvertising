@@ -110,14 +110,12 @@ namespace UrashimaServer.Controllers.Headquater
                 .ToListAsync();
 
             var result = rawResult;
-            if (acc.Role == GlobalConstant.WardOfficer || acc.Role == GlobalConstant.DistrictOfficer)
+
+            var region = HttpContext.Items["address"] as string;
+            result = rawResult.Where(p =>
             {
-                var region = HttpContext.Items["address"] as string;
-                result = rawResult.Where(p =>
-                {
-                    return Helper.IsUnderAuthority(p.Address, acc.UnitUnderManagement, region);
-                }).ToList();
-            }
+                return Helper.IsUnderAuthority(p.Address, acc.UnitUnderManagement, region);
+            }).ToList();
 
             var res = new List<PointModifyDto>();
             foreach (var item in result)
