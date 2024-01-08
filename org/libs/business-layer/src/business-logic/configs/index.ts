@@ -40,7 +40,7 @@ export const reactQueryDevtoolsConfig = {
  */
 export const authConfig = {
   isNeedRefreshToken: true,
-  isNeedBroadcast: true,
+  isNeedBroadcast: false,
 };
 
 /**

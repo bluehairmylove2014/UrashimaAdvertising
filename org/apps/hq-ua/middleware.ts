@@ -11,7 +11,7 @@ const isTokenValid = (token: RequestCookie | undefined) =>
 const getHostname = () =>
   process.env.NODE_ENV === 'development'
     ? 'localhost'
-    : 'www.officer.urashima-ads.site';
+    : 'www.hq.urashima-ads.site';
 
 export function middleware(request: NextRequest) {
   const cookie = request.cookies;

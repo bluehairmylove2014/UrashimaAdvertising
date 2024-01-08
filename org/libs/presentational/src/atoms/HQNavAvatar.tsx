@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import Image from 'next/image';
 import HQIcon from '@assets/districtofficer.png';
 import Link from 'next/link';

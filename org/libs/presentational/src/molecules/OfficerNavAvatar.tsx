@@ -1,25 +1,10 @@
-import { COOKIE_KEYS } from '@business-layer/business-logic/configs/constants';
-import { AccountService } from '@business-layer/services';
+'use client';
+import { useFetchPersonalInformation } from '@business-layer/business-logic/lib/account';
 import { OFFICER_PAGES } from '@constants/officerPages';
-import { cookies } from 'next/dist/client/components/headers';
 import Link from 'next/link';
 
-const accountService = new AccountService();
-async function getAccountDetail() {
-  try {
-    const token = cookies().get(COOKIE_KEYS.ACCESS_TOKEN)?.value ?? null;
-    if (token) {
-      return await accountService.getAccountInfo(token);
-    } else {
-      return null;
-    }
-  } catch (error) {
-    return null;
-  }
-}
-
-async function OfficerNavAvatar() {
-  const accountDetail = await getAccountDetail();
+function OfficerNavAvatar() {
+  const { data: accountDetail } = useFetchPersonalInformation();
   return accountDetail ? (
     <Link
       href={OFFICER_PAGES.ME}

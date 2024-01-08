@@ -12,3 +12,11 @@ export const useGetAllAccountsQuery = (token: string | null) => {
     retry: mutationConfig.USE_QUERY_RETRY,
   });
 };
+
+export const useFetchPersonalInformationQuery = (token: string | null) => {
+  return useQuery({
+    queryKey: [QUERY_N_MUTATION_KEYS.GET_PERSONAL_INFO],
+    queryFn: () => accountService.getAccountInfo(token),
+    retry: mutationConfig.USE_QUERY_RETRY,
+  });
+};

@@ -82,7 +82,7 @@ function AdLocationsTable({
               ).map((ad, adIndex) => (
                 <tr
                   className="py-4 even:bg-gray-100"
-                  key={`adLocation@${ad.address}`}
+                  key={`adLocation@${ad.address}@${ad.id}`}
                 >
                   <TableRow
                     listData={[
