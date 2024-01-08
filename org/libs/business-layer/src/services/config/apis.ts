@@ -27,6 +27,10 @@ export const getAllOfficerReportsUrl = '/api/officer/reports';
 export const getOfficerReportDetailUrl = '/api/officer/reports/detail';
 export const editReportUrl = '/api/officer/reports';
 
+// ACCOUNT
+export const hqGetAllAccountEndpoint = '/api/account/all';
+export const hqUnitModifyAccountEndpoint = '/api/account/unit-modify';
+
 // USER
 export const getAccountInfoUrl = '/api/account/info';
 export const modifyAccountInfoUrl = '/api/account/info';

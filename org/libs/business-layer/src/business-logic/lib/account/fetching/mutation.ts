@@ -3,6 +3,8 @@ import {
   AccountService,
   modifyAccountInfoParamsType,
   modifyAccountInfoResponseType,
+  unitModifyAccountParamsType,
+  unitModifyAccountResponseType,
 } from '@business-layer/services';
 
 const accountService = new AccountService();
@@ -15,5 +17,16 @@ export const useModifyAccountInfoMutation = () => {
     unknown
   >({
     mutationFn: accountService.modifyAccountInfo,
+  });
+};
+
+export const useUnitModifyAccountMutation = () => {
+  return useMutation<
+    unitModifyAccountResponseType,
+    Error,
+    unitModifyAccountParamsType,
+    unknown
+  >({
+    mutationFn: accountService.unitModifyAccount,
   });
 };

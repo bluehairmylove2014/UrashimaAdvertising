@@ -6,4 +6,5 @@ export const activeModuleConfig: moduleKeyList[] = [
   'pagination',
   'approve',
   'regions',
+  'viewLocationMap',
 ];

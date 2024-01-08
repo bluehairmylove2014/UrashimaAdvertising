@@ -1,15 +1,21 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { COOKIE_KEYS } from '@business-layer/business-logic/configs/constants';
-import { OFFICER_PAGES } from '@constants/officerPages';
+import { HQ_PAGES } from '@constants/hqPages';
 import { RequestCookie } from 'next/dist/compiled/@edge-runtime/cookies';
+import { OFFICER_PAGES } from '@constants/officerPages';
+import { generateSecureHash } from '@business-layer/business-logic/helper';
 
 const isTokenValid = (token: RequestCookie | undefined) =>
   token && typeof token.value === 'string' && token.value.length > 0;
 
+const getHostname = () =>
+  process.env.NODE_ENV === 'development'
+    ? 'localhost'
+    : 'www.officer.urashima-ads.site';
+
 export function middleware(request: NextRequest) {
   const cookie = request.cookies;
-  const token = cookie.get(COOKIE_KEYS.ACCESS_TOKEN);
+  const token = cookie.get(generateSecureHash('token' + getHostname()));
   const pathName = request.nextUrl.clone().pathname;
   const response = NextResponse;
 
@@ -21,30 +27,34 @@ export function middleware(request: NextRequest) {
     pathName.startsWith(OFFICER_PAGES.RESET_PASSWORD_OTP)
   ) {
     if (isTokenValid(token)) {
-      return response.redirect(new URL(OFFICER_PAGES.DASHBOARD, request.url));
+      return response.redirect(new URL(HQ_PAGES.DASHBOARD, request.url));
     }
     return response.next();
-  } else if (pathName === OFFICER_PAGES.ME) {
+  } else if (pathName === HQ_PAGES.ME) {
+    if (!isTokenValid(token)) {
+      return response.redirect(new URL(HQ_PAGES.AUTH, request.url));
+    }
     return response.redirect(
-      new URL(OFFICER_PAGES.PERSONAL_INFORMATION, request.url)
+      new URL(HQ_PAGES.PERSONAL_INFORMATION, request.url)
     );
   } else if (
-    pathName.startsWith(OFFICER_PAGES.DASHBOARD) ||
-    pathName.startsWith(OFFICER_PAGES.ADS_BOARD) ||
-    pathName.startsWith(OFFICER_PAGES.ADS_BOARD_EDIT) ||
-    pathName.startsWith(OFFICER_PAGES.ADS_LOCATION) ||
-    pathName.startsWith(OFFICER_PAGES.APPROVE_LIST) ||
-    pathName.startsWith(OFFICER_PAGES.APPROVE_DETAIL) ||
-    pathName.startsWith(OFFICER_PAGES.NEW_APPROVE) ||
-    pathName.startsWith(OFFICER_PAGES.ME) ||
-    pathName.startsWith(OFFICER_PAGES.PERSONAL_INFORMATION) ||
-    pathName.startsWith(OFFICER_PAGES.CHANGE_PASSWORD) ||
-    pathName.startsWith(OFFICER_PAGES.REPORT)
+    pathName.startsWith(HQ_PAGES.DASHBOARD) ||
+    pathName.startsWith(HQ_PAGES.REGIONS) ||
+    pathName.startsWith(HQ_PAGES.AD_SETTING) ||
+    pathName.startsWith(HQ_PAGES.AD_LOCATIONS) ||
+    pathName.startsWith(HQ_PAGES.AD_LOCATIONS_DETAIL) ||
+    pathName.startsWith(HQ_PAGES.AD_LOCATIONS_MODIFICATION) ||
+    pathName.startsWith(HQ_PAGES.AD_BOARDS) ||
+    pathName.startsWith(HQ_PAGES.AD_REQUESTS) ||
+    pathName.startsWith(HQ_PAGES.AD_MODIFICATION_REQUESTS) ||
+    pathName.startsWith(HQ_PAGES.AD_APPROVE_REQUESTS) ||
+    pathName.startsWith(HQ_PAGES.REPORTS) ||
+    pathName.startsWith(HQ_PAGES.ACCOUNT_MANAGEMENT)
   ) {
     if (isTokenValid(token)) {
       return response.next();
     }
-    return response.redirect(new URL(OFFICER_PAGES.AUTH, request.url));
+    return response.redirect(new URL(HQ_PAGES.AUTH, request.url));
   }
   return response.next();
 }

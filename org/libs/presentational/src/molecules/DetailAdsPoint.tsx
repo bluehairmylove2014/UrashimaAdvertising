@@ -6,8 +6,10 @@ import { IAdLocationDetail } from '@business-layer/services/entities/ads';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { Carousel } from 'react-responsive-carousel';
 import { useSetReportForm } from '@business-layer/business-logic/non-service-lib/reportForm';
-import { useGetAdReports, useGetLocationReports } from '@business-layer/business-logic/lib/report';
-import { Alert } from '@material-tailwind/react';
+import {
+  useGetAdReports,
+  useGetLocationReports,
+} from '@business-layer/business-logic/lib/report';
 
 function DetailAdsPoint({
   detailAdsPoint,
@@ -71,55 +73,58 @@ function DetailAdsPoint({
         ) : (
           <>
             <div className="mt-4 mx-5">
-              {adsPointReportList?.find((report) => report.longitude === detailAdsPoint.longitude && report.latitude === detailAdsPoint.latitude) !== undefined
-                ? (
-                  <>
-                    <p className="mb-1 text-rose-600 font-bold text-sm">
-                      Bạn đã báo cáo điểm này
-                    </p>
-                    <CustomButtonIcon
-                      widthIcon="0.7rem"
-                      heightIcon="0.7rem"
-                      round={2}
-                      type="button"
-                      border={1}
-                      colorBorder="green"
-                      pathImage="/assets/detailReport.png"
-                      alt=""
-                      onClick={handleDetailReport}
-                    >
-                      <span className="text-green-600 text-[0.65rem] text-medium ml-1">
-                        CHI TIẾT BÁO CÁO
-                      </span>
-                    </CustomButtonIcon>
-                  </>
-                ) : (
+              {adsPointReportList?.find(
+                (report) =>
+                  report.longitude === detailAdsPoint.longitude &&
+                  report.latitude === detailAdsPoint.latitude
+              ) !== undefined ? (
+                <>
+                  <p className="mb-1 text-rose-600 font-bold text-sm">
+                    Bạn đã báo cáo điểm này
+                  </p>
                   <CustomButtonIcon
-                    widthIcon="0.8rem"
-                    heightIcon="0.8rem"
+                    widthIcon="0.7rem"
+                    heightIcon="0.7rem"
                     round={2}
                     type="button"
                     border={1}
-                    colorBorder="rose"
-                    pathImage="/assets/report.png"
+                    colorBorder="green"
+                    pathImage="/assets/detailReport.png"
                     alt=""
-                    onClick={() => {
-                      setForm({
-                        isReportFormActive: true,
-                        reportTarget: 'LOCATION',
-                        reportData: detailAdsPoint,
-                        reportIdentificationData: {
-                          latitude: detailAdsPoint.latitude,
-                          longitude: detailAdsPoint.longitude,
-                        },
-                      });
-                    }}
+                    onClick={handleDetailReport}
                   >
-                    <span className="text-rose-600 text-[0.6rem] text-bold ml-1">
-                      BÁO CÁO VI PHẠM
+                    <span className="text-green-600 text-[0.65rem] text-medium ml-1">
+                      CHI TIẾT BÁO CÁO
                     </span>
                   </CustomButtonIcon>
-                )}
+                </>
+              ) : (
+                <CustomButtonIcon
+                  widthIcon="0.8rem"
+                  heightIcon="0.8rem"
+                  round={2}
+                  type="button"
+                  border={1}
+                  colorBorder="rose"
+                  pathImage="/assets/report.png"
+                  alt=""
+                  onClick={() => {
+                    setForm({
+                      isReportFormActive: true,
+                      reportTarget: 'LOCATION',
+                      reportData: detailAdsPoint,
+                      reportIdentificationData: {
+                        latitude: detailAdsPoint.latitude,
+                        longitude: detailAdsPoint.longitude,
+                      },
+                    });
+                  }}
+                >
+                  <span className="text-rose-600 text-[0.6rem] text-bold ml-1">
+                    BÁO CÁO VI PHẠM
+                  </span>
+                </CustomButtonIcon>
+              )}
             </div>
             <hr className="my-4 mx-2"></hr>
           </>
@@ -221,14 +226,17 @@ function DetailAdsPoint({
                   {' '}
                 </CustomButtonIcon> */}
 
-                {adsReportList?.find((report) => report.adsBoardID === ads.id && report.adsPointID === detailAdsPoint.id) !== undefined
-                  ?
+                {adsReportList?.find(
+                  (report) =>
+                    report.adsBoardID === ads.id &&
+                    report.adsPointID === detailAdsPoint.id
+                ) !== undefined ? (
                   <></>
-                  :
+                ) : (
                   <>
-                    {isOfficer ?
+                    {isOfficer ? (
                       <></>
-                      :
+                    ) : (
                       <button
                         className="border-solid border-red-500 border-[1px] text-red-500 rounded text-[0.65rem] w-5 h-5 bg-white overflow-hidden hover:bg-red-500 hover:text-white transition-colors"
                         onClick={(e) => {
@@ -246,9 +254,9 @@ function DetailAdsPoint({
                       >
                         <i className="fi fi-ss-triangle-warning"></i>
                       </button>
-                    }
-                  </>}
-
+                    )}
+                  </>
+                )}
               </div>
               <p className="text-[0.65rem] font-medium text-gray-500">
                 {detailAdsPoint.address}
@@ -287,25 +295,29 @@ function DetailAdsPoint({
                 </span>
               </div>
 
-              {adsReportList?.find((report) => report.adsBoardID === ads.id && report.adsPointID === detailAdsPoint.id) !== undefined
-                ?
+              {adsReportList?.find(
+                (report) =>
+                  report.adsBoardID === ads.id &&
+                  report.adsPointID === detailAdsPoint.id
+              ) !== undefined ? (
                 <>
-                  <hr className='my-2'></hr>
-                  <div className='flex justify-between'>
+                  <hr className="my-2"></hr>
+                  <div className="flex justify-between">
                     <div></div>
-                    <div className='flex'>
+                    <div className="flex">
                       <i className="fi fi-sr-diamond-exclamation text-rose-600"></i>
-                      <p className='text-rose-600 font-bold text-[0.7rem] text-right ml-1'>Bảng quảng cáo bị báo cáo</p>
+                      <p className="text-rose-600 font-bold text-[0.7rem] text-right ml-1">
+                        Bảng quảng cáo bị báo cáo
+                      </p>
                     </div>
                   </div>
                 </>
-                :
+              ) : (
                 <></>
-              }
+              )}
             </div>
           </div>
         ))}
-
       </div>
     </div>
   );

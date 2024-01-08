@@ -1,14 +1,17 @@
 // import { generateSecureHash } from '../helper';
 
+import { generateSecureHash } from '../helper';
+
 export const LOCAL_STORAGE_KEYS = {
-  AD_REPORT: 'AD_REPORT_LOCAL',
-  LOCATION_REPORT: 'LOCATION_REPORT_LOCAL',
-  FORGOT_PSW_EMAIL: 'FPSWEMAIL',
+  AD_REPORT: generateSecureHash('AD_REPORT_LOCAL'),
+  LOCATION_REPORT: generateSecureHash('LOCATION_REPORT_LOCAL'),
+  FORGOT_PSW_EMAIL: generateSecureHash('FPSWEMAIL'),
+  REGIONS: generateSecureHash('regions'),
 };
 export const COOKIE_KEYS = {
-  ACCESS_TOKEN: 'token',
-  REFRESH_TOKEN: 'refresh_token',
-  REGIONS: 'regions',
+  ACCESS_TOKEN: generateSecureHash('token'),
+  REFRESH_TOKEN: generateSecureHash('refresh_token'),
+  REGIONS: generateSecureHash('regions'),
 };
 export enum QUERY_N_MUTATION_KEYS {
   GET_ALL_PRODUCTS,
@@ -19,4 +22,5 @@ export enum QUERY_N_MUTATION_KEYS {
   GET_REGIONS,
   GET_ALL_AD_MODIFICATION_REQUESTS,
   GET_ALL_AD_CREATION_REQUESTS,
+  GET_ALL_ACCOUNTS,
 }

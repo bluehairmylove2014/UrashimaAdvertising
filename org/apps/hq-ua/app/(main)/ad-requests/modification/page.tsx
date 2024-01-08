@@ -18,6 +18,7 @@ import { IAdModificationRequest } from '@business-layer/services/entities/reques
 import { formatDate } from '@utils/helpers';
 import CommonLoader from '@presentational/atoms/CommonLoader';
 import { useNotification } from '@presentational/atoms/Notification';
+import { MODIFICATION_REQUEST_STATUS_LIST } from '@constants/requestStatus';
 
 function ModificationRequestDetail() {
   const { get: getId } = useSearchParams();
@@ -64,9 +65,9 @@ function ModificationRequestDetail() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [modificationRequests, requestId]);
 
-  const handleApprove = () => {
+  const handleApprove = (status: string) => {
     if (requestData) {
-      onApproveAdModificationRequest({ id: requestData.id })
+      onApproveAdModificationRequest({ id: requestData.id, status })
         .then((msg) => {
           showSuccess(msg);
           router.push(HQ_PAGES.AD_REQUESTS);
@@ -89,16 +90,32 @@ function ModificationRequestDetail() {
               title="Chi tiết yêu cầu chỉnh sửa"
               breadcrumbsData={breadcrumbsData}
             />
-            <div className="w-28">
-              <CustomButton
-                style="fill-green"
-                type="button"
-                loading={isLoading}
-                onClick={handleApprove}
-              >
-                <i className="fi fi-sr-badge-check mr-2"></i>
-                Cấp phép
-              </CustomButton>
+            <div className="flex flex-row gap-2 flex-nowrap">
+              <div className="w-28">
+                <CustomButton
+                  style="fill-green"
+                  type="button"
+                  loading={isLoading}
+                  onClick={() =>
+                    handleApprove(MODIFICATION_REQUEST_STATUS_LIST.APPROVE)
+                  }
+                >
+                  <i className="fi fi-sr-badge-check mr-2"></i>
+                  Cấp phép
+                </CustomButton>
+              </div>
+              <div className="w-28">
+                <CustomButton
+                  style="fill-error"
+                  type="button"
+                  loading={isLoading}
+                  onClick={() =>
+                    handleApprove(MODIFICATION_REQUEST_STATUS_LIST.DENY)
+                  }
+                >
+                  Từ chối
+                </CustomButton>
+              </div>
             </div>
           </div>
           <h3>Thông tin chung</h3>
