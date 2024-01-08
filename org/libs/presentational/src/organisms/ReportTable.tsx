@@ -153,8 +153,8 @@ function ReportTable({ reportData, isHeadQuarter, regionsData }: { reportData: g
                                         <Listbox.Option
                                             key={formIdx}
                                             className={({ active }) =>
-                                                `transition-colors w-full text-[0.65rem] py-3 px-2 cursor-default select-none ${active ? 'bg-gray-200' : ''
-                                                } ${selectedFormReport === form ? 'bg-blue-100' : ' '}`
+                                                `transition-colors w-full text-[0.65rem] py-3 px-2 cursor-default select-none ${active ? 'bg-gray-100' : 'bg-white'
+                                                } ${selectedFormReport === form ? 'bg-sky-200' : ' '}`
                                             }
                                             value={form}
                                         >
