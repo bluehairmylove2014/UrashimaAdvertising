@@ -39,6 +39,7 @@ namespace UrashimaServer.Controllers
             }
 
             var rawResult = await _context.AdsCreationRequests
+                .Where(x => x.RequestStatus.Equals(RequestConstant.Inprogress))
                 .Include(x => x.AdsBoard)
                 .Include(x => x.AdsPoint)
                 .ToListAsync();

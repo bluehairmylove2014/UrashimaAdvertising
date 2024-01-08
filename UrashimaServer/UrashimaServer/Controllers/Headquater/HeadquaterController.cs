@@ -228,7 +228,15 @@ namespace UrashimaServer.Controllers.Headquater
                 });
             }
 
-            createRequest.RequestStatus = isCreated.Status;
+            if (isCreated.Status.Equals(RequestConstant.Rejected))
+            {
+                var boardToRemove = _context.AdsBoards.Where(board => board.AdsCreateRequestId == createRequest.Id);
+                _context.AdsBoards.RemoveRange(boardToRemove);
+                _context.AdsCreationRequests.Remove(createRequest);
+            } else
+            {
+                createRequest.RequestStatus = isCreated.Status;
+            }
             await _context.SaveChangesAsync();
 
             return Ok(new
