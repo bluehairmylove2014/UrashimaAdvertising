@@ -61,6 +61,7 @@ function SocialAuth() {
             // Handle get redirect url here
             setTimeout(() => {
               router.push(HQ_PAGES.DASHBOARD);
+              router.refresh();
             }, 2000);
           })
           .catch((error) => {

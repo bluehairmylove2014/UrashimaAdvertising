@@ -12,4 +12,14 @@ const getAccountInfoResponseSchema = z.object({
 const modifyAccountInfoResponseSchema = z.object({
   message: z.string(),
 });
-export { getAccountInfoResponseSchema, modifyAccountInfoResponseSchema };
+
+const getAllAccountResponseSchema = z.array(getAccountInfoResponseSchema);
+const unitModifyAccountResponseSchema = z.object({
+  message: z.string(),
+});
+export {
+  getAccountInfoResponseSchema,
+  modifyAccountInfoResponseSchema,
+  getAllAccountResponseSchema,
+  unitModifyAccountResponseSchema,
+};
