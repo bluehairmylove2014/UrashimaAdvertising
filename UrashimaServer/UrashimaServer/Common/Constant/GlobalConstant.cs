@@ -54,4 +54,10 @@
         public const string Rejected = "rejected";
         public const string Inprogress = "inprocess";
     }
+
+    public static class ModifyRequestConstant
+    {
+        public const string Approve = "approve";
+        public const string Deny = "deny";
+    }
 }

@@ -129,18 +129,38 @@ namespace UrashimaServer.Controllers.Headquater
 
         // POST: api/headquater/ads-modification/approve
         [HttpPost("ads-modification/approve"), Authorize(Roles = GlobalConstant.HeadQuater)]
-        public async Task<IActionResult> ApproveAdsRequest([FromQuery, Required] int id)
+        public async Task<IActionResult> ApproveAdsRequest([Required] PostApproveAdsModifyRequest isModify)
         {
             var modifyData = await _context.PointModifies
                 .Include(p => p.AdsBoard)
                 .Include(p => p.Images)
-                .FirstOrDefaultAsync(p => p.Id == id);
+                .FirstOrDefaultAsync(p => p.Id == isModify.Id);
 
             if (modifyData == null)
             {
                 return NotFound(new
                 {
                     message = "Không thể tìm được yêu cầu thay đổi dựa trên id đã cung cấp."
+                });
+            }
+
+            if (isModify.Status.Equals(ModifyRequestConstant.Deny))
+            {
+                _context.BoardModifies.RemoveRange(modifyData.AdsBoard!);
+                _context.PointModifyImages.RemoveRange(modifyData.Images!);
+                _context.PointModifies.Remove(modifyData);
+
+                await _context.SaveChangesAsync();
+
+                return Ok(new
+                {
+                    message = $"Từ chối thay đổi của yêu cầu id={modifyData.Id} thành công."
+                });
+            } else if (!isModify.Status.Equals(ModifyRequestConstant.Approve))
+            {
+                return BadRequest(new
+                {
+                    message = $"Trạng thái thay đổi:\'{isModify.Status}\' không hỗ trợ."
                 });
             }
 
@@ -197,11 +217,9 @@ namespace UrashimaServer.Controllers.Headquater
 
         // POST: api/headquater/ads-request/status
         [HttpPost("ads-request/status"), Authorize(Roles = GlobalConstant.HeadQuater)]
-        public async Task<IActionResult> ChangeAdsCreateRequestStatus(
-            [FromQuery, Required] int id,
-            [FromQuery, Required] string status)
+        public async Task<IActionResult> ChangeAdsCreateRequestStatus([Required] PostApproveAdsModifyRequest isCreated)
         {
-            var createRequest = await _context.AdsCreationRequests.FindAsync(id);
+            var createRequest = await _context.AdsCreationRequests.FindAsync(isCreated.Id);
             if (createRequest == null)
             {
                 return NotFound(new
@@ -210,12 +228,12 @@ namespace UrashimaServer.Controllers.Headquater
                 });
             }
 
-            createRequest.RequestStatus = status;
+            createRequest.RequestStatus = isCreated.Status;
             await _context.SaveChangesAsync();
 
             return Ok(new
             {
-                message = $"Thay đổi trạng thái của yêu cầu id={id} thành công."
+                message = $"Thay đổi trạng thái của yêu cầu id={isCreated.Id} thành công."
             });
         }
 

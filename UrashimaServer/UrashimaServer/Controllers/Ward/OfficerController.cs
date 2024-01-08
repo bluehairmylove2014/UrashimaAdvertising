@@ -169,6 +169,7 @@ namespace UrashimaServer.Controllers.Ward
                 .Include(s => s.AdsBoard)
                 .Include(s => s.Images)
                 .FirstOrDefaultAsync();
+
             var region = HttpContext.Items["address"] as string;
             if (adsPoint == null)
             {
@@ -177,9 +178,9 @@ namespace UrashimaServer.Controllers.Ward
                     message = "Không tìm thấy điểm quảng cáo."
                 });
             }
-            else if (
-                !acc.Role.Equals(GlobalConstant.HeadQuater) &&
-                !Helper.IsUnderAuthority(adsPoint.Address, acc.UnitUnderManagement, region))
+
+            if (!acc.Role.Equals(GlobalConstant.HeadQuater) 
+                && !Helper.IsUnderAuthority(adsPoint.Address, acc.UnitUnderManagement, region))
             {
                 return BadRequest(new
                 {
