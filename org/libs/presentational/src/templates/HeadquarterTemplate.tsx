@@ -1,4 +1,5 @@
 import HQNavbar from '@presentational/organisms/HQNavbar';
+import ViewLocationMap from '@presentational/organisms/ViewLocationMap';
 import React from 'react';
 
 const HeadquarterTemplate = ({ children }: { children: React.ReactNode }) => {
@@ -7,7 +8,10 @@ const HeadquarterTemplate = ({ children }: { children: React.ReactNode }) => {
       <div className="col-span-1">
         <HQNavbar />
       </div>
-      <div className="col-span-4 mx-8">{children}</div>
+      <div className="col-span-4 mx-8">
+        {children}
+        <ViewLocationMap />
+      </div>
     </div>
   );
 };

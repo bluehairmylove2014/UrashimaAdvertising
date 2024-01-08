@@ -1,5 +1,5 @@
 // Import necessary modules and functions
-import { useModifyAccountInfoMutation } from '../../fetching/mutation';
+import { useUnitModifyAccountMutation } from '../../fetching/mutation';
 import { accountInfoToModifyType } from '@business-layer/services';
 import { getToken } from '@business-layer/business-logic/lib/auth/process/hooks/useAccessToken';
 
@@ -8,7 +8,7 @@ type useModifyAccountInfoReturnType = {
   isLoading: boolean;
 };
 export const useModifyAccountInfo = (): useModifyAccountInfoReturnType => {
-  const modifyAccountInfoMutation = useModifyAccountInfoMutation();
+  const modifyAccountInfoMutation = useUnitModifyAccountMutation();
 
   const onModifyAccountInfo = (
     data: accountInfoToModifyType

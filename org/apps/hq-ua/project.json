@@ -24,7 +24,7 @@
       "options": {
         "buildTarget": "hq-ua:build",
         "dev": true,
-        "port": 2016
+        "port": 4200
       },
       "configurations": {
         "development": {
