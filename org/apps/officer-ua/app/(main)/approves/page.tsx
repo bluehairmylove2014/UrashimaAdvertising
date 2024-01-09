@@ -4,13 +4,14 @@ import { IBreadcrumb } from '@business-layer/services/entities';
 import Breadcrumbs from '@presentational/molecules/Breadcrumbs';
 import { OFFICER_PAGES } from '@constants/officerPages';
 import { ApproveService } from '@business-layer/services';
-import { COOKIE_KEYS } from '@business-layer/business-logic/configs/constants';
 import { cookies } from 'next/headers';
 import {
   APPROVE_STATUS_FILTER_OPTIONS,
   APPROVE_TIME_FILTER_OPTIONS,
 } from '../../../constants/approve';
 import Link from 'next/link';
+import { getCustomAccessTokenKey } from '@business-layer/business-logic/helper/customKey';
+import { getHostname } from '../../../helper/hostname';
 
 const breadcrumbsData: IBreadcrumb[] = [
   {
@@ -28,7 +29,8 @@ const breadcrumbsData: IBreadcrumb[] = [
 const approveService = new ApproveService();
 async function getApprovesList() {
   try {
-    const token = cookies().get(COOKIE_KEYS.ACCESS_TOKEN)?.value ?? null;
+    const token =
+      cookies().get(getCustomAccessTokenKey(getHostname()))?.value ?? null;
     if (token) {
       return await approveService.getApproveList(token);
     } else {

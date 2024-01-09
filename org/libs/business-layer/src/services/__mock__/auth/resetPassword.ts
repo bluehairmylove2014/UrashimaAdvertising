@@ -6,7 +6,6 @@ axiosMockAdapterInstance
   .onPost(getApiUrl(false) + officerResetPasswordUrl)
   .reply((config: any) => {
     const data = JSON.parse(config.data);
-    console.log(officerResetPasswordUrl, ': ', data);
     return [
       200,
       {

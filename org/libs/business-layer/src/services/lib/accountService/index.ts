@@ -28,7 +28,6 @@ export class AccountService extends Services {
     this.abortController = new AbortController();
     try {
       if (token) {
-        console.log('GET ACCOUnt');
         const response = await this.fetchApi<
           typeof getAccountInfoResponseSchema,
           getAccountInfoResponseType
@@ -42,7 +41,6 @@ export class AccountService extends Services {
           signal: this.abortController.signal,
           transformResponse: (res) => res,
         });
-        console.log('ACCOUnt: ', response);
         return response;
       } else {
         throw new Error('Unauthorized');

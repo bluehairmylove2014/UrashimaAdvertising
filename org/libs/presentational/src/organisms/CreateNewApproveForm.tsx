@@ -156,7 +156,6 @@ function CreateNewApproveForm({
       .catch((error) => {
         showError(error.message);
       });
-    console.log('SCROLL');
     window.scrollTo({
       top: document.body.scrollHeight,
       behavior: 'smooth',
