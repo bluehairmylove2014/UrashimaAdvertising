@@ -3,6 +3,7 @@ import { RegionService, ReportService } from '@business-layer/services';
 import ReportTable from '@presentational/organisms/ReportTable';
 import { getHostname } from '../../../helper/hostname';
 import { cookies } from 'next/headers';
+import HQPageTitle from '@presentational/molecules/HQPageTitle';
 
 const reportService = new ReportService();
 async function getAllReportData() {
@@ -39,19 +40,20 @@ async function Reports() {
   const regionsData = (await getRegions()) ?? [];
 
   return (
-    <main className="container mx-auto px-4 py-6">
-      <div className="flex flex-col items-start justify-start mb-8">
-        <h1 className="w-full font-bold !text-base">DANH SÁCH BÁO CÁO</h1>
-      </div>
-      {reportData ? (
-        <ReportTable
-          reportData={reportData}
-          isHeadQuarter={true}
-          regionsData={regionsData}
-        />
-      ) : (
-        <></>
-      )}
+    <main className="py-6 w-full h-screen overflow-y-auto scrollbar-hide">
+      <HQPageTitle title="DANH SÁCH BÁO CÁO" />
+
+      <>
+        {reportData ? (
+          <ReportTable
+            reportData={reportData}
+            isHeadQuarter={true}
+            regionsData={regionsData}
+          />
+        ) : (
+          <></>
+        )}
+      </>
     </main>
   );
 }
