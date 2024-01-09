@@ -36,7 +36,7 @@
         };
         public static readonly List<string> HeadQuarter = new(Globals) {
             "https://www.hq.urashima-ads.site",
-            "http://localhost:2021"
+            "http://localhost:4200"
         };
 
         public static readonly List<(List<string>, string)> CheckList = new() {
