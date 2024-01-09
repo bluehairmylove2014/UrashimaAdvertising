@@ -59,23 +59,24 @@ function PointFilterBtn({
   const [selectedLayers, setSelectedLayers] =
     useState<LayerProps[]>(sourceLayersList);
 
-  useEffect(() => {
-    onFilter(selectedLayers);
-  }, [selectedLayers.length]);
-
   const handleAddLayer = (layerIds: string[]) => {
     const additionLayers = layerIds
       .map((id) =>
         sourceLayersList.find((layer) => layer.id && layer.id === id)
       )
       .filter((layer): layer is LayerProps => typeof layer !== 'undefined');
-    setSelectedLayers([...selectedLayers, ...additionLayers]);
+
+    const layer = [...selectedLayers, ...additionLayers];
+    setSelectedLayers(layer);
+    onFilter(layer);
   };
 
   const handleRemoveLayer = (layerIds: string[]) => {
-    setSelectedLayers(
-      selectedLayers.filter((lid) => lid.id && !layerIds.includes(lid.id))
+    const layer = selectedLayers.filter(
+      (lid) => lid.id && !layerIds.includes(lid.id)
     );
+    setSelectedLayers(layer);
+    onFilter(layer);
   };
 
   const handleChange = (layerIds: string[], value: boolean) => {

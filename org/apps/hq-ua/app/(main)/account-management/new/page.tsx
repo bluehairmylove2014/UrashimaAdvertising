@@ -163,9 +163,14 @@ function AccountManagement() {
   }
   const onFirstLayerSelect = (option: string, index: number) => {
     if (index > 0) {
-      setSelectedOption(option);
-      setSelectedMulLayerOption(null);
-      openMulLayerDropdown();
+      if (roleWatch === ROLE_LIST.DISTRICT_OFFICER) {
+        toggleDropdown();
+        handleAddUnit(option);
+      } else {
+        setSelectedOption(option);
+        setSelectedMulLayerOption(null);
+        openMulLayerDropdown();
+      }
     } else {
       setSelectedOption(null);
       setSelectedMulLayerOption(null);
