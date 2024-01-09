@@ -23,7 +23,7 @@ async function Reports({ params }: { params: { reportId: string } }) {
   const reportDetail = await getReportDetail(Number.parseInt(params.reportId));
 
   return (
-    <main className="container mx-auto px-4 py-6">
+    <main className="py-6 w-full h-screen overflow-y-auto scrollbar-hide">
       <>
         {reportDetail ? (
           <>
