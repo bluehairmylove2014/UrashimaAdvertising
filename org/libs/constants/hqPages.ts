@@ -26,4 +26,5 @@ export const HQ_PAGES = {
   REPORTS: '/reports',
 
   ACCOUNT_MANAGEMENT: '/account-management',
+  NEW_ACCOUNT: '/account-management/new',
 };

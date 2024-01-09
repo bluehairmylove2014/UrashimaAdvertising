@@ -8,3 +8,4 @@ export * from './useChangePassword';
 export * from './useForgotPassword';
 export * from './useVerifyPasswordOtp';
 export * from './useResetPassword';
+export * from './useRegister';

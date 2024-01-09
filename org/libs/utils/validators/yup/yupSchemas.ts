@@ -1,18 +1,37 @@
 import * as y from 'yup';
 import { vietnamPhoneNumber } from './../regex/phoneNumber';
 
+// DEFAULT
+const y_email = y
+  .string()
+  .email('Email không hợp lệ')
+  .required('Cần điền email');
+const y_fullName = y.string().max(255, 'Không để tên quá 255 ký tự');
+const y_dateOfBirth = y.string().required('Không được để trống ngày sinh');
+const y_phone = y
+  .string()
+  .matches(vietnamPhoneNumber, 'Số điện thoại không hợp lệ');
+const y_password = y
+  .string()
+  .required('Không được để trống mật khẩu')
+  .max(255, 'Mật khẩu tối đa 255 ký tự')
+  .min(6, 'Mật khẩu tối thiểu 6 ký tự');
+const y_textArea = y
+  .string()
+  .required('Không được để trống nội dung')
+  .max(1000, 'Nội dung tối đa 1000 ký tự');
+
+// CUSTOM
+
 export const loginSchema = y.object({
-  email: y.string().email('Email không hợp lệ').required('Cần điền email'),
-  password: y
-    .string()
-    .min(6, 'Mật khẩu ít nhất 6 ký tự')
-    .required('Cần điền mật khẩu'),
+  email: y_email,
+  password: y_password,
 });
 
 export const userReportSchema = y.object({
-  name: y.string().required('Cần bổ sung họ và tên').max(255),
-  email: y.string().email('Email không hợp lệ').required('Cần điền email'),
-  phone: y.string().matches(vietnamPhoneNumber, 'Số điện thoại không hợp lệ'),
+  name: y_fullName,
+  email: y_email,
+  phone: y_phone,
 });
 
 export const editLocationDetailSchema = y.object({
@@ -46,27 +65,18 @@ export const editLocationDetailSchema = y.object({
 });
 
 export const reasonsInputSchema = y.object({
-  reasons: y
-    .string()
-    .required('Không được để trống nội dung')
-    .max(1000, 'Nội dung tối đa 1000 ký tự'),
+  reasons: y_textArea,
 });
 
 export const responseInputSchema = y.object({
-  response: y
-    .string()
-    .required('Không được để trống nội dung')
-    .max(1000, 'Nội dung tối đa 1000 ký tự'),
+  response: y_textArea,
 });
 
 export const accountModifyFormSchema = y.object({
-  email: y
-    .string()
-    .required('Không được để trống nội dung')
-    .max(1000, 'Nội dung tối đa 1000 ký tự'),
-  fullName: y.string().max(255, 'Không để tên quá 255 ký tự'),
-  dateOfBirth: y.string(),
-  phone: y.string().matches(vietnamPhoneNumber, 'Số điện thoại không hợp lệ'),
+  email: y_email,
+  fullName: y_fullName,
+  dateOfBirth: y_dateOfBirth,
+  phone: y_phone,
 });
 
 export const changePasswordSchema = y.object({
@@ -87,14 +97,8 @@ export const approveRequestFormSchema = y.object({
     .string()
     .required('Hãy nhập tên công ty')
     .max(255, 'Tên công ty tối đa 255 ký tự'),
-  email: y
-    .string()
-    .required('Hãy nhập email công ty')
-    .email('Email không hợp lệ'),
-  phone: y
-    .string()
-    .required('Hãy nhập số điện thoại liên lạc')
-    .matches(vietnamPhoneNumber, 'Số điện thoại không hợp lệ'),
+  email: y_email,
+  phone: y_phone,
   address: y
     .string()
     .required('Hãy nhập địa chỉ công ty')
@@ -113,10 +117,7 @@ export const approveRequestFormSchema = y.object({
 });
 
 export const resetPasswordFormSchema = y.object({
-  email: y
-    .string()
-    .required('Không được để trống nội dung')
-    .max(500, 'Nội dung tối đa 500 ký tự'),
+  email: y_email,
 });
 
 export const passwordOtpFormSchema = y.object({
@@ -127,14 +128,18 @@ export const passwordOtpFormSchema = y.object({
 });
 
 export const newPasswordFormSchema = y.object({
-  password: y
+  password: y_password,
+  commitPassword: y_password,
+});
+
+export const newAccountFormSchema = y.object({
+  fullName: y_fullName,
+  password: y_password,
+  email: y_email,
+  dateOfBirth: y_dateOfBirth,
+  phone: y_phone,
+  role: y.string().required('Bạn chưa chọn vai trò'),
+  unitUnderManagement: y
     .string()
-    .required('Không được để trống mật khẩu')
-    .max(255, 'Mật khẩu tối đa 255 ký tự')
-    .min(6, 'Mật khẩu tối thiểu 6 ký tự'),
-  commitPassword: y
-    .string()
-    .required('Không được để trống mật khẩu')
-    .max(255, 'Mật khẩu tối đa 255 ký tự')
-    .min(6, 'Mật khẩu tối thiểu 6 ký tự'),
+    .required('Bạn chưa phân công khu vực quản lý'),
 });

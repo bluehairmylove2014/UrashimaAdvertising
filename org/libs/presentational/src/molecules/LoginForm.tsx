@@ -105,7 +105,7 @@ function LoginForm() {
               </div>
             ))}
           </div>
-          <div className="flex flex-row justify-end items-center mb-4">
+          <div className="flex flex-row justify-end items-center mb-4 w-full">
             <Link
               href={OFFICER_PAGES.RESET_PASSWORD}
               className="font-semibold text-xs text-gray-400 hover:text-blue-600"

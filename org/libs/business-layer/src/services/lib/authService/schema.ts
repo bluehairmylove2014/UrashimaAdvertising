@@ -12,9 +12,13 @@ const refreshTokenResponseSchema = z.object({
 const messageResponseSchema = z.object({
   message: z.string(),
 });
+const registerResponseSchema = z.object({
+  message: z.string(),
+});
 
 export {
   authenticationResponseSchema,
   refreshTokenResponseSchema,
   messageResponseSchema,
+  registerResponseSchema,
 };
