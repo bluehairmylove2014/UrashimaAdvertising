@@ -43,6 +43,7 @@ namespace UrashimaServer.Controllers
             foreach (var item in rawResult)
             {
                 var pointDto = _mapper.Map<UserAdsPointBasicDto>(item);
+                pointDto.IsEmpty = !(_context.AdsBoards.Where(b => b.AdsPointId == pointDto.Id).ToList().Count > 0);
                 res.Add(pointDto);
             }
 

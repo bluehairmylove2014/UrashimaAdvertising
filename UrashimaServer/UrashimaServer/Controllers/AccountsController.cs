@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
@@ -106,7 +107,7 @@ namespace UrashimaServer.Controllers
         /// </summary>
         // PUT: api/account/unit-modify
         [HttpPut("unit-modify"), AuthorizeRoles(GlobalConstant.HeadQuater)]
-        public async Task<IActionResult> ModAccount(AccountDTO accountDto)
+        public async Task<IActionResult> ModAccount(UpdateUnitUnderManagementDto accountDto)
         {
             var account = await _context.Accounts.FirstOrDefaultAsync(acc => acc.Id == accountDto.Id);
 
@@ -114,17 +115,38 @@ namespace UrashimaServer.Controllers
             {
                 return BadRequest(new
                 {
-                    Message = "Đã có lỗi xảy ra với tài khoản của bạn. Hãy đăng nhập lại!",
+                    Message = $"Không tìm thấy tài khoản với id={accountDto.Id}",
                 });
+            }
+            
+            var checkListDistrict = _context.WardDistricts.Select(wd => wd.District).Distinct().ToList();
+            var countDistrict = Regex.Matches(accountDto.UnitUnderManagement, $@"(?i)^({String.Join('|', checkListDistrict)})$").Count;
+            
+            var checkListWard = _context.WardDistricts.Select(wd => $"{wd.Ward}, {wd.District}").ToList();
+            var countWard = Regex.Matches(accountDto.UnitUnderManagement, $@"(?i)^({String.Join('|', checkListWard)})$").Count;
+
+            if (account.Role.Equals(GlobalConstant.DistrictOfficer))
+            {
+                if (countDistrict != 1)
+                {
+                    return BadRequest(new
+                    {
+                        message = "Đơn vị quản lý của \'Cán bộ Quận\' không hợp lệ"
+                    });
+                }
+            } 
+            else if (account.Role.Equals(GlobalConstant.WardOfficer))
+            {
+                if (countWard != 1)
+                {
+                    return BadRequest(new
+                    {
+                        message = "Đơn vị quản lý của \'Cán bộ Phường\' không hợp lệ."
+                    });
+                }
             }
 
             _context.Entry(account).State = EntityState.Modified;
-
-            account.Email = accountDto.Email;
-            account.FullName = accountDto.FullName;
-            account.DateOfBirth = accountDto.DateOfBirth;
-            account.Phone = accountDto.Phone;
-            account.Role = accountDto.Role;
             account.UnitUnderManagement = accountDto.UnitUnderManagement;
 
             try
@@ -139,7 +161,7 @@ namespace UrashimaServer.Controllers
             return Ok(new
             {
                 message = "Cập nhật thông tin cá nhân thành công."
-            }); ;
+            });
         }
     }
 }
