@@ -66,10 +66,6 @@ const HQFormsBox = forwardRef(
       deleteTargetId.current = null;
     };
 
-    useEffect(() => {
-      console.log(contextData);
-    }, [contextData]);
-
     return (
       <div
         className={`bg-rose-100 overflow-auto rounded shadow-[-10px_0px_25px_-15px_rgba(0,0,0,0.1)] p-6 fixed top-0 right-0 w-0 opacity-0 pointer-events-none invisible transition-all z-30 h-screen`}

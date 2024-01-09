@@ -26,9 +26,9 @@ import CustomMap from '@presentational/organisms/CustomMap';
 
 type locationType =
   | {
-    latitude: number;
-    longitude: number;
-  }
+      latitude: number;
+      longitude: number;
+    }
   | undefined;
 
 function Home(): ReactElement {
@@ -84,7 +84,7 @@ function Home(): ReactElement {
         .then((data) => {
           setInfoClickAdsPoint(data);
         })
-        .catch((error) => console.log(error));
+        .catch((error) => console.error(error));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [idAdsPointClick]);
@@ -210,25 +210,25 @@ function Home(): ReactElement {
             type: 'FeatureCollection',
             features: adsData
               ? adsData.map((m) => ({
-                type: 'Feature',
-                properties: {
-                  id: m.id,
-                  cluster: false,
-                  name: m.address,
-                  planned: m.planned,
-                  reported: locationReportList
-                    ? locationReportList.findIndex(
-                      (lr) =>
-                        lr.latitude === m.latitude &&
-                        lr.longitude === m.longitude
-                    ) !== -1
-                    : false,
-                },
-                geometry: {
-                  type: 'Point',
-                  coordinates: [m.longitude, m.latitude],
-                },
-              }))
+                  type: 'Feature',
+                  properties: {
+                    id: m.id,
+                    cluster: false,
+                    name: m.address,
+                    planned: m.planned,
+                    reported: locationReportList
+                      ? locationReportList.findIndex(
+                          (lr) =>
+                            lr.latitude === m.latitude &&
+                            lr.longitude === m.longitude
+                        ) !== -1
+                      : false,
+                  },
+                  geometry: {
+                    type: 'Point',
+                    coordinates: [m.longitude, m.latitude],
+                  },
+                }))
               : [],
           }}
           ref={mapRef}
@@ -277,7 +277,7 @@ function Home(): ReactElement {
                 handleClose={() => {
                   setIsClickAdsPoint(false);
                 }}
-                handleDetailReport={() => { }}
+                handleDetailReport={() => {}}
               />
             ) : (
               <></>
@@ -300,7 +300,7 @@ function Home(): ReactElement {
                   setIsActiveAdsBoard(false);
                   setIsClickAdsPoint(true);
                 }}
-                handleDetailReportAdsBoard={() => { }}
+                handleDetailReportAdsBoard={() => {}}
               ></DetailAds>
             ) : (
               <></>
