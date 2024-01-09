@@ -4,13 +4,15 @@ import LocationTableFilterSelect from '@presentational/molecules/LocationTableFi
 import LocationTableSearchBox from '@presentational/molecules/LocationTableSearchBox';
 import { SettingService } from '@business-layer/services';
 import { cookies } from 'next/dist/client/components/headers';
-import { COOKIE_KEYS } from '@business-layer/business-logic/configs/constants';
 import { HQ_PAGES } from '@constants/hqPages';
+import { getCustomAccessTokenKey } from '@business-layer/business-logic/helper/customKey';
+import { getHostname } from '../../../helper/hostname';
 
 const settingService = new SettingService();
 async function getLocationTypes() {
   try {
-    const token = cookies().get(COOKIE_KEYS.ACCESS_TOKEN)?.value ?? null;
+    const token =
+      cookies().get(getCustomAccessTokenKey(getHostname()))?.value ?? null;
     if (token) {
       return await settingService.getLocationSettings({
         token,
@@ -24,7 +26,8 @@ async function getLocationTypes() {
 }
 async function getAdForms() {
   try {
-    const token = cookies().get(COOKIE_KEYS.ACCESS_TOKEN)?.value ?? null;
+    const token =
+      cookies().get(getCustomAccessTokenKey(getHostname()))?.value ?? null;
     if (token) {
       return await settingService.getAdFormsSettings({
         token,

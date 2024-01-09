@@ -7,7 +7,6 @@ axiosMockAdapterInstance
   .onGet(getApiUrl(false) + getLocationGeocoderUrl)
   .reply((config: any) => {
     const { latitude, longitude } = config.params;
-    console.log({ latitude, longitude });
     return [
       200,
       {

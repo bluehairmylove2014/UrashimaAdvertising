@@ -43,7 +43,6 @@ async function ApproveRequestDetail() {
       const id = Number.parseInt(requestId);
       !requestData &&
         setRequestData(creationRequests.find((r) => r.id === id) ?? null);
-      console.log(creationRequests.find((r) => r.id === id));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [creationRequests, requestId]);

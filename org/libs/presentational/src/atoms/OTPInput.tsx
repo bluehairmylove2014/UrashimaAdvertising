@@ -36,7 +36,6 @@ function OTPInput({ onChange, disabled, otpLength }: otpInputType) {
 
   // Effect
   useEffect(() => {
-    console.log(otp);
     onChange(otp);
   }, [otp]);
   useEffect(() => {

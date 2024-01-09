@@ -1,13 +1,15 @@
-import { COOKIE_KEYS } from '@business-layer/business-logic/configs/constants';
+import { getCustomAccessTokenKey } from '@business-layer/business-logic/helper/customKey';
 import { RegionService } from '@business-layer/services';
 import HQPageTitle from '@presentational/molecules/HQPageTitle';
 import AdRequestTable from '@presentational/organisms/AdRequestTable';
+import { getHostname } from '../../../helper/hostname';
 import { cookies } from 'next/headers';
 
 const regionService = new RegionService();
 async function getRegions() {
   try {
-    const token = cookies().get(COOKIE_KEYS.ACCESS_TOKEN)?.value ?? null;
+    const token =
+      cookies().get(getCustomAccessTokenKey(getHostname()))?.value ?? null;
     if (token) {
       return await regionService.getRegions(token);
     } else {
