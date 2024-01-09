@@ -103,7 +103,7 @@ function ReportDetailAdsBoard({
         </div>
 
         <div className="h-[30vh] border rounded mt-1 p-1 text-[0.7rem] text-neutral-500">
-          <div>{infoAdsBoardReport.content}</div>
+          <div dangerouslySetInnerHTML={{ __html: infoAdsBoardReport.content }}></div>
         </div>
 
         {Array.isArray(infoAdsBoardReport.images) ? (
@@ -141,6 +141,22 @@ function ReportDetailAdsBoard({
       </div>
 
       <hr className="my-4 mx-3" />
+
+      {infoAdsBoardReport.reportStatus ?
+        <>
+          <div className=" mx-3">
+            <p className=" text-sky-500 font-bold">Thông tin báo cáo được phản hồi</p>
+            <div className="h-[30vh] border rounded mt-1 p-1 text-[0.7rem] text-neutral-500">
+              <div>{infoAdsBoardReport.treatmentProcess}</div>
+            </div>
+          </div>
+          <hr className="my-4 mx-3" />
+        </>
+        :
+        <></>
+      }
+
+
       <div className="mx-3 mb-4">
         <p className="text-sky-500 font-bold">Thông tin bảng quảng cáo</p>
         <div className="flex mt-2">

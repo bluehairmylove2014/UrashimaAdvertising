@@ -124,7 +124,7 @@ function ReportDetailPoint({
           <p className=" text-[0.7rem] text-neutral-600">Nội dung báo cáo:</p>
         </div>
         <div className="h-[30vh] border rounded mt-1 p-1 text-[0.7rem] text-neutral-500">
-          <div>{infoPointReport.content}</div>
+          <div dangerouslySetInnerHTML={{ __html: infoPointReport.content }}></div>
         </div>
 
         {Array.isArray(infoPointReport.images) ? (
@@ -162,6 +162,23 @@ function ReportDetailPoint({
       </div>
 
       <hr className="my-4 mx-3" />
+
+
+      {infoPointReport.reportStatus ?
+        <>
+          <div className=" mx-3">
+            <p className=" text-sky-500 font-bold">Thông tin báo cáo được phản hồi</p>
+            <div className="h-[30vh] border rounded mt-1 p-1 text-[0.7rem] text-neutral-500">
+              <div>{infoPointReport.treatmentProcess}</div>
+            </div>
+          </div>
+          <hr className="my-4 mx-3" />
+        </>
+        :
+        <></>
+      }
+
+
       <div className="mx-3 mb-4">
         <p className="text-sky-500 font-bold">Thông tin điểm báo cáo</p>
         {infoPointReport.reportData ? (
