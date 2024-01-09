@@ -28,7 +28,7 @@ const formReport = [
 ];
 
 const START_PAGE = 1;
-const MAX_ELEMENT_PER_PAGE = 6;
+const MAX_ELEMENT_PER_PAGE = 4;
 
 function ReportTable({ reportData, isHeadQuarter, regionsData }: { reportData: getAllOfficerReportsResponseType, isHeadQuarter: boolean, regionsData: regionResponseType | null }) {
     const router = useRouter();
@@ -40,8 +40,14 @@ function ReportTable({ reportData, isHeadQuarter, regionsData }: { reportData: g
     const paginationData = useGetPagination();
     const { setPaginationData } = useSetPaginationData();
 
-    const allReportData = useMemo(() => {
-        let filteredData = reportData || [];
+    const [allReportData, setAllReportData] = useState<getAllOfficerReportsResponseType | null>(null);
+
+    const [district, setDistrict] = useState<string | null>(null);
+    const [ward, setWard] = useState<string | null>(null);
+
+
+    useMemo(() => {
+        let filteredData = reportData;
 
         // Filter by report type
         if (selectedFormReport !== 'Tất cả hình thức') {
@@ -56,8 +62,33 @@ function ReportTable({ reportData, isHeadQuarter, regionsData }: { reportData: g
             );
         }
 
-        return filteredData;
-    }, [selectedFormReport, searchValue, reportData]);
+        if (district === null) {
+            return setAllReportData(filteredData);
+        } else if (ward === null && district !== null) {
+            filteredData = (filterByArea(filteredData, district));
+        } else {
+            if (allReportData !== null && ward !== null)
+                filteredData = (filterByArea(filterByArea(filteredData, district), ward));
+        }
+
+        setAllReportData(filteredData);
+    }, [selectedFormReport, searchValue, reportData, district, ward]);
+
+    function escapeRegExp(str: string) {
+        return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+    function filterByArea(reportData: getAllOfficerReportsResponseType, specificArea: string) {
+        const escapedArea = escapeRegExp(specificArea);
+        const regex = new RegExp(
+            `(?:[.,\\s]*\\b${escapedArea}\\b[.,\\s]*([\\w\\s]+)(?:[.,\\s]*|$))`,
+            'i'
+        );
+
+        return reportData.filter((r) => {
+            return regex.test(r.address);
+        });
+    }
 
     const handleFilterByRegion = ({
         district,
@@ -66,17 +97,8 @@ function ReportTable({ reportData, isHeadQuarter, regionsData }: { reportData: g
         district: string | null;
         ward: string | null;
     }) => {
-        // if (backupRequestData.current) {
-        //     if (district === null) {
-        //         setRequestData(backupRequestData.current);
-        //     } else if (ward === null) {
-        //         setRequestData(filterByArea(backupRequestData.current, district));
-        //     } else {
-        //         setRequestData(
-        //             filterByArea(filterByArea(backupRequestData.current, district), ward)
-        //         );
-        //     }
-        // }
+        setDistrict(district);
+        setWard(ward);
     };
 
     useEffect(() => {
@@ -107,7 +129,7 @@ function ReportTable({ reportData, isHeadQuarter, regionsData }: { reportData: g
 
     return (
         <>
-            <div className="flex flex-row gap-4 justify-between mb-8 w-full">
+            <div className="flex flex-row gap-4 justify-between mt-4 mb-8 w-full h-8">
                 <form className="flex-shrink w-96 relative border-solid border-[1px] border-zinc-400 rounded overflow-hidden">
                     <i className="fi fi-rr-search absolute top-1/2 left-4 transform -translate-y-1/2 bottom-[4px] text-[0.65rem]"></i>
                     <input
@@ -180,19 +202,16 @@ function ReportTable({ reportData, isHeadQuarter, regionsData }: { reportData: g
                             <th scope="col" className="px-2 py-3 w-[5%]">
                                 STT
                             </th>
-                            <th scope="col" className="px-2 py-3 w-[20%]">
-                                Thông Tin Người Gửi
+                            <th scope="col" className="px-2 py-3 w-[30%]">
+                                Thông Tin Chung
                             </th>
-                            <th scope="col" className="px-2 py-3 w-[20%]">
+                            <th scope="col" className="px-2 py-3 w-[25%]">
                                 Địa Điểm
                             </th>
-                            <th scope="col" className="px-2 py-3 w-[10%]">
-                                Loại Báo Cáo
-                            </th>
-                            <th scope="col" className="px-2 py-3 w-[10%]">
+                            <th scope="col" className="px-2 py-3 w-[30%]">
                                 Tình Trạng Xử Lý
                             </th>
-                            <th scope="col" className="px-2 py-3 w-[5%]">
+                            <th scope="col" className="px-2 py-3 w-[10%]">
                                 Hành Động
                             </th>
                         </tr>
@@ -212,33 +231,55 @@ function ReportTable({ reportData, isHeadQuarter, regionsData }: { reportData: g
                                     >
                                         <TableRow
                                             listData={[
-                                                (reportIndex + 1).toString(),
+                                                report.id,
                                                 <span className='font-semibold'>
                                                     <span className="line-clamp-1 font-medium text-xs ">
-                                                        <b>Tên:</b>{' '}
+                                                        <b>Tên:</b>
+                                                        {' '}
                                                         <span className="font-normal">
                                                             {report.name}
                                                         </span>
                                                     </span>
                                                     <span className="line-clamp-1 font-medium text-xs ">
-                                                        <b>Email:</b>{' '}
+                                                        <b>Email:</b>
+                                                        {' '}
                                                         <span className="font-normal">
                                                             {report.email}
                                                         </span>
                                                     </span>
                                                     <span className="line-clamp-1 font-medium text-xs ">
-                                                        <b>Số điện thoại:</b>{' '}
+                                                        <b>Số điện thoại:</b>
+                                                        {' '}
                                                         <span className="font-normal">
                                                             {report.phone}
                                                         </span>
                                                     </span>
+                                                    <span className="line-clamp-1 font-medium text-xs">
+                                                        <b>Loại báo cáo:</b>
+                                                        {' '}
+                                                        <span className="text-blue-600">
+                                                            {report.reportType}
+                                                        </span>
+                                                    </span>
                                                 </span>,
                                                 report.address,
-                                                report.reportType,
                                                 report.reportStatus ? (
-                                                    <span className="text-green-600 font-bold">ĐÃ XÉT DUYỆT</span>
+                                                    <>
+                                                        <span className="text-green-600 font-bold">
+                                                            ĐÃ XÉT DUYỆT
+                                                        </span>
+                                                        <span className="line-clamp-3 font-medium text-xs">
+                                                            <b>Nội dung:</b>
+                                                            {' '}
+                                                            <span className="font-normal text-gray-600">
+                                                                {report.treatmentProcess}
+                                                            </span>
+                                                        </span>
+                                                    </>
                                                 ) : (
-                                                    <span className="text-rose-600 font-bold">CHƯA XÉT DUYỆT</span>
+                                                    <span className="text-rose-600 font-bold">
+                                                        CHƯA XÉT DUYỆT
+                                                    </span>
                                                 ),
                                                 <IconButton
                                                     type="button"
@@ -255,13 +296,13 @@ function ReportTable({ reportData, isHeadQuarter, regionsData }: { reportData: g
                                 ))
                             ) : (
                                 <tr className="py-4">
-                                    <td colSpan={6} className="py-12">
+                                    <td colSpan={5} className="py-12">
                                         <EmptyIcon label="Không tìm thấy địa điểm nào" />
                                     </td>
                                 </tr>
                             )
                         ) : (
-                            <RowLoader colNumber={9} />
+                            <RowLoader colNumber={6} />
                         )}
                     </tbody>
                 </table>
