@@ -4,13 +4,15 @@ import Breadcrumbs from '@presentational/molecules/Breadcrumbs';
 import Link from 'next/link';
 import { IBreadcrumb } from '@business-layer/services/entities';
 import { OFFICER_PAGES } from '@constants/officerPages';
-import { COOKIE_KEYS } from '@business-layer/business-logic/configs/constants';
 import { cookies } from 'next/headers';
+import { getCustomAccessTokenKey } from '@business-layer/business-logic/helper/customKey';
+import { getHostname } from '../../../../helper/hostname';
 
 const officerService = new AdsService();
 async function getAdLocationDetail(boardId: number) {
   try {
-    const token = cookies().get(COOKIE_KEYS.ACCESS_TOKEN)?.value ?? null;
+    const token =
+      cookies().get(getCustomAccessTokenKey(getHostname()))?.value ?? null;
     if (token) {
       return await officerService.getOfficerLocationDetail({
         adId: boardId,

@@ -31,7 +31,6 @@ function RegionManagementDropdown() {
   }, [regionData]);
 
   useEffect(() => {
-    console.log(selectedRegions);
     setRegionsChose(selectedRegions ? [...selectedRegions] : []);
   }, [selectedRegions]);
 

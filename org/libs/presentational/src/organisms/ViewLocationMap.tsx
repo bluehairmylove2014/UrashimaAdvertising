@@ -125,7 +125,7 @@ function ViewLocationMap(): ReactElement {
         .then((data) => {
           setInfoClickAdsPoint(data);
         })
-        .catch((error) => console.log(error));
+        .catch((error) => console.error(error));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [idAdsPointClick]);

@@ -1,13 +1,15 @@
-import { COOKIE_KEYS } from '@business-layer/business-logic/configs/constants';
 import { AccountService } from '@business-layer/services';
 import { cookies } from 'next/headers';
 import OfficerPersonalDetail from '@presentational/molecules/OfficerPersonalDetail';
+import { getCustomAccessTokenKey } from '@business-layer/business-logic/helper/customKey';
+import { getHostname } from '../../../../helper/hostname';
 
 const accountService = new AccountService();
 
 async function getAccountDetail() {
   try {
-    const token = cookies().get(COOKIE_KEYS.ACCESS_TOKEN)?.value ?? null;
+    const token =
+      cookies().get(getCustomAccessTokenKey(getHostname()))?.value ?? null;
     if (token) {
       return await accountService.getAccountInfo(token);
     } else {

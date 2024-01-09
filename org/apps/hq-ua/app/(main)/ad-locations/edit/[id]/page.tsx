@@ -3,15 +3,17 @@ import { AdsService, SettingService } from '@business-layer/services';
 import EditAdDetail from '@presentational/organisms/EditAdDetail';
 import { IBreadcrumb, ISetting } from '@business-layer/services/entities';
 import { cookies } from 'next/headers';
-import { COOKIE_KEYS } from '@business-layer/business-logic/configs/constants';
 import HQPageTitle from '@presentational/molecules/HQPageTitle';
 import CommonLoader from '@presentational/atoms/CommonLoader';
 import { HQ_PAGES } from '@constants/hqPages';
+import { getCustomAccessTokenKey } from '@business-layer/business-logic/helper/customKey';
+import { getHostname } from '../../../../../helper/hostname';
 
 const settingService = new SettingService();
 async function getLocationTypes() {
   try {
-    const token = cookies().get(COOKIE_KEYS.ACCESS_TOKEN)?.value ?? null;
+    const token =
+      cookies().get(getCustomAccessTokenKey(getHostname()))?.value ?? null;
     if (token) {
       return await settingService.getLocationSettings({
         token,
@@ -25,7 +27,8 @@ async function getLocationTypes() {
 }
 async function getAdForms() {
   try {
-    const token = cookies().get(COOKIE_KEYS.ACCESS_TOKEN)?.value ?? null;
+    const token =
+      cookies().get(getCustomAccessTokenKey(getHostname()))?.value ?? null;
     if (token) {
       return await settingService.getAdFormsSettings({
         token,
@@ -39,7 +42,8 @@ async function getAdForms() {
 }
 async function getAdBoardTypes() {
   try {
-    const token = cookies().get(COOKIE_KEYS.ACCESS_TOKEN)?.value ?? null;
+    const token =
+      cookies().get(getCustomAccessTokenKey(getHostname()))?.value ?? null;
     if (token) {
       return await settingService.getAdBoardTypesSettings({
         token,
@@ -55,7 +59,8 @@ async function getAdBoardTypes() {
 const officerService = new AdsService();
 async function getAdLocationDetail(id: number) {
   try {
-    const token = cookies().get(COOKIE_KEYS.ACCESS_TOKEN)?.value ?? null;
+    const token =
+      cookies().get(getCustomAccessTokenKey(getHostname()))?.value ?? null;
     if (token) {
       return await officerService.getOfficerLocationDetail({
         adId: id,

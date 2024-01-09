@@ -3,19 +3,15 @@ import type { NextRequest } from 'next/server';
 import { HQ_PAGES } from '@constants/hqPages';
 import { RequestCookie } from 'next/dist/compiled/@edge-runtime/cookies';
 import { OFFICER_PAGES } from '@constants/officerPages';
-import { generateSecureHash } from '@business-layer/business-logic/helper';
+import { getHostname } from './helper/hostname';
+import { getCustomAccessTokenKey } from '@business-layer/business-logic/helper/customKey';
 
 const isTokenValid = (token: RequestCookie | undefined) =>
   token && typeof token.value === 'string' && token.value.length > 0;
 
-const getHostname = () =>
-  process.env.NODE_ENV === 'development'
-    ? 'localhost'
-    : 'www.hq.urashima-ads.site';
-
 export function middleware(request: NextRequest) {
   const cookie = request.cookies;
-  const token = cookie.get(generateSecureHash('token' + getHostname()));
+  const token = cookie.get(getCustomAccessTokenKey(getHostname()));
   const pathName = request.nextUrl.clone().pathname;
   const response = NextResponse;
 

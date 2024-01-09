@@ -1,13 +1,15 @@
-import { COOKIE_KEYS } from "@business-layer/business-logic/configs/constants";
-import { RegionService } from "@business-layer/services";
-import HQPageTitle from "@presentational/molecules/HQPageTitle";
-import DistrictManagement from "@presentational/organisms/DistrictManagement"
-import { cookies } from "next/headers";
+import { getCustomAccessTokenKey } from '@business-layer/business-logic/helper/customKey';
+import { RegionService } from '@business-layer/services';
+import HQPageTitle from '@presentational/molecules/HQPageTitle';
+import DistrictManagement from '@presentational/organisms/DistrictManagement';
+import { getHostname } from '../../../helper/hostname';
+import { cookies } from 'next/headers';
 
 const regionService = new RegionService();
 async function getRegions() {
   try {
-    const token = cookies().get(COOKIE_KEYS.ACCESS_TOKEN)?.value ?? null;
+    const token =
+      cookies().get(getCustomAccessTokenKey(getHostname()))?.value ?? null;
     if (token) {
       return await regionService.getRegions(token);
     } else {
@@ -19,7 +21,7 @@ async function getRegions() {
 }
 
 async function Regions() {
-  const regionsData = await getRegions() ?? [];
+  const regionsData = (await getRegions()) ?? [];
 
   return (
     <div className="py-6 w-full h-screen overflow-y-auto">
@@ -30,7 +32,7 @@ async function Regions() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 export default Regions;

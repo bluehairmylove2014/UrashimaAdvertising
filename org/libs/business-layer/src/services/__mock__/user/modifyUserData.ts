@@ -9,6 +9,5 @@ const accountDetailData: IAccountDetail[] = accountInfoData;
 axiosMockAdapterInstance
   .onPut(getApiUrl(false) + modifyAccountInfoUrl)
   .reply((config: any) => {
-    console.log('MODIFY: ', JSON.parse(config.data));
     return [200, { message: 'Chỉnh sửa thành công' }];
   });
