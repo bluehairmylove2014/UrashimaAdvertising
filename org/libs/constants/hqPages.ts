@@ -4,6 +4,8 @@ export const HQ_PAGES = {
   DASHBOARD: '/dashboard',
 
   ME: '/me',
+  PERSONAL_INFORMATION: '/me/personal-information',
+  CHANGE_PASSWORD: '/me/change-password',
 
   REGIONS: '/regions',
 

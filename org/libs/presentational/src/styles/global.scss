@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 @import "~@flaticon/flaticon-uicons/css/all/all";
+@import "./animations.scss";
 
 // Responsive settings
 $desktop-breakpoint: 1024px;

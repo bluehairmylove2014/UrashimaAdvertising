@@ -1,11 +1,7 @@
-import {
-  addClass,
-  removeClass,
-  toggleClass,
-  toggleClassNoListener,
-} from '@utils/helpers';
+import { addClass, removeClass, toggleClass } from '@utils/helpers';
 import { useEffect, useRef, useState } from 'react';
-import CommonLoader from './CommonLoader';
+import FirstLayerSelect from './FirstLayerSelect';
+import SecondLayerSelect from './SecondLayerSelect';
 
 export type mulSelectOptionType = { [key: string]: string[] } | null;
 type modernSelectUniqueStyle = 'clean' | 'softCyan';
@@ -86,10 +82,47 @@ function MultipleLayerSelect({
     }
   };
 
+  const onFirstLayerSelect = (option: string, index: number) => {
+    if (index > 0) {
+      setSelectedOption(option);
+      setSelectedMulLayerOption(null);
+      onOptionSelect({
+        district: option,
+        ward: null,
+      });
+      openMulLayerDropdown();
+    } else {
+      setSelectedOption(null);
+      setSelectedMulLayerOption(null);
+      onOptionSelect({
+        district: null,
+        ward: null,
+      });
+      toggleDropdown();
+    }
+  };
+  const onSecondLayerSelect = (option: string, index: number) => {
+    if (index > 0) {
+      setSelectedMulLayerOption(option);
+      onOptionSelect({
+        district: selectedOption,
+        ward: option,
+      });
+    } else {
+      setSelectedMulLayerOption(null);
+      onOptionSelect({
+        district: selectedOption,
+        ward: null,
+      });
+    }
+    toggleDropdown();
+  };
+
   return (
     <div
-      className={`${styleConfig[style ?? DEFAULT_STYLE]
-        } h-full relative border-solid border-[1px] border-zinc-400 transition-colors text-black font-semibold rounded text-[0.65rem]`}
+      className={`${
+        styleConfig[style ?? DEFAULT_STYLE]
+      } h-full relative border-solid border-[1px] border-zinc-400 transition-colors text-black font-semibold rounded text-[0.65rem]`}
     >
       <button
         type="button"
@@ -104,88 +137,19 @@ function MultipleLayerSelect({
           <i className="fi fi-bs-angle-small-down px-2"></i>
         </div>
       </button>
-      <div
+      <FirstLayerSelect
         ref={selectRef}
-        className={`absolute top-full left-0 z-30 w-full h-fit bg-white overflow-x-hidden hidden overflow-y-auto rounded-b-sm shadow-md max-h-[21rem] scrollbar-hide`}
-      >
-        {options ? (
-          Object.keys(options).map((op, i) => (
-            <button
-              key={op}
-              type="button"
-              className={`${
-                (i === 0 ? selectedOption === null : op === selectedOption)
-                  ? 'bg-blue-100'
-                  : 'bg-white'
-              }  hover:bg-zinc-100 transition-colors w-full text-center py-3 px-2 text-[0.65rem]`}
-              onClick={() => {
-                if (i > 0) {
-                  setSelectedOption(op);
-                  setSelectedMulLayerOption(null);
-                  onOptionSelect({
-                    district: op,
-                    ward: null,
-                  });
-                  openMulLayerDropdown();
-                } else {
-                  setSelectedOption(null);
-                  setSelectedMulLayerOption(null);
-                  onOptionSelect({
-                    district: null,
-                    ward: null,
-                  });
-                  toggleDropdown();
-                }
-              }}
-            >
-              {op}
-            </button>
-          ))
-        ) : (
-          <CommonLoader />
-        )}
-      </div>
-      <div
+        selectedOption={selectedOption}
+        onSelect={onFirstLayerSelect}
+        options={options}
+      />
+      <SecondLayerSelect
         ref={secondLayerRef}
-        className={`absolute top-full right-full z-30 w-full h-fit bg-white overflow-x-hidden overflow-y-auto hidden rounded-b-sm shadow-md max-h-[21rem] scrollbar-hide`}
-      >
-        {options && selectedOption ? (
-          options[selectedOption].map((op, i) => (
-            <button
-              key={op}
-              type="button"
-              className={`${(
-                i === 0
-                  ? selectedMulLayerOption === null
-                  : op === selectedMulLayerOption
-              )
-                ? '!bg-blue-100'
-                : ''
-                } bg-white hover:bg-zinc-100 transition-colors w-full text-center py-3 px-2 text-[0.65rem] scrollbar-hide`}
-              onClick={() => {
-                if (i > 0) {
-                  setSelectedMulLayerOption(op);
-                  onOptionSelect({
-                    district: selectedOption,
-                    ward: op,
-                  });
-                } else {
-                  setSelectedMulLayerOption(null);
-                  onOptionSelect({
-                    district: selectedOption,
-                    ward: null,
-                  });
-                }
-                toggleDropdown();
-              }}
-            >
-              {op}
-            </button>
-          ))
-        ) : (
-          <CommonLoader />
-        )}
-      </div>
+        firstLayerSelectedOption={selectedOption}
+        selectedOption={selectedMulLayerOption}
+        onSelect={onSecondLayerSelect}
+        options={options}
+      />
     </div>
   );
 }
