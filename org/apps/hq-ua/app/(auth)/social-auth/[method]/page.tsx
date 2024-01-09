@@ -59,19 +59,21 @@ function SocialAuth() {
           .then((msg) => {
             setCurAuthState(authState.REDIRECT_STATE);
             // Handle get redirect url here
-            setTimeout(() => {
-              router.push(HQ_PAGES.DASHBOARD);
-              router.refresh();
-            }, 2000);
+            router.push(HQ_PAGES.DASHBOARD);
+            router.refresh();
           })
           .catch((error) => {
+            console.error('ERROR: ', error);
             setErrorMsg(error.message);
+            setTimeout(() => {
+              router.push(HQ_PAGES.AUTH);
+            }, 1000);
           });
     } else {
       setErrorMsg('Unexpected error! Redirecting...');
       setTimeout(() => {
         router.push(HQ_PAGES.AUTH);
-      }, 4000);
+      }, 1000);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
