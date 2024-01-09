@@ -21,11 +21,11 @@ const authState: {
 } = {
   CHECK_LOGIN_STATE: {
     order: 1,
-    name: 'Checking login...',
+    name: 'Đang kiểm tra đăng nhập...',
   },
   REDIRECT_STATE: {
     order: 2,
-    name: 'Redirecting...',
+    name: 'Đang chuyển hướng...',
   },
 };
 
@@ -63,17 +63,16 @@ function SocialAuth() {
             router.refresh();
           })
           .catch((error) => {
-            console.error('ERROR: ', error);
             setErrorMsg(error.message);
             setTimeout(() => {
               router.push(HQ_PAGES.AUTH);
-            }, 1000);
+            }, 4000);
           });
     } else {
-      setErrorMsg('Unexpected error! Redirecting...');
+      setErrorMsg('Lỗi vớ vẩn! Đang chuyển hướng...');
       setTimeout(() => {
         router.push(HQ_PAGES.AUTH);
-      }, 1000);
+      }, 4000);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -90,7 +89,9 @@ function SocialAuth() {
               width={30}
               height={30}
             />
-            <span className="flex shrink w-fit text-base">{errorMsg}</span>
+            <span className="flex shrink w-fit text-base font-medium">
+              {errorMsg}
+            </span>
           </div>
         ) : (
           <ButtonLoader label={curAuthState.name} loaderColor="BLUE" />

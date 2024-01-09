@@ -77,7 +77,7 @@ export const useGoogleLogin = () => {
                   })
                   .catch((error) => {
                     console.error('Error update account infor: ', error);
-                    reject(new Error(failedMessage));
+                    reject(error);
                   });
               })
               .catch((err) => {
