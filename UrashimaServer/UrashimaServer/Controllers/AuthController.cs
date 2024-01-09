@@ -90,7 +90,7 @@ namespace UrashimaServer.Controllers
             {
                 Email = request.Email,
                 FullName = request.FullName,
-                Phone = request.PhoneNumber,
+                Phone = request.Phone,
                 DateOfBirth = request.DateOfBirth,
                 PasswordHash = Helper.ByteArrayToString(passwordHash), // request.IsSocial ? "social" :
                 PasswordSalt = Helper.ByteArrayToString(passwordSalt), // request.IsSocial ? "social" :
