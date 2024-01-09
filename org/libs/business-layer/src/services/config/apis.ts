@@ -4,6 +4,7 @@ const corsProxyUrl = workerUrl + '/cors-proxy/';
 
 // AUTH
 export const loginUrl = '/api/auth/login';
+export const registerUrl = '/api/auth/register';
 export const refreshTokenUrl = '/api/auth/refresh-token';
 export const updateAccountUrl = '/api/auth/login-social';
 
@@ -26,6 +27,10 @@ export const reportLocationUrl = '/api/reports/location';
 export const getAllOfficerReportsUrl = '/api/officer/reports';
 export const getOfficerReportDetailUrl = '/api/officer/reports/detail';
 export const editReportUrl = '/api/officer/reports';
+
+// ACCOUNT
+export const hqGetAllAccountEndpoint = '/api/account/all';
+export const hqUnitModifyAccountEndpoint = '/api/account/unit-modify';
 
 // USER
 export const getAccountInfoUrl = '/api/account/info';

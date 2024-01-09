@@ -1,15 +1,16 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { COOKIE_KEYS } from '@business-layer/business-logic/configs/constants';
 import { OFFICER_PAGES } from '@constants/officerPages';
 import { RequestCookie } from 'next/dist/compiled/@edge-runtime/cookies';
+import { getHostname } from './helper/hostname';
+import { getCustomAccessTokenKey } from '@business-layer/business-logic/helper/customKey';
 
 const isTokenValid = (token: RequestCookie | undefined) =>
   token && typeof token.value === 'string' && token.value.length > 0;
 
 export function middleware(request: NextRequest) {
   const cookie = request.cookies;
-  const token = cookie.get(COOKIE_KEYS.ACCESS_TOKEN);
+  const token = cookie.get(getCustomAccessTokenKey(getHostname()));
   const pathName = request.nextUrl.clone().pathname;
   const response = NextResponse;
 
@@ -25,6 +26,9 @@ export function middleware(request: NextRequest) {
     }
     return response.next();
   } else if (pathName === OFFICER_PAGES.ME) {
+    if (!isTokenValid(token)) {
+      return response.redirect(new URL(OFFICER_PAGES.AUTH, request.url));
+    }
     return response.redirect(
       new URL(OFFICER_PAGES.PERSONAL_INFORMATION, request.url)
     );

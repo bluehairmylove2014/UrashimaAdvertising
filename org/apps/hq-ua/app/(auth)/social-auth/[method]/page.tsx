@@ -21,11 +21,11 @@ const authState: {
 } = {
   CHECK_LOGIN_STATE: {
     order: 1,
-    name: 'Checking login...',
+    name: 'Đang kiểm tra đăng nhập...',
   },
   REDIRECT_STATE: {
     order: 2,
-    name: 'Redirecting...',
+    name: 'Đang chuyển hướng...',
   },
 };
 
@@ -59,15 +59,17 @@ function SocialAuth() {
           .then((msg) => {
             setCurAuthState(authState.REDIRECT_STATE);
             // Handle get redirect url here
-            setTimeout(() => {
-              router.push(HQ_PAGES.DASHBOARD);
-            }, 2000);
+            router.push(HQ_PAGES.DASHBOARD);
+            router.refresh();
           })
           .catch((error) => {
             setErrorMsg(error.message);
+            setTimeout(() => {
+              router.push(HQ_PAGES.AUTH);
+            }, 4000);
           });
     } else {
-      setErrorMsg('Unexpected error! Redirecting...');
+      setErrorMsg('Lỗi vớ vẩn! Đang chuyển hướng...');
       setTimeout(() => {
         router.push(HQ_PAGES.AUTH);
       }, 4000);
@@ -87,7 +89,9 @@ function SocialAuth() {
               width={30}
               height={30}
             />
-            <span className="flex shrink w-fit text-base">{errorMsg}</span>
+            <span className="flex shrink w-fit text-base font-medium">
+              {errorMsg}
+            </span>
           </div>
         ) : (
           <ButtonLoader label={curAuthState.name} loaderColor="BLUE" />

@@ -37,7 +37,9 @@ function ModernSelect({
         : null)
   );
   const selectRef = useRef<HTMLDivElement>(null);
-  const toggleDropdown = () => toggleClass(selectRef.current, '!block');
+  const toggleDropdown = () => {
+    toggleClass(selectRef.current, '!block');
+  };
   return (
     <div
       className={`${

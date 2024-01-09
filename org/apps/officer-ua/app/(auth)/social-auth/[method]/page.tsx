@@ -21,11 +21,11 @@ const authState: {
 } = {
   CHECK_LOGIN_STATE: {
     order: 1,
-    name: 'Checking login...',
+    name: 'Đang kiểm tra đăng nhập...',
   },
   REDIRECT_STATE: {
     order: 2,
-    name: 'Redirecting...',
+    name: 'Đang chuyển hướng...',
   },
 };
 
@@ -66,9 +66,12 @@ function SocialAuth() {
           })
           .catch((error) => {
             setErrorMsg(error.message);
+            setTimeout(() => {
+              router.push(OFFICER_PAGES.AUTH);
+            }, 4000);
           });
     } else {
-      setErrorMsg('Unexpected error! Redirecting...');
+      setErrorMsg('Lỗi vớ vẩn! Đang chuyển hướng...');
       setTimeout(() => {
         router.push(OFFICER_PAGES.AUTH);
       }, 4000);

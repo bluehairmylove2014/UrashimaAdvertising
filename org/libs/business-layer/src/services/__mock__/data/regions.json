@@ -28,5 +28,140 @@
     "id": 6,
     "ward": "Phường Phạm Ngũ Lão",
     "district": "Quận 1"
+  },
+  {
+    "id": 7,
+    "ward": "Phường Phạm Ngũ Lão",
+    "district": "Quận 2"
+  },
+  {
+    "id": 8,
+    "ward": "Phường Phạm Ngũ Lão",
+    "district": "Quận 3"
+  },
+  {
+    "id": 8,
+    "ward": "Phường Phạm Ngũ Lão",
+    "district": "Quận 4"
+  },
+  {
+    "id": 9,
+    "ward": "Phường Phạm Ngũ Lão",
+    "district": "Quận 5"
+  },
+  {
+    "id": 10,
+    "ward": "Phường Phạm Ngũ Lão",
+    "district": "Quận Tân Phú"
+  },
+  {
+    "id": 11,
+    "ward": "Phường Phạm Ngũ Lão",
+    "district": "Quận 7"
+  },
+  {
+    "id": 12,
+    "ward": "Phường Phạm Ngũ Lão",
+    "district": "Quận Phú Nhuận"
+  },
+  {
+    "id": 13,
+    "ward": "Phường Bình Thạnh",
+    "district": "Quận 2"
+  },
+  {
+    "id": 14,
+    "ward": "Phường Tân Bình",
+    "district": "Quận 3"
+  },
+  {
+    "id": 15,
+    "ward": "Phường Thủ Đức",
+    "district": "Quận 4"
+  },
+  {
+    "id": 16,
+    "ward": "Phường Gò Vấp",
+    "district": "Quận 5"
+  },
+  {
+    "id": 17,
+    "ward": "Phường Tân Phước",
+    "district": "Quận Tân Phú"
+  },
+  {
+    "id": 18,
+    "ward": "Phường Quận 6",
+    "district": "Quận 6"
+  },
+  {
+    "id": 19,
+    "ward": "Phường Thạch Thất",
+    "district": "Quận 7"
+  },
+  {
+    "id": 20,
+    "ward": "Phường Hòa Bình",
+    "district": "Quận 8"
+  },
+  {
+    "id": 21,
+    "ward": "Phường Ngọc Lâm",
+    "district": "Quận 9"
+  },
+  {
+    "id": 22,
+    "ward": "Phường Bình Hưng",
+    "district": "Quận Bình Thạnh"
+  },
+  {
+    "id": 23,
+    "ward": "Phường Cầu Giấy",
+    "district": "Quận Cầu Giấy"
+  },
+  {
+    "id": 24,
+    "ward": "Phường Đống Đa",
+    "district": "Quận Đống Đa"
+  },
+  {
+    "id": 25,
+    "ward": "Phường Ba Đình",
+    "district": "Quận Ba Đình"
+  },
+  {
+    "id": 26,
+    "ward": "Phường Hai Bà Trưng",
+    "district": "Quận Hai Bà Trưng"
+  },
+  {
+    "id": 27,
+    "ward": "Phường Thanh Xuân",
+    "district": "Quận Thanh Xuân"
+  },
+  {
+    "id": 28,
+    "ward": "Phường Hoàng Mai",
+    "district": "Quận Hoàng Mai"
+  },
+  {
+    "id": 29,
+    "ward": "Phường Tây Hồ",
+    "district": "Quận Tây Hồ"
+  },
+  {
+    "id": 30,
+    "ward": "Phường Nam Từ Liêm",
+    "district": "Quận Nam Từ Liêm"
+  },
+  {
+    "id": 31,
+    "ward": "Phường Long Biên",
+    "district": "Quận Long Biên"
+  },
+  {
+    "id": 32,
+    "ward": "Phường Hà Đông",
+    "district": "Quận Hà Đông"
   }
 ]

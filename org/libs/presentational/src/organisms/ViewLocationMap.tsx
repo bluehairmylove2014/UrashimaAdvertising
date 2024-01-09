@@ -1,5 +1,12 @@
 'use client';
-import { ReactElement, useCallback, useEffect, useRef, useState } from 'react';
+import {
+  ReactElement,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { MapLayerMouseEvent, MapRef, Marker, Popup } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { useGetAdDetail } from '@business-layer/business-logic/lib/ads';
@@ -23,19 +30,40 @@ import LocationDetail from '@presentational/molecules/LocationDetail';
 import { ILocation } from '@business-layer/services/entities';
 import { useFetchAllOfficerAds } from '@business-layer/business-logic/lib/officerAds/process/hooks';
 import CustomMap from '@presentational/organisms/CustomMap';
+import { useGetCoord } from './../../../business-layer/src/business-logic/non-service-lib/viewLocationMap/process/hooks/useGetCoord';
+import { useGetIsActive } from './../../../business-layer/src/business-logic/non-service-lib/viewLocationMap/process/hooks/useGetIsActive';
+import { useSetCoord } from './../../../business-layer/src/business-logic/non-service-lib/viewLocationMap/process/hooks/useSetCoord';
+import { useSetIsActive } from './../../../business-layer/src/business-logic/non-service-lib/viewLocationMap/process/hooks/useSetIsActive';
 
+const useViewLocationMap = () => {
+  const coord = useGetCoord();
+  const isActive = useGetIsActive();
+  const { setCoord } = useSetCoord();
+  const { setIsActive } = useSetIsActive();
+  const openMap = (lat: number, long: number) => {
+    setCoord(lat, long);
+    setIsActive(true);
+  };
+  const closeMap = () => {
+    setIsActive(false);
+    setCoord(10.762538, 106.682448);
+  };
+  return {
+    coord,
+    isActive,
+    openMap,
+    closeMap,
+  };
+};
 type locationType =
   | {
-    latitude: number;
-    longitude: number;
-  }
+      latitude: number;
+      longitude: number;
+    }
   | undefined;
 
-function ViewLocationMap({
-  initialLatLong,
-}: {
-  initialLatLong: number[];
-}): ReactElement {
+function ViewLocationMap(): ReactElement {
+  const { coord: initialLatLong, isActive, closeMap } = useViewLocationMap();
   const { showError } = useNotification();
   const { data: adsData } = useFetchAllOfficerAds();
   const mapRef = useRef<MapRef>(null);
@@ -70,7 +98,17 @@ function ViewLocationMap({
 
   const locationReportList = useGetLocationReports();
   const { onGetLocationDetail } = useGetLocationDetail();
-  const isFirstLoad = useRef<boolean>(true);
+
+  useEffect(() => {
+    mapRef.current &&
+      Array.isArray(initialLatLong) &&
+      initialLatLong.length === 2 &&
+      mapRef.current.flyTo({
+        zoom: 16,
+        center: [initialLatLong[1], initialLatLong[0]],
+        duration: 1500,
+      });
+  }, [initialLatLong]);
 
   useEffect(() => {
     if (idAdsPoint > -1) {
@@ -87,7 +125,7 @@ function ViewLocationMap({
         .then((data) => {
           setInfoClickAdsPoint(data);
         })
-        .catch((error) => console.log(error));
+        .catch((error) => console.error(error));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [idAdsPointClick]);
@@ -203,8 +241,12 @@ function ViewLocationMap({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
-    <>
-      <div className="relative z-0">
+    <div
+      className={`fixed top-0 left-[20vw] w-[80vw] h-screen z-40 overflow-hidden ${
+        isActive ? '' : 'opacity-0 invisible pointer-events-none'
+      }`}
+    >
+      <div className="relative z-30">
         <CustomMap
           mapProps={{
             onClick: handleClick,
@@ -224,29 +266,35 @@ function ViewLocationMap({
             type: 'FeatureCollection',
             features: adsData
               ? adsData.map((m) => ({
-                type: 'Feature',
-                properties: {
-                  id: m.id,
-                  cluster: false,
-                  name: m.address,
-                  planned: m.planned,
-                  reported: locationReportList
-                    ? locationReportList.findIndex(
-                      (lr) =>
-                        lr.latitude === m.latitude &&
-                        lr.longitude === m.longitude
-                    ) !== -1
-                    : false,
-                },
-                geometry: {
-                  type: 'Point',
-                  coordinates: [m.longitude, m.latitude],
-                },
-              }))
+                  type: 'Feature',
+                  properties: {
+                    id: m.id,
+                    cluster: false,
+                    name: m.address,
+                    planned: m.planned,
+                    reported: locationReportList
+                      ? locationReportList.findIndex(
+                          (lr) =>
+                            lr.latitude === m.latitude &&
+                            lr.longitude === m.longitude
+                        ) !== -1
+                      : false,
+                  },
+                  geometry: {
+                    type: 'Point',
+                    coordinates: [m.longitude, m.latitude],
+                  },
+                }))
               : [],
           }}
           ref={mapRef}
         >
+          <button
+            onClick={() => closeMap()}
+            className="bg-white w-8 h-8 rounded absolute top-4 right-4 transition-colors hover:bg-zinc-100 shadow-md"
+          >
+            x
+          </button>
           <Marker latitude={initialLatLong[0]} longitude={initialLatLong[1]}>
             <CustomImage
               src="/assets/circle.png"
@@ -299,7 +347,7 @@ function ViewLocationMap({
                 handleClose={() => {
                   setIsClickAdsPoint(false);
                 }}
-                handleDetailReport={() => { }}
+                handleDetailReport={() => {}}
               />
             ) : (
               <></>
@@ -322,7 +370,7 @@ function ViewLocationMap({
                   setIsActiveAdsBoard(false);
                   setIsClickAdsPoint(true);
                 }}
-                handleDetailReportAdsBoard={() => { }}
+                handleDetailReportAdsBoard={() => {}}
               ></DetailAds>
             ) : (
               <></>
@@ -343,8 +391,9 @@ function ViewLocationMap({
         }}
         isOfficer={true}
       />
-    </>
+    </div>
   );
 }
 
+export { useViewLocationMap };
 export default ViewLocationMap;

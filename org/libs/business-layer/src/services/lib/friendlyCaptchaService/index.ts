@@ -25,7 +25,6 @@ export class FCaptchaService extends Services {
             signal: this.abortController.signal,
           }
         );
-      console.log('FCAPTCHA RES: ', response);
       return response.data;
     } catch (error) {
       throw this.handleError(error);

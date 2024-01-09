@@ -4,6 +4,8 @@ export const HQ_PAGES = {
   DASHBOARD: '/dashboard',
 
   ME: '/me',
+  PERSONAL_INFORMATION: '/me/personal-information',
+  CHANGE_PASSWORD: '/me/change-password',
 
   REGIONS: '/regions',
 
@@ -24,4 +26,5 @@ export const HQ_PAGES = {
   REPORTS: '/reports',
 
   ACCOUNT_MANAGEMENT: '/account-management',
+  NEW_ACCOUNT: '/account-management/new',
 };

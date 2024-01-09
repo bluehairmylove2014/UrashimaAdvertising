@@ -1,6 +1,7 @@
 'use client';
 import CustomButton from '@presentational/atoms/CustomButton';
 import {
+  useFetchRegions,
   useGetRegions,
   useSetRegions,
 } from '@business-layer/business-logic/lib/regionManagement';
@@ -11,12 +12,9 @@ import { IRegion } from '@business-layer/services/entities/region';
 import { useNotification } from '@presentational/atoms/Notification';
 import { useRouter } from 'next/navigation';
 
-type regionManagementPopup = {
-  regionData: IRegion[] | null;
-};
-
-function RegionManagementDropdown({ regionData }: regionManagementPopup) {
+function RegionManagementDropdown() {
   const [isFirstRender, setIsFirstRender] = useState<boolean>(true);
+  const { data: regionData } = useFetchRegions();
   const selectedRegions = useGetRegions();
   const { setRegions } = useSetRegions();
   const { showSuccess } = useNotification();

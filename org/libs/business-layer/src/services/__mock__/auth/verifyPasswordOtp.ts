@@ -6,7 +6,6 @@ axiosMockAdapterInstance
   .onPost(getApiUrl(false) + officerVerifyPasswordOtpUrl)
   .reply((config: any) => {
     const data = JSON.parse(config.data);
-    console.log(officerVerifyPasswordOtpUrl, ': ', data);
     return [
       200,
       {
