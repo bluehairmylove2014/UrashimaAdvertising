@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using UrashimaServer.Common.Constant;
 using UrashimaServer.Common.CustomAttribute;
 using UrashimaServer.Common.Helper;
@@ -12,6 +13,9 @@ using UrashimaServer.Models;
 
 namespace UrashimaServer.Controllers
 {
+    /// <summary>
+    /// Controller xử lý Report.
+    /// </summary>
     [Route("api/reports")]
     [ApiController]
     public class ReportsController : ControllerBase
@@ -27,8 +31,10 @@ namespace UrashimaServer.Controllers
             _emailService = emailService;
         }
 
-
-        // POST: api/report/ads-board
+        /// <summary>
+        /// API Guest báo cáo bảng quảng cáo.
+        /// </summary>
+        // POST: api/reports/ads-board
         [HttpPost("ads-board")]
         public async Task<IActionResult> PostReportAdsBoard(PostReportBoardDto rawReport)
         {
@@ -52,30 +58,10 @@ namespace UrashimaServer.Controllers
             });
         }
 
-        //// POST: api/report/ads-point
-        //[HttpPost("ads-point")]
-        //public async Task<IActionResult> PostReportAdsPoint(PostReportDto rawReport)
-        //{
-        //    if (_context.Reports == null)
-        //    {
-        //        return Problem("Entity set 'DataContext.Reports' is null.");
-        //    }
-
-        //    var rep = _mapper.Map<Report>(rawReport);
-        //    rep.AdsPointId = rawReport.AdsId;
-        //    var point = _context.AdsPoints.Find(rawReport.AdsId);
-        //    rep.Address = point != null ? point.Address : "";
-
-        //    _context.Reports.Add(rep);
-
-        //    await _context.SaveChangesAsync();
-
-        //    return Ok(new
-        //    {
-        //        message = "report ads-point successfully"
-        //    });
-        //}
-        
+        /// <summary>
+        /// API Guest báo cáo điểm quảng cáo hoặc địa điểm trên bảng đồ.
+        /// </summary>
+        // POST: api/reports/location
         [HttpPost("location")]
         public async Task<IActionResult> PostReportLocation(PostReportLocationDto rawReport)
         {
@@ -136,6 +122,9 @@ namespace UrashimaServer.Controllers
             });
         }
 
+        /// <summary>
+        /// API Lấy danh sách các báo cáo.
+        /// </summary>
         // GET: api/report
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Report>>> GetAllReports()
@@ -154,6 +143,9 @@ namespace UrashimaServer.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// API Officer|Headquarter lấy danh sách báo cáo theo đơn vị quản lý.
+        /// </summary>
         [Route("/api/officer/reports")]
         [HttpGet, AuthorizeRoles(GlobalConstant.WardOfficer, GlobalConstant.DistrictOfficer, GlobalConstant.HeadQuater)]
         public async Task<ActionResult<IList<GetReportDto>>> GetReportBasedOnRole()
@@ -186,9 +178,12 @@ namespace UrashimaServer.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// API Officer|Headquarter lấy chi tiết báo cáo theo đơn vị quản lý.
+        /// </summary>
         [Route("/api/officer/reports/detail")]
         [HttpGet, AuthorizeRoles(GlobalConstant.WardOfficer, GlobalConstant.DistrictOfficer, GlobalConstant.HeadQuater)]
-        public async Task<ActionResult<GetReportDetailDto>> GetReportDetailBasedOnRole(int id) // GetReportDetailDto
+        public async Task<ActionResult<GetReportDetailDto>> GetReportDetailBasedOnRole([Required] int id) // GetReportDetailDto
         {
             var acc = await _context.Accounts.FirstOrDefaultAsync(acc => acc.Email == User.Identity!.Name);
 
@@ -218,6 +213,9 @@ namespace UrashimaServer.Controllers
             return Ok(_mapper.Map<GetReportDetailDto>(rawResult));
         }
 
+        /// <summary>
+        /// API Officer cập nhật thông tin xử lý báo cáo theo đơn vị quản lý.
+        /// </summary>
         [Route("/api/officer/reports")]
         [HttpPut, AuthorizeRoles(GlobalConstant.WardOfficer, GlobalConstant.DistrictOfficer, GlobalConstant.HeadQuater)]
         public async Task<ActionResult<GetReportDto>> UpdateReportBasedOnRole(GetReportDto updateReport)

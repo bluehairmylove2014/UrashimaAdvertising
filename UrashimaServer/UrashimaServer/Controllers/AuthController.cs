@@ -11,9 +11,13 @@ using UrashimaServer.Database;
 using UrashimaServer.Dtos;
 using UrashimaServer.Models;
 using OtpNet;
+using System.ComponentModel.DataAnnotations;
 
 namespace UrashimaServer.Controllers
 {
+    /// <summary>
+    /// Controller xử lý phân quyền.
+    /// </summary>
     [Route("api/auth")]
     [ApiController]
     public class AuthController : ControllerBase
@@ -31,6 +35,9 @@ namespace UrashimaServer.Controllers
             _hostingEnvironment = hostingEnvironment;
         }
 
+        /// <summary>
+        /// API lấy account sử dụng Id.
+        /// </summary>
         [HttpGet("{id}")]
         public async Task<ActionResult<Account>> GetAccount(int id)
         {
@@ -48,6 +55,9 @@ namespace UrashimaServer.Controllers
             return acc;
         }
 
+        /// <summary>
+        /// API tạo account mới.
+        /// </summary>
         [HttpPost("register"), AuthorizeRoles(GlobalConstant.HeadQuater)]
         public async Task<ActionResult<Account>> Register(RegisterDto request)
         {
@@ -80,6 +90,8 @@ namespace UrashimaServer.Controllers
             {
                 Email = request.Email,
                 FullName = request.FullName,
+                Phone = request.PhoneNumber,
+                DateOfBirth = request.DateOfBirth,
                 PasswordHash = Helper.ByteArrayToString(passwordHash), // request.IsSocial ? "social" :
                 PasswordSalt = Helper.ByteArrayToString(passwordSalt), // request.IsSocial ? "social" :
                 Role = request.Role,
@@ -94,12 +106,15 @@ namespace UrashimaServer.Controllers
             await _dbContext.SaveChangesAsync();
             return Ok(new
             {
-                message = "Register successfully!",
+                message = "Tạo tài khoản mới thành công!",
                 token,
                 refreshToken = refreshToken.Token,
             });
         }
 
+        /// <summary>
+        /// API đăng nhập bằng email - mật khẩu.
+        /// </summary>
         [HttpPost("login")]
         public async Task<ActionResult<string>> Login(LoginDto request)
         {
@@ -147,6 +162,9 @@ namespace UrashimaServer.Controllers
             });
         }
 
+        /// <summary>
+        /// API đăng nhập sử dụng tài khoản bên thứ 3 (google, facebook,...).
+        /// </summary>
         [HttpPost("login-social")]
         public async Task<ActionResult<string>> LoginSocial(RegisterSocialDto request)
         {
@@ -178,21 +196,24 @@ namespace UrashimaServer.Controllers
 
             return Ok(new {
                 accountId = account.Id,
-                message = "Login successfully!",
+                message = "Đăng nhập thành công!",
                 token,
                 refreshToken = refreshToken.Token,
                 role = account.Role
             });
         }
 
+        /// <summary>
+        /// API lấy refresh token cho account.
+        /// </summary>
         [HttpPost("refresh-token")]
-        public async Task<ActionResult<string>> RefreshToken(string refreshToken)
+        public async Task<ActionResult<string>> RefreshToken([Required] string refreshToken)
         {
             if (string.IsNullOrEmpty(refreshToken))
             {
                 return BadRequest(new
                 {
-                    message = "Invalid refresh token!"
+                    message = "Refresh token không hợp lệ!"
                 });
             }
 
@@ -202,14 +223,14 @@ namespace UrashimaServer.Controllers
             {
                 return BadRequest(new
                 {
-                    message = "Account not found!"
+                    message = "Tài khoản không tồn tại."
                 });
             }
 
             if (acc.TokenExpires < DateTime.Now)
             {
                 return Unauthorized(new {
-                    message = "Refresh Token expired, try again."
+                    message = "Refresh Token hết hạn, xin thử lại."
                 });
             }
 
@@ -217,7 +238,7 @@ namespace UrashimaServer.Controllers
             var newRefreshToken = GenerateRefreshToken();
             SetRefreshToken(newRefreshToken, acc);
             return Ok(new {
-                message = "Refresh token successfully",
+                message = "Lấy Refresh token thành công",
                 token,
                 refreshToken = newRefreshToken.Token,
             });
@@ -272,6 +293,9 @@ namespace UrashimaServer.Controllers
             return jwt;
         }
 
+        /// <summary>
+        /// API quên mật khẩu.
+        /// </summary>
         [HttpPost("forgot-password")]
         public async Task<IActionResult> ForgotPassword(EmailDto emailDto)
         {
@@ -321,6 +345,9 @@ namespace UrashimaServer.Controllers
             });
         }
 
+        /// <summary>
+        /// API xác nhận otp được gửi đến email.
+        /// </summary>
         [HttpPost("verify-otp")]
         public async Task<IActionResult> VerifyOtpToken(EmailAndOtpDto request)
         {
@@ -350,6 +377,9 @@ namespace UrashimaServer.Controllers
             });
         }
 
+        /// <summary>
+        /// API thay đổi mật khẩu của tài khoản sau khi quên mật khẩu.
+        /// </summary>
         [HttpPost("reset-password")]
         public async Task<IActionResult> ResetPassword(ResetPasswordRequest request)
         {
@@ -377,6 +407,9 @@ namespace UrashimaServer.Controllers
             });
         }
 
+        /// <summary>
+        /// API thay đổi mật khẩu của tài khoản sau khi đã đăng nhập.
+        /// </summary>
         [HttpPost("change-password"), AuthorizeRoles(GlobalConstant.WardOfficer, GlobalConstant.DistrictOfficer, GlobalConstant.HeadQuater)]
         public async Task<IActionResult> ChangePassword(ChangePasswordRequest request)
         {

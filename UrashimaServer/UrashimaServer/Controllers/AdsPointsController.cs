@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using UrashimaServer.Common.Constant;
 using UrashimaServer.Common.CustomAttribute;
 using UrashimaServer.Common.Helper;
@@ -10,6 +11,9 @@ using UrashimaServer.Models;
 
 namespace UrashimaServer.Controllers
 {
+    /// <summary>
+    /// Controller quản lý điểm quảng cáo.
+    /// </summary>
     [Route("api/ads-point")]
     [ApiController]
     public class AdsPointsController : ControllerBase
@@ -23,6 +27,9 @@ namespace UrashimaServer.Controllers
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// API Guest lấy danh sách các điểm quảng cáo.
+        /// </summary>
         // GET: api/ads-points
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserAdsPointBasicDto>>> GetAllAdsPoints()
@@ -39,14 +46,15 @@ namespace UrashimaServer.Controllers
                 res.Add(pointDto);
             }
 
-            
-
             return res;
         }
 
+        /// <summary>
+        /// API Guest lấy chi tiết điểm quảng cáo bằng id.
+        /// </summary>
         // GET: api/ads-points/detail?id=5
         [HttpGet("detail")]
-        public async Task<ActionResult<UserAdsPointDetailDto>> GetAdsPoint([FromQuery] int id)
+        public async Task<ActionResult<UserAdsPointDetailDto>> GetAdsPoint([FromQuery, Required] int id)
         {
             if (_context.AdsPoints == null)
             {
@@ -69,6 +77,9 @@ namespace UrashimaServer.Controllers
             return res;
         }
 
+        /// <summary>
+        /// API thêm mới điểm quảng cáo.
+        /// </summary>
         // POST: api/AdsPoints
         [HttpPost]
         public async Task<ActionResult<AdsPoint>> PostAdsPoint(PostAdsPointDto adsPoint)
@@ -83,6 +94,9 @@ namespace UrashimaServer.Controllers
             return CreatedAtAction("GetAdsPoint", new { id = adsPoint.Id }, adsPoint);
         }
 
+        /// <summary>
+        /// API cập nhật điểm quảng cáo.
+        /// </summary>
         // POST: api/AdsPoints
         [HttpPut("/api/officer/ads-point"), AuthorizeRoles(GlobalConstant.HeadQuater)]
         public async Task<ActionResult<AdsPoint>> PutAdsPoint(PostAdsPointDto adsPoint)
@@ -125,7 +139,8 @@ namespace UrashimaServer.Controllers
             try
             {
                 await _context.SaveChangesAsync();
-            } catch
+            }
+            catch
             {
                 return BadRequest(new
                 {
@@ -136,9 +151,12 @@ namespace UrashimaServer.Controllers
             return Ok(adsPoint);
         }
 
+        /// <summary>
+        /// API xóa điểm quảng cáo.
+        /// </summary>
         // DELETE: api/AdsPoints
         [HttpDelete("/api/officer/ads-point"), AuthorizeRoles(GlobalConstant.HeadQuater)]
-        public async Task<IActionResult> DeleteAdsPoint([FromQuery] int id)
+        public async Task<IActionResult> DeleteAdsPoint([FromQuery, Required] int id)
         {
             var acc = await _context.Accounts.FirstOrDefaultAsync(acc => acc.Email == User.Identity!.Name);
             if (_context.AdsPoints == null)

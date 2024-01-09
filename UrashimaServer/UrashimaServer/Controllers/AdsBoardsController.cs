@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using UrashimaServer.Common.Constant;
 using UrashimaServer.Common.CustomAttribute;
 using UrashimaServer.Common.Helper;
@@ -9,6 +10,9 @@ using UrashimaServer.Models;
 
 namespace UrashimaServer.Controllers
 {
+    /// <summary>
+    /// Controller quản lý bảng quảng cáo.
+    /// </summary>
     [Route("api/ads-board")]
     [ApiController]
     public class AdsBoardsController : ControllerBase
@@ -22,9 +26,12 @@ namespace UrashimaServer.Controllers
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// API lấy chi tiết bảng quảng cáo bằng id.
+        /// </summary>
         // GET: api/ads-board/detail?id=5
         [HttpGet("detail")]
-        public async Task<ActionResult<AdsBoardBasicDto>> GetAdsBoardDetail([FromQuery] int id)
+        public async Task<ActionResult<AdsBoardBasicDto>> GetAdsBoardDetail([FromQuery, Required] int id)
         {
             if (_context.AdsBoards == null)
             {
@@ -45,6 +52,9 @@ namespace UrashimaServer.Controllers
 
         // -----------------------------------
 
+        /// <summary>
+        /// API lấy danh sách bảng quảng cáo.
+        /// </summary>
         // GET: api/ads-board
         [HttpGet]
         public async Task<ActionResult<IEnumerable<AdsBoard>>> GetAdsBoards()
@@ -76,6 +86,9 @@ namespace UrashimaServer.Controllers
             return Ok(boardDtoList);
         }
 
+        /// <summary>
+        /// API tạo bảng quảng cáo.
+        /// </summary>
         // POST: api/ads-board
         [HttpPost]
         public async Task<ActionResult<AdsBoardBasicDto>> PostAdsBoard(AdsBoardBasicDto adsBoard)
@@ -100,6 +113,9 @@ namespace UrashimaServer.Controllers
             return CreatedAtAction("GetAdsBoardDetail", new { id = adsBoard.Id }, adsBoard);
         }
 
+        /// <summary>
+        /// API Headquarter cập nhật bảng quảng cáo.
+        /// </summary>
         // POST: api/ads-board
         [HttpPut("/api/officer/ads-board"), AuthorizeRoles(GlobalConstant.HeadQuater)]
         public async Task<ActionResult<AdsBoardBasicDto>> PutAdsBoard(AdsBoardBasicDto adsBoard)
@@ -156,9 +172,12 @@ namespace UrashimaServer.Controllers
             return Ok(adsBoard);
         }
 
+        /// <summary>
+        /// API Headquarter xóa bảng quảng cáo.
+        /// </summary>
         // DELETE: api/ads-board?id=5
         [HttpDelete("/api/officer/ads-board"), AuthorizeRoles(GlobalConstant.HeadQuater)]
-        public async Task<IActionResult> DeleteAdsBoard([FromQuery] int id)
+        public async Task<IActionResult> DeleteAdsBoard([FromQuery, Required] int id)
         {
             if (_context.AdsBoards == null)
             {

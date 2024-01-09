@@ -8,8 +8,9 @@ namespace UrashimaServer.Dtos
         public string FullName { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
+        public string PhoneNumber { get; set; } = string.Empty;
+        public DateTime DateOfBirth { get; set; }
         public string Role { get; set; } = GlobalConstant.WardOfficer;
-        public bool IsSocial { get; set; } = false;
         public string UnitUnderManagement { get; set; } = string.Empty;
     }
 

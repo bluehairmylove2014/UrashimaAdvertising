@@ -1,8 +1,9 @@
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Text.Json;
 using System.Web;
@@ -10,6 +11,9 @@ using UrashimaServer.Database.Dtos;
 
 namespace UrashimaServer.Controllers
 {
+    /// <summary>
+    /// Controller xử lý địa điểm thực tế.
+    /// </summary>
     [Route("api/location")]
     [ApiController]
     public class LocationsController : ControllerBase
@@ -22,10 +26,13 @@ namespace UrashimaServer.Controllers
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// API Lấy thông tin địa điểm thực tế dựa vào kinh độ - vĩ độ (Reverse Geocoding).
+        /// </summary>
         [HttpGet("geo-code")]
         public async Task<ActionResult<GeoCodeResultDto>> GetRevGeoCodeInfo(
-            [FromQuery] double latitude = 10.7627917,
-            [FromQuery] double longitude = 106.6813989
+            [FromQuery, Required] double latitude = 10.7627917,
+            [FromQuery, Required] double longitude = 106.6813989
         )
         {
             GeoCodeResult? rawResult = null;

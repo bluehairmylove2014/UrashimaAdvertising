@@ -2,6 +2,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.ComponentModel.DataAnnotations;
 using UrashimaServer.Common.Constant;
 using UrashimaServer.Common.CustomAttribute;
 using UrashimaServer.Common.Helper;
@@ -12,6 +13,9 @@ using UrashimaServer.Models;
 
 namespace UrashimaServer.Controllers.Ward
 {
+    /// <summary>
+    /// Controller quản lý cho vai trò Officer.
+    /// </summary>
     [Route("api/officer")]
     [ApiController]
     public class OfficerController : ControllerBase
@@ -25,8 +29,11 @@ namespace UrashimaServer.Controllers.Ward
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// API Officer lấy chi tiết bảng quảng cáo bằng id.
+        /// </summary>
         [HttpGet("ads-board/detail"), AuthorizeRoles(GlobalConstant.WardOfficer, GlobalConstant.DistrictOfficer, GlobalConstant.HeadQuater)]
-        public async Task<ActionResult<AdsBoardBasicDto>> GetOfficerAdsBoardDetail([FromQuery] int id)
+        public async Task<ActionResult<AdsBoardBasicDto>> GetOfficerAdsBoardDetail([FromQuery, Required] int id)
         {
             var acc = await _context.Accounts.FirstOrDefaultAsync(acc => acc.Email == User.Identity!.Name);
 
@@ -69,6 +76,9 @@ namespace UrashimaServer.Controllers.Ward
             return res;
         }
 
+        /// <summary>
+        /// API Officer lấy danh sách bảng quảng cáo.
+        /// </summary>
         [HttpGet("ads-board"), AuthorizeRoles(GlobalConstant.WardOfficer, GlobalConstant.DistrictOfficer, GlobalConstant.HeadQuater)]
         public async Task<ActionResult<IEnumerable<AdsBoard>>> GetOfficerAdsBoards()
         {
@@ -113,6 +123,9 @@ namespace UrashimaServer.Controllers.Ward
             return Ok(boardDtoList);
         }
 
+        /// <summary>
+        /// API Officer lấy danh sách điểm quảng cáo.
+        /// </summary>
         [HttpGet("ads-point"), AuthorizeRoles(GlobalConstant.WardOfficer, GlobalConstant.DistrictOfficer, GlobalConstant.HeadQuater)]
         public async Task<ActionResult<IEnumerable<UserAdsPointBasicDto>>> GetAllOfficerAdsPoints()
         {
@@ -146,6 +159,9 @@ namespace UrashimaServer.Controllers.Ward
             return res;
         }
 
+        /// <summary>
+        /// API Officer lấy chi tiết điểm quảng cáo.
+        /// </summary>
         [HttpGet("ads-point/detail"), AuthorizeRoles(GlobalConstant.WardOfficer, GlobalConstant.DistrictOfficer, GlobalConstant.HeadQuater)]
         public async Task<ActionResult<UserAdsPointDetailDto>> GetOfficerAdsPoint([FromQuery] int id)
         {
@@ -196,7 +212,9 @@ namespace UrashimaServer.Controllers.Ward
         // -------------------------
 
 
-
+        /// <summary>
+        /// API Officer tạo yêu cầu chỉnh sửa bảng quảng cáo.
+        /// </summary>
         [HttpPost("ads-modification/point"), AuthorizeRoles(GlobalConstant.WardOfficer, GlobalConstant.DistrictOfficer, GlobalConstant.HeadQuater)]
         public async Task<ActionResult<PointModifyDto>> PointModify(PointModifyDto pointModifyRequest)
         {

@@ -14,6 +14,9 @@ using UrashimaServer.Models;
 
 namespace UrashimaServer.Controllers
 {
+    /// <summary>
+    /// Controller quản lý tài khoản.
+    /// </summary>
     [Route("api/account")]
     [ApiController]
     public class AccountsController : ControllerBase
@@ -27,6 +30,9 @@ namespace UrashimaServer.Controllers
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// API lấy thông tin cơ bản của tài khoản.
+        /// </summary>
         // GET: api/account/info
         [HttpGet("info"), AuthorizeRoles(GlobalConstant.WardOfficer, GlobalConstant.DistrictOfficer, GlobalConstant.HeadQuater)]
         public async Task<ActionResult<Account>> GetAccountBasicInfo()
@@ -45,6 +51,9 @@ namespace UrashimaServer.Controllers
             return account;
         }
 
+        /// <summary>
+        /// API cập nhật thông tin cơ bản của tài khoản.
+        /// </summary>
         // PUT: api/account/info
         [HttpPut("info"), AuthorizeRoles(GlobalConstant.WardOfficer, GlobalConstant.DistrictOfficer, GlobalConstant.HeadQuater)]
         public async Task<IActionResult> PutAccountBasicInfo(AccountBasicInfoDto accountDto)
@@ -81,6 +90,9 @@ namespace UrashimaServer.Controllers
             }); ;
         }
 
+        /// <summary>
+        /// API Headquarter lấy danh sách tài khoản.
+        /// </summary>
         // GET: api/account/all
         [HttpGet("all"), AuthorizeRoles(GlobalConstant.HeadQuater)]
         public async Task<IEnumerable<AccountDTO>> GetAllAccount()
@@ -89,6 +101,9 @@ namespace UrashimaServer.Controllers
             return _mapper.Map<List<AccountDTO>>(accounts);
         }
 
+        /// <summary>
+        /// API Headquarter cập nhật đơn vị quản lý của tài khoản.
+        /// </summary>
         // PUT: api/account/unit-modify
         [HttpPut("unit-modify"), AuthorizeRoles(GlobalConstant.HeadQuater)]
         public async Task<IActionResult> ModAccount(AccountDTO accountDto)
