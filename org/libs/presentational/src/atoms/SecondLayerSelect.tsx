@@ -7,13 +7,19 @@ type layerSelectProps = {
   selectedOption: string | null;
   onSelect: (option: string, index: number) => void;
   options: mulSelectOptionType;
+  maxHeight?: string;
 };
 const SecondLayerSelect = forwardRef<HTMLDivElement, layerSelectProps>(
-  ({ firstLayerSelectedOption, selectedOption, onSelect, options }, ref) => {
+  (
+    { firstLayerSelectedOption, selectedOption, onSelect, options, maxHeight },
+    ref
+  ) => {
     return (
       <div
         ref={ref}
-        className={`absolute top-full right-[max(100%,6rem)] z-30 w-full h-fit bg-white overflow-x-hidden overflow-y-auto hidden rounded-l-md shadow-md max-h-[21rem] min-w-[6rem] scrollbar-hide`}
+        className={`absolute top-full right-[max(100%,6rem)] z-30 w-full h-fit bg-white overflow-x-hidden overflow-y-auto hidden rounded-l-md shadow-md ${
+          maxHeight ? maxHeight : 'max-h-[21rem]'
+        } min-w-[6rem] scrollbar-hide`}
       >
         {options && firstLayerSelectedOption ? (
           options[firstLayerSelectedOption].map((op, i) => (

@@ -45,7 +45,8 @@ export function middleware(request: NextRequest) {
     pathName.startsWith(HQ_PAGES.AD_MODIFICATION_REQUESTS) ||
     pathName.startsWith(HQ_PAGES.AD_APPROVE_REQUESTS) ||
     pathName.startsWith(HQ_PAGES.REPORTS) ||
-    pathName.startsWith(HQ_PAGES.ACCOUNT_MANAGEMENT)
+    pathName.startsWith(HQ_PAGES.ACCOUNT_MANAGEMENT) ||
+    pathName.startsWith(HQ_PAGES.NEW_ACCOUNT)
   ) {
     if (isTokenValid(token)) {
       return response.next();

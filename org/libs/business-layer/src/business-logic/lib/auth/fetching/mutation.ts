@@ -9,6 +9,8 @@ import {
   forgotPasswordParamsType,
   verifyPasswordOtpParamsType,
   resetPasswordParamsType,
+  registerResponseType,
+  registerParamsType,
 } from '@business-layer/services';
 import { useMutation } from '@tanstack/react-query';
 import { mutationConfig } from '@business-layer/business-logic/configs';
@@ -38,6 +40,11 @@ export const useLoginMutation = () => {
     unknown
   >({
     mutationFn: authService.login,
+  });
+};
+export const useRegisterMutation = () => {
+  return useMutation<registerResponseType, Error, registerParamsType, unknown>({
+    mutationFn: authService.register,
   });
 };
 

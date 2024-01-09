@@ -41,7 +41,7 @@ function getTailwindClassStyle(style: buttonStyle) {
       };
     case 'fill-error':
       return {
-        normal: 'bg-red-600 rounded hover:bg-gray-500 transition-colors',
+        normal: 'bg-rose-600 rounded hover:bg-gray-500 transition-colors',
         disabled: 'disabled:bg-gray-300 disabled:cursor-not-allowed',
         common: 'rounded text-white',
       };
