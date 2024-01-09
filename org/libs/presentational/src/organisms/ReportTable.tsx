@@ -40,8 +40,14 @@ function ReportTable({ reportData, isHeadQuarter, regionsData }: { reportData: g
     const paginationData = useGetPagination();
     const { setPaginationData } = useSetPaginationData();
 
-    const allReportData = useMemo(() => {
-        let filteredData = reportData || [];
+    const [allReportData, setAllReportData] = useState<getAllOfficerReportsResponseType | null>(null);
+
+    const [district, setDistrict] = useState<string | null>(null);
+    const [ward, setWard] = useState<string | null>(null);
+
+
+    useMemo(() => {
+        let filteredData = reportData;
 
         // Filter by report type
         if (selectedFormReport !== 'Tất cả hình thức') {
@@ -56,8 +62,33 @@ function ReportTable({ reportData, isHeadQuarter, regionsData }: { reportData: g
             );
         }
 
-        return filteredData;
-    }, [selectedFormReport, searchValue, reportData]);
+        if (district === null) {
+            return setAllReportData(filteredData);
+        } else if (ward === null && district !== null) {
+            filteredData = (filterByArea(filteredData, district));
+        } else {
+            if (allReportData !== null && ward !== null)
+                filteredData = (filterByArea(filterByArea(filteredData, district), ward));
+        }
+
+        setAllReportData(filteredData);
+    }, [selectedFormReport, searchValue, reportData, district, ward]);
+
+    function escapeRegExp(str: string) {
+        return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+    function filterByArea(reportData: getAllOfficerReportsResponseType, specificArea: string) {
+        const escapedArea = escapeRegExp(specificArea);
+        const regex = new RegExp(
+            `(?:[.,\\s]*\\b${escapedArea}\\b[.,\\s]*([\\w\\s]+)(?:[.,\\s]*|$))`,
+            'i'
+        );
+
+        return reportData.filter((r) => {
+            return regex.test(r.address);
+        });
+    }
 
     const handleFilterByRegion = ({
         district,
@@ -66,17 +97,8 @@ function ReportTable({ reportData, isHeadQuarter, regionsData }: { reportData: g
         district: string | null;
         ward: string | null;
     }) => {
-        // if (backupRequestData.current) {
-        //     if (district === null) {
-        //         setRequestData(backupRequestData.current);
-        //     } else if (ward === null) {
-        //         setRequestData(filterByArea(backupRequestData.current, district));
-        //     } else {
-        //         setRequestData(
-        //             filterByArea(filterByArea(backupRequestData.current, district), ward)
-        //         );
-        //     }
-        // }
+        setDistrict(district);
+        setWard(ward);
     };
 
     useEffect(() => {
@@ -250,7 +272,7 @@ function ReportTable({ reportData, isHeadQuarter, regionsData }: { reportData: g
                                                             <b>Nội dung:</b>
                                                             {' '}
                                                             <span className="font-normal text-gray-600">
-                                                                {report.treatmentProcess} {report.treatmentProcess}
+                                                                {report.treatmentProcess}
                                                             </span>
                                                         </span>
                                                     </>
