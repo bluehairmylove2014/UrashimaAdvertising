@@ -1,10 +1,22 @@
 import { IAccount } from '../../entities';
 
 export type tokenType = string;
-export type registerParamsType = Pick<
-  IAccount,
-  'email' | 'fullName' | 'password'
->;
+export type registerDataType = {
+  fullName: string;
+  password: string;
+  email: string;
+  dateOfBirth: string;
+  phone: string;
+  role: string;
+  unitUnderManagement: string;
+};
+export type registerParamsType = {
+  data: registerDataType;
+  token: string;
+};
+export type registerResponseType = {
+  message: string;
+};
 export type loginParamsType = Pick<IAccount, 'email' | 'password'>;
 
 export type authenticationResponseType = {

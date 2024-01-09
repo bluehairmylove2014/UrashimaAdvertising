@@ -114,7 +114,6 @@ function DisplayReportDetail({ reportDetail, isHeadQuarter }: { reportDetail: IO
                             />
                         </p>
                     </div>
-
                 </div>
                 <div className="col-span-1 col-st row-start-1">
                     <h5 className=" font-semibold text-sm">
@@ -128,6 +127,17 @@ function DisplayReportDetail({ reportDetail, isHeadQuarter }: { reportDetail: IO
                     </div>
                 </div>
             </div>
+
+            {
+                reportDetail.reportStatus ?
+                    <div className="border-solid border-b-[1px] border-b-zinc-300 pb-5 mb-5">
+                        <h5 className="font-bold">CÁCH XỬ LÝ</h5>
+                        <div className="h-[30vh] w-full border border-neutral-500 rounded mt-1 p-1 text-[0.7rem] text-neutral-700">
+                            <div>{reportDetail.treatmentProcess}</div>
+                        </div>
+                    </div>
+                    : <></>
+            }
 
             {
                 reportDetail.adsPoint ?

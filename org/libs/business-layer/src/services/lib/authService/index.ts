@@ -5,12 +5,14 @@ import {
   officerResetPasswordUrl,
   officerVerifyPasswordOtpUrl,
   refreshTokenUrl,
+  registerUrl,
 } from '../../config/apis';
 import { Services } from '../../service';
 import {
   authenticationResponseSchema,
   messageResponseSchema,
   refreshTokenResponseSchema,
+  registerResponseSchema,
 } from './schema';
 import {
   loginParamsType,
@@ -22,6 +24,8 @@ import {
   forgotPasswordParamsType,
   verifyPasswordOtpParamsType,
   resetPasswordParamsType,
+  registerParamsType,
+  registerResponseType,
 } from './type';
 
 export * from './type';
@@ -38,6 +42,31 @@ export class AuthService extends Services {
         method: 'POST',
         url: loginUrl,
         schema: authenticationResponseSchema,
+        data,
+        signal: this.abortController.signal,
+        transformResponse: (res) => res,
+      });
+      return response;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  };
+  register = async ({
+    data,
+    token,
+  }: registerParamsType): Promise<registerResponseType> => {
+    this.abortController = new AbortController();
+    try {
+      const response = await this.fetchApi<
+        typeof registerResponseSchema,
+        registerResponseType
+      >({
+        method: 'POST',
+        url: registerUrl,
+        schema: registerResponseSchema,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
         data,
         signal: this.abortController.signal,
         transformResponse: (res) => res,

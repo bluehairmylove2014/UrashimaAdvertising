@@ -38,6 +38,7 @@ import ReportDetailPoint from '@presentational/molecules/ReportDetailPoint';
 import { IAdReport, ILocationReport } from '@business-layer/services/entities';
 
 import { FeatureCollection, Point } from 'geojson';
+import { debounce } from '@business-layer/business-logic/helper';
 
 type locationType =
   | {
@@ -101,6 +102,9 @@ function Home(): ReactElement {
   >(undefined);
   const [isLocationOnClickPopupActive, setIsLocationOnClickPopupActive] =
     useState<boolean>(false);
+  const prevUnknownPointLatLong = useRef<{ lat: number; long: number } | null>(
+    null
+  );
 
   const locationReportList = useGetLocationReports();
   const adsReportList = useGetAdReports();
@@ -233,67 +237,95 @@ function Home(): ReactElement {
   }, []);
 
   //Catch Mouse Move
-  const handleMouseMove = useCallback((event: MapLayerMouseEvent) => {
-    if (!mapRef.current) return;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const handleMouseMove = useCallback(
+    debounce((event: MapLayerMouseEvent) => {
+      if (!mapRef.current) return;
 
-    const features = mapRef.current.queryRenderedFeatures(event.point);
+      const features = mapRef.current.queryRenderedFeatures(event.point);
 
-    //Handle hover ads point
-    const adsPoint = features.find(
-      (f) =>
-        f.layer.id === 'unclustered-point-planned' ||
-        f.layer.id === 'unclustered-point-unplanned' ||
-        f.layer.id === 'unclustered-point-reported' ||
-        f.layer.id === 'unclustered-unknown-point-reported' ||
-        f.layer.id === 'unclustered-ads-board-reported'
-    );
+      //Handle hover ads point
+      const adsPoint = features.find(
+        (f) =>
+          f.layer.id === 'unclustered-point-planned' ||
+          f.layer.id === 'unclustered-point-unplanned' ||
+          f.layer.id === 'unclustered-point-reported' ||
+          f.layer.id === 'unclustered-unknown-point-reported' ||
+          f.layer.id === 'unclustered-ads-board-reported'
+      );
 
-    if (!adsPoint) {
-      setLongLatUnknowPointReported(undefined);
-      setInfoHoverAdsPoint(undefined);
-      setIsAdsPointReported(false);
-      setIdAdsPoint(-1);
-      return;
-    }
-
-    if (
-      adsPoint &&
-      adsPoint.geometry.type === 'Point' &&
-      typeof adsPoint.properties?.longLatArr === 'string'
-    ) {
-      const [long, lat] = adsPoint.properties.longLatArr
-        .slice(1, -1) // Remove the square brackets at the beginning and end
-        .split(',') // Split the string into an array of substrings
-        .map(Number);
-
-      //Detech mouse around
-      if (
-        posPrevMouse &&
-        event.lngLat.lng < posPrevMouse.longitude + 5 &&
-        event.lngLat.lng > posPrevMouse.longitude - 5
-      ) {
-        if (
-          event.lngLat.lat < posPrevMouse.latitude + 5 &&
-          event.lngLat.lng > posPrevMouse.latitude - 5
-        )
-          return;
+      if (!adsPoint) {
+        setLongLatUnknowPointReported(undefined);
+        setInfoHoverAdsPoint(undefined);
+        setIsAdsPointReported(false);
+        setIdAdsPoint(-1);
+        prevUnknownPointLatLong.current = null;
+        return;
       }
 
-      //Check Unknow Poin is reported
-      if (adsPoint.layer.id === 'unclustered-unknown-point-reported') {
-        setLongLatUnknowPointReported({
-          longitude: long,
-          latitude: lat,
-        });
+      if (
+        adsPoint &&
+        adsPoint.geometry.type === 'Point' &&
+        typeof adsPoint.properties?.longLatArr === 'string'
+      ) {
+        const [long, lat] = adsPoint.properties.longLatArr
+          .slice(1, -1) // Remove the square brackets at the beginning and end
+          .split(',') // Split the string into an array of substrings
+          .map(Number);
+        if (
+          prevUnknownPointLatLong.current &&
+          prevUnknownPointLatLong.current.lat === lat &&
+          prevUnknownPointLatLong.current.long === long
+        )
+          return;
+        prevUnknownPointLatLong.current = {
+          long,
+          lat,
+        };
 
-        onGetLocationDetail({ latitude: lat, longitude: long })
-          .then((data) => {
-            setInfoUnknowPointReported(data);
-          })
-          .catch((error) => {
-            showError('Lỗi lấy dữ liệu địa điểm');
+        //Detech mouse around
+        if (
+          posPrevMouse &&
+          event.lngLat.lng < posPrevMouse.longitude + 5 &&
+          event.lngLat.lng > posPrevMouse.longitude - 5
+        ) {
+          if (
+            event.lngLat.lat < posPrevMouse.latitude + 5 &&
+            event.lngLat.lng > posPrevMouse.latitude - 5
+          )
+            return;
+        }
+
+        //Check Unknow Poin is reported
+        if (adsPoint.layer.id === 'unclustered-unknown-point-reported') {
+          setLongLatUnknowPointReported({
+            longitude: long,
+            latitude: lat,
           });
+          onGetLocationDetail({ latitude: lat, longitude: long })
+            .then((data) => {
+              setInfoUnknowPointReported(data);
+            })
+            .catch((error) => {
+              showError('Lỗi lấy dữ liệu địa điểm');
+            });
 
+          setPosPrevMouse({
+            latitude: lat,
+            longitude: long,
+          });
+          return;
+        }
+
+        //Check ADS Point or ADS Board  is reported
+        if (
+          adsPoint.layer.id === 'unclustered-point-reported' ||
+          adsPoint.layer.id === 'unclustered-ads-board-reported'
+        )
+          setIsAdsPointReported(true);
+        else setIsAdsPointReported(false);
+
+        setIdAdsPoint(adsPoint.properties?.id);
         setPosPrevMouse({
           latitude: lat,
           longitude: long,
@@ -301,25 +333,10 @@ function Home(): ReactElement {
 
         return;
       }
-
-      //Check ADS Point or ADS Board  is reported
-      if (
-        adsPoint.layer.id === 'unclustered-point-reported' ||
-        adsPoint.layer.id === 'unclustered-ads-board-reported'
-      )
-        setIsAdsPointReported(true);
-      else setIsAdsPointReported(false);
-
-      setIdAdsPoint(adsPoint.properties?.id);
-      setPosPrevMouse({
-        latitude: lat,
-        longitude: long,
-      });
-
-      return;
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, 10),
+    []
+  );
 
   return (
     <div className="relative w-screen h-screen">

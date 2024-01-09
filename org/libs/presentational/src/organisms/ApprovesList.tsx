@@ -26,6 +26,7 @@ import ModernSelect, {
 } from '@presentational/atoms/ModernSelect';
 import Image from 'next/image';
 import {
+  useApproveAdModificationRequest,
   useDeleteApproveRequest,
   useHandleApprove,
   useHandleFilterApprove,
@@ -36,6 +37,8 @@ import {
   requestStatusTypes,
   timeTypes,
 } from '@business-layer/business-logic/lib/approve/process/context';
+
+import { MODIFICATION_REQUEST_STATUS_LIST } from '@constants/requestStatus';
 
 const START_PAGE = 1;
 const MAX_ELEMENT_PER_PAGE = 4;
@@ -57,8 +60,15 @@ function ApprovesList({
   const { filterByRequestStatus, filterBySearchKey, filterByTime } =
     useHandleFilterApprove();
   const { onDeleteApproveRequest } = useDeleteApproveRequest();
-  const [isShowingPopup, setIsShowingPopup] = useState<boolean>(false);
+  const { onApproveAdModificationRequest, isLoading } =
+    useApproveAdModificationRequest();
+
+  const [isShowingPopupDelete, setIsShowingPopupDelete] = useState<boolean>(false);
+  const [isShowingPopupApprove, setIsShowingPopupApprove] = useState<boolean>(false);
+
   const needDeletedRequestId = useRef<number | null>(null);
+  const needApproveRequestId = useRef<number | null>(null);
+
   const { showSuccess, showError } = useNotification();
 
   useEffect(() => {
@@ -94,8 +104,14 @@ function ApprovesList({
   };
   const showDeletePopup = (id: number) => {
     needDeletedRequestId.current = id;
-    setIsShowingPopup(true);
+    setIsShowingPopupDelete(true);
   };
+
+  const showApprovePopup = (id: number) => {
+    needApproveRequestId.current = id;
+    setIsShowingPopupApprove(true);
+  };
+
   const handleDeleteRequest = (result: boolean) => {
     if (result && needDeletedRequestId.current) {
       onDeleteApproveRequest(needDeletedRequestId.current)
@@ -105,7 +121,22 @@ function ApprovesList({
         .catch((error) => showError(error.msg));
     }
     needDeletedRequestId.current = null;
-    setIsShowingPopup(false);
+    setIsShowingPopupDelete(false);
+  };
+
+  const handleApproveRequest = (result: boolean) => {
+    if (result && needApproveRequestId.current) {
+      onApproveAdModificationRequest({
+        id: needApproveRequestId.current,
+        status: MODIFICATION_REQUEST_STATUS_LIST.APPROVE
+      })
+        .then((msg) => {
+          showSuccess(msg);
+        })
+        .catch((error) => showError(error.msg));
+    }
+    needApproveRequestId.current = null;
+    setIsShowingPopupApprove(false);
   };
 
   return (
@@ -226,7 +257,7 @@ function ApprovesList({
                           <br />
                           {renderDateTime(new Date(approve.contractEnd))}
                         </span>,
-                        <span className="flex flex-row gap-2">
+                        <span className="grid grid-cols-3 gap-3">
                           <IconButton
                             type="button"
                             shape="square"
@@ -239,15 +270,28 @@ function ApprovesList({
                             <i className="fi fi-sr-file-circle-info text-blue-600 text-sm hover:text-blue-400 transition-colors"></i>
                           </IconButton>
                           {approve.requestStatus === 'inprocess' ? (
-                            <IconButton
-                              type="button"
-                              shape="square"
-                              callback={() => {
-                                showDeletePopup(approve.id);
-                              }}
-                            >
-                              <i className="fi fi-ss-trash text-red-600 text-sm hover:text-red-400 transition-colors"></i>
-                            </IconButton>
+                            <>
+                              <IconButton
+                                type="button"
+                                shape="square"
+                                callback={() => {
+                                  showApprovePopup(approve.id);
+                                }}
+                              >
+                                <i className="fi fi-ss-assept-document text-green-600 text-sm hover:text-green-400 transition-colors"></i>
+                              </IconButton>
+
+                              <IconButton
+                                type="button"
+                                shape="square"
+                                callback={() => {
+                                  showDeletePopup(approve.id);
+                                }}
+                              >
+                                <i className="fi fi-ss-trash text-red-600 text-sm hover:text-red-400 transition-colors"></i>
+                              </IconButton>
+
+                            </>
                           ) : (
                             <></>
                           )}
@@ -272,8 +316,15 @@ function ApprovesList({
         <YesNoPopup
           message="Bạn có chắc muốn xoá không?"
           onResult={handleDeleteRequest}
-          isActive={isShowingPopup}
+          isActive={isShowingPopupDelete}
         />
+
+        <YesNoPopup
+          message="Bạn có chắc muốn cấp phép không?"
+          onResult={handleApproveRequest}
+          isActive={isShowingPopupApprove}
+        />
+
       </div>
     </>
   );

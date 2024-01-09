@@ -226,11 +226,10 @@ function DetailReport({
                                   </span>
                                 </p>
 
-                                <p className=" text-[0.6rem]">
-                                  Nội dung:
-                                  <span className="font-semibold">
-                                    {report.content}
-                                  </span>
+                                <p className="text-[0.6rem] flex">
+                                  <p className="text-[0.6rem]">Nội dung: </p>
+                                  <p>{' '}</p>
+                                  <p className="text-[0.6rem]" dangerouslySetInnerHTML={{ __html: report.content }} />
                                 </p>
                               </div>
                             </div>
@@ -284,11 +283,9 @@ function DetailReport({
                                       </span>
                                     </p>
 
-                                    <p className=" text-[0.6rem]">
-                                      Nội dung:
-                                      <span className="font-semibold">
-                                        {report.content}
-                                      </span>
+                                    <p className="text-[0.6rem] flex">
+                                      <p className="text-[0.6rem]">Nội dung: </p> {' '}
+                                      <p className="text-[0.6rem]" dangerouslySetInnerHTML={{ __html: report.content }} />
                                     </p>
                                   </div>
                                 </>
@@ -322,11 +319,9 @@ function DetailReport({
                                           {report.longitude}
                                         </span>
                                       </p>
-                                      <p className=" text-[0.6rem]">
-                                        Nội dung:
-                                        <span className="font-semibold">
-                                          {report.content}
-                                        </span>
+                                      <p className="text-[0.6rem] flex">
+                                        <p className="text-[0.6rem]">Nội dung: </p> {' '}
+                                        <p className="text-[0.6rem]" dangerouslySetInnerHTML={{ __html: report.content }} />
                                       </p>
                                     </div>
                                   </div>

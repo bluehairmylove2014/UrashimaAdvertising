@@ -11,6 +11,8 @@ import {
 } from '@business-layer/business-logic/non-service-lib/pagination';
 import { calculateMaxPage, slicePaginationData } from '@utils/helpers';
 import { IAccountDetail } from '@business-layer/services/entities';
+import Link from 'next/link';
+import { HQ_PAGES } from '@constants/hqPages';
 
 const START_PAGE = 1;
 const MAX_ELEMENT_PER_PAGE = 5;
@@ -34,7 +36,16 @@ function AccountManagement() {
 
   return (
     <div className="py-6 w-full h-screen">
-      <HQPageTitle title="Quản lý tài khoản" />
+      <div className="flex flex-row justify-between items-center mb-8">
+        <HQPageTitle title="Quản lý tài khoản" />
+        <Link
+          href={HQ_PAGES.NEW_ACCOUNT}
+          className="px-4 py-2 rounded text-[0.65rem] font-semibold text-white bg-green-600 hover:bg-green-500 transition-colors"
+        >
+          <i className="fi fi-sr-user-add mr-2"></i>
+          Thêm mới tài khoản
+        </Link>
+      </div>
 
       <div className="w-full h-fit flex flex-col justify-start items-start gap-4">
         {accountData ? (
