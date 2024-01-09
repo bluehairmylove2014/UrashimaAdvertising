@@ -16,6 +16,7 @@ import CustomImage from "@presentational/atoms/CustomImage";
 import { useRouter } from "next/navigation";
 import { OFFICER_PAGES } from "@constants/officerPages";
 import DistrictWardPopUp from "@presentational/molecules/DistrictWardPopUp";
+import MultipleLayerSelect, { mulSelectOptionType } from "@presentational/atoms/MultipleLayerSelect";
 
 
 const formReport = [
@@ -30,10 +31,11 @@ const START_PAGE = 1;
 const MAX_ELEMENT_PER_PAGE = 6;
 
 function ReportTable({ reportData, isHeadQuarter, regionsData }: { reportData: getAllOfficerReportsResponseType, isHeadQuarter: boolean, regionsData: regionResponseType | null }) {
-    const [isActiveDistrictWardPopUp, setIsActiveDistrictWardPopUp] = useState(false);
+    const router = useRouter();
+
+    const [districts, setDistricts] = useState<mulSelectOptionType | null>(null);
     const [selectedFormReport, setSelectedFormReport] = useState(formReport[0]);
     const [searchValue, setSearchValue] = useState("");
-    const router = useRouter();
 
     const paginationData = useGetPagination();
     const { setPaginationData } = useSetPaginationData();
@@ -57,6 +59,26 @@ function ReportTable({ reportData, isHeadQuarter, regionsData }: { reportData: g
         return filteredData;
     }, [selectedFormReport, searchValue, reportData]);
 
+    const handleFilterByRegion = ({
+        district,
+        ward,
+    }: {
+        district: string | null;
+        ward: string | null;
+    }) => {
+        // if (backupRequestData.current) {
+        //     if (district === null) {
+        //         setRequestData(backupRequestData.current);
+        //     } else if (ward === null) {
+        //         setRequestData(filterByArea(backupRequestData.current, district));
+        //     } else {
+        //         setRequestData(
+        //             filterByArea(filterByArea(backupRequestData.current, district), ward)
+        //         );
+        //     }
+        // }
+    };
+
     useEffect(() => {
         if (Array.isArray(allReportData)) {
             setPaginationData({
@@ -68,15 +90,23 @@ function ReportTable({ reportData, isHeadQuarter, regionsData }: { reportData: g
         }
     }, [allReportData]);
 
+    useEffect(() => {
+        if (regionsData) {
+            const districts: mulSelectOptionType = { ['Tất cả các quận']: [] };
+            regionsData.forEach((r) => {
+                const sameKey = Object.keys(districts).find((dk) => dk === r.district);
+                if (sameKey) {
+                    districts[sameKey].push(r.ward);
+                } else {
+                    districts[r.district] = ['Tất cả', r.ward];
+                }
+            });
+            setDistricts(districts);
+        }
+    }, [regionsData]);
+
     return (
         <>
-            {isActiveDistrictWardPopUp ?
-                <DistrictWardPopUp regionsData={regionsData} handleClosePopUp={() => {
-                    setIsActiveDistrictWardPopUp(false);
-                }} />
-
-                : <></>
-            }
             <div className="flex flex-row gap-4 justify-between mb-8 w-full">
                 <form className="flex-shrink w-96 relative border-solid border-[1px] border-zinc-400 rounded overflow-hidden">
                     <i className="fi fi-rr-search absolute top-1/2 left-4 transform -translate-y-1/2 bottom-[4px] text-[0.65rem]"></i>
@@ -90,30 +120,27 @@ function ReportTable({ reportData, isHeadQuarter, regionsData }: { reportData: g
                 </form>
                 <div className='flex'>
                     {isHeadQuarter ?
-                        <button
-                            className='relative bg-indigo-900 hover:bg-indigo-950 text-white font-bold py-2 px-4 rounded text-[0.7rem] w-[100%] mr-3 overflow-auto shadow-lg ring-1 ring-black/5 focus:outline-none'
-                            onClick={() => {
-                                setIsActiveDistrictWardPopUp(true);
-                            }}
-                        >
-                            Chọn khu vực báo cáo
-                        </button>
+                        <MultipleLayerSelect
+                            label="Tất cả các quận"
+                            onOptionSelect={handleFilterByRegion}
+                            options={districts}
+                            style="softCyan"
+                            disabled={false}
+                        />
                         :
                         <></>
                     }
 
                     <Listbox value={selectedFormReport} onChange={setSelectedFormReport}>
-                        <div className="relative w-[35vh]">
-                            <Listbox.Button className="relative  text-[0.7rem] w-[100%] cursor-default rounded-sm bg-white border-solid border-[0.6px] border-gray-200 py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-blue-500 focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-blue-300">
-                                <span className="block truncate font-semibold ">{selectedFormReport}</span>
-                                <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-                                    <CustomImage
-                                        src="/assets/down.png"
-                                        alt="Ads Form"
-                                        width="0.5rem"
-                                        height="0.5rem"
-                                    />
+                        <div className="">
+                            <Listbox.Button
+                                className="h-full flex flex-row items-center text-[0.65rem] min-w-[10rem] disabled:cursor-not-allowed disabled:bg-zinc-100 bg-cyan-50 border-solid border-[1px] rounded border-zinc-400 ml-3">
+                                <span className="flex-grow mr-3 ml-3 max-w-[200px] whitespace-nowrap overflow-hidden text-ellipsis line-clamp-1">
+                                    {selectedFormReport}
                                 </span>
+                                <div className="flex-shrink border-solid border-l-[1px] border-zinc-400 w-fit h-full bg-inherit grid place-items-center">
+                                    <i className="fi fi-bs-angle-small-down px-2"></i>
+                                </div>
                             </Listbox.Button>
                             <Transition
                                 as={Fragment}
@@ -121,19 +148,18 @@ function ReportTable({ reportData, isHeadQuarter, regionsData }: { reportData: g
                                 leaveFrom="opacity-100"
                                 leaveTo="opacity-0"
                             >
-                                <Listbox.Options className="absolute z-40 text-[0.7rem] mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 focus:outline-none z-199">
+                                <Listbox.Options className="absolute z-40 text-[0.65rem] min-w-[10rem] ml-3 rounded bg-white py-1 shadow-lg  focus:outline-none">
                                     {formReport.map((form, formIdx) => (
                                         <Listbox.Option
                                             key={formIdx}
                                             className={({ active }) =>
-                                                `relative cursor-default select-none py-2 pl-3 ${active ? 'bg-blue-100 text-blue-900' : 'text-gray-900'
-                                                }`
+                                                `transition-colors w-full text-[0.65rem] py-3 px-2 cursor-default select-none ${active ? 'bg-gray-100' : 'bg-white'
+                                                } ${selectedFormReport === form ? 'bg-sky-200' : ' '}`
                                             }
                                             value={form}
                                         >
                                             <span
-                                                className={`block truncate ${selectedFormReport ? 'font-medium' : 'font-normal'
-                                                    }`}
+                                                className={`block truncate text-[0.65rem] font-semibold text-center text-black`}
                                             >
                                                 {form}
                                             </span>
