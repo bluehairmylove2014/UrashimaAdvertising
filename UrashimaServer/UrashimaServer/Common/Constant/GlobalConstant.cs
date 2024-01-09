@@ -19,33 +19,31 @@
 
     public static class OriginConstant
     {
-        private const string MyOrg = "https://localhost:7053";
-        private const string MyOrg1 = "https://localhost:3000";
+        private static readonly List<string> Globals = new()
+        {
+            "https://localhost:7053",
+            "https://localhost:3000"
+        };
 
-        public static readonly List<string> WardOfficer = new() {
-            "http://officer.urashima-advertising.com",
-            MyOrg,
+        public static readonly List<string> WardOfficer = new(Globals) {
+            "https://www.officer.urashima-ads.site",
             "http://localhost:2016"
         };
-        public static readonly List<string> DistrictOfficer = new() {
-            "http://officer.urashima-advertising.com",
-            MyOrg,
+
+        public static readonly List<string> DistrictOfficer = new(Globals) {
+            "https://www.officer.urashima-ads.site",
             "http://localhost:2016"
         };
-        public static readonly List<string> HeadQuater = new() {
-            "http://hq.urashima-advertising.com",
-            MyOrg,
+        public static readonly List<string> HeadQuarter = new(Globals) {
+            "https://www.hq.urashima-ads.site",
             "http://localhost:2021"
         };
 
-        private static readonly List<(List<string>, string)> list = new()
-        {
+        public static readonly List<(List<string>, string)> CheckList = new() {
             (WardOfficer, GlobalConstant.WardOfficer),
             (DistrictOfficer, GlobalConstant.DistrictOfficer),
-            (HeadQuater , GlobalConstant.HeadQuater)
+            (HeadQuarter , GlobalConstant.HeadQuater)
         };
-
-        public static List<(List<string>, string)> CheckList = list;
     }
 
     public static class RequestConstant

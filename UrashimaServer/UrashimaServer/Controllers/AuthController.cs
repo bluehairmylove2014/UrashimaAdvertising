@@ -103,7 +103,6 @@ namespace UrashimaServer.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<string>> Login(LoginDto request)
         {
-            var hasOrigin = this.Request.Headers.TryGetValue("Origin", out var requestOrigin);
 
             var account = await _dbContext.Accounts
                 .FirstOrDefaultAsync(acc => acc.Email.Equals(request.Email));
@@ -116,13 +115,14 @@ namespace UrashimaServer.Controllers
                 });
             }
 
-            //if (!Helper.IsAuthorizedOrigin(requestOrigin.ToString(), account.Role))
-            //{
-            //    return BadRequest(new
-            //    {
-            //        message = "Invalid origin!",
-            //    });
-            //}
+            var hasOrigin = this.Request.Headers.TryGetValue("Origin", out var requestOrigin);
+            if (!hasOrigin || !Helper.IsAuthorizedOrigin(requestOrigin.ToString(), account.Role))
+            {
+                return BadRequest(new
+                {
+                    message = "Tài khoản đang đăng nhập tại sai trang web!",
+                });
+            }
 
             if (!VerifyPasswordHash(request.Password, Helper.StringToByteArray(account.PasswordHash), Helper.StringToByteArray(account.PasswordSalt)))
             {
@@ -161,13 +161,14 @@ namespace UrashimaServer.Controllers
                 });
             }
 
-            //if (!Helper.IsAuthorizedOrigin(requestOrigin.ToString(), account.Role))
-            //{
-            //    return BadRequest(new
-            //    {
-            //        message = "Invalid origin!",
-            //    });
-            //}
+            var hasOrigin = this.Request.Headers.TryGetValue("Origin", out var requestOrigin);
+            if (!hasOrigin || !Helper.IsAuthorizedOrigin(requestOrigin.ToString(), account.Role))
+            {
+                return BadRequest(new
+                {
+                    message = "Tài khoản đang đăng nhập tại sai trang web!",
+                });
+            }
 
             string token = CreateToken(account, account.Role);
 

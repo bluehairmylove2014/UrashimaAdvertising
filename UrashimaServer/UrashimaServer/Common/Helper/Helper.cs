@@ -61,8 +61,10 @@ namespace UrashimaServer.Common.Helper
         }
 
         public static bool IsAuthorizedOrigin(string origin, string role)
-        => !OriginConstant.CheckList.Find(e => e.Item2.Equals(role))
-            .Item1.Any(item => item.Equals(origin));
+        {
+            return OriginConstant.CheckList.Find(e => e.Item2.Equals(role)).Item1
+                .Any(item => item.Equals(origin));
+        } 
 
     }
 }

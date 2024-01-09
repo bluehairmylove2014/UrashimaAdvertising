@@ -245,6 +245,27 @@ namespace UrashimaServer.Controllers.Headquater
             });
         }
 
+        // POST: api/headquater/ads-point
+        [HttpPost("ads-point"), AuthorizeRoles(GlobalConstant.HeadQuater)]
+        public async Task<IActionResult> CreateAdsPointWithBoard(HQPostAdsPointDto createdPoint)
+        {
+            if (createdPoint == null)
+            {
+                return BadRequest(new
+                {
+                    message = "Dữ liệu cung cấp không đầy đủ."
+                });
+            }
+
+            var addedPoint = _context.AdsPoints.Add(_mapper.Map<AdsPoint>(createdPoint));
+            await _context.SaveChangesAsync();
+
+            return Ok(new
+            {
+                message = $"Tạo điểm quảng cáo mới thành công với id={addedPoint.Entity.Id}."
+            });
+        }
+
         // PUT: api/headquater/ads-point
         [HttpPut("ads-point"), AuthorizeRoles(GlobalConstant.HeadQuater)]
         public async Task<IActionResult> UpdateAdsPointWithBoard(UserAdsPointDetailDto updatedPoint)
@@ -259,13 +280,17 @@ namespace UrashimaServer.Controllers.Headquater
 
             // Point
             var pointToModify = await _context.AdsPoints.FindAsync(updatedPoint.Id);
-            if (pointToModify != null)
+            if (pointToModify == null)
             {
-                var tempPointData = _mapper.Map<UserAdsPointBasicDto>(updatedPoint);
-                _mapper.Map<UserAdsPointBasicDto, AdsPoint>(tempPointData, pointToModify);
-
-                await _context.SaveChangesAsync();
+                return BadRequest(new
+                {
+                    message = $"Không thể tìm được điểm quảng cáo có id={updatedPoint.Id}."
+                });
             }
+
+            var tempPointData = _mapper.Map<UserAdsPointBasicDto>(updatedPoint);
+            _mapper.Map<UserAdsPointBasicDto, AdsPoint>(tempPointData, pointToModify);
+            await _context.SaveChangesAsync();
             // Chỉ save data trên bảng AdsPoint, không liên quan các bảng khác.
 
             // AdsBoard
@@ -279,11 +304,13 @@ namespace UrashimaServer.Controllers.Headquater
                     var boardToModify = _context.AdsBoards.Find(item.Id);
                     if (boardToModify != null)
                     {
+                        item.AdsPointId = pointToModify.Id;
                         _mapper.Map<GetPointAdsBoardDto, AdsBoard>(item, boardToModify);
                         updatedBoardIds.Add(boardToModify.Id);
                     }
                     else
                     {
+                        item.AdsPointId = pointToModify.Id;
                         boardData.Add(_mapper.Map<AdsBoard>(item));
                     }
                 }
@@ -311,7 +338,7 @@ namespace UrashimaServer.Controllers.Headquater
                     _context.AdsPointImages.Add(new AdsPointImage
                     {
                         Image = item.Image,
-                        AdsPointId = updatedPoint.Id
+                        AdsPointId = pointToModify.Id
                     });
                 }
                 await _context.SaveChangesAsync();
@@ -320,6 +347,28 @@ namespace UrashimaServer.Controllers.Headquater
             return Ok(new
             {
                 message = $"Áp dụng thay đổi của điểm quảng cáo id={updatedPoint.Id} thành công."
+            });
+        }
+
+        // DELETE: api/headquater/ads-point
+        [HttpDelete("ads-point"), AuthorizeRoles(GlobalConstant.HeadQuater)]
+        public async Task<IActionResult> RemoveAdsPoint([FromQuery, Required] int id)
+        {
+            var pointToRemove = await _context.AdsPoints.FindAsync(id);
+            if (pointToRemove == null)
+            {
+                return BadRequest(new
+                {
+                    message = $"Không thể tìm được điểm quảng cáo có id={id}."
+                });
+            }
+
+            _context.AdsPoints.Remove(pointToRemove);
+            await _context.SaveChangesAsync();
+
+            return Ok(new
+            {
+                message = $"Xóa điểm quảng cáo id={id} thành công."
             });
         }
 
