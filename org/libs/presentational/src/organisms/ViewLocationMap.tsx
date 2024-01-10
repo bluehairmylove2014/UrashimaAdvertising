@@ -30,18 +30,18 @@ import LocationDetail from '@presentational/molecules/LocationDetail';
 import { ILocation } from '@business-layer/services/entities';
 import { useFetchAllOfficerAds } from '@business-layer/business-logic/lib/officerAds/process/hooks';
 import CustomMap from '@presentational/organisms/CustomMap';
-import { useGetCoord } from './../../../business-layer/src/business-logic/non-service-lib/viewLocationMap/process/hooks/useGetCoord';
-import { useGetIsActive } from './../../../business-layer/src/business-logic/non-service-lib/viewLocationMap/process/hooks/useGetIsActive';
-import { useSetCoord } from './../../../business-layer/src/business-logic/non-service-lib/viewLocationMap/process/hooks/useSetCoord';
-import { useSetIsActive } from './../../../business-layer/src/business-logic/non-service-lib/viewLocationMap/process/hooks/useSetIsActive';
+import { useGetCoord } from '@business-layer/business-logic/non-service-lib/viewLocationMap';
+import { useGetIsActive } from '@business-layer/business-logic/non-service-lib/viewLocationMap';
+import { useSetCoord } from '@business-layer/business-logic/non-service-lib/viewLocationMap';
+import { useSetIsActive } from '@business-layer/business-logic/non-service-lib/viewLocationMap';
 
 const useViewLocationMap = () => {
   const coord = useGetCoord();
   const isActive = useGetIsActive();
   const { setCoord } = useSetCoord();
   const { setIsActive } = useSetIsActive();
-  const openMap = (lat: number, long: number) => {
-    setCoord(lat, long);
+  const openMap = (lat?: number, long?: number) => {
+    lat && long && setCoord(lat, long);
     setIsActive(true);
   };
   const closeMap = () => {

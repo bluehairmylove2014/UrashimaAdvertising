@@ -13,9 +13,13 @@ import {
 import InfoAdsPoint from '@presentational/molecules/InfoAdsPoint';
 import DetailAds from '@presentational/molecules/DetailAds';
 import DetailAdsPoint from '@presentational/molecules/DetailAdsPoint';
+import { FeatureCollection, Point } from 'geojson';
 
 import 'mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
-import { useGetLocationReports } from '@business-layer/business-logic/lib/report';
+import {
+  useGetAdReports,
+  useGetLocationReports,
+} from '@business-layer/business-logic/lib/report';
 import { useGetLocationDetail } from '@business-layer/business-logic/lib/geocode';
 import { useNotification } from '@presentational/atoms/Notification';
 
@@ -67,6 +71,7 @@ function Home(): ReactElement {
     useState<boolean>(false);
 
   const locationReportList = useGetLocationReports();
+  const adsReportList = useGetAdReports();
   const { onGetLocationDetail } = useGetLocationDetail();
 
   useEffect(() => {
@@ -206,31 +211,69 @@ function Home(): ReactElement {
             onClick: handleClick,
             onMouseMove: handleMouseMove,
           }}
-          sourceData={{
-            type: 'FeatureCollection',
-            features: adsData
-              ? adsData.map((m) => ({
-                  type: 'Feature',
-                  properties: {
-                    id: m.id,
-                    cluster: false,
-                    name: m.address,
-                    planned: m.planned,
-                    reported: locationReportList
-                      ? locationReportList.findIndex(
-                          (lr) =>
-                            lr.latitude === m.latitude &&
-                            lr.longitude === m.longitude
-                        ) !== -1
-                      : false,
-                  },
-                  geometry: {
-                    type: 'Point',
-                    coordinates: [m.longitude, m.latitude],
-                  },
-                }))
-              : [],
-          }}
+          sourceData={
+            {
+              type: 'FeatureCollection',
+              features: adsData
+                ? [
+                    ...adsData.map((m) => ({
+                      type: 'Feature',
+                      properties: {
+                        id: m.id,
+                        cluster: false,
+                        name: m.address,
+                        planned: m.planned,
+                        isAdsLocation: true,
+                        isAdsBoardReport: adsReportList
+                          ? adsReportList.some((ar) => ar.adsPointID === m.id)
+                          : false,
+                        reported: Boolean(
+                          (locationReportList &&
+                            locationReportList.some(
+                              (lr) =>
+                                lr.latitude === m.latitude &&
+                                lr.longitude === m.longitude
+                            )) ||
+                            (adsReportList &&
+                              adsReportList.some(
+                                (ar) => ar.adsPointID === m.id
+                              ))
+                        ),
+                        longLatArr: [m.longitude, m.latitude],
+                      },
+                      geometry: {
+                        type: 'Point',
+                        coordinates: [m.longitude, m.latitude],
+                      },
+                    })),
+                    ...(locationReportList
+                      ? locationReportList
+                          .filter(
+                            (locationReport) =>
+                              locationReport.reportData === null
+                          )
+                          .map((m, index) => ({
+                            type: 'Feature',
+                            properties: {
+                              id: adsData.length + index + 1,
+                              cluster: false,
+                              name: '',
+                              planned: false,
+                              reported: true,
+                              isAdsLocation: false,
+                              isAdsBoardReport: false,
+                              longLatArr: [m.longitude, m.latitude],
+                            },
+                            geometry: {
+                              type: 'Point',
+                              coordinates: [m.longitude, m.latitude],
+                            },
+                          }))
+                      : []),
+                  ]
+                : [],
+            } as FeatureCollection<Point>
+          }
           ref={mapRef}
         >
           {userClickMarker ? (

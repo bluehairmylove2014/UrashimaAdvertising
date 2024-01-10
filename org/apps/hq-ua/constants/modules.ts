@@ -6,4 +6,5 @@ export const activeModuleConfig: moduleKeyList[] = [
   'pagination',
   'officer-ad',
   'viewLocationMap',
+  'navigateLoader',
 ];

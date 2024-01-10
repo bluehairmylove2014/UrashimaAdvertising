@@ -29,7 +29,6 @@ import CustomImage from '@presentational/atoms/CustomImage';
 import { ACCESS_TOKEN, MAP_STYLE } from '@constants/mapbox_key';
 import CustomSearchBox from '@presentational/atoms/CustomSearchBox';
 import PointFilterBtn from '@presentational/molecules/PointFilterBtn';
-import { useNotification } from '@presentational/atoms/Notification';
 
 const MAP_DEFAULT_VIEW_PORT: ViewState = {
   longitude: 106.682448,

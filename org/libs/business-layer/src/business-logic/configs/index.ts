@@ -27,6 +27,10 @@ import {
   ViewLocationMapProvider,
   viewLocationMapProviderType,
 } from '../non-service-lib/viewLocationMap/process/provider/ViewLocationMapProvider';
+import {
+  NavigateLoaderProvider,
+  navigateLoaderProviderType,
+} from '../non-service-lib/navigateLoader/process/provider/ViewLocationMapProvider';
 
 /**
  * REACT-QUERY-DEVTOOLS
@@ -64,7 +68,8 @@ export type moduleKeyList =
   | 'approve'
   | 'regions'
   | 'settings'
-  | 'viewLocationMap';
+  | 'viewLocationMap'
+  | 'navigateLoader';
 export type providerList = React.FC<
   | AuthProviderType
   | reportProviderType
@@ -75,11 +80,16 @@ export type providerList = React.FC<
   | regionManagementProviderType
   | settingProviderType
   | viewLocationMapProviderType
+  | navigateLoaderProviderType
 >;
 export const providerConfig: {
   key: moduleKeyList;
   provider: providerList;
 }[] = [
+  {
+    key: 'navigateLoader',
+    provider: NavigateLoaderProvider,
+  },
   {
     key: 'viewLocationMap',
     provider: ViewLocationMapProvider,
