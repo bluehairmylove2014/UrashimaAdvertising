@@ -1,15 +1,19 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using UrashimaServer.Common.Constant;
+using UrashimaServer.Utility;
 
 namespace UrashimaServer.Dtos
 {
     public class RegisterDto
     {
         public string FullName { get; set; } = string.Empty;
+        [EmailAddress]
         public string Email { get; set; } = string.Empty;
+        [Required]
         public string Password { get; set; } = string.Empty;
         public string Phone { get; set; } = string.Empty;
         public DateTime DateOfBirth { get; set; }
+        [RoleCheck]
         public string Role { get; set; } = GlobalConstant.WardOfficer;
         public string UnitUnderManagement { get; set; } = string.Empty;
     }
@@ -17,11 +21,13 @@ namespace UrashimaServer.Dtos
     public class RegisterSocialDto
     {
         // public string FullName { get; set; } = string.Empty;
+        [EmailAddress]
         public string Email { get; set; } = string.Empty;
     }
 
     public class LoginDto
     {
+        [EmailAddress]
         public string Email { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
     }
