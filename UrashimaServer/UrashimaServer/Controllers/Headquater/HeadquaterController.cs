@@ -78,17 +78,60 @@ namespace UrashimaServer.Controllers.Headquater
         /// </summary>
         // POST: api/headquater/ward-district
         [HttpPost("ward-district"), AuthorizeRoles(GlobalConstant.HeadQuater)]
-        public async Task<ActionResult<WardDistrict>> PostWardDistrict(WardDistrict wardDistrict)
+        public async Task<ActionResult<WardDistrict>> PostWardDistrict(WardDistrictDto wardDistrict)
         {
             if (_context.WardDistricts == null)
             {
-                return Problem("Entity set 'DataContext.WardDistricts'  is null.");
+                return NotFound(new
+                {
+                    message = "Không thể kết nối đến cơ sở dữ liệu"
+                });
             }
 
-            _context.WardDistricts.Add(wardDistrict);
+            _context.WardDistricts.Add(new()
+            {
+                Ward = wardDistrict.Ward,
+                District = wardDistrict.District
+            });
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetWardDistrict", new { id = wardDistrict.Id }, wardDistrict);
+            return Ok(new
+            {
+                Message = "Thêm đơn vị quản lý thành công.",
+            }); ;
+        }
+
+        /// <summary>
+        /// API thêm mới đơn vị quản lý của thành phố.
+        /// </summary>
+        // DELETE: api/headquater/ward-district
+        [HttpDelete("ward-district"), AuthorizeRoles(GlobalConstant.HeadQuater)]
+        public async Task<ActionResult<WardDistrict>> DeleteWardDistrict([FromQuery, Required] int id)
+        {
+            if (_context.WardDistricts == null)
+            {
+                return NotFound(new
+                {
+                    message = "Không thể kết nối đến cơ sở dữ liệu"
+                });
+            }
+
+            var item = await _context.WardDistricts.FindAsync(id);
+            if (item == null) 
+            {
+                return NotFound(new
+                {
+                    message = $"Không tìm thấy đơn vị quản lý id={id}"
+                });
+            }
+
+            _context.WardDistricts.Remove(item);
+            await _context.SaveChangesAsync();
+
+            return Ok(new
+            {
+                Message = "Xóa đơn vị quản lý thành công.",
+            });
         }
 
         /// <summary>

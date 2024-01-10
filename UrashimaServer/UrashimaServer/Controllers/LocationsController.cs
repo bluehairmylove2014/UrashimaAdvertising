@@ -25,8 +25,6 @@ namespace UrashimaServer.Controllers
         private readonly IMapper _mapper;
         private readonly string _apiKey = "658dac28274ce196615546rej6e920c";
         private readonly DataContext _context;
-        private static List<string>? WardData = null;
-        private static List<string>? DistrictData = null;
 
         public LocationsController(IMapper mapper, DataContext context)
         {
@@ -36,14 +34,12 @@ namespace UrashimaServer.Controllers
 
         private async Task<List<string>> GetWards()
         {
-            WardData ??= await _context.WardDistricts.Select(e => e.Ward).Distinct().ToListAsync();
-            return WardData!;
+            return await _context.WardDistricts.Select(e => e.Ward).Distinct().ToListAsync();
         }
 
         private async Task<List<string>> GetDistricts()
         {
-            DistrictData ??= await _context.WardDistricts.Select(e => e.District).Distinct().ToListAsync();
-            return DistrictData!;
+            return await _context.WardDistricts.Select(e => e.District).Distinct().ToListAsync();
         }
 
         private async Task<string> ToVieLocation(string input)
