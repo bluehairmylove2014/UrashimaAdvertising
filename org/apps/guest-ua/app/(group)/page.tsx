@@ -39,6 +39,7 @@ import { IAdReport, ILocationReport } from '@business-layer/services/entities';
 
 import { FeatureCollection, Point } from 'geojson';
 import { debounce } from '@business-layer/business-logic/helper';
+import { useSocketConnect } from '@business-layer/business-logic/realtime';
 
 type locationType =
   | {
@@ -119,6 +120,12 @@ function Home(): ReactElement {
     reportData,
     reportIdentificationData,
   } = useGetReportForm();
+  const { handleConnect } = useSocketConnect();
+
+  useEffect(() => {
+    handleConnect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (idAdsPoint > -1) {

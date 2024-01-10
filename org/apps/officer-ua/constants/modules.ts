@@ -8,4 +8,5 @@ export const activeModuleConfig: moduleKeyList[] = [
   'regions',
   'viewLocationMap',
   'navigateLoader',
+  'realtime',
 ];

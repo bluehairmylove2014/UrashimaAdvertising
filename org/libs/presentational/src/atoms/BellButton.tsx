@@ -1,3 +1,7 @@
+'use client';
+
+import { useEffect } from 'react';
+
 function BellButton() {
   return (
     <button className=" h-full w-fit grid place-items-center text-white hover:text-orange-400 transition-colors">

@@ -1,10 +1,20 @@
 'use client';
 import { useFetchPersonalInformation } from '@business-layer/business-logic/lib/account';
+import { useSocketConnect } from '@business-layer/business-logic/realtime';
 import { OFFICER_PAGES } from '@constants/officerPages';
 import Link from 'next/link';
+import { useEffect } from 'react';
 
 function OfficerNavAvatar() {
   const { data: accountDetail } = useFetchPersonalInformation();
+  const { handleConnect } = useSocketConnect();
+
+  useEffect(() => {
+    if (accountDetail) {
+      handleConnect(accountDetail.email);
+    }
+  }, [accountDetail]);
+
   return accountDetail ? (
     <Link
       href={OFFICER_PAGES.ME}
