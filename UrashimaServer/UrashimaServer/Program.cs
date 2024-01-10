@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Serilog;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -13,6 +14,15 @@ using UrashimaServer.Middlewares;
 using UrashimaServer.RealTime;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Logger
+var logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .Enrich.FromLogContext()
+    .Filter.ByIncludingOnly("StatusCode = 200 or StatusCode = 401 and RequestPath like '%/api/%'")
+    .CreateLogger();
+builder.Logging.ClearProviders();
+builder.Logging.AddSerilog(logger);
 
 // Add services to the container.
 
