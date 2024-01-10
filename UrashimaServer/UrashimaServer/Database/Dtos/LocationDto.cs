@@ -19,7 +19,9 @@
         public string? Amenity { get; set; }
         public string? House_number { get; set; }
         public string? Road { get; set; }
+        public string? Quarter { get; set; }
         public string? Suburb { get; set; }
+        public string? City { get; set; }
         public string? Town { get; set; }
         public int? Postcode { get; set; }
         public string? Country { get; set; }
@@ -42,7 +44,9 @@
         public string? Amenity { get; set; }
         public string? House_number { get; set; }
         public string? Road { get; set; }
+        public string? Quarter { get; set; }
         public string? Suburb { get; set; }
+        public string? City { get; set; }
         public string? Town { get; set; }
         public int? Postcode { get; set; }
         public string? Country { get; set; }

@@ -68,4 +68,10 @@ namespace UrashimaServer.Database.Dtos
         public AdsCreateRequestPointDto? AdsPoint { get; set; }
         public AdsCreateRequestBoardDto? AdsBoard { get; set; }
     }
+
+    public class PostApproveAdsModifyRequest
+    {
+        public int Id { get; set; }
+        public string Status { get; set; } = string.Empty;
+    }
 }

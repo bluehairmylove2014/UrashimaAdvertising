@@ -18,6 +18,9 @@ using UrashimaServer.Models;
 
 namespace UrashimaServer.Controllers.Headquater
 {
+    /// <summary>
+    /// Controller quản lý cho vai trò Headquarter.
+    /// </summary>
     [Route("api/headquater")]
     [ApiController]
     public class HeadquaterController : ControllerBase
@@ -31,6 +34,9 @@ namespace UrashimaServer.Controllers.Headquater
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// API lấy đơn vị quản lý của tài khoản.
+        /// </summary>
         // GET: api/headquater/ward-district
         [HttpGet("ward-district"), AuthorizeRoles(GlobalConstant.WardOfficer, GlobalConstant.DistrictOfficer, GlobalConstant.HeadQuater)]
         public async Task<ActionResult<IEnumerable<WardDistrict>>> GetWardDistricts()
@@ -67,21 +73,70 @@ namespace UrashimaServer.Controllers.Headquater
             return rawRes;
         }
 
+        /// <summary>
+        /// API thêm mới đơn vị quản lý của thành phố.
+        /// </summary>
         // POST: api/headquater/ward-district
-        [HttpPost("ward-district")]
-        public async Task<ActionResult<WardDistrict>> PostWardDistrict(WardDistrict wardDistrict)
+        [HttpPost("ward-district"), AuthorizeRoles(GlobalConstant.HeadQuater)]
+        public async Task<ActionResult<WardDistrict>> PostWardDistrict(WardDistrictDto wardDistrict)
         {
             if (_context.WardDistricts == null)
             {
-                return Problem("Entity set 'DataContext.WardDistricts'  is null.");
+                return NotFound(new
+                {
+                    message = "Không thể kết nối đến cơ sở dữ liệu"
+                });
             }
 
-            _context.WardDistricts.Add(wardDistrict);
+            _context.WardDistricts.Add(new()
+            {
+                Ward = wardDistrict.Ward,
+                District = wardDistrict.District
+            });
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetWardDistrict", new { id = wardDistrict.Id }, wardDistrict);
+            return Ok(new
+            {
+                Message = "Thêm đơn vị quản lý thành công.",
+            }); ;
         }
 
+        /// <summary>
+        /// API thêm mới đơn vị quản lý của thành phố.
+        /// </summary>
+        // DELETE: api/headquater/ward-district
+        [HttpDelete("ward-district"), AuthorizeRoles(GlobalConstant.HeadQuater)]
+        public async Task<ActionResult<WardDistrict>> DeleteWardDistrict([FromQuery, Required] int id)
+        {
+            if (_context.WardDistricts == null)
+            {
+                return NotFound(new
+                {
+                    message = "Không thể kết nối đến cơ sở dữ liệu"
+                });
+            }
+
+            var item = await _context.WardDistricts.FindAsync(id);
+            if (item == null) 
+            {
+                return NotFound(new
+                {
+                    message = $"Không tìm thấy đơn vị quản lý id={id}"
+                });
+            }
+
+            _context.WardDistricts.Remove(item);
+            await _context.SaveChangesAsync();
+
+            return Ok(new
+            {
+                Message = "Xóa đơn vị quản lý thành công.",
+            });
+        }
+
+        /// <summary>
+        /// API Headquarter danh sách các yêu cầu chỉnh sửa quảng cáo.
+        /// </summary>
         // GET: api/headquater/ads-modification
         [HttpGet("ads-modification"), AuthorizeRoles(GlobalConstant.WardOfficer, GlobalConstant.DistrictOfficer, GlobalConstant.HeadQuater)]
         public async Task<ActionResult<IEnumerable<PointModifyDto>>> GetAllAdsModification()
@@ -110,14 +165,12 @@ namespace UrashimaServer.Controllers.Headquater
                 .ToListAsync();
 
             var result = rawResult;
-            if (acc.Role == GlobalConstant.WardOfficer || acc.Role == GlobalConstant.DistrictOfficer)
+
+            var region = HttpContext.Items["address"] as string;
+            result = rawResult.Where(p =>
             {
-                var region = HttpContext.Items["address"] as string;
-                result = rawResult.Where(p =>
-                {
-                    return Helper.IsUnderAuthority(p.Address, acc.UnitUnderManagement, region);
-                }).ToList();
-            }
+                return Helper.IsUnderAuthority(p.Address, acc.UnitUnderManagement, region);
+            }).ToList();
 
             var res = new List<PointModifyDto>();
             foreach (var item in result)
@@ -129,14 +182,17 @@ namespace UrashimaServer.Controllers.Headquater
             return res;
         }
 
+        /// <summary>
+        /// API Headquarter chấp thuận/từ chối yêu cầu chỉnh sửa quảng cáo.
+        /// </summary>
         // POST: api/headquater/ads-modification/approve
         [HttpPost("ads-modification/approve"), Authorize(Roles = GlobalConstant.HeadQuater)]
-        public async Task<IActionResult> ApproveAdsRequest([FromQuery, Required] int id)
+        public async Task<IActionResult> ApproveAdsRequest([Required] PostApproveAdsModifyRequest isModify)
         {
             var modifyData = await _context.PointModifies
                 .Include(p => p.AdsBoard)
                 .Include(p => p.Images)
-                .FirstOrDefaultAsync(p => p.Id == id);
+                .FirstOrDefaultAsync(p => p.Id == isModify.Id);
 
             if (modifyData == null)
             {
@@ -145,50 +201,73 @@ namespace UrashimaServer.Controllers.Headquater
                     message = "Không thể tìm được yêu cầu thay đổi dựa trên id đã cung cấp."
                 });
             }
-
-            // Point
-            var pointToModify = await _context.AdsPoints.FindAsync(modifyData.AdsPointId);
-            if (pointToModify != null)
+             
+            if (!isModify.Status.Equals(ModifyRequestConstant.Approve)
+                && !isModify.Status.Equals(ModifyRequestConstant.Deny))
             {
-                var tempPointData = _mapper.Map<UserAdsPointBasicDto>(modifyData);
-                _mapper.Map<UserAdsPointBasicDto, AdsPoint>(tempPointData, pointToModify);
-                pointToModify.Id = modifyData.AdsPointId;
-
-                await _context.SaveChangesAsync();
-            }
-            // Chỉ save data trên bảng AdsPoint, không liên quan các bảng khác.
-
-            // AdsBoard
-            if (modifyData.AdsBoard != null)
-            {
-                foreach (var item in modifyData.AdsBoard)
+                return BadRequest(new
                 {
-                    var boardToModify = await _context.AdsBoards.FindAsync(item.AdsBoardId);
-                    var tempBoardData = _mapper.Map<AdsBoardBasicDto>(item);
-                    _mapper.Map<AdsBoardBasicDto, AdsBoard>(tempBoardData, boardToModify!);
-                    boardToModify!.Id = item.AdsBoardId;
-                    boardToModify!.AdsPointId = modifyData.AdsPointId;
+                    message = $"Trạng thái thay đổi:\'{isModify.Status}\' không hỗ trợ."
+                });
+            } else if (isModify.Status.Equals(ModifyRequestConstant.Approve))
+            {
+                // Point
+                var pointToModify = await _context.AdsPoints.FindAsync(modifyData.AdsPointId);
+                if (pointToModify != null)
+                {
+                    var tempPointData = _mapper.Map<UserAdsPointBasicDto>(modifyData);
+                    _mapper.Map<UserAdsPointBasicDto, AdsPoint>(tempPointData, pointToModify);
+                    pointToModify.Id = modifyData.AdsPointId;
+
+                    await _context.SaveChangesAsync();
                 }
-                await _context.SaveChangesAsync();
-            }
 
-            // Image
-            if (modifyData.Images != null)
-            {
-                var imagesToModify = _context.AdsPointImages
-                    .Where(img => img.AdsPointId == modifyData.AdsPointId).ToList();
-                _context.AdsPointImages.RemoveRange(imagesToModify);
-                _context.SaveChanges();
-
-                foreach (var item in modifyData.Images)
+                // AdsBoard
+                if (modifyData.AdsBoard != null)
                 {
-                    _context.AdsPointImages.Add(new AdsPointImage
+                    foreach (var item in modifyData.AdsBoard)
                     {
-                        Image = item.Image,
-                        AdsPointId = modifyData.AdsPointId
-                    });
+                        var boardToModify = await _context.AdsBoards.FindAsync(item.AdsBoardId);
+                        var tempBoardData = _mapper.Map<AdsBoardBasicDto>(item);
+                        _mapper.Map<AdsBoardBasicDto, AdsBoard>(tempBoardData, boardToModify!);
+                        boardToModify!.Id = item.AdsBoardId;
+                        boardToModify!.AdsPointId = modifyData.AdsPointId;
+                    }
+                    await _context.SaveChangesAsync();
                 }
-                await _context.SaveChangesAsync();
+
+                // Image
+                if (modifyData.Images != null)
+                {
+                    var imagesToModify = _context.AdsPointImages
+                        .Where(img => img.AdsPointId == modifyData.AdsPointId).ToList();
+                    _context.AdsPointImages.RemoveRange(imagesToModify);
+                    await _context.SaveChangesAsync();
+
+                    foreach (var item in modifyData.Images)
+                    {
+                        _context.AdsPointImages.Add(new AdsPointImage
+                        {
+                            Image = item.Image,
+                            AdsPointId = modifyData.AdsPointId
+                        });
+                    }
+                    await _context.SaveChangesAsync();
+                }
+            }
+
+            _context.BoardModifies.RemoveRange(modifyData.AdsBoard!);
+            _context.PointModifyImages.RemoveRange(modifyData.Images!);
+            _context.PointModifies.Remove(modifyData);
+
+            await _context.SaveChangesAsync();
+
+            if (isModify.Status.Equals(ModifyRequestConstant.Deny))
+            {
+                return Ok(new
+                {
+                    message = $"Từ chối thay đổi của yêu cầu id={modifyData.Id} thành công."
+                });
             }
 
             return Ok(new
@@ -197,13 +276,14 @@ namespace UrashimaServer.Controllers.Headquater
             });
         }
 
+        /// <summary>
+        /// API Headquarter chấp thuận/từ chối yêu cầu tạo mới quảng cáo.
+        /// </summary>
         // POST: api/headquater/ads-request/status
         [HttpPost("ads-request/status"), Authorize(Roles = GlobalConstant.HeadQuater)]
-        public async Task<IActionResult> ChangeAdsCreateRequestStatus(
-            [FromQuery, Required] int id,
-            [FromQuery, Required] string status)
+        public async Task<IActionResult> ChangeAdsCreateRequestStatus([Required] PostApproveAdsModifyRequest isCreated)
         {
-            var createRequest = await _context.AdsCreationRequests.FindAsync(id);
+            var createRequest = await _context.AdsCreationRequests.FindAsync(isCreated.Id);
             if (createRequest == null)
             {
                 return NotFound(new
@@ -212,15 +292,50 @@ namespace UrashimaServer.Controllers.Headquater
                 });
             }
 
-            createRequest.RequestStatus = status;
+            if (isCreated.Status.Equals(RequestConstant.Rejected))
+            {
+                var boardToRemove = _context.AdsBoards.Where(board => board.AdsCreateRequestId == createRequest.Id);
+                _context.AdsBoards.RemoveRange(boardToRemove);
+                _context.AdsCreationRequests.Remove(createRequest);
+            } else
+            {
+                createRequest.RequestStatus = isCreated.Status;
+            }
             await _context.SaveChangesAsync();
 
             return Ok(new
             {
-                message = $"Thay đổi trạng thái của yêu cầu id={id} thành công."
+                message = $"Thay đổi trạng thái của yêu cầu id={isCreated.Id} thành công."
             });
         }
 
+        /// <summary>
+        /// API Headquarter thêm mới điểm quảng cáo.
+        /// </summary>
+        // POST: api/headquater/ads-point
+        [HttpPost("ads-point"), AuthorizeRoles(GlobalConstant.HeadQuater)]
+        public async Task<IActionResult> CreateAdsPointWithBoard(HQPostAdsPointDto createdPoint)
+        {
+            if (createdPoint == null)
+            {
+                return BadRequest(new
+                {
+                    message = "Dữ liệu cung cấp không đầy đủ."
+                });
+            }
+
+            var addedPoint = _context.AdsPoints.Add(_mapper.Map<AdsPoint>(createdPoint));
+            await _context.SaveChangesAsync();
+
+            return Ok(new
+            {
+                message = $"Tạo điểm quảng cáo mới thành công với id={addedPoint.Entity.Id}."
+            });
+        }
+
+        /// <summary>
+        /// API Headquarter cập nhật điểm quảng cáo kèm với bảng quảng cáo và hình ảnh điểm quảng cáo.
+        /// </summary>
         // PUT: api/headquater/ads-point
         [HttpPut("ads-point"), AuthorizeRoles(GlobalConstant.HeadQuater)]
         public async Task<IActionResult> UpdateAdsPointWithBoard(UserAdsPointDetailDto updatedPoint)
@@ -235,13 +350,17 @@ namespace UrashimaServer.Controllers.Headquater
 
             // Point
             var pointToModify = await _context.AdsPoints.FindAsync(updatedPoint.Id);
-            if (pointToModify != null)
+            if (pointToModify == null)
             {
-                var tempPointData = _mapper.Map<UserAdsPointBasicDto>(updatedPoint);
-                _mapper.Map<UserAdsPointBasicDto, AdsPoint>(tempPointData, pointToModify);
-
-                await _context.SaveChangesAsync();
+                return BadRequest(new
+                {
+                    message = $"Không thể tìm được điểm quảng cáo có id={updatedPoint.Id}."
+                });
             }
+
+            var tempPointData = _mapper.Map<UserAdsPointBasicDto>(updatedPoint);
+            _mapper.Map<UserAdsPointBasicDto, AdsPoint>(tempPointData, pointToModify);
+            await _context.SaveChangesAsync();
             // Chỉ save data trên bảng AdsPoint, không liên quan các bảng khác.
 
             // AdsBoard
@@ -255,18 +374,20 @@ namespace UrashimaServer.Controllers.Headquater
                     var boardToModify = _context.AdsBoards.Find(item.Id);
                     if (boardToModify != null)
                     {
+                        item.AdsPointId = pointToModify.Id;
                         _mapper.Map<GetPointAdsBoardDto, AdsBoard>(item, boardToModify);
                         updatedBoardIds.Add(boardToModify.Id);
                     }
                     else
                     {
+                        item.AdsPointId = pointToModify.Id;
                         boardData.Add(_mapper.Map<AdsBoard>(item));
                     }
                 }
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
-                var removedData = _context.AdsBoards
-                    .Where(board => board.AdsPointId == updatedPoint.Id && !updatedBoardIds.Contains(board.Id)).ToList();
+                var removedData = await _context.AdsBoards
+                    .Where(board => board.AdsPointId == updatedPoint.Id && !updatedBoardIds.Contains(board.Id)).ToListAsync();
 
                 _context.AdsBoards.RemoveRange(removedData);
                 _context.AdsBoards.AddRange(boardData);
@@ -277,17 +398,17 @@ namespace UrashimaServer.Controllers.Headquater
             // Image
             if (updatedPoint.Images != null)
             {
-                var imagesToModify = _context.AdsPointImages
-                    .Where(img => img.AdsPointId == updatedPoint.Id).ToList();
+                var imagesToModify = await _context.AdsPointImages
+                    .Where(img => img.AdsPointId == updatedPoint.Id).ToListAsync();
                 _context.AdsPointImages.RemoveRange(imagesToModify);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
                 foreach (var item in updatedPoint.Images)
                 {
                     _context.AdsPointImages.Add(new AdsPointImage
                     {
                         Image = item.Image,
-                        AdsPointId = updatedPoint.Id
+                        AdsPointId = pointToModify.Id
                     });
                 }
                 await _context.SaveChangesAsync();
@@ -296,6 +417,31 @@ namespace UrashimaServer.Controllers.Headquater
             return Ok(new
             {
                 message = $"Áp dụng thay đổi của điểm quảng cáo id={updatedPoint.Id} thành công."
+            });
+        }
+
+        /// <summary>
+        /// API Headquarter xóa điểm quảng cáo.
+        /// </summary>
+        // DELETE: api/headquater/ads-point
+        [HttpDelete("ads-point"), AuthorizeRoles(GlobalConstant.HeadQuater)]
+        public async Task<IActionResult> RemoveAdsPoint([FromQuery, Required] int id)
+        {
+            var pointToRemove = await _context.AdsPoints.FindAsync(id);
+            if (pointToRemove == null)
+            {
+                return BadRequest(new
+                {
+                    message = $"Không thể tìm được điểm quảng cáo có id={id}."
+                });
+            }
+
+            _context.AdsPoints.Remove(pointToRemove);
+            await _context.SaveChangesAsync();
+
+            return Ok(new
+            {
+                message = $"Xóa điểm quảng cáo id={id} thành công."
             });
         }
 

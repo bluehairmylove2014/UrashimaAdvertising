@@ -11,6 +11,9 @@ using UrashimaServer.Database.Models;
 
 namespace UrashimaServer.Controllers
 {
+    /// <summary>
+    /// Controller xử lý yêu cầu tạo mới bảng quảng cáo.
+    /// </summary>
     [Route("api/officer/ads-request")]
     [ApiController]
     public class AdsRequestController : ControllerBase
@@ -24,6 +27,9 @@ namespace UrashimaServer.Controllers
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// API lấy danh sách các yêu cầu tạo mới bảng quảng cáo.
+        /// </summary>
         // GET: api/officer/ads-request
         [HttpGet, AuthorizeRoles(GlobalConstant.WardOfficer, GlobalConstant.DistrictOfficer, GlobalConstant.HeadQuater)]
         public async Task<ActionResult<IEnumerable<GetAdsCreateRequestDto>>> GetAllCreateRequest()
@@ -39,6 +45,7 @@ namespace UrashimaServer.Controllers
             }
 
             var rawResult = await _context.AdsCreationRequests
+                .Where(x => x.RequestStatus.Equals(RequestConstant.Inprogress))
                 .Include(x => x.AdsBoard)
                 .Include(x => x.AdsPoint)
                 .ToListAsync();
@@ -63,6 +70,9 @@ namespace UrashimaServer.Controllers
             return myResult;
         }
 
+        /// <summary>
+        /// API yêu cầu tạo mới bảng quảng cáo.
+        /// </summary>
         //POST: api/officer/ads-request/board
         [HttpPost("board"), AuthorizeRoles(GlobalConstant.WardOfficer, GlobalConstant.DistrictOfficer)] 
         public async Task<IActionResult> PostCreateRequestForBoard(AdsCreateBoardRequestDto createRequest)
@@ -125,6 +135,9 @@ namespace UrashimaServer.Controllers
             });
         }
 
+        /// <summary>
+        /// API xóa yêu cầu tạo mới bảng quảng cáo nếu chưa xử lý.
+        /// </summary>
         // DELETE: api/officer/ads-request
         [HttpDelete, AuthorizeRoles(GlobalConstant.WardOfficer, GlobalConstant.DistrictOfficer, GlobalConstant.HeadQuater)]
         public async Task<IActionResult> ChangeRequestStatus([FromQuery, Required] int id)

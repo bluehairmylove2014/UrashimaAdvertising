@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using UrashimaServer.Common.Constant;
 using UrashimaServer.Common.CustomAttribute;
 using UrashimaServer.Common.Helper;
@@ -9,6 +10,9 @@ using UrashimaServer.Models;
 
 namespace UrashimaServer.Controllers
 {
+    /// <summary>
+    /// Controller quản lý bảng quảng cáo.
+    /// </summary>
     [Route("api/ads-board")]
     [ApiController]
     public class AdsBoardsController : ControllerBase
@@ -22,9 +26,12 @@ namespace UrashimaServer.Controllers
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// API lấy chi tiết bảng quảng cáo bằng id.
+        /// </summary>
         // GET: api/ads-board/detail?id=5
         [HttpGet("detail")]
-        public async Task<ActionResult<AdsBoardBasicDto>> GetAdsBoardDetail([FromQuery] int id)
+        public async Task<ActionResult<AdsBoardBasicDto>> GetAdsBoardDetail([FromQuery, Required] int id)
         {
             if (_context.AdsBoards == null)
             {
@@ -45,6 +52,9 @@ namespace UrashimaServer.Controllers
 
         // -----------------------------------
 
+        /// <summary>
+        /// API lấy danh sách bảng quảng cáo.
+        /// </summary>
         // GET: api/ads-board
         [HttpGet]
         public async Task<ActionResult<IEnumerable<AdsBoard>>> GetAdsBoards()
@@ -76,6 +86,9 @@ namespace UrashimaServer.Controllers
             return Ok(boardDtoList);
         }
 
+        /// <summary>
+        /// API tạo bảng quảng cáo.
+        /// </summary>
         // POST: api/ads-board
         [HttpPost]
         public async Task<ActionResult<AdsBoardBasicDto>> PostAdsBoard(AdsBoardBasicDto adsBoard)
@@ -98,124 +111,6 @@ namespace UrashimaServer.Controllers
             }
 
             return CreatedAtAction("GetAdsBoardDetail", new { id = adsBoard.Id }, adsBoard);
-        }
-
-        // POST: api/ads-board
-        [HttpPut("/api/officer/ads-board"), AuthorizeRoles(GlobalConstant.HeadQuater)]
-        public async Task<ActionResult<AdsBoardBasicDto>> PutAdsBoard(AdsBoardBasicDto adsBoard)
-        {
-            //var cookie = Request.Cookies;
-            var acc = await _context.Accounts.FirstOrDefaultAsync(acc => acc.Email == User.Identity!.Name);
-            if (_context.AdsBoards == null)
-            {
-                return Problem("Không thể kết nối đến cơ sở dữ liệu");
-            }
-
-            if (acc == null)
-            {
-                return BadRequest(new
-                {
-                    Message = "Vui lòng đăng nhập để tiếp tục"
-                });
-            }
-
-            var point = await _context.AdsPoints
-                .Where(b => b.Id == adsBoard.AdsPointId)
-                .FirstOrDefaultAsync();
-
-            if (point == null)
-            {
-                return BadRequest(new
-                {
-                    Message = "Không thể tìm thấy điểm quảng cáo của bảng quảng cáo này"
-                });
-            }
-
-            var region = HttpContext.Items["address"] as string;
-            if (!Helper.IsUnderAuthority(point!.Address, acc.UnitUnderManagement, region))
-            {
-                return BadRequest(new
-                {
-                    Message = "Bảng quảng cáo không nằm trong khu vực bạn quản lí"
-                });
-            }
-
-            try
-            {
-                _context.AdsBoards.Update(_mapper.Map<AdsBoard>(adsBoard));
-                await _context.SaveChangesAsync();
-            }
-            catch
-            {
-                return BadRequest(new
-                {
-                    Message = "Không thể cập nhật bảng quảng cáo"
-                });
-            }
-
-            return Ok(adsBoard);
-        }
-
-        // DELETE: api/ads-board?id=5
-        [HttpDelete("/api/officer/ads-board"), AuthorizeRoles(GlobalConstant.HeadQuater)]
-        public async Task<IActionResult> DeleteAdsBoard([FromQuery] int id)
-        {
-            if (_context.AdsBoards == null)
-            {
-                return Problem("Không thể kết nối đến cơ sở dữ liệu");
-            }
-
-            var acc = await _context.Accounts.FirstOrDefaultAsync(acc => acc.Email == User.Identity!.Name);
-
-            if (acc == null)
-            {
-                return BadRequest(new
-                {
-                    Message = "Vui lòng đăng nhập để tiếp tục"
-                });
-            }
-
-            var board = await _context.AdsBoards.FirstOrDefaultAsync(board => board.Id == id);
-
-            if (board == null)
-            {
-                return BadRequest(new
-                {
-                    Message = "Không thể tìm thấy bảng quảng cáo"
-                });
-            }
-
-            var point = await _context.AdsPoints
-                .Where(b => b.Id == board.AdsPointId)
-                .FirstOrDefaultAsync();
-
-            if (point == null)
-            {
-                return BadRequest(new
-                {
-                    Message = "Không thể tìm thấy điểm quảng cáo của bảng quảng cáo này"
-                });
-            }
-
-            var region = HttpContext.Items["address"] as string;
-            if (!Helper.IsUnderAuthority(point!.Address, acc.UnitUnderManagement, region))
-            {
-                return BadRequest(new
-                {
-                    Message = "Bảng quảng cáo không nằm trong khu vực bạn quản lí"
-                });
-            }
-
-            var adsBoard = await _context.AdsBoards.FindAsync(id);
-            if (adsBoard == null)
-            {
-                return NotFound();
-            }
-
-            _context.AdsBoards.Remove(adsBoard);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
         }
     }
 }

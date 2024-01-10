@@ -20,4 +20,10 @@ namespace UrashimaServer.Database.Dtos
         public string Role { get; set; } = string.Empty;
         public string UnitUnderManagement { get; set; } = string.Empty;
     }
+
+    public class UpdateUnitUnderManagementDto
+    {
+        public int Id { get; set; }
+        public string UnitUnderManagement { get; set; } = string.Empty;
+    }
 }
