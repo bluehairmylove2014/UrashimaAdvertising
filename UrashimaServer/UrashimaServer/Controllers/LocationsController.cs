@@ -2,11 +2,15 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Web;
+using UrashimaServer.Common.Helper;
+using UrashimaServer.Database;
 using UrashimaServer.Database.Dtos;
 
 namespace UrashimaServer.Controllers
@@ -20,10 +24,40 @@ namespace UrashimaServer.Controllers
     {
         private readonly IMapper _mapper;
         private readonly string _apiKey = "658dac28274ce196615546rej6e920c";
+        private readonly DataContext _context;
+        private static List<string>? WardData = null;
+        private static List<string>? DistrictData = null;
 
-        public LocationsController(IMapper mapper)
+        public LocationsController(IMapper mapper, DataContext context)
         {
             _mapper = mapper;
+            _context = context;
+        }
+
+        private async Task<List<string>> GetWards()
+        {
+            WardData ??= await _context.WardDistricts.Select(e => e.Ward).Distinct().ToListAsync();
+            return WardData!;
+        }
+
+        private async Task<List<string>> GetDistricts()
+        {
+            DistrictData ??= await _context.WardDistricts.Select(e => e.District).Distinct().ToListAsync();
+            return DistrictData!;
+        }
+
+        private async Task<string> ToVieLocation(string input)
+        {
+            var arr = (await GetWards()).Concat(await GetDistricts()).ToList();
+            arr.Add("Thành Phố Hồ Chí Minh");
+
+            foreach (var item in arr)
+            {
+                var engName = Helper.ToEngPlace(item);
+                input = Regex.Replace(input, engName, item);
+            }
+
+            return input;
         }
 
         /// <summary>
@@ -64,7 +98,7 @@ namespace UrashimaServer.Controllers
                     string apiResponse = await response.Content.ReadAsStringAsync();
                     rawResult = JsonConvert.DeserializeObject<GeoCodeResult>(apiResponse);
                     result = _mapper.Map<GeoCodeResultDto>(rawResult?.Address);
-                    result.Display_name = rawResult?.Display_name;
+                    result.Display_name = await ToVieLocation(rawResult!.Display_name!);
                     result.Latt = latitude;
                     result.Longt = longitude;
                 }
@@ -73,7 +107,7 @@ namespace UrashimaServer.Controllers
             if (result is null) {
                 return NotFound(new
                 {
-                    message = "Not Found"
+                    message = "Không tìm thấy vị trí dựa trên tọa độ đã cung cấp."
                 });
             }
 

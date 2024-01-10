@@ -199,7 +199,7 @@ namespace UrashimaServer.Controllers.Headquater
                     var imagesToModify = _context.AdsPointImages
                         .Where(img => img.AdsPointId == modifyData.AdsPointId).ToList();
                     _context.AdsPointImages.RemoveRange(imagesToModify);
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
 
                     foreach (var item in modifyData.Images)
                     {
@@ -341,10 +341,10 @@ namespace UrashimaServer.Controllers.Headquater
                         boardData.Add(_mapper.Map<AdsBoard>(item));
                     }
                 }
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
-                var removedData = _context.AdsBoards
-                    .Where(board => board.AdsPointId == updatedPoint.Id && !updatedBoardIds.Contains(board.Id)).ToList();
+                var removedData = await _context.AdsBoards
+                    .Where(board => board.AdsPointId == updatedPoint.Id && !updatedBoardIds.Contains(board.Id)).ToListAsync();
 
                 _context.AdsBoards.RemoveRange(removedData);
                 _context.AdsBoards.AddRange(boardData);
@@ -355,10 +355,10 @@ namespace UrashimaServer.Controllers.Headquater
             // Image
             if (updatedPoint.Images != null)
             {
-                var imagesToModify = _context.AdsPointImages
-                    .Where(img => img.AdsPointId == updatedPoint.Id).ToList();
+                var imagesToModify = await _context.AdsPointImages
+                    .Where(img => img.AdsPointId == updatedPoint.Id).ToListAsync();
                 _context.AdsPointImages.RemoveRange(imagesToModify);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
                 foreach (var item in updatedPoint.Images)
                 {

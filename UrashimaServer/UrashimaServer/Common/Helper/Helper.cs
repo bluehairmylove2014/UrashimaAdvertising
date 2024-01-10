@@ -1,4 +1,6 @@
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -64,7 +66,50 @@ namespace UrashimaServer.Common.Helper
         {
             return OriginConstant.CheckList.Find(e => e.Item2.Equals(role)).Item1
                 .Any(item => item.Equals(origin));
-        } 
+        }
+
+        private static readonly Dictionary<string, string> patterns = new() {
+            { "[àáảãạăắằẵặẳâầấậẫẩ]", "a" },
+            { "[đ]", "d" },
+            { "[èéẻẽẹêềếểễệ]", "e" },
+            { "[ìíỉĩị]", "i" },
+            { "[òóỏõọôồốổỗộơờớởỡợ]", "o" },
+            { "[ùúủũụưừứửữự]", "u" },
+            { "[ỳýỷỹỵ]", "y" }
+        };
+
+        public static string VieToEngName(string input)
+        {
+            foreach (var item in patterns)
+            {
+                input = Regex.Replace(input, item.Key, item.Value);
+                input = Regex.Replace(input, item.Key.ToUpper(), item.Value.ToUpper());
+            }
+
+            return input;
+        }
+
+        private static readonly Dictionary<string, string> ToConvertEng = new() {
+            { "Xã", "Commune" },
+            { "Phường", "Ward" },
+            { "Thị trấn", "Town" },
+            { "Quận", "District" },
+            { "Huyện", "District" },
+            { "Thành Phố", "City" }
+        };
+
+        public static string ToEngPlace(string input)
+        {
+            foreach (var item in ToConvertEng)
+            {
+                input = Regex.Replace(input, item.Key, item.Value);
+            }
+            var test = VieToEngName(input).Split(' ');
+
+            return int.TryParse(test[1], out _)
+                ? string.Join(' ', test) 
+                : string.Join(' ', test.Skip(1).Concat(test.Take(1)));
+        }
 
     }
 }

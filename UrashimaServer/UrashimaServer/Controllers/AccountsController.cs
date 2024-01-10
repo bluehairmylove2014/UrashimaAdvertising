@@ -131,7 +131,7 @@ namespace UrashimaServer.Controllers
                 {
                     return BadRequest(new
                     {
-                        message = "Đơn vị quản lý của \'Cán bộ Quận\' không hợp lệ"
+                        message = "Cán bộ Quận chỉ được quản lý một Quận."
                     });
                 }
             } 
@@ -141,7 +141,7 @@ namespace UrashimaServer.Controllers
                 {
                     return BadRequest(new
                     {
-                        message = "Đơn vị quản lý của \'Cán bộ Phường\' không hợp lệ."
+                        message = "Cán bộ Phường chỉ được quản lý một Phường."
                     });
                 }
             }

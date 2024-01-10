@@ -45,7 +45,7 @@ namespace UrashimaServer.Controllers
 
             var rep = _mapper.Map<Report>(rawReport);
             rep.AdsBoardId = rawReport.AdsBoardID;
-            var point = _context.AdsPoints.Find(rawReport.AdsPointID);
+            var point = await _context.AdsPoints.FindAsync(rawReport.AdsPointID);
             rep.Address = point != null ? point.Address : "";
 
             _context.Reports.Add(rep);
@@ -72,10 +72,10 @@ namespace UrashimaServer.Controllers
 
             var rep = _mapper.Map<Report>(rawReport);
 
-            var point = _context.AdsPoints
+            var point = await _context.AdsPoints
                 .Where(point 
                     => point.Longitude == rawReport.Longitude && point.Latitude == rawReport.Latitude)
-                .FirstOrDefault();
+                .FirstOrDefaultAsync();
             
             if (point != null)
             {
@@ -83,7 +83,7 @@ namespace UrashimaServer.Controllers
                 rep.Address = point.Address;
             } else
             {
-                var controller = new LocationsController(_mapper);
+                var controller = new LocationsController(_mapper, _context);
                 var geoCode = (await controller.GetRevGeoCodeInfo(rawReport.Latitude, rawReport.Longitude)).Result;
             
                 OkObjectResult geoObj = new(new GeoCodeResultDto());
