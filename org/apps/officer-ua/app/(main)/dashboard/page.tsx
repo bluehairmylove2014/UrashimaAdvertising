@@ -77,11 +77,6 @@ function Home(): ReactElement {
   const { onGetLocationDetail } = useGetLocationDetail();
 
   useEffect(() => {
-    console.log(reportsData);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [reportsData]);
-
-  useEffect(() => {
     if (idAdsPoint > -1) {
       if (!infoClickAdsPoint && isClickAdsPoint)
         setInfoHoverAdsPoint(undefined);
@@ -250,25 +245,24 @@ function Home(): ReactElement {
                         coordinates: [m.longitude, m.latitude],
                       },
                     })),
-                    // ...(reportsData
-                    //   ? reportsData
-                    //       .map((m, index) => ({
-                    //         type: 'Feature',
-                    //         properties: {
-                    //           id: adsData.length + index + 1,
-                    //           cluster: false,
-                    //           name: '',
-                    //           planned: false,
-                    //           reported: true,
-                    //           isEmpty: false,
-                    //           longLatArr: [m., m.latitude],
-                    //         },
-                    //         geometry: {
-                    //           type: 'Point',
-                    //           coordinates: [m.longitude, m.latitude],
-                    //         },
-                    //       }))
-                    //   : []),
+                    ...(reportsData
+                      ? reportsData.map((m, index) => ({
+                          type: 'Feature',
+                          properties: {
+                            id: adsData.length + index + 1,
+                            cluster: false,
+                            name: m.address,
+                            planned: false,
+                            reported: true,
+                            isEmpty: false,
+                            longLatArr: [m.lon, m.lat],
+                          },
+                          geometry: {
+                            type: 'Point',
+                            coordinates: [m.lon, m.lat],
+                          },
+                        }))
+                      : []),
                   ]
                 : [],
             } as FeatureCollection<Point>

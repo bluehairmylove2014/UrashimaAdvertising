@@ -9,6 +9,7 @@ export const refreshTokenUrl = '/api/auth/refresh-token';
 export const updateAccountUrl = '/api/auth/login-social';
 
 // ADS
+export const getAllAdBoardsUrl = '/api/officer/ads-board';
 export const getAllAdsUrl = '/api/ads-point';
 export const getAdDetailsUrl = '/api/ads-point/detail';
 
@@ -44,6 +45,7 @@ export const getApproveListUrl = '/api/officer/ads-request';
 export const createNewAdBoardApproveRequestUrl =
   '/api/officer/ads-request/board';
 export const deleteApproveUrl = '/api/officer/ads-request';
+export const deleteModificationRequestUrl = '/api/officer/ads-modification';
 
 // SIRV
 export const sirvBaseUrlTemplate = 'https://api.sirv.com/v2';

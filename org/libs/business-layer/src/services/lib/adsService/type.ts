@@ -1,4 +1,4 @@
-import { IAdLocation, IAdLocationDetail } from '../../entities';
+import { IAdLocation, IAdLocationDetail, IAdsBoard } from '../../entities';
 
 export type getAllAdsResponseType = IAdLocation[];
 export type getAdDetailParamsType = {
@@ -20,3 +20,4 @@ export type adsPointModificationParamsType = {
 export type adsPointModificationResponseType = {
   message: string;
 };
+export type getAllAdBoardsResponseType = IAdsBoard[];

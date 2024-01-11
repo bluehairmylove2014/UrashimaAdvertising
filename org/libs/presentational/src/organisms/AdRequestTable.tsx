@@ -19,6 +19,8 @@ import TableRow from '@presentational/molecules/TableRow';
 import IconButton from '@presentational/atoms/IconButton';
 import { useRouter } from 'next/navigation';
 import {
+  useDeleteApproveRequest,
+  useDeleteModificationRequest,
   useGetAllAdModificationRequest,
   useGetAllCreationRequest,
 } from '@business-layer/business-logic/lib/approve/process/hooks';
@@ -28,6 +30,9 @@ import MultipleLayerSelect, {
   mulSelectOptionType,
 } from '@presentational/atoms/MultipleLayerSelect';
 import { useViewLocationMap } from './ViewLocationMap';
+import YesNoPopup from '@presentational/molecules/YesNoPopup';
+import { useNotification } from '@presentational/atoms/Notification';
+import { useNavigateLoader } from '@presentational/atoms/NavigateLoader';
 
 const START_PAGE = 1;
 const MAX_ELEMENT_PER_PAGE = 4;
@@ -50,6 +55,7 @@ type displayDataType = {
     contractStart: string;
     contractEnd: string;
   };
+  isInProgress: boolean;
   reasonsData: string;
   requestTypes: string;
   href: string;
@@ -61,8 +67,11 @@ type additionFuncParamsType = {
 function AdRequestTable({ regionsData }: additionFuncParamsType) {
   const router = useRouter();
   const { openMap } = useViewLocationMap();
-  const modificationRequests = useGetAllAdModificationRequest();
-  const creationRequests = useGetAllCreationRequest();
+  const { showLoader } = useNavigateLoader();
+  const { data: modificationRequests, refetch: refetchModificationRequest } =
+    useGetAllAdModificationRequest();
+  const { data: creationRequests, refetch: refetchCreationRequest } =
+    useGetAllCreationRequest();
   const { setPaginationData } = useSetPaginationData();
   const paginationData = useGetPagination();
   const [requestData, setRequestData] = useState<displayDataType[] | null>(
@@ -70,6 +79,14 @@ function AdRequestTable({ regionsData }: additionFuncParamsType) {
   );
   const backupRequestData = useRef<displayDataType[] | null>(null);
   const [districts, setDistricts] = useState<mulSelectOptionType | null>(null);
+  const [isShowingPopupDelete, setIsShowingPopupDelete] =
+    useState<boolean>(false);
+  const needDeletedRequestId = useRef<{ id: number; type: string } | null>(
+    null
+  );
+  const { onDeleteApproveRequest } = useDeleteApproveRequest();
+  const { onDeleteModificationRequest } = useDeleteModificationRequest();
+  const { showError, showSuccess } = useNotification();
 
   useEffect(() => {
     if (regionsData) {
@@ -111,6 +128,7 @@ function AdRequestTable({ regionsData }: additionFuncParamsType) {
             longitude: mr.longitude,
             address: mr.address,
           },
+          isInProgress: true,
           reasonsData: mr.reasons,
           requestTypes: REQUEST_TYPES.MOD,
           href: HQ_PAGES.AD_MODIFICATION_REQUESTS + `?id=${mr.id}`,
@@ -131,12 +149,15 @@ function AdRequestTable({ regionsData }: additionFuncParamsType) {
             contractStart: cr.contractStart,
             contractEnd: cr.contractEnd,
           },
+          isInProgress: cr.requestStatus === 'inprocess',
           reasonsData: '',
           requestTypes: REQUEST_TYPES.CRE,
           href: HQ_PAGES.AD_APPROVE_REQUESTS + `?id=${cr.id}`,
         })
       );
       setRequestData(displayData);
+      console.log(modificationRequests);
+      console.log(creationRequests);
       backupRequestData.current = displayData;
     }
   }, [modificationRequests, creationRequests]);
@@ -176,6 +197,44 @@ function AdRequestTable({ regionsData }: additionFuncParamsType) {
       }
     }
   };
+
+  function handleDeleteRequest(result: boolean) {
+    if (result) {
+      if (!needDeletedRequestId.current) return;
+      if (needDeletedRequestId.current.type === REQUEST_TYPES.CRE) {
+        const target = creationRequests?.find(
+          (c) => c.id === needDeletedRequestId.current?.id
+        );
+        if (target) {
+          onDeleteApproveRequest(target.id)
+            .then((msg) => {
+              showSuccess(msg);
+              refetchCreationRequest();
+            })
+            .catch((error) => {
+              showError(error.message);
+            });
+        }
+      } else {
+        const target = modificationRequests?.find(
+          (c) => c.id === needDeletedRequestId.current?.id
+        );
+        if (target) {
+          onDeleteModificationRequest(target.id)
+            .then((msg) => {
+              showSuccess(msg);
+              refetchModificationRequest();
+            })
+            .catch((error) => {
+              showError(error.message);
+            });
+        }
+      }
+    }
+    // Refresh
+    setIsShowingPopupDelete(false);
+    needDeletedRequestId.current = null;
+  }
 
   return (
     <>
@@ -224,7 +283,7 @@ function AdRequestTable({ regionsData }: additionFuncParamsType) {
                   <>
                     <tr
                       className="py-4 even:bg-gray-100"
-                      key={`request@${request.requestTypes}@${request.id}`}
+                      key={`request@${request.requestTypes}@${request.id}@${requestIndex}`}
                     >
                       <TableRow
                         listData={[
@@ -335,20 +394,40 @@ function AdRequestTable({ regionsData }: additionFuncParamsType) {
                           >
                             {request.requestTypes}
                           </span>,
-                          <IconButton
-                            type="button"
-                            shape="square"
-                            callback={() => {
-                              router.push(
-                                (request.requestTypes === REQUEST_TYPES.MOD
-                                  ? HQ_PAGES.AD_MODIFICATION_REQUESTS
-                                  : HQ_PAGES.AD_APPROVE_REQUESTS) +
-                                  `?id=${request.id}`
-                              );
-                            }}
-                          >
-                            <i className="fi fi-sr-file-circle-info text-blue-600 text-sm hover:text-blue-400 transition-colors"></i>
-                          </IconButton>,
+                          <>
+                            <IconButton
+                              type="button"
+                              shape="square"
+                              callback={() => {
+                                router.push(
+                                  (request.requestTypes === REQUEST_TYPES.MOD
+                                    ? HQ_PAGES.AD_MODIFICATION_REQUESTS
+                                    : HQ_PAGES.AD_APPROVE_REQUESTS) +
+                                    `?id=${request.id}`
+                                );
+                                showLoader();
+                              }}
+                            >
+                              <i className="fi fi-sr-file-circle-info text-blue-600 text-sm hover:text-blue-400 transition-colors"></i>
+                            </IconButton>
+                            {request.isInProgress ? (
+                              <IconButton
+                                type="button"
+                                shape="square"
+                                callback={() => {
+                                  needDeletedRequestId.current = {
+                                    id: request.id,
+                                    type: request.requestTypes,
+                                  };
+                                  setIsShowingPopupDelete(true);
+                                }}
+                              >
+                                <i className="fi fi-ss-trash text-red-600 text-sm hover:text-red-400 transition-colors"></i>
+                              </IconButton>
+                            ) : (
+                              <></>
+                            )}
+                          </>,
                         ]}
                       />
                     </tr>
@@ -368,6 +447,11 @@ function AdRequestTable({ regionsData }: additionFuncParamsType) {
         </table>
         {paginationData.maxPage > 0 ? <Pagination /> : <></>}
       </div>
+      <YesNoPopup
+        message="Bạn có chắc muốn xoá không?"
+        onResult={handleDeleteRequest}
+        isActive={isShowingPopupDelete}
+      />
     </>
   );
 }

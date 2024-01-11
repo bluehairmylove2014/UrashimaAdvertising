@@ -1,13 +1,10 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { AdsService } from '@business-layer/services';
-import EditAdDetail from '@presentational/organisms/EditAdDetail';
+import DisplayAdDetail from '@presentational/organisms/DisplayAdDetail';
 import Breadcrumbs from '@presentational/molecules/Breadcrumbs';
+import Link from 'next/link';
 import { IBreadcrumb } from '@business-layer/services/entities';
 import { OFFICER_PAGES } from '@constants/officerPages';
-import { LOCATION_TYPES } from '../../../../../constants/locationTypes';
-import { ADS_FORM } from '../../../../../constants/adsForm';
 import { cookies } from 'next/headers';
-import { ADS_TYPE } from '../../../../../constants/adsType';
 import { getCustomAccessTokenKey } from '@business-layer/business-logic/helper/customKey';
 import { getHostname } from '../../../../../helper/hostname';
 
@@ -44,34 +41,30 @@ async function AdBoards({ params }: { params: { boardId: string } }) {
     {
       href: OFFICER_PAGES.AD_LOCATION_DETAIL + `/${params.boardId}`,
       label: 'Chi tiết điểm quảng cáo',
-      isCurrent: false,
-    },
-    {
-      href: OFFICER_PAGES.AD_LOCATION_EDIT + `/${params.boardId}`,
-      label: 'Chỉnh sửa',
       isCurrent: true,
     },
   ];
-  const [defaultLocationOption, ...locationOptions] = LOCATION_TYPES;
-  const [defaultAdsFormOption, ...adsFormOptions] = ADS_FORM;
-  const [defaultAdsTypeOption, ...adsTypeOptions] = ADS_TYPE;
 
   return (
     <main className="container mx-auto px-4 py-12">
       {adData ? (
         <>
-          <div className="flex flex-col justify-start items-start mb-8 ">
-            <h1 className="font-bold !text-base">
-              CHỈNH SỬA ĐIỂM ĐẶT QUẢNG CÁO
-            </h1>
-            <Breadcrumbs bcList={breadcrumbsData} />
+          <div className="flex flex-row justify-between items-start mb-8 ">
+            <div>
+              <h1 className="font-bold !text-base">
+                THÔNG TIN ĐIỂM ĐẶT QUẢNG CÁO
+              </h1>
+              <Breadcrumbs bcList={breadcrumbsData} />
+            </div>
+            <Link
+              href={OFFICER_PAGES.AD_LOCATION_DETAIL + `/edit/${adData.id}`}
+              className="px-4 py-2 rounded text-[0.65rem] font-semibold text-white bg-green-600 hover:bg-green-500 transition-colors"
+            >
+              <i className="fi fi-ss-file-edit mr-2"></i>
+              Chỉnh sửa
+            </Link>
           </div>
-          <EditAdDetail
-            adData={adData}
-            locationOptions={locationOptions}
-            adsFormOptions={adsFormOptions}
-            adsTypeOptions={adsTypeOptions}
-          />
+          <DisplayAdDetail adData={adData} />
         </>
       ) : (
         <></>

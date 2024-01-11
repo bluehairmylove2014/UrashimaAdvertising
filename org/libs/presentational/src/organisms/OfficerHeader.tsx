@@ -9,18 +9,7 @@ import RegionManagementDropdown from '@presentational/molecules/RegionManagement
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
-
-// const officerAdsNavDropdownOptions = [
-//   {
-//     name: 'Danh sách điểm quảng cáo',
-//     href: OFFICER_PAGES.ADS_LOCATION,
-//   },
-//   {
-//     name: 'Danh sách bảng quảng cáo',
-//     href: OFFICER_PAGES.ADS_LOCATION,
-//   },
-// ];
+import { useEffect, useState } from 'react';
 
 function OfficerHeader() {
   const { isActive, hideLoader, showLoader } = useNavigateLoader();
@@ -32,12 +21,24 @@ function OfficerHeader() {
   const [approveOptions, setApproveOptions] = useState([
     {
       name: 'Danh sách cấp phép',
-      href: OFFICER_PAGES.APPROVE_LIST,
+      href: OFFICER_PAGES.REQUEST_LIST,
       isNeedLoader: true,
     },
     {
       name: 'Tạo cấp phép mới',
       href: OFFICER_PAGES.NEW_APPROVE,
+      isNeedLoader: true,
+    },
+  ]);
+  const [adsOptions, setAdsOptions] = useState([
+    {
+      name: 'Các điểm quảng cáo',
+      href: OFFICER_PAGES.ADS_LOCATION,
+      isNeedLoader: true,
+    },
+    {
+      name: 'Các bảng quảng cáo',
+      href: OFFICER_PAGES.ADS_BOARD,
       isNeedLoader: true,
     },
   ]);
@@ -54,6 +55,18 @@ function OfficerHeader() {
     }
     setApproveOptions(
       approveOptions.map((a) => {
+        if (a.href === pathName) {
+          return {
+            ...a,
+            isNeedLoader: false,
+          };
+        } else {
+          return a;
+        }
+      })
+    );
+    setAdsOptions(
+      adsOptions.map((a) => {
         if (a.href === pathName) {
           return {
             ...a,
@@ -101,7 +114,7 @@ function OfficerHeader() {
             </Link>
           </li>
           <li>
-            <Link
+            {/* <Link
               href={OFFICER_PAGES.ADS_LOCATION}
               onClick={() => {
                 showLoader();
@@ -109,13 +122,10 @@ function OfficerHeader() {
               className="text-xs text-white font-semibold hover:text-orange-400"
             >
               Quảng cáo
-            </Link>
-            {/* <OfficerNavDropdown
-              options={officerAdsNavDropdownOptions}
-              position="center"
-            >
+            </Link> */}
+            <OfficerNavDropdown options={adsOptions} position="center">
               <span>Quảng cáo</span>
-            </OfficerNavDropdown> */}
+            </OfficerNavDropdown>
           </li>
           <li>
             <OfficerNavDropdown options={approveOptions} position="center">

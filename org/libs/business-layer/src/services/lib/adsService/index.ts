@@ -2,6 +2,7 @@ import { getRegionsFromCookie } from '@business-layer/business-logic/lib/regionM
 import {
   adsPointModificationUrl,
   getAdDetailsUrl,
+  getAllAdBoardsUrl,
   getAllAdsUrl,
   getAllOfficerAdsUrl,
   getOfficerAdDetailAdsUrl,
@@ -9,7 +10,9 @@ import {
 import { Services } from '../../service';
 import {
   adsPointModificationSchema,
+  anySchema,
   getAdDetailResponseSchema,
+  getAllAdBoardsResponseSchema,
   getAllAdsResponseSchema,
   getAllOfficerAdsResponseSchema,
   getOfficerAdDetailResponseSchema,
@@ -19,6 +22,7 @@ import {
   adsPointModificationResponseType,
   getAdDetailParamsType,
   getAdDetailResponseType,
+  getAllAdBoardsResponseType,
   getAllAdsResponseType,
   getAllOfficerAdsResponseType,
   getOfficerLocationDetailAdsResponseType,
@@ -79,6 +83,34 @@ export class AdsService extends Services {
           method: 'GET',
           url: getAllOfficerAdsUrl,
           schema: getAllOfficerAdsResponseSchema,
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Regions: encodeURIComponent(getRegionsFromCookie() || ''),
+          },
+          signal: this.abortController.signal,
+          transformResponse: (res) => res,
+        });
+        return response;
+      } else {
+        throw new Error('Unauthorized');
+      }
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  };
+  getAllOfficerAdBoards = async (
+    token: string | null
+  ): Promise<getAllAdBoardsResponseType> => {
+    this.abortController = new AbortController();
+    try {
+      if (token) {
+        const response = await this.fetchApi<
+          typeof anySchema,
+          getAllAdBoardsResponseType
+        >({
+          method: 'GET',
+          url: getAllAdBoardsUrl,
+          schema: anySchema,
           headers: {
             Authorization: `Bearer ${token}`,
             Regions: encodeURIComponent(getRegionsFromCookie() || ''),

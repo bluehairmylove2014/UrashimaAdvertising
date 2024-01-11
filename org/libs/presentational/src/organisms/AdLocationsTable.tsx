@@ -15,6 +15,7 @@ import IconButton from '@presentational/atoms/IconButton';
 import { useRouter } from 'next/navigation';
 import { OFFICER_PAGES } from '@constants/officerPages';
 import { IAdLocation } from '@business-layer/services/entities';
+import { useNavigateLoader } from '@presentational/atoms/NavigateLoader';
 
 const START_PAGE = 1;
 const MAX_ELEMENT_PER_PAGE = 6;
@@ -34,6 +35,7 @@ function AdLocationsTable({
   const officerAdData = useGetAllOfficerAdsFromContext();
   const { setPaginationData } = useSetPaginationData();
   const paginationData = useGetPagination();
+  const { showLoader } = useNavigateLoader();
 
   useEffect(() => {
     if (Array.isArray(officerAdData)) {
@@ -109,9 +111,10 @@ function AdLocationsTable({
                           shape="square"
                           callback={() => {
                             router.push(
-                              (customDetailHref ?? OFFICER_PAGES.ADS_BOARD) +
-                                `/${ad.id}`
+                              (customDetailHref ??
+                                OFFICER_PAGES.AD_LOCATION_DETAIL) + `/${ad.id}`
                             );
+                            showLoader();
                           }}
                         >
                           <i className="fi fi-sr-file-circle-info text-blue-600 text-sm hover:text-blue-400 transition-colors"></i>

@@ -227,7 +227,7 @@ function EditAdDetail({
         .then((msg) => {
           showSuccess(msg);
           router.push(
-            customBackHref ?? OFFICER_PAGES.ADS_BOARD + `/${adData.id}`
+            customBackHref ?? OFFICER_PAGES.AD_LOCATION_DETAIL + `/${adData.id}`
           );
         })
         .catch((error) => showError(error.message))

@@ -6,8 +6,6 @@ import Pagination from '@presentational/molecules/Pagination';
 import {
   calculateMaxPage,
   formatDate,
-  getCurrentDateTime,
-  isDateGreaterThan,
   slicePaginationData,
 } from '@utils/helpers';
 import { useEffect, useRef, useState } from 'react';
@@ -52,7 +50,6 @@ function ApprovesList({
   timeFilterOptions: modernSelectOptionType[];
   requestStatusFilterOptions: modernSelectOptionType[];
 }) {
-  const currentDate = getCurrentDateTime();
   const router = useRouter();
   const { setPaginationData } = useSetPaginationData();
   const paginationData = useGetPagination();
@@ -60,8 +57,7 @@ function ApprovesList({
   const { filterByRequestStatus, filterBySearchKey, filterByTime } =
     useHandleFilterApprove();
   const { onDeleteApproveRequest } = useDeleteApproveRequest();
-  const { onApproveAdModificationRequest, isLoading } =
-    useApproveAdModificationRequest();
+  const { onApproveAdModificationRequest } = useApproveAdModificationRequest();
 
   const [isShowingPopupDelete, setIsShowingPopupDelete] =
     useState<boolean>(false);
@@ -79,6 +75,7 @@ function ApprovesList({
 
   useEffect(() => {
     if (Array.isArray(approvesData)) {
+      console.log(approvesData)
       setPaginationData({
         currentPage: START_PAGE,
         maxPage: calculateMaxPage(approvesData, MAX_ELEMENT_PER_PAGE),
@@ -202,7 +199,7 @@ function ApprovesList({
                 ).map((approve, index) => (
                   <tr
                     className="py-4 even:bg-gray-100"
-                    key={`adLocation@${approve.id}`}
+                    key={`adLocation@${approve.id}@${index}`}
                   >
                     <TableRow
                       multiRowColumn={3}

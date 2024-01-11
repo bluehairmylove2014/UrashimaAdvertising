@@ -15,10 +15,12 @@ import CommonLoader from '@presentational/atoms/CommonLoader';
 import { useNotification } from '@presentational/atoms/Notification';
 import { IApprove } from '@business-layer/services/entities/approve';
 import { CREATION_REQUEST_STATUS_LIST } from '@constants/requestStatus';
+import { useNavigateLoader } from '@presentational/atoms/NavigateLoader';
 
 async function ApproveRequestDetail() {
   const { get: getId } = useSearchParams();
   const requestId = getId('id');
+  const { isActive, hideLoader } = useNavigateLoader();
   const { data: creationRequests } = useGetAllCreationRequest();
   const { onApproveAdCreationRequest, isLoading } =
     useApproveAdCreationRequest();
@@ -46,6 +48,12 @@ async function ApproveRequestDetail() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [creationRequests, requestId]);
+
+  useEffect(() => {
+    if (isActive) {
+      hideLoader();
+    }
+  }, [hideLoader, isActive]);
 
   const handleApprove = (status: string) => {
     if (requestData) {

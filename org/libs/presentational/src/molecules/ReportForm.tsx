@@ -68,7 +68,7 @@ function ReportForm({
   const { onReportAd, isLoading: isReportingAd } = useReportAd();
   const { onReportLocation, isLoading: isReportingLocation } =
     useReportLocation();
-  const [imagesPreview, setImagesPreview] = useState<FileList | null>(null);
+  const [imagesPreview, setImagesPreview] = useState<File[] | null>(null);
   const { onUpload } = useUpload();
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [isVerified, setIsVerified] = useState<boolean>(false);
@@ -170,7 +170,7 @@ function ReportForm({
   };
 
   const handleSelectImage = (imageList: FileList) => {
-    setImagesPreview(imageList);
+    setImagesPreview(Array.from(imageList));
   };
 
   return (

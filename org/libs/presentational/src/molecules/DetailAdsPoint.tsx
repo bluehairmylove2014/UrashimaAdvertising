@@ -79,7 +79,8 @@ function DetailAdsPoint({
                 className="bg-green-600 text-white rounded px-2 py-2 font-semibold hover:bg-green-500 transition-colors"
                 onClick={() => {
                   router.push(
-                    OFFICER_PAGES.ADS_BOARD + `/edit/${detailAdsPoint.id}`
+                    OFFICER_PAGES.AD_LOCATION_DETAIL +
+                      `/edit/${detailAdsPoint.id}`
                   );
                   showLoader();
                 }}

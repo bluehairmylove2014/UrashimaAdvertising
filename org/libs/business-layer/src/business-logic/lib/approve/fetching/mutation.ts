@@ -59,3 +59,14 @@ export const useApproveAdCreationRequestMutation = () => {
     mutationFn: approveService.approveAdCreationRequest,
   });
 };
+
+export const useDeleteModificationRequestMutation = () => {
+  return useMutation<
+    deleteApproveRequestResponseType,
+    Error,
+    deleteApproveRequestParamsType,
+    unknown
+  >({
+    mutationFn: approveService.deleteModificationRequest,
+  });
+};

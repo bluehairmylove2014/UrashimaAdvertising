@@ -140,7 +140,7 @@ function CreateNewApproveForm({
       )
       .then((msg) => {
         showSuccess(msg);
-        router.push(OFFICER_PAGES.APPROVE_LIST);
+        router.push(OFFICER_PAGES.REQUEST_LIST);
         reset();
       })
       .catch((error) => showError(error.message));

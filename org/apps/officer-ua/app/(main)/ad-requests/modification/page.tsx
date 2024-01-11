@@ -19,10 +19,12 @@ import { formatDate } from '@utils/helpers';
 import CommonLoader from '@presentational/atoms/CommonLoader';
 import { useNotification } from '@presentational/atoms/Notification';
 import { MODIFICATION_REQUEST_STATUS_LIST } from '@constants/requestStatus';
+import { useNavigateLoader } from '@presentational/atoms/NavigateLoader';
 
 function ModificationRequestDetail() {
   const { get: getId } = useSearchParams();
   const requestId = getId('id');
+  const { isActive, hideLoader } = useNavigateLoader();
   const { data: modificationRequests } = useGetAllAdModificationRequest();
   const { onApproveAdModificationRequest, isLoading } =
     useApproveAdModificationRequest();
@@ -48,6 +50,11 @@ function ModificationRequestDetail() {
   const { showError, showSuccess } = useNotification();
   const router = useRouter();
 
+  useEffect(() => {
+    if (isActive) {
+      hideLoader();
+    }
+  }, [hideLoader, isActive]);
   useEffect(() => {
     if (requestId && modificationRequests) {
       const id = Number.parseInt(requestId);
