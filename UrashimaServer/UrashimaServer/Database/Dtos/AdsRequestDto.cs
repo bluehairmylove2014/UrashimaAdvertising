@@ -23,6 +23,7 @@ namespace UrashimaServer.Database.Dtos
         public string LocationType { get; set; } = string.Empty;
         public string AdsForm { get; set; } = string.Empty;
         public bool Planned { get; set; }
+        public bool IsEmpty { get; set; }
     }
 
     public class AdsCreateBoardRequestDto
@@ -62,7 +63,6 @@ namespace UrashimaServer.Database.Dtos
         public string Email { get; set; } = string.Empty;
         public string Phone { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;
-        public bool IsEmpty { get; set; }
         public DateTime ContractStart { get; set; }
         public DateTime ContractEnd { get; set; }
         public string RequestStatus { get; set; } = string.Empty;

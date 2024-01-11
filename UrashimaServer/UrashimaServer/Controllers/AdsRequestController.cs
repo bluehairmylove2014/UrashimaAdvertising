@@ -56,7 +56,7 @@ namespace UrashimaServer.Controllers
                 var toAddRes = _mapper.Map<GetAdsCreateRequestDto>(item);
                 var pointToFind = _context.AdsPoints.Find(item.AdsPointId);
                 toAddRes.AdsPoint = _mapper.Map<AdsCreateRequestPointDto>(pointToFind!);
-                toAddRes.IsEmpty = toAddRes.AdsBoard == null;
+                toAddRes.AdsPoint.IsEmpty = toAddRes.AdsBoard == null;
                 myResult.Add(toAddRes);
             }
 
