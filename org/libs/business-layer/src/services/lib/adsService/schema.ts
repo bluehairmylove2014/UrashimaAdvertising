@@ -8,6 +8,7 @@ const adLocationSchema = z.object({
   locationType: z.string(),
   adsForm: z.string(),
   planned: z.boolean(),
+  isEmpty: z.boolean()
 });
 const adBoardSchema = z.object({
   id: z.number(),

@@ -3,7 +3,6 @@ import { useReportContext } from '../context';
 import { useReportAdMutation } from '../../fetching/mutation';
 import { addAdReportToLS } from '../helpers/adReportLocalstorage';
 import { IAdReport } from '@business-layer/services/entities';
-import { useSendMsgToOfficer } from '@business-layer/business-logic/realtime';
 
 type useReportAdReturnType = {
   onReportAd: ({
@@ -21,7 +20,6 @@ type useReportAdReturnType = {
 export const useReportAd = (): useReportAdReturnType => {
   const reportAdMutation = useReportAdMutation();
   const { dispatch } = useReportContext();
-  const { onSendMsg } = useSendMsgToOfficer();
 
   /**
    * 

@@ -63,8 +63,10 @@ function ApprovesList({
   const { onApproveAdModificationRequest, isLoading } =
     useApproveAdModificationRequest();
 
-  const [isShowingPopupDelete, setIsShowingPopupDelete] = useState<boolean>(false);
-  const [isShowingPopupApprove, setIsShowingPopupApprove] = useState<boolean>(false);
+  const [isShowingPopupDelete, setIsShowingPopupDelete] =
+    useState<boolean>(false);
+  const [isShowingPopupApprove, setIsShowingPopupApprove] =
+    useState<boolean>(false);
 
   const needDeletedRequestId = useRef<number | null>(null);
   const needApproveRequestId = useRef<number | null>(null);
@@ -128,7 +130,7 @@ function ApprovesList({
     if (result && needApproveRequestId.current) {
       onApproveAdModificationRequest({
         id: needApproveRequestId.current,
-        status: MODIFICATION_REQUEST_STATUS_LIST.APPROVE
+        status: MODIFICATION_REQUEST_STATUS_LIST.APPROVE,
       })
         .then((msg) => {
           showSuccess(msg);
@@ -263,7 +265,8 @@ function ApprovesList({
                             shape="square"
                             callback={() => {
                               router.push(
-                                OFFICER_PAGES.APPROVE_DETAIL + `/${approve.id}`
+                                OFFICER_PAGES.APPROVE_DETAIL +
+                                  `?id=${approve.id}`
                               );
                             }}
                           >
@@ -290,7 +293,6 @@ function ApprovesList({
                               >
                                 <i className="fi fi-ss-trash text-red-600 text-sm hover:text-red-400 transition-colors"></i>
                               </IconButton>
-
                             </>
                           ) : (
                             <></>
@@ -324,7 +326,6 @@ function ApprovesList({
           onResult={handleApproveRequest}
           isActive={isShowingPopupApprove}
         />
-
       </div>
     </>
   );

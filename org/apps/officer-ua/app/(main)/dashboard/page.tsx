@@ -27,6 +27,7 @@ import LocationDetail from '@presentational/molecules/LocationDetail';
 import { ILocation } from '@business-layer/services/entities';
 import { useFetchAllOfficerAds } from '@business-layer/business-logic/lib/officerAds/process/hooks';
 import CustomMap from '@presentational/organisms/CustomMap';
+import useGetAllOfficerReport from '@business-layer/business-logic/lib/report/process/hooks/useGetAllOfficerReport';
 
 type locationType =
   | {
@@ -70,9 +71,15 @@ function Home(): ReactElement {
   const [isLocationOnClickPopupActive, setIsLocationOnClickPopupActive] =
     useState<boolean>(false);
 
+  const { data: reportsData } = useGetAllOfficerReport();
   const locationReportList = useGetLocationReports();
   const adsReportList = useGetAdReports();
   const { onGetLocationDetail } = useGetLocationDetail();
+
+  useEffect(() => {
+    console.log(reportsData);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reportsData]);
 
   useEffect(() => {
     if (idAdsPoint > -1) {
@@ -223,10 +230,7 @@ function Home(): ReactElement {
                         cluster: false,
                         name: m.address,
                         planned: m.planned,
-                        isAdsLocation: true,
-                        isAdsBoardReport: adsReportList
-                          ? adsReportList.some((ar) => ar.adsPointID === m.id)
-                          : false,
+                        isEmpty: m.isEmpty,
                         reported: Boolean(
                           (locationReportList &&
                             locationReportList.some(
@@ -246,30 +250,25 @@ function Home(): ReactElement {
                         coordinates: [m.longitude, m.latitude],
                       },
                     })),
-                    ...(locationReportList
-                      ? locationReportList
-                          .filter(
-                            (locationReport) =>
-                              locationReport.reportData === null
-                          )
-                          .map((m, index) => ({
-                            type: 'Feature',
-                            properties: {
-                              id: adsData.length + index + 1,
-                              cluster: false,
-                              name: '',
-                              planned: false,
-                              reported: true,
-                              isAdsLocation: false,
-                              isAdsBoardReport: false,
-                              longLatArr: [m.longitude, m.latitude],
-                            },
-                            geometry: {
-                              type: 'Point',
-                              coordinates: [m.longitude, m.latitude],
-                            },
-                          }))
-                      : []),
+                    // ...(reportsData
+                    //   ? reportsData
+                    //       .map((m, index) => ({
+                    //         type: 'Feature',
+                    //         properties: {
+                    //           id: adsData.length + index + 1,
+                    //           cluster: false,
+                    //           name: '',
+                    //           planned: false,
+                    //           reported: true,
+                    //           isEmpty: false,
+                    //           longLatArr: [m., m.latitude],
+                    //         },
+                    //         geometry: {
+                    //           type: 'Point',
+                    //           coordinates: [m.longitude, m.latitude],
+                    //         },
+                    //       }))
+                    //   : []),
                   ]
                 : [],
             } as FeatureCollection<Point>

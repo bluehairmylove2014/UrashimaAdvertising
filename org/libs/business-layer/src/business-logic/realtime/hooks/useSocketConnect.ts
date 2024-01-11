@@ -1,37 +1,35 @@
-'use client';
-import * as signalR from '@microsoft/signalr';
+import { Socket, connect } from 'socket.io-client';
 import { MSG_KEYS, baseSocketUrl } from '../config';
 import { useRealtimeContext } from '../context';
-import { HubConnection } from '@microsoft/signalr';
 
 export function useSocketConnect() {
   const { dispatch } = useRealtimeContext();
 
-  const handleConnect = (email?: string): Promise<HubConnection> => {
+  const handleConnect = (email?: string): Promise<Socket> => {
     return new Promise((rs, rj) => {
-      const connection = new signalR.HubConnectionBuilder()
-        .withUrl(`${baseSocketUrl}${email ? `?email=${email}` : ''}`)
-        .configureLogging(signalR.LogLevel.Information)
-        .build();
-      if (connection) {
-        connection
-          .start()
-          .then((res) => {
-            dispatch({
-              type: 'SET_CONNECTION',
-              payload: connection,
-            });
-            connection.on(MSG_KEYS.ON_RECEIVE_MESSAGE, (message) => {
-              alert(message);
-            });
-            console.log('CONNECTED TO CHAT SOCKET');
-            rs(connection);
-          })
-          .catch((error) => {
-            console.log('CANNOT CONNECTED TO CHAT SOCKET');
-            rs(error);
-          });
-      }
+      // const socket = connect(
+      //   `${baseSocketUrl}${email ? `?email=${email}` : ''}`
+      // );
+      // socket.on('connect', () => {
+      //   console.log('Connected to server');
+      //   dispatch({
+      //     type: 'SET_SOCKET',
+      //     payload: socket,
+      //   });
+      //   rs(socket);
+      // });
+      // socket.on(MSG_KEYS.ON_RECEIVE_MESSAGE, (data) => {
+      //   console.log('Received message from server:', data);
+      // });
+      // socket.on('disconnect', () => {
+      //   console.log('Disconnected from server');
+      //   // You can handle disconnect scenarios here if needed
+      // });
+      // // Xử lý sự kiện lỗi
+      // socket.on('error', (error) => {
+      //   console.error('Socket connection error:', error);
+      //   rj(error); // Reject promise with the error
+      // });
     });
   };
 

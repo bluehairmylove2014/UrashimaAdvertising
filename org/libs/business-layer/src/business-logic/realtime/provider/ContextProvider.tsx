@@ -10,7 +10,7 @@ export const ContextProvider: React.FC<ContextProviderType> = ({
   children,
 }) => {
   const [state, dispatch] = useReducer(realtimeReducer, {
-    connection: null,
+    socket: null,
   });
 
   return (

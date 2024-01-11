@@ -365,10 +365,7 @@ function Home(): ReactElement {
                         cluster: false,
                         name: m.address,
                         planned: m.planned,
-                        isAdsLocation: true,
-                        isAdsBoardReport: adsReportList
-                          ? adsReportList.some((ar) => ar.adsPointID === m.id)
-                          : false,
+                        isEmpty: m.isEmpty,
                         reported: Boolean(
                           (locationReportList &&
                             locationReportList.some(
@@ -402,8 +399,7 @@ function Home(): ReactElement {
                               name: '',
                               planned: false,
                               reported: true,
-                              isAdsLocation: false,
-                              isAdsBoardReport: false,
+                              isEmpty: false,
                               longLatArr: [m.longitude, m.latitude],
                             },
                             geometry: {

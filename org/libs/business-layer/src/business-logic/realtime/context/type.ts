@@ -1,10 +1,12 @@
+import { Socket } from 'socket.io-client';
+
 export interface RealtimeState {
-  connection: signalR.HubConnection | null;
+  socket: Socket | null;
 }
 
 export type RealtimeAction = {
-  type: 'SET_CONNECTION';
-  payload: RealtimeState['connection'];
+  type: 'SET_SOCKET';
+  payload: RealtimeState['socket'];
 };
 
 export type RealtimeContextType = {

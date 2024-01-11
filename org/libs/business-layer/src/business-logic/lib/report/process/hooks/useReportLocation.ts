@@ -3,7 +3,6 @@ import { useReportContext } from '../context';
 import { useReportLocationMutation } from '../../fetching/mutation';
 import { addLocationReportToLS } from '../helpers/locationReportLocalstorage';
 import { ILocationReport } from '@business-layer/services/entities';
-import { useSendMsgToOfficer } from '@business-layer/business-logic/realtime';
 
 type useReportLocationReturnType = {
   onReportLocation: ({
@@ -21,7 +20,6 @@ type useReportLocationReturnType = {
 export const useReportLocation = (): useReportLocationReturnType => {
   const reportLocationMutation = useReportLocationMutation();
   const { dispatch } = useReportContext();
-  const { onSendMsg } = useSendMsgToOfficer();
 
   /**
    * 

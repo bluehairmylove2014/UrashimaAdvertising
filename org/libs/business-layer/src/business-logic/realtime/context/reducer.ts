@@ -6,10 +6,10 @@ export const realtimeReducer = (
 ): RealtimeState => {
   try {
     switch (action.type) {
-      case 'SET_CONNECTION':
+      case 'SET_SOCKET':
         return {
           ...state,
-          connection: action.payload,
+          socket: action.payload,
         };
       default:
         return state;
