@@ -57,7 +57,7 @@ namespace UrashimaServer.Controllers
         }
 
         /// <summary>
-        /// API Lấy thông tin địa điểm thực tế dựa vào kinh độ - vĩ độ (Reverse Geocoding).
+        /// API Guest Lấy thông tin địa điểm thực tế dựa vào kinh độ - vĩ độ (Reverse Geocoding).
         /// </summary>
         [HttpGet("geo-code")]
         public async Task<ActionResult<GeoCodeResultDto>> GetRevGeoCodeInfo(

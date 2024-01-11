@@ -122,26 +122,26 @@ namespace UrashimaServer.Controllers
             });
         }
 
-        /// <summary>
-        /// API Lấy danh sách các báo cáo.
-        /// </summary>
-        // GET: api/report
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Report>>> GetAllReports()
-        {
-            var rawResult = await _context.Reports
-                .Include(s => s.Images)
-                .ToListAsync();
+        ///// <summary>
+        ///// API Lấy danh sách các báo cáo.
+        ///// </summary>
+        //// GET: api/report
+        //[HttpGet]
+        //public async Task<ActionResult<IEnumerable<Report>>> GetAllReports()
+        //{
+        //    var rawResult = await _context.Reports
+        //        .Include(s => s.Images)
+        //        .ToListAsync();
 
-            var result = new List<GetReportDto>();
-            foreach (var rawItem in rawResult)
-            {
-                var getReportDto = _mapper.Map<GetReportDto>(rawItem);
-                result.Add(getReportDto);
-            }
+        //    var result = new List<GetReportDto>();
+        //    foreach (var rawItem in rawResult)
+        //    {
+        //        var getReportDto = _mapper.Map<GetReportDto>(rawItem);
+        //        result.Add(getReportDto);
+        //    }
 
-            return Ok(result);
-        }
+        //    return Ok(result);
+        //}
 
         /// <summary>
         /// API Officer|Headquarter lấy danh sách báo cáo theo đơn vị quản lý.

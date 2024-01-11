@@ -78,23 +78,6 @@ namespace UrashimaServer.Controllers
             return res;
         }
 
-        /// <summary>
-        /// API thêm mới điểm quảng cáo.
-        /// </summary>
-        // POST: api/AdsPoints
-        [HttpPost]
-        public async Task<ActionResult<AdsPoint>> PostAdsPoint(PostAdsPointDto adsPoint)
-        {
-            if (_context.AdsPoints == null)
-            {
-                return Problem("Không thể kết nối đến cơ sở dữ liệu");
-            }
-            _context.AdsPoints.Add(_mapper.Map<AdsPoint>(adsPoint));
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetAdsPoint", new { id = adsPoint.Id }, adsPoint);
-        }
-
         private bool AdsPointExists(int id)
         {
            return (_context.AdsPoints?.Any(e => e.Id == id)).GetValueOrDefault();

@@ -27,7 +27,7 @@ namespace UrashimaServer.Controllers
         }
 
         /// <summary>
-        /// API lấy chi tiết bảng quảng cáo bằng id.
+        /// API Guest lấy chi tiết bảng quảng cáo bằng id.
         /// </summary>
         // GET: api/ads-board/detail?id=5
         [HttpGet("detail")]
@@ -53,11 +53,11 @@ namespace UrashimaServer.Controllers
         // -----------------------------------
 
         /// <summary>
-        /// API lấy danh sách bảng quảng cáo.
+        /// API Guest lấy danh sách bảng quảng cáo.
         /// </summary>
         // GET: api/ads-board
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<AdsBoard>>> GetAdsBoards()
+        public async Task<ActionResult<IEnumerable<GetAdsBoardDto>>> GetAdsBoards()
         {
             if (_context.AdsBoards == null)
             {
@@ -84,33 +84,6 @@ namespace UrashimaServer.Controllers
             }
 
             return Ok(boardDtoList);
-        }
-
-        /// <summary>
-        /// API tạo bảng quảng cáo.
-        /// </summary>
-        // POST: api/ads-board
-        [HttpPost]
-        public async Task<ActionResult<AdsBoardBasicDto>> PostAdsBoard(AdsBoardBasicDto adsBoard)
-        {
-            if (_context.AdsBoards == null)
-            {
-                return Problem("Không thể kết nối đến cơ sở dữ liệu");
-            }
-            _context.AdsBoards.Add(_mapper.Map<AdsBoard>(adsBoard));
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            } catch
-            {
-                return BadRequest(new
-                {
-                    Message = "Tạo bảng quảng cáo không thành công, vui lòng thử lại"
-                });
-            }
-
-            return CreatedAtAction("GetAdsBoardDetail", new { id = adsBoard.Id }, adsBoard);
         }
     }
 }

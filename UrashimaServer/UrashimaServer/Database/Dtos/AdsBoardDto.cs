@@ -15,7 +15,6 @@ namespace UrashimaServer.Models
         public DateTime ExpiredDate { get; set; }
 
         public GetAdsPointDto? AdsPoint { set; get; }
-        public ICollection<ReportAdsBoardDto>? Reports { set; get; }
     }
 
     public class AdsBoardBasicDto
