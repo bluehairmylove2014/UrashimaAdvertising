@@ -36,6 +36,8 @@ namespace UrashimaServer.Database.Dtos
     public class GetReportDto
     {
         public int Id { get; set; }
+        public double Lat { get; set; }
+        public double Lon { get; set; }
         public string ReportType { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;

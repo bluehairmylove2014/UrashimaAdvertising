@@ -162,6 +162,8 @@ namespace UrashimaServer.Controllers
 
             var rawResult = await _context.Reports
                 .Include(r => r.Images)
+                .Include(r => r.Location)
+                .Include(r => r.AdsPoint)
                 .ToListAsync();
 
             var region = HttpContext.Items["address"] as string;
@@ -172,6 +174,17 @@ namespace UrashimaServer.Controllers
             foreach (var rawItem in rawResult)
             {
                 var getReportDto = _mapper.Map<GetReportDto>(rawItem);
+
+                if (rawItem.AdsPoint != null)
+                {
+                    getReportDto.Lat = rawItem.AdsPoint.Latitude;
+                    getReportDto.Lon = rawItem.AdsPoint.Longitude;
+                } else if (rawItem.Location != null)
+                {
+                    getReportDto.Lat = rawItem.Location.Latitude;
+                    getReportDto.Lon = rawItem.Location.Longitude;
+                }
+
                 result.Add(getReportDto);
             }
 
