@@ -220,7 +220,6 @@ namespace UrashimaServer.Controllers.Ward
         {
             var result = _mapper.Map<PointModify>(pointModifyRequest);
 
-
             result.AdsPointId = result.Id;
             result.Id = 0;
             result.ModifyTime = DateTime.Now;
@@ -246,6 +245,36 @@ namespace UrashimaServer.Controllers.Ward
             return Ok(new
             {
                 message = "Tạo yêu cầu chỉnh sửa điểm quảng cáo thành công"
+            });
+        }
+
+        /// <summary>
+        /// API Officer xóa yêu cầu chỉnh sửa bảng quảng cáo khi chưa được duyệt.
+        /// </summary>
+        [HttpDelete("ads-modification"), AuthorizeRoles(GlobalConstant.WardOfficer, GlobalConstant.DistrictOfficer, GlobalConstant.HeadQuater)]
+        public async Task<IActionResult> DeletePointModify([FromQuery, Required] int id)
+        {
+            var pointToRemove = await _context.PointModifies
+                .Include(p => p.AdsBoard)
+                .Include(p => p.Images)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (pointToRemove == null)
+            {
+                return BadRequest(new
+                {
+                    message = $"Không thể tìm được yêu cầu chỉnh sửa có id={id}."
+                });
+            }
+
+            _context.PointModifyImages.RemoveRange(pointToRemove.Images!);
+            _context.BoardModifies.RemoveRange(pointToRemove.AdsBoard!);
+            _context.PointModifies.Remove(pointToRemove);
+            await _context.SaveChangesAsync();
+
+            return Ok(new
+            {
+                message = "Xóa yêu cầu chỉnh sửa điểm quảng cáo thành công"
             });
         }
 
