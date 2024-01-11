@@ -16,33 +16,51 @@ function DistrictManagement({
     const formBoxRefs = useRef<Array<React.RefObject<HTMLDivElement> | null>>([]);
     const [districts, setDistricts] = useState<mulSelectOptionType | null>(null);
     const [selectedDistrict, setSelectedDistrict] = useState<string | null>(null);
-    const [isPopupActive, setIsPopupActive] = useState<boolean>(false);
 
-    const handleToggleFormBox = (index: number) => {
-        const formBoxRef = formBoxRefs.current[index];
+    const [isShowingPopupDeleteDistrict, setIsShowingPopupDeleteDistrict] = useState<boolean>(false);
+    const [isShowingPopupDeleteWard, setIsShowingPopupDeleteWard] = useState<boolean>(false);
 
-        if (formBoxRef && formBoxRef.current) {
-            toggleClass(formBoxRef.current, 'activeHQFormBox');
-        }
-    };
+    const needDeletedDistrict = useRef<string | null>(null);
+    const needDeletedWard = useRef<string | null>(null);
 
     const onSelectDistrict = (type: string, index: number) => {
         setSelectedDistrict(type);
         handleToggleFormBox(index);
     };
 
-    // Delete District 
-    const handleDeleteDistrict = () => {
+    const showDeleteDistrictPopup = (district: string) => {
+        needDeletedDistrict.current = district;
+        setIsShowingPopupDeleteDistrict(true);
+    };
 
-    }
+    const showDeleteWardPopup = (ward: string) => {
+        needDeletedWard.current = ward;
+        setIsShowingPopupDeleteWard(true);
+    };
+
+    // Delete District 
+    const handleDeleteDistrict = (result: boolean) => {
+        if (result && needDeletedDistrict.current) {
+            //hook delete district
+        }
+
+        needDeletedDistrict.current = null;
+        setIsShowingPopupDeleteDistrict(false);
+    };
+
+    // Delete Ward 
+    const handleDeleteWard = (result: boolean) => {
+        if (result && needDeletedWard.current) {
+            //hook delete ward
+
+        }
+
+        needDeletedWard.current = null;
+        setIsShowingPopupDeleteWard(false);
+    };
 
     // Add District
     const handleAddDistrict = () => {
-
-    }
-
-    // Delete Ward 
-    const handleDeleteWard = () => {
 
     }
 
@@ -50,15 +68,6 @@ function DistrictManagement({
     const handleAddWard = () => {
 
     }
-
-    useEffect(() => {
-        if (districts) {
-            formBoxRefs.current = []; // Clear existing refs
-            Object.keys(districts).forEach(() => {
-                formBoxRefs.current.push(React.createRef<HTMLDivElement>());
-            });
-        }
-    }, [districts]);
 
     useEffect(() => {
         if (regionsData) {
@@ -73,9 +82,26 @@ function DistrictManagement({
             });
 
             setDistricts(districts);
+
+
+            if (districts) {
+                formBoxRefs.current = []; // Clear existing refs
+                Object.keys(districts).forEach(() => {
+                    formBoxRefs.current.push(React.createRef<HTMLDivElement>());
+                });
+            }
+            console.log(districts);
         }
     }, [regionsData]);
 
+
+    const handleToggleFormBox = (index: number) => {
+        const formBoxRef = formBoxRefs.current[index];
+
+        if (formBoxRef && formBoxRef.current) {
+            toggleClass(formBoxRef.current, 'activeHQFormBox');
+        }
+    };
 
     return (
         <div className="w-[65%]">
@@ -88,7 +114,10 @@ function DistrictManagement({
                                 <div className='flex items-center justify-center'>
                                     {/* Button delete district */}
                                     <button
-                                        onClick={handleDeleteDistrict}
+                                        onClick={() => {
+                                            showDeleteDistrictPopup(r);
+                                        }}
+
                                         className=" text-white text-[0.5rem] mr-1 rounded bg-rose-600 relative hover:bg-red-400 transition-colors w-5 h-5 max-w-[1.25rem] flex-grow "
                                     >
                                         <i className="fi fi-ss-trash"></i>
@@ -151,7 +180,9 @@ function DistrictManagement({
 
                                             {/* Button delete ward */}
                                             <button
-                                                onClick={handleDeleteWard}
+                                                onClick={() => {
+                                                    showDeleteWardPopup(d);
+                                                }}
                                                 className="text-white text-[0.5rem] rounded bg-rose-600 hover:bg-red-400 transition-colors w-5 h-5 max-w-[1.25rem] flex-grow"
                                             >
                                                 <i className="fi fi-ss-trash"></i>
@@ -183,6 +214,12 @@ function DistrictManagement({
                                     </CustomButton>
                                 </div>
                             </form>
+
+                            <YesNoPopup
+                                isActive={isShowingPopupDeleteWard}
+                                onResult={handleDeleteWard}
+                                message={'Bạn chắc chắn muốn xoá phường này chứ?'}
+                            />
                         </div>
                     ))}
 
@@ -190,11 +227,11 @@ function DistrictManagement({
                 : <></>
             }
 
-            {/* <YesNoPopup
-                isActive={isPopupActive}
-                onResult={handleDelete}
-                message={'Bạn chắc chắn muốn xoá chứ?'}
-            /> */}
+            <YesNoPopup
+                isActive={isShowingPopupDeleteDistrict}
+                onResult={handleDeleteDistrict}
+                message={'Bạn chắc chắn muốn xoá quận này chứ?'}
+            />
         </div >
     )
 }

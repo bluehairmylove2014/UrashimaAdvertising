@@ -10,6 +10,8 @@ import {
   useGetAdReports,
   useGetLocationReports,
 } from '@business-layer/business-logic/lib/report';
+import { useRouter } from 'next/navigation';
+import { OFFICER_PAGES } from '@constants/officerPages';
 
 function DetailAdsPoint({
   detailAdsPoint,
@@ -25,6 +27,8 @@ function DetailAdsPoint({
   handleDetailReport: () => void;
 }) {
   const { setForm } = useSetReportForm();
+  const router = useRouter();
+
   const adsReportList = useGetAdReports();
   const adsPointReportList = useGetLocationReports();
 
@@ -68,7 +72,18 @@ function DetailAdsPoint({
         {/* two button for adspoint */}
         {isOfficer ? (
           <>
-            <div className="my-4"></div>
+            <div className="my-4 mx-5">
+              <button
+                className='bg-green-600 text-white rounded px-2 py-2 font-semibold hover:bg-green-500 transition-colors'
+                onClick={() => {
+                  router.push(
+                    (OFFICER_PAGES.ADS_BOARD) + `/edit/${detailAdsPoint.id}`
+                  );
+                }}>
+                <i className="fi fi-ss-file-edit mr-2"></i>
+                <span className="text-xs">Chỉnh sửa</span>
+              </button>
+            </div>
           </>
         ) : (
           <>
