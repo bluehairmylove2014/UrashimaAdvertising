@@ -210,7 +210,7 @@ function Home(): ReactElement {
       } else setIsClickReportedPoint(false);
 
       mapRef.current.flyTo({
-        zoom: 14,
+        zoom: 16,
         center: [event.lngLat.lng, event.lngLat.lat],
         duration: 1500,
       });
@@ -616,7 +616,7 @@ function Home(): ReactElement {
                 setIsClickReportedPoint(true);
                 if (mapRef.current !== null)
                   mapRef.current.flyTo({
-                    zoom: 14,
+                    zoom: 16,
                     center: [point.longitude, point.latitude],
                     duration: 1500,
                   });

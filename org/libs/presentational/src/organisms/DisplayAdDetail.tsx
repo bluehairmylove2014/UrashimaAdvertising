@@ -7,11 +7,21 @@ import RowLoader from '@presentational/atoms/RowLoader';
 import EmptyIcon from '@presentational/atoms/EmptyIcon';
 import { formatDate } from '@utils/helpers';
 import { useViewLocationMap } from './ViewLocationMap';
+import { useNavigateLoader } from '@presentational/atoms/NavigateLoader';
+import { useEffect } from 'react';
 
 const DEFAULT_THUMBNAIL_WIDTH = 120;
 const DEFAULT_THUMBNAIL_HEIGHT = 120;
 function DisplayAdDetail({ adData }: { adData: IAdLocationDetail }) {
   const { openMap } = useViewLocationMap();
+  const { isActive, hideLoader } = useNavigateLoader();
+
+  useEffect(() => {
+    if (isActive) {
+      hideLoader();
+    }
+  }, []);
+
   return (
     <>
       <div className="grid gap-6 border-solid border-b-[1px] border-b-zinc-300 pb-5 mb-5">

@@ -125,18 +125,18 @@ function Home(): ReactElement {
       layers: [
         'unclustered-point-planned',
         'unclustered-point-unplanned',
-        'unclustered-point-reported',
+        'unclustered-reported',
       ],
     });
 
     if (featuresAllPoint[0] && featuresAllPoint[0].geometry.type === 'Point') {
       //Check ADS Point is reported
-      if (featuresAllPoint[0].layer.id === 'unclustered-point-reported')
+      if (featuresAllPoint[0].layer.id === 'unclustered-reported')
         setIsClickReported(true);
       else setIsClickReported(false);
 
       mapRef.current.flyTo({
-        zoom: 14,
+        zoom: 16,
         center: [event.lngLat.lng, event.lngLat.lat],
         duration: 1500,
       });

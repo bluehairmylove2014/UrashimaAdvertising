@@ -39,7 +39,7 @@ function ReportDetailPoint({
           showError('Lỗi lấy dữ liệu địa điểm hú');
         });
     }
-  }, [infoUnknowPointReported]);
+  }, [infoPointReport]);
 
   return (
     <div
