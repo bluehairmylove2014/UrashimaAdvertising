@@ -39,7 +39,7 @@ function ButtonLoader({
           fill="currentColor"
         />
       </svg>
-      <span>{label}</span>
+      <span className="font-medium">{label}</span>
     </div>
   );
 }

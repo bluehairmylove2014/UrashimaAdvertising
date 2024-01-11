@@ -14,6 +14,7 @@ import { formatDate } from '@utils/helpers';
 import CommonLoader from '@presentational/atoms/CommonLoader';
 import { useNotification } from '@presentational/atoms/Notification';
 import { IApprove } from '@business-layer/services/entities/approve';
+import { CREATION_REQUEST_STATUS_LIST } from '@constants/requestStatus';
 
 async function ApproveRequestDetail() {
   const { get: getId } = useSearchParams();
@@ -42,14 +43,16 @@ async function ApproveRequestDetail() {
       const id = Number.parseInt(requestId);
       !requestData &&
         setRequestData(creationRequests.find((r) => r.id === id) ?? null);
-      console.log(creationRequests.find((r) => r.id === id));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [creationRequests, requestId]);
 
-  const handleApprove = () => {
+  const handleApprove = (status: string) => {
     if (requestData) {
-      onApproveAdCreationRequest({ id: requestData.id, status: '' })
+      onApproveAdCreationRequest({
+        id: requestData.id,
+        status,
+      })
         .then((msg) => {
           showSuccess(msg);
           router.push(HQ_PAGES.AD_REQUESTS);
@@ -69,16 +72,28 @@ async function ApproveRequestDetail() {
           title="Chi tiết yêu cầu chỉnh sửa"
           breadcrumbsData={breadcrumbsData}
         />
-        <div className="w-28">
-          <CustomButton
-            style="fill-green"
-            type="button"
-            loading={isLoading}
-            onClick={handleApprove}
-          >
-            <i className="fi fi-sr-badge-check mr-2"></i>
-            Cấp phép
-          </CustomButton>
+        <div className="flex flex-row gap-2 flex-nowrap">
+          <div className="w-28">
+            <CustomButton
+              style="fill-green"
+              type="button"
+              loading={isLoading}
+              onClick={() => handleApprove(CREATION_REQUEST_STATUS_LIST.ACCEPT)}
+            >
+              <i className="fi fi-sr-badge-check mr-2"></i>
+              Cấp phép
+            </CustomButton>
+          </div>
+          <div className="w-28">
+            <CustomButton
+              style="fill-error"
+              type="button"
+              loading={isLoading}
+              onClick={() => handleApprove(CREATION_REQUEST_STATUS_LIST.REJECT)}
+            >
+              Từ chối
+            </CustomButton>
+          </div>
         </div>
       </div>
 

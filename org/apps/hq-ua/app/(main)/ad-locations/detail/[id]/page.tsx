@@ -1,4 +1,3 @@
-import { COOKIE_KEYS } from '@business-layer/business-logic/configs/constants';
 import { AdsService } from '@business-layer/services';
 import { IBreadcrumb } from '@business-layer/services/entities';
 import { HQ_PAGES } from '@constants/hqPages';
@@ -6,11 +5,14 @@ import { cookies } from 'next/dist/client/components/headers';
 import Link from 'next/link';
 import DisplayAdDetail from '@presentational/organisms/DisplayAdDetail';
 import HQPageTitle from '@presentational/molecules/HQPageTitle';
+import { getCustomAccessTokenKey } from '@business-layer/business-logic/helper/customKey';
+import { getHostname } from '../../../../../helper/hostname';
 
 const officerService = new AdsService();
 async function getAdLocationDetail(id: number) {
   try {
-    const token = cookies().get(COOKIE_KEYS.ACCESS_TOKEN)?.value ?? null;
+    const token =
+      cookies().get(getCustomAccessTokenKey(getHostname()))?.value ?? null;
     if (token) {
       return await officerService.getOfficerLocationDetail({
         adId: id,

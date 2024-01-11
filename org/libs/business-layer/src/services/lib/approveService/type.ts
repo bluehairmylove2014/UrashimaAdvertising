@@ -26,7 +26,10 @@ export type deleteApproveRequestParamsType = {
 export type deleteApproveRequestResponseType = { message: string };
 
 export type getAllAdModificationRequestResponseType = IAdModificationRequest[];
-export type approveAdModificationRequestParamsType = { id: number };
+export type approveAdModificationRequestParamsType = {
+  id: number;
+  status: string;
+};
 export type approveAdModificationRequestResponseType = { message: string };
 export type approveAdCreationRequestParamsType = { id: number; status: string };
 export type approveAdCreationRequestResponseType = { message: string };

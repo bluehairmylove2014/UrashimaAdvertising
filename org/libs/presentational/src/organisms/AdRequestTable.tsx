@@ -18,17 +18,16 @@ import {
 import TableRow from '@presentational/molecules/TableRow';
 import IconButton from '@presentational/atoms/IconButton';
 import { useRouter } from 'next/navigation';
-import { OFFICER_PAGES } from '@constants/officerPages';
 import {
   useGetAllAdModificationRequest,
   useGetAllCreationRequest,
 } from '@business-layer/business-logic/lib/approve/process/hooks';
 import { HQ_PAGES } from '@constants/hqPages';
-import ModernSelect from '@presentational/atoms/ModernSelect';
 import { regionResponseType } from '@business-layer/services';
 import MultipleLayerSelect, {
   mulSelectOptionType,
 } from '@presentational/atoms/MultipleLayerSelect';
+import { useViewLocationMap } from './ViewLocationMap';
 
 const START_PAGE = 1;
 const MAX_ELEMENT_PER_PAGE = 4;
@@ -61,6 +60,7 @@ type additionFuncParamsType = {
 };
 function AdRequestTable({ regionsData }: additionFuncParamsType) {
   const router = useRouter();
+  const { openMap } = useViewLocationMap();
   const modificationRequests = useGetAllAdModificationRequest();
   const creationRequests = useGetAllCreationRequest();
   const { setPaginationData } = useSetPaginationData();
@@ -103,7 +103,7 @@ function AdRequestTable({ regionsData }: additionFuncParamsType) {
       Array.isArray(creationRequests)
     ) {
       let displayData: displayDataType[] = [];
-      modificationRequests.forEach((mr, i) =>
+      modificationRequests.forEach((mr) =>
         displayData.push({
           id: mr.id,
           pointData: {
@@ -116,7 +116,7 @@ function AdRequestTable({ regionsData }: additionFuncParamsType) {
           href: HQ_PAGES.AD_MODIFICATION_REQUESTS + `?id=${mr.id}`,
         })
       );
-      creationRequests.forEach((cr, i) =>
+      creationRequests.forEach((cr) =>
         displayData.push({
           id: cr.id,
           pointData: {
@@ -189,11 +189,6 @@ function AdRequestTable({ regionsData }: additionFuncParamsType) {
             style="softCyan"
             disabled={false}
           />
-          {/* <ModernSelect
-            onOptionSelect={handleFilter}
-            options={options}
-            defaultValue={defaultValue}
-          /> */}
         </div>
       </div>
       <div className="shadow-sm overflow-x-auto overflow-y-auto rounded-md h-full">
@@ -201,7 +196,7 @@ function AdRequestTable({ regionsData }: additionFuncParamsType) {
           <thead className="bg-indigo-950 text-white font-semibold">
             <tr>
               <th scope="col" className="px-2 py-3 w-[10%]">
-                STT
+                ID
               </th>
               <th scope="col" className="px-2 py-3 w-[30%]">
                 Điểm quảng cáo
@@ -226,123 +221,138 @@ function AdRequestTable({ regionsData }: additionFuncParamsType) {
                   paginationData.maxPage,
                   paginationData.maxElementPerPage
                 ).map((request, requestIndex) => (
-                  <tr
-                    className="py-4 even:bg-gray-100"
-                    key={`request@${request.requestTypes}@${request.id}`}
-                  >
-                    <TableRow
-                      listData={[
-                        request.id + 1,
-                        <span>
-                          <span className="line-clamp-2">
-                            {request.pointData.address}
-                          </span>
-                          <button className="w-full text-center hover:underline">
-                            <span className="line-clamp-1 font-medium text-xs ">
-                              <b>Lat:</b>{' '}
-                              <span className="text-blue-600">
-                                {request.pointData.latitude}
-                              </span>
-                            </span>
-                            <span className="line-clamp-1 font-medium text-xs ">
-                              <b>Long:</b>{' '}
-                              <span className="text-blue-600">
-                                {request.pointData.latitude}
-                              </span>
-                            </span>
-                          </button>
-                        </span>,
-                        request.requestTypes === REQUEST_TYPES.MOD ? (
-                          <span className="line-clamp-4">
-                            {request.reasonsData.trim().length > 0
-                              ? request.reasonsData
-                              : 'Không có'}
-                          </span>
-                        ) : request.additionData ? (
+                  <>
+                    <tr
+                      className="py-4 even:bg-gray-100"
+                      key={`request@${request.requestTypes}@${request.id}`}
+                    >
+                      <TableRow
+                        listData={[
+                          request.id,
                           <span>
-                            <span className="line-clamp-1">
-                              <b>Công ty:</b> {request.additionData.companyName}
-                            </span>
                             <span className="line-clamp-2">
-                              <b>Địa chỉ:</b> {request.additionData.address}
+                              {request.pointData.address}
                             </span>
-                            <span className="line-clamp-1">
-                              <b>Điện thoại:</b> {request.additionData.phone}
+                            <button
+                              onClick={() =>
+                                openMap(
+                                  request.pointData.latitude,
+                                  request.pointData.longitude
+                                )
+                              }
+                              className="w-full text-center hover:underline"
+                            >
+                              <span className="line-clamp-1 font-medium text-xs ">
+                                <b>Lat:</b>{' '}
+                                <span className="text-blue-600">
+                                  {request.pointData.latitude}
+                                </span>
+                              </span>
+                              <span className="line-clamp-1 font-medium text-xs ">
+                                <b>Long:</b>{' '}
+                                <span className="text-blue-600">
+                                  {request.pointData.longitude}
+                                </span>
+                              </span>
+                            </button>
+                          </span>,
+                          request.requestTypes === REQUEST_TYPES.MOD ? (
+                            <span className="line-clamp-4">
+                              {request.reasonsData.trim().length > 0
+                                ? request.reasonsData
+                                : 'Không có'}
                             </span>
-                            <span className="line-clamp-3">
-                              <b>Thời hạn hợp đồng:</b>
-                              <br />
-                              <span
-                                className={
-                                  isDateGreaterThan(
-                                    getCurrentDateTime(),
-                                    request.additionData.contractEnd
-                                  )
-                                    ? 'text-green-600'
-                                    : 'text-rose-600'
-                                }
-                              >
-                                <b>
-                                  {
-                                    formatDate(
-                                      new Date(
-                                        request.additionData.contractStart
-                                      )
-                                    ).time24
+                          ) : request.additionData ? (
+                            <span>
+                              <span className="line-clamp-1">
+                                <b>Công ty:</b>{' '}
+                                {request.additionData.companyName}
+                              </span>
+                              <span className="line-clamp-2">
+                                <b>Địa chỉ:</b> {request.additionData.address}
+                              </span>
+                              <span className="line-clamp-1">
+                                <b>Điện thoại:</b> {request.additionData.phone}
+                              </span>
+                              <span className="line-clamp-3">
+                                <b>Thời hạn hợp đồng:</b>
+                                <br />
+                                <span
+                                  className={
+                                    isDateGreaterThan(
+                                      getCurrentDateTime(),
+                                      request.additionData.contractEnd
+                                    )
+                                      ? 'text-green-600'
+                                      : 'text-rose-600'
                                   }
-                                  &nbsp;|&nbsp;
-                                  {
-                                    formatDate(
-                                      new Date(
-                                        request.additionData.contractStart
-                                      )
-                                    ).dateMonthYear
-                                  }
-                                  <i className="fi fi-rr-arrow-small-right mx-2"></i>
-                                  {
-                                    formatDate(
-                                      new Date(request.additionData.contractEnd)
-                                    ).time24
-                                  }
-                                  &nbsp;|&nbsp;
-                                  {
-                                    formatDate(
-                                      new Date(request.additionData.contractEnd)
-                                    ).dateMonthYear
-                                  }
-                                </b>
+                                >
+                                  <b>
+                                    {
+                                      formatDate(
+                                        new Date(
+                                          request.additionData.contractStart
+                                        )
+                                      ).time24
+                                    }
+                                    &nbsp;|&nbsp;
+                                    {
+                                      formatDate(
+                                        new Date(
+                                          request.additionData.contractStart
+                                        )
+                                      ).dateMonthYear
+                                    }
+                                    <i className="fi fi-rr-arrow-small-right mx-2"></i>
+                                    {
+                                      formatDate(
+                                        new Date(
+                                          request.additionData.contractEnd
+                                        )
+                                      ).time24
+                                    }
+                                    &nbsp;|&nbsp;
+                                    {
+                                      formatDate(
+                                        new Date(
+                                          request.additionData.contractEnd
+                                        )
+                                      ).dateMonthYear
+                                    }
+                                  </b>
+                                </span>
                               </span>
                             </span>
-                          </span>
-                        ) : (
-                          <></>
-                        ),
-                        <span
-                          className={
-                            request.requestTypes === REQUEST_TYPES.CRE
-                              ? 'text-green-600 font-semibold'
-                              : 'text-blue-600 font-semibold'
-                          }
-                        >
-                          {request.requestTypes}
-                        </span>,
-                        <IconButton
-                          type="button"
-                          shape="square"
-                          callback={() => {
-                            router.push(
-                              (request.requestTypes === REQUEST_TYPES.MOD
-                                ? HQ_PAGES.AD_MODIFICATION_REQUESTS
-                                : HQ_PAGES.AD_APPROVE_REQUESTS) +
-                              `?id=${request.id}`
-                            );
-                          }}
-                        >
-                          <i className="fi fi-sr-file-circle-info text-blue-600 text-sm hover:text-blue-400 transition-colors"></i>
-                        </IconButton>,
-                      ]}
-                    />
-                  </tr>
+                          ) : (
+                            <></>
+                          ),
+                          <span
+                            className={
+                              request.requestTypes === REQUEST_TYPES.CRE
+                                ? 'text-green-600 font-semibold'
+                                : 'text-blue-600 font-semibold'
+                            }
+                          >
+                            {request.requestTypes}
+                          </span>,
+                          <IconButton
+                            type="button"
+                            shape="square"
+                            callback={() => {
+                              router.push(
+                                (request.requestTypes === REQUEST_TYPES.MOD
+                                  ? HQ_PAGES.AD_MODIFICATION_REQUESTS
+                                  : HQ_PAGES.AD_APPROVE_REQUESTS) +
+                                  `?id=${request.id}`
+                              );
+                            }}
+                          >
+                            <i className="fi fi-sr-file-circle-info text-blue-600 text-sm hover:text-blue-400 transition-colors"></i>
+                          </IconButton>,
+                        ]}
+                      />
+                    </tr>
+                  </>
                 ))
               ) : (
                 <tr className="py-4">

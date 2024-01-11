@@ -1,0 +1,1 @@
+export { ViewLocationMapProvider } from './ViewLocationMapProvider';

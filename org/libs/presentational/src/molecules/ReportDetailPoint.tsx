@@ -21,18 +21,25 @@ function ReportDetailPoint({
 }) {
   const { showError } = useNotification();
   const { onGetLocationDetail } = useGetLocationDetail();
-  const [infoUnknowPointReported, setInfoUnknowPointReported] = useState<ILocation | undefined>(undefined);
+  const [infoUnknowPointReported, setInfoUnknowPointReported] = useState<
+    ILocation | undefined
+  >(undefined);
 
   useEffect(() => {
-    onGetLocationDetail({ latitude: infoPointReport.latitude, longitude: infoPointReport.longitude })
-      .then((data) => {
-        setInfoUnknowPointReported(data);
+    if (!infoPointReport.reportData) {
+      onGetLocationDetail({
+        latitude: infoPointReport.latitude,
+        longitude: infoPointReport.longitude,
       })
-      .catch((error) => {
-        showError('Lỗi lấy dữ liệu địa điểm');
-      });
-  }, [infoUnknowPointReported])
-
+        .then((data) => {
+          setInfoUnknowPointReported(data);
+        })
+        .catch((error) => {
+          console.error('ERRORRRRR: ', error);
+          showError('Lỗi lấy dữ liệu địa điểm hú');
+        });
+    }
+  }, [infoPointReport]);
 
   return (
     <div
@@ -56,7 +63,7 @@ function ReportDetailPoint({
       </div>
 
       {/* Back Button */}
-      {backActive ?
+      {backActive ? (
         <div className="absolute top-0 left-0 z-10 mt-2 mx-1">
           <CustomButtonIcon
             widthIcon="0.6rem"
@@ -72,8 +79,9 @@ function ReportDetailPoint({
             {' '}
           </CustomButtonIcon>
         </div>
-        : <></>
-      }
+      ) : (
+        <></>
+      )}
 
       <div className="mx-3 ">
         <p className="text-center text-[0.9rem] font-bold my-4">BÁO CÁO</p>
@@ -124,7 +132,9 @@ function ReportDetailPoint({
           <p className=" text-[0.7rem] text-neutral-600">Nội dung báo cáo:</p>
         </div>
         <div className="h-[30vh] border rounded mt-1 p-1 text-[0.7rem] text-neutral-500">
-          <div>{infoPointReport.content}</div>
+          <div
+            dangerouslySetInnerHTML={{ __html: infoPointReport.content }}
+          ></div>
         </div>
 
         {Array.isArray(infoPointReport.images) ? (
@@ -162,6 +172,23 @@ function ReportDetailPoint({
       </div>
 
       <hr className="my-4 mx-3" />
+
+      {infoPointReport.reportStatus ? (
+        <>
+          <div className=" mx-3">
+            <p className=" text-sky-500 font-bold">
+              Thông tin báo cáo được phản hồi
+            </p>
+            <div className="h-[30vh] border rounded mt-1 p-1 text-[0.7rem] text-neutral-500">
+              <div>{infoPointReport.treatmentProcess}</div>
+            </div>
+          </div>
+          <hr className="my-4 mx-3" />
+        </>
+      ) : (
+        <></>
+      )}
+
       <div className="mx-3 mb-4">
         <p className="text-sky-500 font-bold">Thông tin điểm báo cáo</p>
         {infoPointReport.reportData ? (
@@ -225,7 +252,7 @@ function ReportDetailPoint({
           </>
         ) : (
           <>
-            {infoUnknowPointReported ?
+            {infoUnknowPointReported ? (
               <>
                 <div className="flex mt-2">
                   <i className="fi fi-ss-star text-sky-500 text-[0.65rem] mr-1"></i>
@@ -255,10 +282,9 @@ function ReportDetailPoint({
                   </p>
                 </div>
               </>
-              :
+            ) : (
               <DetailLoader />
-            }
-
+            )}
           </>
         )}
       </div>

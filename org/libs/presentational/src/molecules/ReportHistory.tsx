@@ -226,12 +226,6 @@ function DetailReport({
                                   </span>
                                 </p>
 
-                                <p className=" text-[0.6rem]">
-                                  Nội dung:
-                                  <span className="font-semibold">
-                                    {report.content}
-                                  </span>
-                                </p>
                               </div>
                             </div>
                           </div>
@@ -283,13 +277,6 @@ function DetailReport({
                                         {report.reportData.address}
                                       </span>
                                     </p>
-
-                                    <p className=" text-[0.6rem]">
-                                      Nội dung:
-                                      <span className="font-semibold">
-                                        {report.content}
-                                      </span>
-                                    </p>
                                   </div>
                                 </>
                               ) : (
@@ -320,12 +307,6 @@ function DetailReport({
                                         <span className="font-semibold">
                                           {' '}
                                           {report.longitude}
-                                        </span>
-                                      </p>
-                                      <p className=" text-[0.6rem]">
-                                        Nội dung:
-                                        <span className="font-semibold">
-                                          {report.content}
                                         </span>
                                       </p>
                                     </div>

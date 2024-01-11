@@ -6,9 +6,6 @@ import OfficerNavDropdown from '@presentational/molecules/OfficerNavDropdown';
 import RegionManagementDropdown from '@presentational/molecules/RegionManagementDropdown';
 import Image from 'next/image';
 import Link from 'next/link';
-import { RegionService } from '@business-layer/services';
-import { COOKIE_KEYS } from '@business-layer/business-logic/configs/constants';
-import { cookies } from 'next/dist/client/components/headers';
 
 const officerApproveNavDropdownOptions = [
   {
@@ -20,33 +17,18 @@ const officerApproveNavDropdownOptions = [
     href: OFFICER_PAGES.NEW_APPROVE,
   },
 ];
-const officerAdsNavDropdownOptions = [
-  {
-    name: 'Danh sách điểm quảng cáo',
-    href: OFFICER_PAGES.ADS_LOCATION,
-  },
-  {
-    name: 'Danh sách bảng quảng cáo',
-    href: OFFICER_PAGES.ADS_LOCATION,
-  },
-];
-
-const regionService = new RegionService();
-async function getRegions() {
-  try {
-    const token = cookies().get(COOKIE_KEYS.ACCESS_TOKEN)?.value ?? null;
-    if (token) {
-      return await regionService.getRegions(token);
-    } else {
-      return null;
-    }
-  } catch (error) {
-    return null;
-  }
-}
+// const officerAdsNavDropdownOptions = [
+//   {
+//     name: 'Danh sách điểm quảng cáo',
+//     href: OFFICER_PAGES.ADS_LOCATION,
+//   },
+//   {
+//     name: 'Danh sách bảng quảng cáo',
+//     href: OFFICER_PAGES.ADS_LOCATION,
+//   },
+// ];
 
 async function OfficerHeader() {
-  const regionsData = await getRegions();
   return (
     <header className="flex flex-row items-center justify-between bg-indigo-950 w-full h-12 px-4 sticky top-0 z-20">
       <nav>
@@ -63,7 +45,6 @@ async function OfficerHeader() {
           <li>
             <Link
               href={OFFICER_PAGES.DASHBOARD}
-              prefetch={true}
               className="text-xs text-white font-semibold hover:text-orange-400"
             >
               Trang chủ
@@ -72,19 +53,24 @@ async function OfficerHeader() {
           <li>
             <Link
               href={OFFICER_PAGES.REPORT}
-              prefetch={true}
               className="text-xs text-white font-semibold hover:text-orange-400"
             >
               Báo cáo
             </Link>
           </li>
           <li>
-            <OfficerNavDropdown
+            <Link
+              href={OFFICER_PAGES.ADS_LOCATION}
+              className="text-xs text-white font-semibold hover:text-orange-400"
+            >
+              Quảng cáo
+            </Link>
+            {/* <OfficerNavDropdown
               options={officerAdsNavDropdownOptions}
               position="center"
             >
               <span>Quảng cáo</span>
-            </OfficerNavDropdown>
+            </OfficerNavDropdown> */}
           </li>
           <li>
             <OfficerNavDropdown
@@ -95,7 +81,7 @@ async function OfficerHeader() {
             </OfficerNavDropdown>
           </li>
           <li>
-            <RegionManagementDropdown regionData={regionsData} />
+            <RegionManagementDropdown />
           </li>
         </ul>
       </nav>

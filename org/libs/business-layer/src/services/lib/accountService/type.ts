@@ -11,3 +11,10 @@ export type modifyAccountInfoParamsType = {
   token: string | null;
 };
 export type modifyAccountInfoResponseType = { message: string };
+
+export type getAllAccountResponseType = IAccountDetail[];
+export type unitModifyAccountParamsType = {
+  data: IAccountDetail;
+  token: string | null;
+};
+export type unitModifyAccountResponseType = { message: string };

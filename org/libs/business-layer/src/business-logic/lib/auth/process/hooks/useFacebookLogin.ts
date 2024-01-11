@@ -82,7 +82,7 @@ export const useFacebookLogin = () => {
                   })
                   .catch((error) => {
                     console.error(error);
-                    reject(new Error(failedMessage));
+                    reject(error);
                   });
               })
               .catch((error) => {

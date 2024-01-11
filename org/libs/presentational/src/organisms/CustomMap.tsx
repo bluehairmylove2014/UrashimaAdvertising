@@ -4,6 +4,7 @@ import {
   forwardRef,
   useCallback,
   useEffect,
+  useRef,
   useState,
 } from 'react';
 import { FeatureCollection, Point } from 'geojson';
@@ -69,7 +70,34 @@ const CustomMap: ForwardRefRenderFunction<MapRef, customMapProps> = (
   const [cursor, setCursor] = useState('pointer');
   const [isShowCluster, setIsShowCluster] = useState<boolean>(true);
   const [layers, setLayers] = useState<LayerProps[]>(sourceLayersList);
+  const backupSourceData = useRef<FeatureCollection<Point>>(sourceData);
+  const [displaySourceData, setDisplaySourceData] =
+    useState<FeatureCollection<Point>>(sourceData);
 
+  useEffect(() => {
+    if (
+      backupSourceData.current.features.length !== sourceData.features.length
+    ) {
+      setDisplaySourceData(sourceData);
+      backupSourceData.current = sourceData;
+      setLayers(sourceLayersList);
+    }
+  }, [sourceData]);
+
+  useEffect(() => {
+    if (currentLocation === undefined && navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        console.log('LOCATION: ', {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        });
+        setCurrentLocation({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        });
+      });
+    }
+  }, [currentLocation]);
   useEffect(() => {
     if (
       currentLocation &&
@@ -82,6 +110,25 @@ const CustomMap: ForwardRefRenderFunction<MapRef, customMapProps> = (
       });
     }
   }, [currentLocation]);
+
+  useEffect(() => {
+    if (
+      userLocationMarker &&
+      userLocationMarker.latitude &&
+      userLocationMarker.longitude &&
+      isMutableRefObject(ref) &&
+      ref.current
+    ) {
+      ref.current.flyTo({
+        zoom: 14,
+        center: {
+          lng: userLocationMarker.longitude,
+          lat: userLocationMarker.latitude,
+        },
+        duration: 3000,
+      });
+    }
+  }, [userLocationMarker]);
 
   const handleZoom = useCallback(
     (e: ViewStateChangeEvent) => {
@@ -104,6 +151,49 @@ const CustomMap: ForwardRefRenderFunction<MapRef, customMapProps> = (
   }, []);
 
   const handleFilterLayers = (layers: LayerProps[]) => {
+    let newSourceData = { ...backupSourceData.current };
+    if (!layers.find((l) => l.id === 'unclustered-point-planned')) {
+      newSourceData.features = newSourceData.features.filter(
+        (f) =>
+          f.properties &&
+          (f.properties.planned !== true || f.properties.reported !== false)
+      );
+    }
+    if (!layers.find((l) => l.id === 'unclustered-point-unplanned')) {
+      newSourceData.features = newSourceData.features.filter(
+        (f) =>
+          f.properties &&
+          (f.properties.planned !== false || f.properties.reported !== false)
+      );
+    }
+    if (!layers.find((l) => l.id === 'unclustered-ads-board-reported')) {
+      newSourceData.features = newSourceData.features.filter(
+        (f) =>
+          f.properties &&
+          (f.properties.reported !== true ||
+            f.properties.isAdsLocation !== true ||
+            f.properties.isAdsBoardReport !== true)
+      );
+    }
+    if (!layers.find((l) => l.id === 'unclustered-unknown-point-reported')) {
+      newSourceData.features = newSourceData.features.filter(
+        (f) =>
+          f.properties &&
+          (f.properties.reported !== true ||
+            f.properties.isAdsLocation !== false ||
+            f.properties.isAdsBoardReport !== false)
+      );
+    }
+    if (!layers.find((l) => l.id === 'unclustered-point-reported')) {
+      newSourceData.features = newSourceData.features.filter(
+        (f) =>
+          f.properties &&
+          (f.properties.reported !== true ||
+            f.properties.isAdsLocation !== true ||
+            f.properties.isAdsBoardReport !== false)
+      );
+    }
+    setDisplaySourceData(newSourceData);
     setLayers(layers);
   };
 
@@ -113,7 +203,16 @@ const CustomMap: ForwardRefRenderFunction<MapRef, customMapProps> = (
       style={{ width: '100%', height: '100vh' }}
       mapStyle={MAP_STYLE}
       mapboxAccessToken={ACCESS_TOKEN}
-      initialViewState={MAP_DEFAULT_VIEW_PORT}
+      initialViewState={{
+        ...MAP_DEFAULT_VIEW_PORT,
+        latitude: currentLocation
+          ? currentLocation.latitude
+          : MAP_DEFAULT_VIEW_PORT.latitude,
+
+        longitude: currentLocation
+          ? currentLocation.longitude
+          : MAP_DEFAULT_VIEW_PORT.longitude,
+      }}
       dragRotate={false}
       maxZoom={18}
       cursor={cursor}
@@ -126,7 +225,7 @@ const CustomMap: ForwardRefRenderFunction<MapRef, customMapProps> = (
       //   [107.042629, 11.210448], // Tọa độ góc trên cùng bên phải của hình chữ nhật giới hạn
       // ]}
     >
-      {!sourceData || !Array.isArray(sourceData.features) ? (
+      {!displaySourceData || !Array.isArray(displaySourceData.features) ? (
         <ScreenLoader />
       ) : isShowCluster ? (
         <Source
@@ -136,7 +235,7 @@ const CustomMap: ForwardRefRenderFunction<MapRef, customMapProps> = (
           cluster={true}
           clusterMaxZoom={14}
           clusterRadius={40}
-          data={sourceData}
+          data={displaySourceData}
         >
           {layers.map((l) => (
             <Layer {...l} key={l.id} />
@@ -207,7 +306,7 @@ const CustomMap: ForwardRefRenderFunction<MapRef, customMapProps> = (
       <GeolocateControl
         positionOptions={{ enableHighAccuracy: true }}
         trackUserLocation={true}
-        showAccuracyCircle={false}
+        showAccuracyCircle={true}
         showUserLocation={false}
         showUserHeading={false}
         position="bottom-right"

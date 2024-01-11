@@ -9,6 +9,5 @@ const adsDetailData: IAdLocationDetail[] = adsRawData;
 axiosMockAdapterInstance
   .onPost(getApiUrl(false) + adsPointModificationUrl)
   .reply((config: any) => {
-    console.log('RECEIVE MODIFICATION DATA: ', JSON.parse(config.data));
     return [200, { message: 'Điều chỉnh thông tin thành công' }];
   });

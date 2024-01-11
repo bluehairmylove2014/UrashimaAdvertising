@@ -114,7 +114,6 @@ function DisplayReportDetail({ reportDetail, isHeadQuarter }: { reportDetail: IO
                             />
                         </p>
                     </div>
-
                 </div>
                 <div className="col-span-1 col-st row-start-1">
                     <h5 className=" font-semibold text-sm">
@@ -123,11 +122,24 @@ function DisplayReportDetail({ reportDetail, isHeadQuarter }: { reportDetail: IO
                     </h5>
                     <div className="flex flex-row justify-start items-center gap-4 mb-4">
                         <div className="h-[30vh] w-full border border-neutral-500 rounded mt-1 p-1 text-[0.7rem] text-neutral-700">
-                            <div>{reportDetail.content}</div>
+                            <div
+                                dangerouslySetInnerHTML={{ __html: reportDetail.content }}
+                            ></div>
                         </div>
                     </div>
                 </div>
             </div>
+
+            {
+                reportDetail.reportStatus ?
+                    <div className="border-solid border-b-[1px] border-b-zinc-300 pb-5 mb-5">
+                        <h5 className="font-bold">CÁCH XỬ LÝ</h5>
+                        <div className="h-[30vh] w-full border border-neutral-500 rounded mt-1 p-1 text-[0.7rem] text-neutral-700">
+                            <div>{reportDetail.treatmentProcess}</div>
+                        </div>
+                    </div>
+                    : <></>
+            }
 
             {
                 reportDetail.adsPoint ?
@@ -135,7 +147,7 @@ function DisplayReportDetail({ reportDetail, isHeadQuarter }: { reportDetail: IO
                         <h5 className="font-bold">THÔNG TIN ĐIỂM QUẢNG CÁO BỊ TỐ CÁO</h5>
                         <div className="grid grid-cols-2 mt-3">
                             <div className="col-span-1 col-start-1 row-start-1 w-full overflow-hidden">
-                                <div className="flex flex-row justify-start items-center mb-2 w-full">
+                                <div className="flex flex-row justify-start items-start mb-2 w-full">
                                     <h5 className="font-semibold text-sm whitespace-nowrap">
                                         <i className="fi fi-sr-map-marker mr-2"></i>
                                         Địa điểm:
@@ -206,13 +218,13 @@ function DisplayReportDetail({ reportDetail, isHeadQuarter }: { reportDetail: IO
                                     </p>
                                 </div>
 
-                                <div className="flex flex-row justify-start items-center mb-2">
-                                    <h5 className="font-semibold text-sm whitespace-nowrap">
+                                <div className="flex flex-row justify-start mb-2 items-start">
+                                    <h5 className="font-semibold text-sm whitespace-nowrap ">
                                         <i className="fi fi-sr-map-marker mr-2"></i>
                                         Địa điểm:
                                     </h5>
 
-                                    <p className="pl-3 w-full whitespace-normal line-clamp-2 relative -bottom-[0.1rem]">
+                                    <p className="pl-3 w-full whitespace-normal line-clamp-2 relative -bottom-[0.1rem] ">
                                         {reportDetail.address}
                                     </p>
                                 </div>
@@ -262,7 +274,7 @@ function DisplayReportDetail({ reportDetail, isHeadQuarter }: { reportDetail: IO
                         <h5 className="font-bold">THÔNG TIN ĐỊA ĐIỂM BỊ TỐ CÁO</h5>
                         <div className="grid grid-cols-2 mt-3">
                             <div className="col-span-1 col-start-1 row-start-1 w-full overflow-hidden">
-                                <div className="flex flex-row justify-start items-center mb-2 w-full">
+                                <div className="flex flex-row justify-start items-start mb-2 w-full">
                                     <h5 className="font-semibold text-sm whitespace-nowrap">
                                         <i className="fi fi-sr-map-marker mr-2"></i>
                                         Địa điểm:

@@ -23,6 +23,14 @@ import {
   SettingProvider,
   settingProviderType,
 } from '../lib/setting/process/provider/SettingProvider';
+import {
+  ViewLocationMapProvider,
+  viewLocationMapProviderType,
+} from '../non-service-lib/viewLocationMap/process/provider/ViewLocationMapProvider';
+import {
+  NavigateLoaderProvider,
+  navigateLoaderProviderType,
+} from '../non-service-lib/navigateLoader/process/provider/ViewLocationMapProvider';
 
 /**
  * REACT-QUERY-DEVTOOLS
@@ -36,7 +44,7 @@ export const reactQueryDevtoolsConfig = {
  */
 export const authConfig = {
   isNeedRefreshToken: true,
-  isNeedBroadcast: true,
+  isNeedBroadcast: false,
 };
 
 /**
@@ -59,7 +67,9 @@ export type moduleKeyList =
   | 'pagination'
   | 'approve'
   | 'regions'
-  | 'settings';
+  | 'settings'
+  | 'viewLocationMap'
+  | 'navigateLoader';
 export type providerList = React.FC<
   | AuthProviderType
   | reportProviderType
@@ -69,11 +79,21 @@ export type providerList = React.FC<
   | approveProviderType
   | regionManagementProviderType
   | settingProviderType
+  | viewLocationMapProviderType
+  | navigateLoaderProviderType
 >;
 export const providerConfig: {
   key: moduleKeyList;
   provider: providerList;
 }[] = [
+  {
+    key: 'navigateLoader',
+    provider: NavigateLoaderProvider,
+  },
+  {
+    key: 'viewLocationMap',
+    provider: ViewLocationMapProvider,
+  },
   {
     key: 'settings',
     provider: SettingProvider,
