@@ -30,7 +30,7 @@ namespace UrashimaServer.Controllers.Headquater
         /// API Headquarter lấy danh sách các loại Quảng cáo.
         /// </summary>
         // GET: api/ads-type
-        [HttpGet("ads-type"), AuthorizeRoles(GlobalConstant.HeadQuater)]
+        [HttpGet("ads-type")]
         public async Task<ActionResult<IEnumerable<AdsType>>> GetAdsTypes()
         {
             if (_context.AdsTypes == null)
@@ -80,7 +80,7 @@ namespace UrashimaServer.Controllers.Headquater
         /// API Headquarter lấy danh sách các loại báo cáo.
         /// </summary>
         // GET: api/report-type
-        [HttpGet("report-type"), AuthorizeRoles(GlobalConstant.HeadQuater)]
+        [HttpGet("report-type")]
         public async Task<ActionResult<IEnumerable<ReportType>>> GetReportTypes()
         {
             if (_context.ReportTypes == null)
@@ -130,7 +130,7 @@ namespace UrashimaServer.Controllers.Headquater
         /// API Headquarter lấy danh sách các loại địa điểm quảng cáo.
         /// </summary>
         // GET: api/location-type
-        [HttpGet("location-type"), AuthorizeRoles(GlobalConstant.HeadQuater)]
+        [HttpGet("location-type")]
         public async Task<ActionResult<IEnumerable<LocationType>>> GetLocationTypes()
         {
             if (_context.LocationTypes == null)
@@ -179,7 +179,7 @@ namespace UrashimaServer.Controllers.Headquater
         /// API Headquarter lấy danh sách các loại hình thức Quảng cáo.
         /// </summary>
         // GET: api/ads-form-type
-        [HttpGet("ads-form-type"), AuthorizeRoles(GlobalConstant.HeadQuater)]
+        [HttpGet("ads-form-type")]
         public async Task<ActionResult<IEnumerable<AdsFormType>>> GetAdsFormTypes()
         {
             if (_context.AdsFormTypes == null)
