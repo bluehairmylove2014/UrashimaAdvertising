@@ -169,7 +169,8 @@ namespace UrashimaServer.Controllers.Headquater
             var region = HttpContext.Items["address"] as string;
             result = rawResult.Where(p =>
             {
-                return Helper.IsUnderAuthority(p.Address, acc.UnitUnderManagement, region);
+                var address = _context.AdsPoints.Find(p.AdsPointId)!.Address;
+                return Helper.IsUnderAuthority(address, acc.UnitUnderManagement, region);
             }).ToList();
 
             var res = new List<PointModifyDto>();

@@ -60,12 +60,11 @@ namespace UrashimaServer.Controllers
                 myResult.Add(toAddRes);
             }
 
+            var region = HttpContext.Items["address"] as string;
             myResult = myResult.Where(item =>
             {
-                var RequestAddress = _context.AdsPoints.Find(item.AdsPointId)?.Address ?? "No Address";
-                var region = HttpContext.Items["address"] as string;
-                return Helper.IsUnderAuthority(RequestAddress, acc.UnitUnderManagement, region) 
-                    || acc.Role.Equals(GlobalConstant.HeadQuater);
+                var RequestAddress = _context.AdsPoints.Find(item.AdsPointId)!.Address;
+                return Helper.IsUnderAuthority(RequestAddress, acc.UnitUnderManagement, region);
             }).ToList();
 
             return myResult;
