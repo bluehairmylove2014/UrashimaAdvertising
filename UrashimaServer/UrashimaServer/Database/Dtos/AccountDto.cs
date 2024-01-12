@@ -5,6 +5,7 @@ namespace UrashimaServer.Database.Dtos
     public class AccountBasicInfoDto
     {
         public string FullName { get; set; } = string.Empty;
+        [EmailAddress]
         public string Email { get; set; } = string.Empty;
         public DateTime DateOfBirth { get; set; }
         public string Phone { get; set; } = string.Empty;
@@ -12,8 +13,10 @@ namespace UrashimaServer.Database.Dtos
 
     public class AccountDTO
     {
+        [Required]
         public int Id { get; set; }
         public string FullName { get; set; } = string.Empty;
+        [EmailAddress]
         public string Email { get; set; } = string.Empty;
         public DateTime DateOfBirth { get; set; }
         public string Phone { get; set; } = string.Empty;
