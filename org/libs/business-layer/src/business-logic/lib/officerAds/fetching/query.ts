@@ -14,3 +14,15 @@ export const useGetAllOfficerAdsQuery = (token: string | null) => {
     retry: mutationConfig.USE_QUERY_RETRY,
   });
 };
+export const useGetAllOfficerAdBoardQuery = (token: string | null) => {
+  const regionsCookie = getRegionsFromCookie();
+  return useQuery({
+    queryKey: [
+      QUERY_N_MUTATION_KEYS.GET_ALL_OFFICER_AD_BOARD,
+      token,
+      regionsCookie,
+    ],
+    queryFn: () => adsService.getAllOfficerAdBoards(token),
+    retry: mutationConfig.USE_QUERY_RETRY,
+  });
+};

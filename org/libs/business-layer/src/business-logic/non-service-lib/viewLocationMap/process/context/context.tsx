@@ -7,6 +7,7 @@ export const ViewLocationMapContext =
     state: {
       coord: [10.762538, 106.682448],
       isActive: false,
+      isSelectingLocation: false,
     },
     dispatch: () => undefined,
   });

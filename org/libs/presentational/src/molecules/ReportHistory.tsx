@@ -226,11 +226,6 @@ function DetailReport({
                                   </span>
                                 </p>
 
-                                <p className="text-[0.6rem] flex">
-                                  <p className="text-[0.6rem]">Nội dung: </p>
-                                  <p>{' '}</p>
-                                  <p className="text-[0.6rem]" dangerouslySetInnerHTML={{ __html: report.content }} />
-                                </p>
                               </div>
                             </div>
                           </div>
@@ -282,11 +277,6 @@ function DetailReport({
                                         {report.reportData.address}
                                       </span>
                                     </p>
-
-                                    <p className="text-[0.6rem] flex">
-                                      <p className="text-[0.6rem]">Nội dung: </p> {' '}
-                                      <p className="text-[0.6rem]" dangerouslySetInnerHTML={{ __html: report.content }} />
-                                    </p>
                                   </div>
                                 </>
                               ) : (
@@ -318,10 +308,6 @@ function DetailReport({
                                           {' '}
                                           {report.longitude}
                                         </span>
-                                      </p>
-                                      <p className="text-[0.6rem] flex">
-                                        <p className="text-[0.6rem]">Nội dung: </p> {' '}
-                                        <p className="text-[0.6rem]" dangerouslySetInnerHTML={{ __html: report.content }} />
                                       </p>
                                     </div>
                                   </div>

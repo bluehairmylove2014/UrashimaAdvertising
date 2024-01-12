@@ -46,6 +46,7 @@ export const useReportAd = (): useReportAdReturnType => {
             payload: reportData,
           });
           addAdReportToLS(reportData);
+
           resolve(data.message);
         })
         .catch((error) => reject(error));

@@ -16,6 +16,11 @@ export const viewLocationMapReducer = (
           ...state,
           isActive: action.payload,
         };
+      case 'SET_IS_SELECTING':
+        return {
+          ...state,
+          isSelectingLocation: action.payload,
+        };
       default:
         return state;
     }

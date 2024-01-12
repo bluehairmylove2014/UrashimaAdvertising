@@ -8,6 +8,7 @@ const adLocationSchema = z.object({
   locationType: z.string(),
   adsForm: z.string(),
   planned: z.boolean(),
+  isEmpty: z.boolean().optional(),
 });
 const adBoardSchema = z.object({
   id: z.number(),
@@ -42,6 +43,12 @@ const getOfficerAdDetailResponseSchema = getAdDetailResponseSchema;
 const adsPointModificationSchema = z.object({
   message: z.string(),
 });
+const getAllAdBoardsResponseSchema = z.array(adBoardSchema);
+const anySchema = z.any();
+
+const hqCreateNewAdsSchema = z.object({
+  message: z.string(),
+});
 
 export {
   adLocationSchema,
@@ -51,4 +58,7 @@ export {
   getAllOfficerAdsResponseSchema,
   getOfficerAdDetailResponseSchema,
   adsPointModificationSchema,
+  getAllAdBoardsResponseSchema,
+  hqCreateNewAdsSchema,
+  anySchema,
 };

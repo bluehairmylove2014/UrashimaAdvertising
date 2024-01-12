@@ -19,7 +19,7 @@ import { CREATION_REQUEST_STATUS_LIST } from '@constants/requestStatus';
 async function ApproveRequestDetail() {
   const { get: getId } = useSearchParams();
   const requestId = getId('id');
-  const creationRequests = useGetAllCreationRequest();
+  const { data: creationRequests } = useGetAllCreationRequest();
   const { onApproveAdCreationRequest, isLoading } =
     useApproveAdCreationRequest();
   const breadcrumbsData: IBreadcrumb[] = [
@@ -132,7 +132,7 @@ async function ApproveRequestDetail() {
           <DisplayAdDetail
             adData={{
               ...requestData.adsPoint,
-              adsBoard: [requestData.adsBoard],
+              adsBoard: requestData.adsBoard ? [requestData.adsBoard] : [],
               images: [],
             }}
           />

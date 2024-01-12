@@ -1,7 +1,4 @@
-import {
-  IAdLocationDetail,
-  IAdsBoard,
-} from '@business-layer/services/entities';
+import { IAdsBoard } from '@business-layer/services/entities';
 import {
   IApprove,
   IApproveBase,
