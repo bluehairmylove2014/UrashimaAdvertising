@@ -231,7 +231,10 @@ namespace UrashimaServer.Controllers
 
             var region = HttpContext.Items["address"] as string;
 
-            rawResult = rawResult.Where(r => Helper.IsUnderAuthority(r.Address, acc.UnitUnderManagement, region)).ToList();
+            rawResult = rawResult.Where(r => {
+                var reportedAddress = r.AdsPoint != null ? r.AdsPoint.Address : r.Location!.Address;
+                return Helper.IsUnderAuthority(reportedAddress, acc.UnitUnderManagement, region);
+            }).ToList();
             
             var result = new List<GetReportDto>();
             foreach (var rawItem in rawResult)
@@ -278,12 +281,19 @@ namespace UrashimaServer.Controllers
                 .FirstOrDefaultAsync();
 
             var region = HttpContext.Items["address"] as string;
+
             if (rawResult is null)
             {
                 return NotFound("Không tìm thấy report dựa trên id đã cung cấp.");
-            } else if (!Helper.IsUnderAuthority(rawResult.Address, acc.UnitUnderManagement, region))
+            } else
             {
-                return BadRequest("Báo cáo này không thuộc quyền quản lý.");
+                var reportedAddress = rawResult.AdsPoint != null ? rawResult.AdsPoint.Address : rawResult.Location!.Address;
+                var isUnderAuthority = Helper.IsUnderAuthority(reportedAddress, acc.UnitUnderManagement, region);
+                if (!isUnderAuthority)
+                    return BadRequest(new
+                    {
+                        message = "Báo cáo này không thuộc quyền quản lý."
+                    });
             }
 
             var result = _mapper.Map<GetReportDetailDto>(rawResult);
@@ -320,12 +330,17 @@ namespace UrashimaServer.Controllers
 
             var rawResult = await _context.Reports
                 .Include(r => r.Images)
+                .Include(r => r.AdsPoint)
                 .ToListAsync();
 
             var region = HttpContext.Items["address"] as string;
-            var updatedItem = rawResult.FirstOrDefault(r => Helper.IsUnderAuthority(r.Address, acc.UnitUnderManagement, region) && r.Id == updateReport.Id);
+            var updatedItem = rawResult.FirstOrDefault(r => r.Id == updateReport.Id);
 
-            if (updatedItem is null)
+            var reportedAddress = updatedItem!.AdsPoint != null 
+                ? updatedItem!.AdsPoint.Address
+                : updatedItem!.Location!.Address;
+
+            if (!Helper.IsUnderAuthority(reportedAddress, acc.UnitUnderManagement, region))
             {
                 return BadRequest(new
                 {
@@ -357,7 +372,10 @@ namespace UrashimaServer.Controllers
             await _chatHubContext.Clients.Group("guests").AddMessage("Trạng thái báo cáo bạn gửi đã được cập nhật");
             #endregion
 
-            return Ok(_mapper.Map<GetReportDto>(updatedItem));
+            return Ok(new
+            {
+                message = "Xử lý báo cáo thành công."
+            });
         }
 
 
