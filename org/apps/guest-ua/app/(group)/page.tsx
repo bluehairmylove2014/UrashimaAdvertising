@@ -558,6 +558,7 @@ function Home(): ReactElement {
               <DetailAdsPoint
                 detailAdsPoint={infoClickAdsPoint}
                 isOfficer={false}
+                listReport={undefined}
                 onClick={(id) => {
                   setIdAdsBoard(id);
                   setIsActiveAdsBoard(true);
