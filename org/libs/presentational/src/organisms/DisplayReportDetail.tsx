@@ -122,7 +122,7 @@ function DisplayReportDetail({
                 width={DEFAULT_THUMBNAIL_WIDTH}
                 height={DEFAULT_THUMBNAIL_HEIGHT}
                 src="/assets/billboardExample.png"
-                // key={`${img.image}@${index}`}
+              // key={`${img.image}@${index}`}
               />
             </p>
           </div>
