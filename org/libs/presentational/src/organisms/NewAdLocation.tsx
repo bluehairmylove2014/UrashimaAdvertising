@@ -14,11 +14,13 @@ import {
   useYupValidationResolver,
 } from '@utils/validators/yup';
 import { useRouter } from 'next/navigation';
-import { useRef, useState } from 'react';
-import { Controller, useFieldArray, useForm } from 'react-hook-form';
+import { useEffect, useRef, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import { useViewLocationMap } from './ViewLocationMap';
 import { useCreateNewAd } from '@business-layer/business-logic/lib/ads';
 import { HQ_PAGES } from '@constants/hqPages';
+import { useNavigateLoader } from '@presentational/atoms/NavigateLoader';
+import '@utils/helpers/regionSelect/vietnamlocalselector';
 
 const DEFAULT_THUMBNAIL_WIDTH = 120;
 const DEFAULT_THUMBNAIL_HEIGHT = 120;
@@ -43,6 +45,7 @@ function NewAdLocation({
   adsFormOptions: modernSelectOptionType[] | null;
 }) {
   const router = useRouter();
+  const { isActive, hideLoader } = useNavigateLoader();
   const editLocationResolver = useYupValidationResolver(newLocationSchema);
   const { enableSelecting, openMap } = useViewLocationMap();
   const { handleSubmit, getValues, setValue, control, watch, register } =
@@ -66,6 +69,16 @@ function NewAdLocation({
   const { onCreateNewAd, isLoading } = useCreateNewAd();
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const { onUpload } = useUpload();
+  const localpicker = new LocalPicker({
+    province: 'ls_province',
+    district: 'ls_district',
+    ward: 'ls_ward',
+  });
+  console.log(localpicker);
+
+  useEffect(() => {
+    isActive && hideLoader();
+  }, []);
 
   // methods
   const onSuccessSubmit = (data: newLocationType) => {
@@ -190,21 +203,29 @@ function NewAdLocation({
               <i className="fi fi-sr-map-marker-home mr-2"></i>
               Địa điểm:
             </h5>
-            <div className="border-solid border-[1px] border-zinc-400 rounded overflow-hidden w-full h-8 ml-4">
-              <Controller
-                name="address"
-                control={control}
-                disabled={isLoading || isUploading}
-                render={({ field }) => (
-                  <input
-                    type="text"
-                    id="address-ad-location"
-                    placeholder="Example: 397 Williams ShoalSouth Warren"
-                    {...field}
-                    className="disabled:cursor-not-allowed w-full h-full px-4 outline-none text-ellipsis text-xs"
-                  />
-                )}
-              />
+            <div className="w-full h-16 ml-4">
+              <div className="border-solid border-[1px] border-zinc-400 rounded overflow-hidden w-full h-8">
+                <Controller
+                  name="address"
+                  control={control}
+                  disabled={isLoading || isUploading}
+                  render={({ field }) => (
+                    <input
+                      type="text"
+                      id="address-ad-location"
+                      placeholder="Example: 397 Williams ShoalSouth Warren"
+                      {...field}
+                      className="disabled:cursor-not-allowed w-full h-full px-4 outline-none text-ellipsis text-xs"
+                    />
+                  )}
+                />
+              </div>
+
+              <div className="flex flex-row gap-2 h-8">
+                <select name="ls_province" className="h-full outline"></select>
+                <select name="ls_district"></select>
+                <select name="ls_ward"></select>
+              </div>
             </div>
           </div>
 

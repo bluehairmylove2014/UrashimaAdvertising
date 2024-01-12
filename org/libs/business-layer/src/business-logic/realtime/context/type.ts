@@ -1,7 +1,7 @@
-import { Socket } from 'socket.io-client';
+import { HubConnection } from '@microsoft/signalr';
 
 export interface RealtimeState {
-  socket: Socket | null;
+  socket: HubConnection | null;
 }
 
 export type RealtimeAction = {
