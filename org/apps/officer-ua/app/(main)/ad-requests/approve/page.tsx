@@ -50,9 +50,7 @@ async function ApproveRequestDetail() {
   }, [creationRequests, requestId]);
 
   useEffect(() => {
-    if (isActive) {
-      hideLoader();
-    }
+    isActive && hideLoader();
   }, [hideLoader, isActive]);
 
   const handleApprove = (status: string) => {
@@ -140,7 +138,7 @@ async function ApproveRequestDetail() {
           <DisplayAdDetail
             adData={{
               ...requestData.adsPoint,
-              adsBoard: [requestData.adsBoard],
+              adsBoard: requestData.adsBoard ? [requestData.adsBoard] : [],
               images: [],
             }}
           />

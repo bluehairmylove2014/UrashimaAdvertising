@@ -98,7 +98,7 @@ function DisplayAdDetail({ adData }: { adData: IAdLocationDetail }) {
           )}
           <button
             onClick={() => {
-              openMap(adData.latitude, adData.longitude)
+              openMap(adData.latitude, adData.longitude);
             }}
             className="w-full text-left hover:underline"
           >

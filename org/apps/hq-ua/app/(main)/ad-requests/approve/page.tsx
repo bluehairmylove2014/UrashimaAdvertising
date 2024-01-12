@@ -132,7 +132,7 @@ async function ApproveRequestDetail() {
           <DisplayAdDetail
             adData={{
               ...requestData.adsPoint,
-              adsBoard: [requestData.adsBoard],
+              adsBoard: requestData.adsBoard ? [requestData.adsBoard] : [],
               images: [],
             }}
           />

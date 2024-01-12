@@ -23,7 +23,7 @@ function DetailAdsPoint({
   onClick,
   handleClose,
   handleDetailReport,
-  handleListReport
+  handleListReport,
 }: {
   detailAdsPoint: IAdLocationDetail;
   isOfficer: boolean;
@@ -84,8 +84,7 @@ function DetailAdsPoint({
               className="bg-green-600 text-white rounded px-2 py-2 font-semibold hover:bg-green-500 transition-colors"
               onClick={() => {
                 router.push(
-                  OFFICER_PAGES.AD_LOCATION_DETAIL +
-                  `/edit/${detailAdsPoint.id}`
+                  OFFICER_PAGES.AD_LOCATION_DETAIL + `/${detailAdsPoint.id}`
                 );
                 showLoader();
               }}
@@ -93,7 +92,7 @@ function DetailAdsPoint({
               <i className="fi fi-ss-file-edit mr-2"></i>
               <span className="text-xs">Chỉnh sửa</span>
             </button>
-            {Array.isArray(listReport) ?
+            {Array.isArray(listReport) ? (
               <button
                 className="bg-rose-600 text-white rounded px-2 py-2 font-semibold hover:bg-rose-500 transition-colors ml-2"
                 onClick={handleListReport}
@@ -101,9 +100,9 @@ function DetailAdsPoint({
                 <i className="fi fi-sr-hexagon-exclamation mr-2"></i>
                 <span className="text-xs">Danh sách báo cáo</span>
               </button>
-              :
+            ) : (
               <></>
-            }
+            )}
           </div>
         ) : (
           <>
