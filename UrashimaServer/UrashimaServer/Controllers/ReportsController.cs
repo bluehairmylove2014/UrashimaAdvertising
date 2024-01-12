@@ -223,7 +223,19 @@ namespace UrashimaServer.Controllers
                 return BadRequest("Báo cáo này không thuộc quyền quản lý.");
             }
 
-            return Ok(_mapper.Map<GetReportDetailDto>(rawResult));
+            var result = _mapper.Map<GetReportDetailDto>(rawResult);
+            if (rawResult.AdsPoint != null)
+            {
+                result.Lat = rawResult.AdsPoint.Latitude;
+                result.Lon = rawResult.AdsPoint.Longitude;
+            }
+            else if (rawResult.Location != null)
+            {
+                result.Lat = rawResult.Location.Latitude;
+                result.Lon = rawResult.Location.Longitude;
+            }
+
+            return Ok(result);
         }
 
         /// <summary>
