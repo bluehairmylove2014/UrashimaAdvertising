@@ -58,11 +58,18 @@ async function LocationEdit({ params }: { params: { id: string } }) {
 
   const renderOptions = (options: ISetting[] | null) => {
     return Array.isArray(options)
-      ? options.map((o) => ({
-          name: o.name,
-          value: o.name,
-          defaultChecked: false,
-        }))
+      ? [
+          {
+            name: 'Chưa chọn',
+            value: '',
+            defaultChecked: true,
+          },
+          ...options.map((o) => ({
+            name: o.name,
+            value: o.name,
+            defaultChecked: false,
+          })),
+        ]
       : null;
   };
 

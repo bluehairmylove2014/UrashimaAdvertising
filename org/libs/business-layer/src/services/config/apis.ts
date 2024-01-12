@@ -20,6 +20,8 @@ export const adsPointModificationUrl = '/api/officer/ads-modification/point';
 
 export const getAllHQAdsForm = '/api/ads-type/all';
 
+export const HQCreateNewAdsEndpoint = '/api/headquater/ads-point';
+
 // REPORT
 export const reportAdUrl = '/api/reports/ads-board';
 export const reportLocationUrl = '/api/reports/location';
@@ -69,6 +71,7 @@ export const fCaptchaSiteverifyUrl =
 
 // REGION
 export const getRegionsUrl = '/api/headquater/ward-district';
+export const createNewRegionsUrl = '/api/headquater/ward-district';
 
 // SETTING
 export const getLocationSettingsUrl = '/api/location-type';

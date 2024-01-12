@@ -46,6 +46,10 @@ const adsPointModificationSchema = z.object({
 const getAllAdBoardsResponseSchema = z.array(adBoardSchema);
 const anySchema = z.any();
 
+const hqCreateNewAdsSchema = z.object({
+  message: z.string(),
+});
+
 export {
   adLocationSchema,
   adBoardSchema,
@@ -55,5 +59,6 @@ export {
   getOfficerAdDetailResponseSchema,
   adsPointModificationSchema,
   getAllAdBoardsResponseSchema,
+  hqCreateNewAdsSchema,
   anySchema,
 };

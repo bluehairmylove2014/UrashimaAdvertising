@@ -1,5 +1,6 @@
 import { getRegionsFromCookie } from '@business-layer/business-logic/lib/regionManagement/process/helpers/regionsCookie';
 import {
+  HQCreateNewAdsEndpoint,
   adsPointModificationUrl,
   getAdDetailsUrl,
   getAllAdBoardsUrl,
@@ -16,6 +17,7 @@ import {
   getAllAdsResponseSchema,
   getAllOfficerAdsResponseSchema,
   getOfficerAdDetailResponseSchema,
+  hqCreateNewAdsSchema,
 } from './schema';
 import {
   adsPointModificationParamsType,
@@ -26,6 +28,8 @@ import {
   getAllAdsResponseType,
   getAllOfficerAdsResponseType,
   getOfficerLocationDetailAdsResponseType,
+  hqCreateNewAdsParamsType,
+  hqCreateNewAdsResponseType,
 } from './type';
 
 export * from './type';
@@ -173,6 +177,31 @@ export class AdsService extends Services {
         data: data.modificationData,
         headers: {
           Authorization: `Bearer ${data.token}`,
+        },
+        signal: this.abortController.signal,
+        transformResponse: (res) => res,
+      });
+      return response;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  };
+  hqCreateNewAds = async ({
+    data,
+    token,
+  }: hqCreateNewAdsParamsType): Promise<hqCreateNewAdsResponseType> => {
+    this.abortController = new AbortController();
+    try {
+      const response = await this.fetchApi<
+        typeof hqCreateNewAdsSchema,
+        hqCreateNewAdsResponseType
+      >({
+        method: 'POST',
+        url: HQCreateNewAdsEndpoint,
+        schema: hqCreateNewAdsSchema,
+        data: data,
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
         signal: this.abortController.signal,
         transformResponse: (res) => res,

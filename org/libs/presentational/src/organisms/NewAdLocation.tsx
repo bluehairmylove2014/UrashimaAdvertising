@@ -17,6 +17,8 @@ import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import { useViewLocationMap } from './ViewLocationMap';
+import { useCreateNewAd } from '@business-layer/business-logic/lib/ads';
+import { HQ_PAGES } from '@constants/hqPages';
 
 const DEFAULT_THUMBNAIL_WIDTH = 120;
 const DEFAULT_THUMBNAIL_HEIGHT = 120;
@@ -61,61 +63,59 @@ function NewAdLocation({
   const additionAdsBoardImages = useRef<
     { boardId: Number; blobUrl: string; file: File }[]
   >([]);
-  // const { onModifyAdLocationDetail, isLoading } = useModifyAdLocationDetail();
+  const { onCreateNewAd, isLoading } = useCreateNewAd();
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const { onUpload } = useUpload();
 
   // methods
   const onSuccessSubmit = (data: newLocationType) => {
     // UPLOAD TO CDN
-    console.log(data);
-    // onUploadImageToCDN().then((imgData) => {
-    //   const modifyData: newLocationType = {
-    //     ...data,
-    //     images: data.images.map((fi) => {
-    //       if (fi.image.includes('blob:')) {
-    //         const suitableName = imgData?.locationImages?.find(
-    //           (img) =>
-    //             img.path.slice(img.path.lastIndexOf('/') + 1) ===
-    //             additionLocationImages.current.find(
-    //               (ai) => ai.blobUrl === fi.image
-    //             )?.file.name
-    //         );
-    //         if (!suitableName) {
-    //           showError('Lỗi thay đổi hình ảnh địa điểm');
-    //           return fi;
-    //         } else {
-    //           return {
-    //             image: suitableName.path,
-    //           };
-    //         }
-    //       } else {
-    //         return fi;
-    //       }
-    //     }),
-    //   };
-    // onModifyAdLocationDetail({
-    //   ...modifyData,
-    // })
-    //   .then((msg) => {
-    //     showSuccess(msg);
-    //     router.push(
-    //       customBackHref ??
-    //         OFFICER_PAGES.AD_LOCATION_DETAIL + `/${adData.id}`
-    //     );
-    //   })
-    //   .catch((error) => showError(error.message))
-    //   .finally(() => {
-    //     Object.keys(modifyData).forEach((key) =>
-    //       setValue(
-    //         key as keyof newLocationType,
-    //         modifyData[key as keyof newLocationType]
-    //       )
-    //     );
-    //     additionAdsBoardImages.current = [];
-    //     additionLocationImages.current = [];
-    //   });
-    // });
+    onUploadImageToCDN().then((imgData) => {
+      const modifyData: newLocationType = {
+        ...data,
+        images: data.images.map((fi) => {
+          if (fi.image.includes('blob:')) {
+            const suitableName = imgData?.locationImages?.find(
+              (img) =>
+                img.path.slice(img.path.lastIndexOf('/') + 1) ===
+                additionLocationImages.current.find(
+                  (ai) => ai.blobUrl === fi.image
+                )?.file.name
+            );
+            if (!suitableName) {
+              showError('Lỗi thay đổi hình ảnh địa điểm');
+              return fi;
+            } else {
+              return {
+                image: suitableName.path,
+              };
+            }
+          } else {
+            return fi;
+          }
+        }),
+      };
+      onCreateNewAd({
+        ...modifyData,
+        adsBoard: [],
+        isEmpty: true,
+      })
+        .then((msg) => {
+          showSuccess(msg);
+          router.push(HQ_PAGES.AD_LOCATIONS);
+        })
+        .catch((error) => showError(error.message))
+        .finally(() => {
+          Object.keys(modifyData).forEach((key) =>
+            setValue(
+              key as keyof newLocationType,
+              modifyData[key as keyof newLocationType]
+            )
+          );
+          additionAdsBoardImages.current = [];
+          additionLocationImages.current = [];
+        });
+    });
   };
   const handleDeleteLocationImage = (image: string) => {
     setValue(
@@ -194,7 +194,7 @@ function NewAdLocation({
               <Controller
                 name="address"
                 control={control}
-                disabled={false}
+                disabled={isLoading || isUploading}
                 render={({ field }) => (
                   <input
                     type="text"
@@ -223,7 +223,7 @@ function NewAdLocation({
                 options={locationOptions}
                 style="clean"
                 defaultValue={getValues().locationType}
-                disabled={false}
+                disabled={isLoading || isUploading}
               />
             </div>
           </div>
@@ -242,7 +242,7 @@ function NewAdLocation({
                 options={adsFormOptions}
                 style="clean"
                 defaultValue={getValues().adsForm}
-                disabled={false}
+                disabled={isLoading || isUploading}
               />
             </div>
           </div>
@@ -258,7 +258,7 @@ function NewAdLocation({
                 onChange={(value) => {
                   setValue('planned', value);
                 }}
-                disabled={false}
+                disabled={isLoading || isUploading}
               />
             </div>
 
@@ -283,6 +283,7 @@ function NewAdLocation({
                 type="number"
                 id="latitude"
                 placeholder="Vĩ độ"
+                disabled={isLoading || isUploading}
                 {...register('latitude')}
                 className="w-full h-8 outline-none rounded bg-transparent border border-solid border-zinc-400 px-3 text-xs"
               />
@@ -290,6 +291,7 @@ function NewAdLocation({
                 type="number"
                 id="longitude"
                 placeholder="Kinh độ"
+                disabled={isLoading || isUploading}
                 {...register('longitude')}
                 className="w-full h-8 outline-none rounded bg-transparent border border-solid border-zinc-400 px-3 text-xs"
               />
@@ -297,6 +299,7 @@ function NewAdLocation({
                 <CustomButton
                   style="fill-green"
                   type="button"
+                  loading={isLoading || isUploading}
                   onClick={() => {
                     enableSelecting();
                     openMap();
@@ -326,7 +329,7 @@ function NewAdLocation({
                 />
                 <button
                   type="button"
-                  disabled={false}
+                  disabled={isLoading || isUploading}
                   onClick={() => handleDeleteLocationImage(img.image)}
                   className="absolute top-0 left-0 w-full h-full bg-black/60 grid place-items-center opacity-0 hover:opacity-100 transition-all disabled:cursor-not-allowed disabled:hover:opacity-0"
                 >
@@ -341,7 +344,7 @@ function NewAdLocation({
                 style="fill"
                 isAbortLimitSize={false}
                 onSelectImages={handleAddLocationImage}
-                disabled={false}
+                disabled={isLoading || isUploading}
               />
             </div>
           </div>
@@ -349,7 +352,11 @@ function NewAdLocation({
       </div>
       <div className="w-full mt-6 grid place-items-center">
         <div className="w-1/3 h-fit">
-          <CustomButton style="fill-primary" loading={false} type="submit">
+          <CustomButton
+            style="fill-primary"
+            loading={isLoading || isUploading}
+            type="submit"
+          >
             Tạo điểm quảng cáo
           </CustomButton>
         </div>
