@@ -63,6 +63,22 @@ export const editLocationDetailSchema = y.object({
     })
   ),
 });
+export const newLocationSchema = y.object({
+  address: y
+    .string()
+    .required('Địa chỉ không được để trống')
+    .max(255, 'Địa chỉ tối đa 255 ký tự'),
+  latitude: y.number().required('Không được để trống kinh độ và vĩ độ'),
+  longitude: y.number().required('Không được để trống kinh độ và vĩ độ'),
+  locationType: y.string().required('Không được để trống loại địa điểm'),
+  adsForm: y.string().required('Không được để trống hình thức'),
+  planned: y.boolean(),
+  images: y.array(
+    y.object({
+      image: y.string(),
+    })
+  ),
+});
 
 export const reasonsInputSchema = y.object({
   reasons: y_textArea,

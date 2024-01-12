@@ -2,12 +2,14 @@
 import { useFetchPersonalInformation } from '@business-layer/business-logic/lib/account';
 import { useSocketConnect } from '@business-layer/business-logic/realtime';
 import { OFFICER_PAGES } from '@constants/officerPages';
+import { useNavigateLoader } from '@presentational/atoms/NavigateLoader';
 import Link from 'next/link';
 import { useEffect } from 'react';
 
-function OfficerNavAvatar() {
+function OfficerNavAvatar({ isNeedLoader }: { isNeedLoader: boolean }) {
   const { data: accountDetail } = useFetchPersonalInformation();
   const { handleConnect } = useSocketConnect();
+  const { showLoader } = useNavigateLoader();
 
   useEffect(() => {
     if (accountDetail) {
@@ -18,6 +20,9 @@ function OfficerNavAvatar() {
   return accountDetail ? (
     <Link
       href={OFFICER_PAGES.ME}
+      onClick={() => {
+        isNeedLoader && showLoader();
+      }}
       className="text-xs font-semibold text-white text-end flex flex-col max-w-xs overflow-hidden hover:text-orange-400 transition-colors"
     >
       <small>Xin chào!</small>

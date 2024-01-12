@@ -25,7 +25,7 @@ async function AdRequests() {
   return (
     <div className="py-6 w-full h-screen overflow-y-auto scrollbar-hide">
       <HQPageTitle title="Các yêu cầu từ Phường, Quận" />
-      <AdRequestTable regionsData={regionsData} />
+      <AdRequestTable regionsData={regionsData} isOfficer={false} />
     </div>
   );
 }

@@ -24,7 +24,11 @@ import { useGetLocationDetail } from '@business-layer/business-logic/lib/geocode
 import { useNotification } from '@presentational/atoms/Notification';
 
 import LocationDetail from '@presentational/molecules/LocationDetail';
-import { IAdReport, ILocation, ILocationReport } from '@business-layer/services/entities';
+import {
+  IAdReport,
+  ILocation,
+  ILocationReport,
+} from '@business-layer/services/entities';
 import { useFetchAllOfficerAds } from '@business-layer/business-logic/lib/officerAds/process/hooks';
 import CustomMap from '@presentational/organisms/CustomMap';
 import useGetAllOfficerReport from '@business-layer/business-logic/lib/report/process/hooks/useGetAllOfficerReport';
@@ -32,9 +36,9 @@ import { debounce } from 'lodash';
 
 type locationType =
   | {
-    latitude: number;
-    longitude: number;
-  }
+      latitude: number;
+      longitude: number;
+    }
   | undefined;
 
 function Home(): ReactElement {
@@ -168,11 +172,9 @@ function Home(): ReactElement {
         .map(Number);
 
       //Check ADS Point is reported
-      if (
-        featuresAllPoint[0].layer.id === 'unclustered-reported'
-      ) {
-        const report = locationReportList?.find((r) =>
-          r.latitude == lat && r.longitude == long
+      if (featuresAllPoint[0].layer.id === 'unclustered-reported') {
+        const report = locationReportList?.find(
+          (r) => r.latitude == lat && r.longitude == long
         );
 
         if (report && !report.reportData) {
@@ -182,17 +184,13 @@ function Home(): ReactElement {
             duration: 1500,
           });
 
-          setAdsPointReportedDetail(
-            report
-          );
+          setAdsPointReportedDetail(report);
 
           setIsClickReportedPoint(true);
           setIsBackActive(false);
           return;
-        }
-        else setIsClickReportedPoint(false);
-      }
-      else setIsClickReportedPoint(false);
+        } else setIsClickReportedPoint(false);
+      } else setIsClickReportedPoint(false);
 
       mapRef.current.flyTo({
         zoom: 16,
@@ -289,8 +287,8 @@ function Home(): ReactElement {
         //Check Report
         if (adsPoint.layer.id === 'unclustered-reported') {
           //Check report type
-          const report = locationReportList?.find((r) =>
-            r.latitude == lat && r.longitude == long
+          const report = locationReportList?.find(
+            (r) => r.latitude == lat && r.longitude == long
           );
 
           //Unknow report
@@ -316,8 +314,7 @@ function Home(): ReactElement {
 
           //Ads Report Point or Ads Board Report
           setIsAdsPointReported(true);
-        }
-        else setIsAdsPointReported(false);
+        } else setIsAdsPointReported(false);
 
         setIdAdsPoint(adsPoint.properties?.id);
         setPosPrevMouse({
@@ -333,7 +330,7 @@ function Home(): ReactElement {
     []
   );
   return (
-    <div className="relative w-screen h-full">
+    <div className="relative w-screen h-[calc(100vh-60px)] overflow-hidden">
       <div className="relative z-0">
         <CustomMap
           mapProps={{
@@ -345,52 +342,52 @@ function Home(): ReactElement {
               type: 'FeatureCollection',
               features: adsData
                 ? [
-                  ...adsData.map((m) => ({
-                    type: 'Feature',
-                    properties: {
-                      id: m.id,
-                      cluster: false,
-                      name: m.address,
-                      planned: m.planned,
-                      isEmpty: m.isEmpty,
-                      reported: Boolean(
-                        (locationReportList &&
-                          locationReportList.some(
-                            (lr) =>
-                              lr.latitude === m.latitude &&
-                              lr.longitude === m.longitude
-                          )) ||
-                        (adsReportList &&
-                          adsReportList.some(
-                            (ar) => ar.adsPointID === m.id
-                          ))
-                      ),
-                      longLatArr: [m.longitude, m.latitude],
-                    },
-                    geometry: {
-                      type: 'Point',
-                      coordinates: [m.longitude, m.latitude],
-                    },
-                  })),
-                  ...(reportsData
-                    ? reportsData.map((m, index) => ({
+                    ...adsData.map((m) => ({
                       type: 'Feature',
                       properties: {
-                        id: adsData.length + index + 1,
+                        id: m.id,
                         cluster: false,
                         name: m.address,
-                        planned: false,
-                        reported: true,
-                        isEmpty: false,
-                        longLatArr: [m.lon, m.lat],
+                        planned: m.planned,
+                        isEmpty: m.isEmpty,
+                        reported: Boolean(
+                          (locationReportList &&
+                            locationReportList.some(
+                              (lr) =>
+                                lr.latitude === m.latitude &&
+                                lr.longitude === m.longitude
+                            )) ||
+                            (adsReportList &&
+                              adsReportList.some(
+                                (ar) => ar.adsPointID === m.id
+                              ))
+                        ),
+                        longLatArr: [m.longitude, m.latitude],
                       },
                       geometry: {
                         type: 'Point',
-                        coordinates: [m.lon, m.lat],
+                        coordinates: [m.longitude, m.latitude],
                       },
-                    }))
-                    : []),
-                ]
+                    })),
+                    ...(reportsData
+                      ? reportsData.map((m, index) => ({
+                          type: 'Feature',
+                          properties: {
+                            id: adsData.length + index + 1,
+                            cluster: false,
+                            name: m.address,
+                            planned: false,
+                            reported: true,
+                            isEmpty: false,
+                            longLatArr: [m.lon, m.lat],
+                          },
+                          geometry: {
+                            type: 'Point',
+                            coordinates: [m.lon, m.lat],
+                          },
+                        }))
+                      : []),
+                  ]
                 : [],
             } as FeatureCollection<Point>
           }
@@ -500,7 +497,7 @@ function Home(): ReactElement {
                 handleClose={() => {
                   setIsClickAdsPoint(false);
                 }}
-                handleDetailReport={() => { }}
+                handleDetailReport={() => {}}
               />
             ) : (
               <></>
@@ -523,7 +520,7 @@ function Home(): ReactElement {
                   setIsActiveAdsBoard(false);
                   setIsClickAdsPoint(true);
                 }}
-                handleDetailReportAdsBoard={() => { }}
+                handleDetailReportAdsBoard={() => {}}
               ></DetailAds>
             ) : (
               <></>

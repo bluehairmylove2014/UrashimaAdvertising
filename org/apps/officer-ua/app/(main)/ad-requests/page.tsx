@@ -41,7 +41,7 @@ async function AdRequests() {
         <h1 className="w-full font-bold !text-base">DANH SÁCH CÁC CẤP PHÉP</h1>
         <Breadcrumbs bcList={breadcrumbsData} />
       </div>
-      <AdRequestTable regionsData={regionsData} />
+      <AdRequestTable regionsData={regionsData} isOfficer={true} />
     </div>
   );
 }

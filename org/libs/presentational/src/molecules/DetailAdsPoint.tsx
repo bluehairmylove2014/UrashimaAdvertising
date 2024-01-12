@@ -36,7 +36,7 @@ function DetailAdsPoint({
 
   return (
     <div
-      className="h-[100vh] w-[25%] absolute shadow-md min-w-[45vh] z-40"
+      className="h-[calc(100vh-60px)] w-[25%] absolute shadow-md min-w-[45vh] z-40"
       style={{ left: 0, top: 0 }}
     >
       <div className="h-[100%] w-[100%] bg-white relative overflow-y-scroll scrollbar">
@@ -79,8 +79,7 @@ function DetailAdsPoint({
                 className="bg-green-600 text-white rounded px-2 py-2 font-semibold hover:bg-green-500 transition-colors"
                 onClick={() => {
                   router.push(
-                    OFFICER_PAGES.AD_LOCATION_DETAIL +
-                      `/edit/${detailAdsPoint.id}`
+                    OFFICER_PAGES.AD_LOCATION_EDIT + `/${detailAdsPoint.id}`
                   );
                   showLoader();
                 }}

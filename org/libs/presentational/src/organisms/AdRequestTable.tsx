@@ -19,6 +19,8 @@ import TableRow from '@presentational/molecules/TableRow';
 import IconButton from '@presentational/atoms/IconButton';
 import { useRouter } from 'next/navigation';
 import {
+  useApproveAdCreationRequest,
+  useApproveAdModificationRequest,
   useDeleteApproveRequest,
   useDeleteModificationRequest,
   useGetAllAdModificationRequest,
@@ -33,6 +35,10 @@ import { useViewLocationMap } from './ViewLocationMap';
 import YesNoPopup from '@presentational/molecules/YesNoPopup';
 import { useNotification } from '@presentational/atoms/Notification';
 import { useNavigateLoader } from '@presentational/atoms/NavigateLoader';
+import {
+  CREATION_REQUEST_STATUS_LIST,
+  MODIFICATION_REQUEST_STATUS_LIST,
+} from '@constants/requestStatus';
 
 const START_PAGE = 1;
 const MAX_ELEMENT_PER_PAGE = 4;
@@ -63,8 +69,9 @@ type displayDataType = {
 
 type additionFuncParamsType = {
   regionsData: regionResponseType | null;
+  isOfficer: boolean;
 };
-function AdRequestTable({ regionsData }: additionFuncParamsType) {
+function AdRequestTable({ regionsData, isOfficer }: additionFuncParamsType) {
   const router = useRouter();
   const { openMap } = useViewLocationMap();
   const { showLoader } = useNavigateLoader();
@@ -84,9 +91,23 @@ function AdRequestTable({ regionsData }: additionFuncParamsType) {
   const needDeletedRequestId = useRef<{ id: number; type: string } | null>(
     null
   );
+
+  const [isShowingRejectPopup, setIsShowingRejectPopup] =
+    useState<boolean>(false);
+  const needRejectRequestId = useRef<{ id: number; type: string } | null>(null);
+
+  const [isShowingApprovePopup, setIsShowingApprovePopup] =
+    useState<boolean>(false);
+  const needApproveRequestId = useRef<{ id: number; type: string } | null>(
+    null
+  );
+
   const { onDeleteApproveRequest } = useDeleteApproveRequest();
   const { onDeleteModificationRequest } = useDeleteModificationRequest();
   const { showError, showSuccess } = useNotification();
+  const { onApproveAdModificationRequest } = useApproveAdModificationRequest();
+  const { onApproveAdCreationRequest, isLoading } =
+    useApproveAdCreationRequest();
 
   useEffect(() => {
     if (regionsData) {
@@ -235,11 +256,104 @@ function AdRequestTable({ regionsData }: additionFuncParamsType) {
     setIsShowingPopupDelete(false);
     needDeletedRequestId.current = null;
   }
+  function handleRejectRequest(result: boolean) {
+    if (result) {
+      if (!needRejectRequestId.current) return;
+      if (needRejectRequestId.current.type === REQUEST_TYPES.CRE) {
+        const target = creationRequests?.find(
+          (c) => c.id === needRejectRequestId.current?.id
+        );
+        if (target) {
+          onApproveAdCreationRequest({
+            id: target.id,
+            status: MODIFICATION_REQUEST_STATUS_LIST.DENY,
+          })
+            .then((msg) => {
+              showSuccess(msg);
+              refetchCreationRequest();
+            })
+            .catch((error) => {
+              showError(error.message);
+            });
+        }
+      } else {
+        const target = modificationRequests?.find(
+          (c) => c.id === needRejectRequestId.current?.id
+        );
+        if (target) {
+          onApproveAdModificationRequest({
+            id: target.id,
+            status: CREATION_REQUEST_STATUS_LIST.REJECT,
+          })
+            .then((msg) => {
+              showSuccess(msg);
+              refetchModificationRequest();
+            })
+            .catch((error) => {
+              showError(error.message);
+            });
+        }
+      }
+    }
+    // Refresh
+    setIsShowingRejectPopup(false);
+    needRejectRequestId.current = null;
+  }
+  function handleApproveRequest(result: boolean) {
+    if (result) {
+      if (!needApproveRequestId.current) return;
+      if (needApproveRequestId.current.type === REQUEST_TYPES.CRE) {
+        const target = creationRequests?.find(
+          (c) => c.id === needApproveRequestId.current?.id
+        );
+        if (target) {
+          onApproveAdCreationRequest({
+            id: target.id,
+            status: MODIFICATION_REQUEST_STATUS_LIST.APPROVE,
+          })
+            .then((msg) => {
+              showSuccess(msg);
+              refetchCreationRequest();
+            })
+            .catch((error) => {
+              showError(error.message);
+            });
+        }
+      } else {
+        const target = modificationRequests?.find(
+          (c) => c.id === needApproveRequestId.current?.id
+        );
+        if (target) {
+          onApproveAdModificationRequest({
+            id: target.id,
+            status: CREATION_REQUEST_STATUS_LIST.ACCEPT,
+          })
+            .then((msg) => {
+              showSuccess(msg);
+              refetchModificationRequest();
+            })
+            .catch((error) => {
+              showError(error.message);
+            });
+        }
+      }
+    }
+    // Refresh
+    setIsShowingApprovePopup(false);
+    needApproveRequestId.current = null;
+  }
 
   return (
     <>
       <div className="flex flex-row gap-4 justify-between mt-4 mb-8 w-full h-8">
-        <></>
+        {isOfficer ? (
+          <p className="font-semibold text-red-600 line-clamp-2 h-fit my-auto">
+            Lưu ý: Chỉ có cán bộ Sở VH-TT mới được thực hiện cấp phép
+          </p>
+        ) : (
+          <div></div>
+        )}
+
         <div className="flex flex-row justify-end flex-grow gap-2">
           <MultipleLayerSelect
             label="Tất cả các quận"
@@ -395,6 +509,50 @@ function AdRequestTable({ regionsData }: additionFuncParamsType) {
                             {request.requestTypes}
                           </span>,
                           <>
+                            {isOfficer ? (
+                              <IconButton
+                                type="button"
+                                shape="square"
+                                callback={() => {
+                                  needDeletedRequestId.current = {
+                                    id: request.id,
+                                    type: request.requestTypes,
+                                  };
+                                  setIsShowingPopupDelete(true);
+                                }}
+                              >
+                                <i className="fi fi-ss-trash text-red-600 text-sm hover:text-red-400 transition-colors"></i>
+                              </IconButton>
+                            ) : (
+                              <>
+                                <IconButton
+                                  type="button"
+                                  shape="square"
+                                  callback={() => {
+                                    needApproveRequestId.current = {
+                                      id: request.id,
+                                      type: request.requestTypes,
+                                    };
+                                    setIsShowingApprovePopup(true);
+                                  }}
+                                >
+                                  <i className="fi fi-ss-check-circle text-green-600 text-sm hover:text-green-400 transition-colors"></i>
+                                </IconButton>
+                                <IconButton
+                                  type="button"
+                                  shape="square"
+                                  callback={() => {
+                                    needRejectRequestId.current = {
+                                      id: request.id,
+                                      type: request.requestTypes,
+                                    };
+                                    setIsShowingRejectPopup(true);
+                                  }}
+                                >
+                                  <i className="fi fi-sr-cross-circle text-red-600 text-sm hover:text-red-400 transition-colors"></i>
+                                </IconButton>
+                              </>
+                            )}
                             <IconButton
                               type="button"
                               shape="square"
@@ -410,23 +568,6 @@ function AdRequestTable({ regionsData }: additionFuncParamsType) {
                             >
                               <i className="fi fi-sr-file-circle-info text-blue-600 text-sm hover:text-blue-400 transition-colors"></i>
                             </IconButton>
-                            {request.isInProgress ? (
-                              <IconButton
-                                type="button"
-                                shape="square"
-                                callback={() => {
-                                  needDeletedRequestId.current = {
-                                    id: request.id,
-                                    type: request.requestTypes,
-                                  };
-                                  setIsShowingPopupDelete(true);
-                                }}
-                              >
-                                <i className="fi fi-ss-trash text-red-600 text-sm hover:text-red-400 transition-colors"></i>
-                              </IconButton>
-                            ) : (
-                              <></>
-                            )}
                           </>,
                         ]}
                       />
@@ -451,6 +592,16 @@ function AdRequestTable({ regionsData }: additionFuncParamsType) {
         message="Bạn có chắc muốn xoá không?"
         onResult={handleDeleteRequest}
         isActive={isShowingPopupDelete}
+      />
+      <YesNoPopup
+        message="Xác nhận từ chối?"
+        onResult={handleRejectRequest}
+        isActive={isShowingRejectPopup}
+      />
+      <YesNoPopup
+        message="Cấp phép ngay?"
+        onResult={handleApproveRequest}
+        isActive={isShowingApprovePopup}
       />
     </>
   );

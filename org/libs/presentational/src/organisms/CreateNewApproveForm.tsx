@@ -270,17 +270,18 @@ function CreateNewApproveForm({
 
         <div className="col-start-1 col-span-4 row-start-4 row-span-1">
           <label
-            htmlFor="adsContent"
+            htmlFor="newAdsApproveContent"
             className="text-xs font-semibold opacity-60"
           >
             Nội dung quảng cáo
           </label>
           <textarea
-            id="adsContent"
+            id="newAdsApproveContent"
             placeholder="Mô tả ngắn gọn về quảng cáo của bạn..."
             {...register('adsContent')}
+            style={{ display: 'block' }}
             disabled={isCreatingRequest || isUploading}
-            className="disabled:cursor-not-allowed disabled:bg-zinc-100 border-solid border-[1px] border-zinc-400 px-4 py-3 h-24 rounded outline-none bg-transparent text-xs font-medium resize-none w-full !block"
+            className="disabled:cursor-not-allowed disabled:bg-zinc-100 border-solid border-[1px] border-zinc-400 px-4 py-3 h-24 rounded outline-none bg-transparent text-xs font-medium resize-none w-full"
           />
         </div>
 
