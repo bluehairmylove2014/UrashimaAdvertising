@@ -12,7 +12,6 @@ function OfficerNavAvatar({ isNeedLoader }: { isNeedLoader: boolean }) {
   const { showLoader } = useNavigateLoader();
 
   useEffect(() => {
-    console.log('HANDLE CONNECT: ', accountDetail);
     if (accountDetail) {
       handleConnect(accountDetail.email);
     }

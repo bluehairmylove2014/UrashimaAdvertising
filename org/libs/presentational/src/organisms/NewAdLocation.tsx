@@ -21,6 +21,7 @@ import { useCreateNewAd } from '@business-layer/business-logic/lib/ads';
 import { HQ_PAGES } from '@constants/hqPages';
 import { useNavigateLoader } from '@presentational/atoms/NavigateLoader';
 import '@utils/helpers/regionSelect/vietnamlocalselector';
+import DistrictSelect from './DistrictSelect';
 
 const DEFAULT_THUMBNAIL_WIDTH = 120;
 const DEFAULT_THUMBNAIL_HEIGHT = 120;
@@ -69,12 +70,11 @@ function NewAdLocation({
   const { onCreateNewAd, isLoading } = useCreateNewAd();
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const { onUpload } = useUpload();
-  const localpicker = new LocalPicker({
-    province: 'ls_province',
-    district: 'ls_district',
-    ward: 'ls_ward',
+  const [addressData, setAddressData] = useState({
+    city: '',
+    district: '',
+    ward: '',
   });
-  console.log(localpicker);
 
   useEffect(() => {
     isActive && hideLoader();
@@ -82,53 +82,62 @@ function NewAdLocation({
 
   // methods
   const onSuccessSubmit = (data: newLocationType) => {
-    // UPLOAD TO CDN
-    onUploadImageToCDN().then((imgData) => {
-      const modifyData: newLocationType = {
-        ...data,
-        images: data.images.map((fi) => {
-          if (fi.image.includes('blob:')) {
-            const suitableName = imgData?.locationImages?.find(
-              (img) =>
-                img.path.slice(img.path.lastIndexOf('/') + 1) ===
-                additionLocationImages.current.find(
-                  (ai) => ai.blobUrl === fi.image
-                )?.file.name
-            );
-            if (!suitableName) {
-              showError('Lỗi thay đổi hình ảnh địa điểm');
-              return fi;
+    if (
+      addressData.city === '' ||
+      addressData.district === '' ||
+      addressData.ward === ''
+    ) {
+      showError('Bạn chưa chọn đủ thông tin địa điểm');
+    } else {
+      // UPLOAD TO CDN
+      onUploadImageToCDN().then((imgData) => {
+        const modifyData: newLocationType = {
+          ...data,
+          images: data.images.map((fi) => {
+            if (fi.image.includes('blob:')) {
+              const suitableName = imgData?.locationImages?.find(
+                (img) =>
+                  img.path.slice(img.path.lastIndexOf('/') + 1) ===
+                  additionLocationImages.current.find(
+                    (ai) => ai.blobUrl === fi.image
+                  )?.file.name
+              );
+              if (!suitableName) {
+                showError('Lỗi thay đổi hình ảnh địa điểm');
+                return fi;
+              } else {
+                return {
+                  image: suitableName.path,
+                };
+              }
             } else {
-              return {
-                image: suitableName.path,
-              };
+              return fi;
             }
-          } else {
-            return fi;
-          }
-        }),
-      };
-      onCreateNewAd({
-        ...modifyData,
-        adsBoard: [],
-        isEmpty: true,
-      })
-        .then((msg) => {
-          showSuccess(msg);
-          router.push(HQ_PAGES.AD_LOCATIONS);
+          }),
+        };
+        onCreateNewAd({
+          ...modifyData,
+          address: `${modifyData.address}, ${addressData.ward}, ${addressData.district}, ${addressData.city}`,
+          adsBoard: [],
+          isEmpty: true,
         })
-        .catch((error) => showError(error.message))
-        .finally(() => {
-          Object.keys(modifyData).forEach((key) =>
-            setValue(
-              key as keyof newLocationType,
-              modifyData[key as keyof newLocationType]
-            )
-          );
-          additionAdsBoardImages.current = [];
-          additionLocationImages.current = [];
-        });
-    });
+          .then((msg) => {
+            showSuccess(msg);
+            router.push(HQ_PAGES.AD_LOCATIONS);
+          })
+          .catch((error) => showError(error.message))
+          .finally(() => {
+            Object.keys(modifyData).forEach((key) =>
+              setValue(
+                key as keyof newLocationType,
+                modifyData[key as keyof newLocationType]
+              )
+            );
+            additionAdsBoardImages.current = [];
+            additionLocationImages.current = [];
+          });
+      });
+    }
   };
   const handleDeleteLocationImage = (image: string) => {
     setValue(
@@ -198,13 +207,13 @@ function NewAdLocation({
     >
       <div className="grid gap-6 border-solid border-b-[1px] border-b-zinc-300 pb-5 mb-5">
         <div className="col-span-1 col-start-1 row-start-1 w-full">
-          <div className="flex flex-row justify-start items-center mb-2 w-full">
+          <div className="flex flex-row justify-start items-start mb-2 w-full">
             <h5 className="font-semibold text-sm whitespace-nowrap">
               <i className="fi fi-sr-map-marker-home mr-2"></i>
               Địa điểm:
             </h5>
-            <div className="w-full h-16 ml-4">
-              <div className="border-solid border-[1px] border-zinc-400 rounded overflow-hidden w-full h-8">
+            <div className="w-full h-fit ml-4">
+              <div className="border-solid border-[1px] border-zinc-400 rounded overflow-hidden w-full h-8 mb-2">
                 <Controller
                   name="address"
                   control={control}
@@ -213,7 +222,7 @@ function NewAdLocation({
                     <input
                       type="text"
                       id="address-ad-location"
-                      placeholder="Example: 397 Williams ShoalSouth Warren"
+                      placeholder="Số nhà, đường, hẻm, ..."
                       {...field}
                       className="disabled:cursor-not-allowed w-full h-full px-4 outline-none text-ellipsis text-xs"
                     />
@@ -221,10 +230,20 @@ function NewAdLocation({
                 />
               </div>
 
-              <div className="flex flex-row gap-2 h-8">
-                <select name="ls_province" className="h-full outline"></select>
-                <select name="ls_district"></select>
-                <select name="ls_ward"></select>
+              <div className="grid grid-cols-2 gap-2 h-16">
+                <DistrictSelect onChange={setAddressData} />
+                {/* <select
+                  name="ls_province"
+                  className="h-full outline col-span-1 text-[0.65rem] font-medium outline-none rounded bg-transparent px-2 border border-solid border-zinc-400"
+                ></select>
+                <select
+                  name="ls_district"
+                  className="col-span-1 text-[0.65rem] font-medium outline-none rounded bg-transparent px-2 border border-solid border-zinc-400"
+                ></select>
+                <select
+                  name="ls_ward"
+                  className="col-span-2 text-[0.65rem] font-medium outline-none rounded bg-transparent px-2 border border-solid border-zinc-400"
+                ></select> */}
               </div>
             </div>
           </div>

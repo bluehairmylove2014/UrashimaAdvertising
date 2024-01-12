@@ -406,28 +406,6 @@ function AdRequestTable({ regionsData, isOfficer }: additionFuncParamsType) {
                             <span className="line-clamp-2">
                               {request.pointData.address}
                             </span>
-                            <button
-                              onClick={() =>
-                                openMap(
-                                  request.pointData.latitude,
-                                  request.pointData.longitude
-                                )
-                              }
-                              className="w-full text-center hover:underline"
-                            >
-                              <span className="line-clamp-1 font-medium text-xs ">
-                                <b>Lat:</b>{' '}
-                                <span className="text-blue-600">
-                                  {request.pointData.latitude}
-                                </span>
-                              </span>
-                              <span className="line-clamp-1 font-medium text-xs ">
-                                <b>Long:</b>{' '}
-                                <span className="text-blue-600">
-                                  {request.pointData.longitude}
-                                </span>
-                              </span>
-                            </button>
                           </span>,
                           request.requestTypes === REQUEST_TYPES.MOD ? (
                             <span className="line-clamp-4">
