@@ -57,9 +57,9 @@ const useViewLocationMap = () => {
 };
 type locationType =
   | {
-      latitude: number;
-      longitude: number;
-    }
+    latitude: number;
+    longitude: number;
+  }
   | undefined;
 
 function ViewLocationMap(): ReactElement {
@@ -242,9 +242,8 @@ function ViewLocationMap(): ReactElement {
   }, []);
   return (
     <div
-      className={`fixed top-0 left-[20vw] w-[80vw] h-screen z-40 overflow-hidden ${
-        isActive ? '' : 'opacity-0 invisible pointer-events-none'
-      }`}
+      className={`fixed top-0 left-[20vw] w-[80vw] h-screen z-40 overflow-hidden ${isActive ? '' : 'opacity-0 invisible pointer-events-none'
+        }`}
     >
       <div className="relative z-30">
         <CustomMap
@@ -266,25 +265,25 @@ function ViewLocationMap(): ReactElement {
             type: 'FeatureCollection',
             features: adsData
               ? adsData.map((m) => ({
-                  type: 'Feature',
-                  properties: {
-                    id: m.id,
-                    cluster: false,
-                    name: m.address,
-                    planned: m.planned,
-                    reported: locationReportList
-                      ? locationReportList.findIndex(
-                          (lr) =>
-                            lr.latitude === m.latitude &&
-                            lr.longitude === m.longitude
-                        ) !== -1
-                      : false,
-                  },
-                  geometry: {
-                    type: 'Point',
-                    coordinates: [m.longitude, m.latitude],
-                  },
-                }))
+                type: 'Feature',
+                properties: {
+                  id: m.id,
+                  cluster: false,
+                  name: m.address,
+                  planned: m.planned,
+                  reported: locationReportList
+                    ? locationReportList.findIndex(
+                      (lr) =>
+                        lr.latitude === m.latitude &&
+                        lr.longitude === m.longitude
+                    ) !== -1
+                    : false,
+                },
+                geometry: {
+                  type: 'Point',
+                  coordinates: [m.longitude, m.latitude],
+                },
+              }))
               : [],
           }}
           ref={mapRef}
@@ -347,7 +346,7 @@ function ViewLocationMap(): ReactElement {
                 handleClose={() => {
                   setIsClickAdsPoint(false);
                 }}
-                handleDetailReport={() => {}}
+                handleDetailReport={() => { }}
               />
             ) : (
               <></>
@@ -370,7 +369,7 @@ function ViewLocationMap(): ReactElement {
                   setIsActiveAdsBoard(false);
                   setIsClickAdsPoint(true);
                 }}
-                handleDetailReportAdsBoard={() => {}}
+                handleDetailReportAdsBoard={() => { }}
               ></DetailAds>
             ) : (
               <></>
