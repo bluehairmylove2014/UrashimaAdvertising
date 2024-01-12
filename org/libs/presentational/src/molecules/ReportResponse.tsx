@@ -10,7 +10,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { IOfficerReportDetail } from '@business-layer/services/entities';
 import { useOfficerEditReport } from '../../../business-layer/src/business-logic/lib/officerReport/process/hooks/useOfficerEditReport';
 import { boolean } from 'zod';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 type formData = {
   response: string;
@@ -34,7 +34,8 @@ function ReportResponse({
   const { onOfficerEditReport, isLoading } = useOfficerEditReport();
 
   const onModify = (formData: formData) => {
-    const response = formData;
+    reportData.treatmentProcess = formData.response;
+    console.log(reportData);
     onOfficerEditReport({
       ...reportData,
     })
@@ -43,9 +44,13 @@ function ReportResponse({
         reset();
       })
       .catch((error) => showError(error.message))
-      .finally(() => {});
+      .finally(() => { });
   };
 
+  useEffect(() => {
+    console.log(reportData);
+
+  }, [])
   const responseWatch = watch('response');
 
   return (
@@ -68,9 +73,8 @@ function ReportResponse({
         </div>
         <div className="flex flex-row justify-end mt-2">
           <small
-            className={`${
-              responseWatch.length > 1000 ? 'text-red-600' : 'text-black'
-            }`}
+            className={`${responseWatch.length > 1000 ? 'text-red-600' : 'text-black'
+              }`}
           >
             {responseWatch.length} / 1000
           </small>
