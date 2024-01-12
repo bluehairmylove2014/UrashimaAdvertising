@@ -97,8 +97,10 @@ function DisplayAdDetail({ adData }: { adData: IAdLocationDetail }) {
             <></>
           )}
           <button
-            onClick={() => openMap(adData.latitude, adData.longitude)}
-            className="w-fit text-left hover:underline"
+            onClick={() => {
+              openMap(adData.latitude, adData.longitude)
+            }}
+            className="w-full text-left hover:underline"
           >
             <span className="line-clamp-1 font-medium text-xs ">
               <b>Kinh Độ:</b>{' '}
