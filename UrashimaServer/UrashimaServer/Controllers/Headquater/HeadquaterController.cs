@@ -321,27 +321,14 @@ namespace UrashimaServer.Controllers.Headquater
             }
 
             var addedPoint = _mapper.Map<AdsPoint>(createdPoint);
-            
-            if (addedPoint.AdsBoard != null)
-            {
-                foreach (var item in addedPoint.AdsBoard)
-                {
-                    item.AdsPointId = createdPoint.Id;
-                }
-            }
-            if (addedPoint.Images != null)
-            {
-                foreach (var item in addedPoint.Images)
-                {
-                    item.AdsPointId = createdPoint.Id;
-                }
-            }
 
-            await _context.AdsPoints.AddAsync(addedPoint);
+            var afterAdd = _context.AdsPoints.Add(addedPoint);
+            
+            await _context.SaveChangesAsync();
 
             return Ok(new
             {
-                message = $"Tạo điểm quảng cáo mới thành công với id={createdPoint.Id}."
+                message = $"Tạo điểm quảng cáo mới thành công với id={afterAdd.Entity.Id}."
             });
         }
 

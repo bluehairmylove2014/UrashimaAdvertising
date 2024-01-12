@@ -73,7 +73,6 @@ namespace UrashimaServer.Database.Dtos
 
     public class HQPostAdsPointDto
     {
-        public int Id { get; set; }
         [Range(-90, 90)]
         public double Latitude { get; set; }
         [Range(-180, 180)]
