@@ -54,7 +54,7 @@ function AdLocationsTable({
         <thead className="bg-indigo-950 text-white font-semibold">
           <tr>
             <th scope="col" className="px-2 py-3 w-[10%]">
-              STT
+              ID
             </th>
             <th scope="col" className="px-2 py-3 w-[30%]">
               Địa Điểm
@@ -88,7 +88,7 @@ function AdLocationsTable({
                 >
                   <TableRow
                     listData={[
-                      (adIndex + 1).toString(),
+                      ad.id.toString(),
                       ad.address,
                       ad.planned ? (
                         <i className="fi fi-br-check text-red-600"></i>

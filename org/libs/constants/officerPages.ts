@@ -8,8 +8,6 @@ export const OFFICER_PAGES = {
   AD_LOCATION_DETAIL: '/ad-locations/detail',
   AD_LOCATION_EDIT: '/ad-locations/edit',
   ADS_LOCATION: '/ad-locations',
-  AD_BOARD_DETAIL: '/ad-boards/detail',
-  AD_BOARD_EDIT: '/ad-boards/edit',
   ADS_BOARD: '/ad-boards',
   REPORT: '/reports',
   REQUEST_LIST: '/ad-requests',
