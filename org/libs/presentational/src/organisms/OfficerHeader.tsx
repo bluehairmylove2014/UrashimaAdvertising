@@ -17,6 +17,8 @@ function OfficerHeader() {
     useState<boolean>(true);
   const [isHomePageNeedLoader, setIsHomePageNeedLoader] =
     useState<boolean>(true);
+  const [isPersonalPageNeedLoader, setIsPersonalPageNeedLoader] =
+    useState<boolean>(true);
 
   const [approveOptions, setApproveOptions] = useState([
     {
@@ -52,6 +54,9 @@ function OfficerHeader() {
     }
     if (pathName === OFFICER_PAGES.DASHBOARD) {
       setIsHomePageNeedLoader(false);
+    }
+    if (pathName === OFFICER_PAGES.PERSONAL_INFORMATION) {
+      setIsPersonalPageNeedLoader(false);
     }
     setApproveOptions(
       approveOptions.map((a) => {
@@ -138,7 +143,7 @@ function OfficerHeader() {
         </ul>
       </nav>
       <div className="flex flex-row justify-end items-center gap-4 hover">
-        <OfficerNavAvatar />
+        <OfficerNavAvatar isNeedLoader={isPersonalPageNeedLoader} />
         <BellButton />
         <OfficerNavLogoutBtn />
       </div>

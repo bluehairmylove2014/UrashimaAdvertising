@@ -6,6 +6,7 @@ import Breadcrumbs from '@presentational/molecules/Breadcrumbs';
 import DisplayReportDetail from '@presentational/organisms/DisplayReportDetail';
 import { getHostname } from '../../../../helper/hostname';
 import { cookies } from 'next/headers';
+import EmptyIcon from '@presentational/atoms/EmptyIcon';
 
 const reportService = new ReportService();
 async function getReportDetail(reportId: number) {
@@ -60,7 +61,14 @@ async function Reports({ params }: { params: { reportId: string } }) {
             />
           </>
         ) : (
-          <></>
+          <div className="grid place-items-center w-full h-[calc(100vh-120px)]">
+            <div className="w-fit h-fit">
+              <EmptyIcon
+                customSize={100}
+                label="Không tìm thấy thông tin cho báo cáo này"
+              />
+            </div>
+          </div>
         )}
       </>
     </main>

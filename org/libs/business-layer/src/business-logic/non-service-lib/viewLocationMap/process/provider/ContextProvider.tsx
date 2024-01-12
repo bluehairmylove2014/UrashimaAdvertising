@@ -12,6 +12,7 @@ export const ContextProvider: React.FC<ContextProviderType> = ({
   const [state, dispatch] = useReducer(viewLocationMapReducer, {
     coord: [10.762538, 106.682448],
     isActive: false,
+    isSelectingLocation: false,
   });
 
   return (

@@ -260,15 +260,15 @@ function AdBoardsTable({ customDetailHref }: additionFuncParamsType) {
                   >
                     <TableRow
                       listData={[
-                        (adIndex + 1).toString(),
-                        <span className="flex flex-row gap-3 justify-center items-center">
+                        ad.id.toString(),
+                        <span className="flex flex-row gap-3 justify-start items-center">
                           <Image
                             src={ad.image}
                             alt={ad.adsPoint.address}
                             width={80}
                             height={80}
                           />
-                          <span className="line-clamp-3">
+                          <span className="line-clamp-3 text-left">
                             {ad.adsPoint.address}
                           </span>
                         </span>,
@@ -292,7 +292,8 @@ function AdBoardsTable({ customDetailHref }: additionFuncParamsType) {
                           callback={() => {
                             router.push(
                               (customDetailHref ??
-                                OFFICER_PAGES.AD_LOCATION_DETAIL) + `/${ad.id}`
+                                OFFICER_PAGES.AD_LOCATION_DETAIL) +
+                                `/${ad.adsPointId}`
                             );
                             showLoader();
                           }}

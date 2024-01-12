@@ -7,6 +7,7 @@ import { OFFICER_PAGES } from '@constants/officerPages';
 import { cookies } from 'next/headers';
 import { getCustomAccessTokenKey } from '@business-layer/business-logic/helper/customKey';
 import { getHostname } from '../../../../../helper/hostname';
+import EmptyIcon from '@presentational/atoms/EmptyIcon';
 
 const officerService = new AdsService();
 async function getAdLocationDetail(boardId: number) {
@@ -67,7 +68,11 @@ async function AdBoards({ params }: { params: { boardId: string } }) {
           <DisplayAdDetail adData={adData} />
         </>
       ) : (
-        <></>
+        <div className="grid place-items-center w-full h-[calc(100vh-120px)]">
+          <div className="w-fit h-fit">
+            <EmptyIcon customSize={100} label="Không tìm thấy thông tin cho điểm quảng cáo này" />
+          </div>
+        </div>
       )}
     </main>
   );

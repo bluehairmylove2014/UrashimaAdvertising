@@ -32,7 +32,11 @@ import LocationDetail from '@presentational/molecules/LocationDetail';
 import { ILocation, IOfficerReport } from '@business-layer/services/entities';
 import { useFetchAllOfficerAds } from '@business-layer/business-logic/lib/officerAds/process/hooks';
 import CustomMap from '@presentational/organisms/CustomMap';
-import { useGetCoord } from '@business-layer/business-logic/non-service-lib/viewLocationMap';
+import {
+  useGetCoord,
+  useGetIsSelecting,
+  useSetIsSelecting,
+} from '@business-layer/business-logic/non-service-lib/viewLocationMap';
 import { useGetIsActive } from '@business-layer/business-logic/non-service-lib/viewLocationMap';
 import { useSetCoord } from '@business-layer/business-logic/non-service-lib/viewLocationMap';
 import { useSetIsActive } from '@business-layer/business-logic/non-service-lib/viewLocationMap';
@@ -41,8 +45,10 @@ import useGetAllOfficerReport from '@business-layer/business-logic/lib/report/pr
 const useViewLocationMap = () => {
   const coord = useGetCoord();
   const isActive = useGetIsActive();
+  const isSelectingLocation = useGetIsSelecting();
   const { setCoord } = useSetCoord();
   const { setIsActive } = useSetIsActive();
+  const { setIsSelecting } = useSetIsSelecting();
   const openMap = (lat?: number, long?: number) => {
     lat && long && setCoord(lat, long);
     setIsActive(true);
@@ -51,11 +57,20 @@ const useViewLocationMap = () => {
     setIsActive(false);
     setCoord(10.762538, 106.682448);
   };
+  const enableSelecting = (lat?: number, long?: number) => {
+    setIsSelecting(true);
+  };
+  const disableSelecting = () => {
+    setIsSelecting(false);
+  };
   return {
     coord,
     isActive,
+    isSelectingLocation,
     openMap,
     closeMap,
+    enableSelecting,
+    disableSelecting,
   };
 };
 type locationType =
@@ -66,7 +81,12 @@ type locationType =
   | undefined;
 
 function ViewLocationMap(): ReactElement {
-  const { coord: initialLatLong, isActive, closeMap } = useViewLocationMap();
+  const {
+    coord: initialLatLong,
+    isActive,
+    closeMap,
+    isSelectingLocation,
+  } = useViewLocationMap();
   const { showError } = useNotification();
   const { data: adsData } = useFetchAllOfficerAds();
   const { data: reportsData } = useGetAllOfficerReport();
@@ -506,6 +526,7 @@ function ViewLocationMap(): ReactElement {
           setUserClickMarker(undefined);
         }}
         isOfficer={true}
+        isSelecting={isSelectingLocation}
       />
     </div>
   );

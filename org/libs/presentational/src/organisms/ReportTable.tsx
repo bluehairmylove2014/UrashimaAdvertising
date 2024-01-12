@@ -31,6 +31,7 @@ import MultipleLayerSelect, {
   mulSelectOptionType,
 } from '@presentational/atoms/MultipleLayerSelect';
 import { debounce } from '@business-layer/business-logic/helper';
+import { useNavigateLoader } from '@presentational/atoms/NavigateLoader';
 
 const formReport = [
   'Tất cả hình thức',
@@ -60,6 +61,7 @@ function ReportTable({
 
   const paginationData = useGetPagination();
   const { setPaginationData } = useSetPaginationData();
+  const { showLoader } = useNavigateLoader();
 
   const [allReportData, setAllReportData] =
     useState<getAllOfficerReportsResponseType | null>(null);
@@ -301,6 +303,7 @@ function ReportTable({
                           shape="square"
                           callback={() => {
                             router.push(OFFICER_PAGES.REPORT + `/${report.id}`);
+                            showLoader();
                           }}
                         >
                           <i className="fi fi-sr-file-circle-info text-blue-600 text-sm hover:text-blue-400 transition-colors"></i>

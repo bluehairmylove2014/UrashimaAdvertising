@@ -21,3 +21,11 @@ export type adsPointModificationResponseType = {
   message: string;
 };
 export type getAllAdBoardsResponseType = IAdsBoard[];
+
+export type hqCreateNewAdsParamsType = {
+  data: Omit<IAdLocationDetail, 'id'>;
+  token: string | null;
+};
+export type hqCreateNewAdsResponseType = {
+  message: string;
+};

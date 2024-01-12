@@ -26,7 +26,12 @@ import { useGetLocationDetail } from '@business-layer/business-logic/lib/geocode
 import { useNotification } from '@presentational/atoms/Notification';
 
 import LocationDetail from '@presentational/molecules/LocationDetail';
-import { IAdReport, ILocation, ILocationReport, IOfficerReport } from '@business-layer/services/entities';
+import {
+  IAdReport,
+  ILocation,
+  ILocationReport,
+  IOfficerReport,
+} from '@business-layer/services/entities';
 import { useFetchAllOfficerAds } from '@business-layer/business-logic/lib/officerAds/process/hooks';
 import CustomMap from '@presentational/organisms/CustomMap';
 import useGetAllOfficerReport from '@business-layer/business-logic/lib/report/process/hooks/useGetAllOfficerReport';
@@ -269,203 +274,212 @@ function Home(): ReactElement {
   }, [adsData, reportsData]);
 
   return (
-    <div className="relative w-screen h-full">
+    <div className="relative w-screen h-[calc(100vh-60px)] overflow-hidden">
       <div className="relative z-0">
-        {!Array.isArray(adsData) && !Array.isArray(reportsData) ?
-          <ScreenLoader />
-          :
-          <CustomMap
-            mapProps={{
-              onClick: handleClick,
-              onMouseMove: handleMouseMove,
-            }}
-            sourceData={
-              {
-                type: 'FeatureCollection',
-                features: adsData
-                  ? [
-                    ...adsData.map((m) => ({
-                      type: 'Feature',
-                      properties: {
-                        id: m.id,
-                        cluster: false,
-                        name: m.address,
-                        planned: m.planned,
-                        isEmpty: m.isEmpty,
-                        reported: Boolean(
-                          (reportsData &&
-                            reportsData.some(
-                              (lr) =>
-                                lr.lat === m.latitude &&
-                                lr.lon === m.longitude
-                            ))
-                        ),
-                        longLatArr: [m.longitude, m.latitude],
-                      },
-                      geometry: {
-                        type: 'Point',
-                        coordinates: [m.longitude, m.latitude],
-                      },
-                    })),
-                    ...(reportsData
-                      ? reportsData.map((m, index) => ({
+        {
+          !Array.isArray(adsData) && !Array.isArray(reportsData) ?
+            <ScreenLoader />
+            :
+            <CustomMap
+              mapProps={{
+                onClick: handleClick,
+                onMouseMove: handleMouseMove,
+              }}
+              sourceData={
+                {
+                  type: 'FeatureCollection',
+                  features: adsData
+                    ? [
+                      ...adsData.map((m) => ({
                         type: 'Feature',
                         properties: {
-                          id: adsData.length + index + 1,
+                          id: m.id,
                           cluster: false,
                           name: m.address,
-                          planned: false,
-                          reported: true,
-                          isEmpty: false,
-                          longLatArr: [m.lon, m.lat],
+                          planned: m.planned,
+                          isEmpty: m.isEmpty,
+                          reported: Boolean(
+                            (reportsData &&
+                              reportsData.some(
+                                (lr) =>
+                                  lr.lat === m.latitude &&
+                                  lr.lon === m.longitude
+                              ))
+                          ),
+                          longLatArr: [m.longitude, m.latitude],
                         },
                         geometry: {
                           type: 'Point',
-                          coordinates: [m.lon, m.lat],
+                          coordinates: [m.longitude, m.latitude],
                         },
-                      }))
-                      : []),
-                  ]
-                  : [],
-              } as FeatureCollection<Point>
-            }
-            ref={mapRef}
-          >
-            {userClickMarker ? (
-              <Marker {...userClickMarker}>
-                <CustomImage
-                  src="/assets/gps.png"
-                  alt="location"
-                  width="20px"
-                  height="20px"
-                />
-              </Marker>
-            ) : (
-              <></>
-            )}
+                      })),
+                      ...(reportsData
+                        ? reportsData.map((m, index) => ({
+                          type: 'Feature',
+                          properties: {
+                            id: adsData.length + index + 1,
+                            cluster: false,
+                            name: m.address,
+                            planned: false,
+                            reported: true,
+                            isEmpty: false,
+                            longLatArr: [m.lon, m.lat],
+                          },
+                          geometry: {
+                            type: 'Point',
+                            coordinates: [m.lon, m.lat],
+                          },
+                        }))
+                        : []),
+                    ]
+                    : [],
+                } as FeatureCollection<Point>
+              }
+              ref={mapRef}
+            >
+              {userClickMarker ? (
+                <Marker {...userClickMarker}>
+                  <CustomImage
+                    src="/assets/gps.png"
+                    alt="location"
+                    width="20px"
+                    height="20px"
+                  />
+                </Marker>
+              ) : (
+                <></>
+              )}
 
-            {/* Hover Point Reported */}
-            {infoHoverAdsPointReported ? (
-              <Popup
-                longitude={infoHoverAdsPointReported.lon}
-                latitude={infoHoverAdsPointReported.lat}
-                closeButton={false}
-                closeOnClick={false}
-                maxWidth="50vh"
-              >
-                <div className="text-[0.7rem]">
-                  <p className="font-bold text-sm">Thông tin địa điểm</p>
-                  <p className="font-semibold text-neutral-600 mt-1">
-                    {infoHoverAdsPointReported.address}
-                  </p>
-                  <p className="text-neutral-500 mt-1">
-                    Kinh độ:{' '}
-                    <span className="">
-                      {infoHoverAdsPointReported.lon}
-                    </span>
-                  </p>
-                  <p className="text-neutral-500 mb-1">
-                    Vĩ độ:{' '}
-                    <span className="">
-                      {infoHoverAdsPointReported.lat}
-                    </span>
-                  </p>
-                  <p className="text-rose-600 text-sm font-semibold text-right">
-                    Điểm này có {reportsData?.filter((r) => r.lat === infoHoverAdsPointReported.lat && r.lon === infoHoverAdsPointReported.lon).length} báo cáo
-                  </p>
-                </div>
-              </Popup>
-            ) : (
-              <></>
-            )}
-
-            {infoHoverAdsPoint ? (
-              <Popup
-                longitude={infoHoverAdsPoint.longitude}
-                latitude={infoHoverAdsPoint.latitude}
-                closeButton={false}
-                closeOnClick={false}
-                maxWidth="50vh"
-              >
-                <InfoAdsPoint
-                  info={infoHoverAdsPoint}
-                  isAdsPointReported={false}
-                  isOfficer={true}
-                />
-              </Popup>
-            ) : (
-              <></>
-            )}
-
-
-            {/* Check Loading Ads Point*/}
-            {isClickAdsPoint ? (
-              infoClickAdsPoint ? (
-                <DetailAdsPoint
-                  detailAdsPoint={infoClickAdsPoint}
-                  isOfficer={true}
-                  listReport={listReport}
-                  onClick={(id) => {
-                    setIdAdsBoard(id);
-                    setIsActiveAdsBoard(true);
-                    setIsClickAdsPoint(false);
-                  }}
-                  handleClose={() => {
-                    setIsClickAdsPoint(false);
-                  }}
-                  handleDetailReport={() => { }}
-                  handleListReport={() =>
-                    setIsActiveReportList(true)
-                  }
-                />
+              {/* Hover Point Reported */}
+              {infoHoverAdsPointReported ? (
+                <Popup
+                  longitude={infoHoverAdsPointReported.lon}
+                  latitude={infoHoverAdsPointReported.lat}
+                  closeButton={false}
+                  closeOnClick={false}
+                  maxWidth="50vh"
+                >
+                  <div className="text-[0.7rem]">
+                    <p className="font-bold text-sm">Thông tin địa điểm</p>
+                    <p className="font-semibold text-neutral-600 mt-1">
+                      {infoHoverAdsPointReported.address}
+                    </p>
+                    <p className="text-neutral-500 mt-1">
+                      Kinh độ:{' '}
+                      <span className="">
+                        {infoHoverAdsPointReported.lon}
+                      </span>
+                    </p>
+                    <p className="text-neutral-500 mb-1">
+                      Vĩ độ:{' '}
+                      <span className="">
+                        {infoHoverAdsPointReported.lat}
+                      </span>
+                    </p>
+                    <p className="text-rose-600 text-sm font-semibold text-right">
+                      Điểm này có {reportsData?.filter((r) => r.lat === infoHoverAdsPointReported.lat && r.lon === infoHoverAdsPointReported.lon).length} báo cáo
+                    </p>
+                  </div>
+                </Popup >
               ) : (
                 <></>
               )
-            ) : (
-              <></>
-            )}
+              }
 
-            {isActiveReportList ?
-              <ListReport
-                listReport={listReport}
-                handleClose={() => {
-                  setIsActiveReportList(false)
-                  setIsClickAdsPoint(false);
-                }}
-                handleBack={() => {
-                  setIsActiveReportList(false)
-                }}
-              />
-              :
-              <></>
-            }
+              {
+                infoHoverAdsPoint ? (
+                  <Popup
+                    longitude={infoHoverAdsPoint.longitude}
+                    latitude={infoHoverAdsPoint.latitude}
+                    closeButton={false}
+                    closeOnClick={false}
+                    maxWidth="50vh"
+                  >
+                    <InfoAdsPoint
+                      info={infoHoverAdsPoint}
+                      isAdsPointReported={false}
+                      isOfficer={true}
+                    />
+                  </Popup>
+                ) : (
+                  <></>
+                )
+              }
 
-            {isActiveAdsBoard ? (
-              infoClickAdsPoint ? (
-                <DetailAds
-                  adsPoint={infoClickAdsPoint}
-                  id={idAdsBoard}
-                  isOfficer={true}
-                  handleClose={() => {
-                    setIsActiveAdsBoard(false);
-                    setIsClickAdsPoint(false);
-                  }}
-                  handleBack={() => {
-                    setIsActiveAdsBoard(false);
-                    setIsClickAdsPoint(true);
-                  }}
-                  handleDetailReportAdsBoard={() => { }}
-                ></DetailAds>
-              ) : (
-                <></>
-              )
-            ) : (
-              <></>
-            )}
-            {isLoading ? <DetailLoader /> : <></>}
-          </CustomMap>
+
+              {/* Check Loading Ads Point*/}
+              {
+                isClickAdsPoint ? (
+                  infoClickAdsPoint ? (
+                    <DetailAdsPoint
+                      detailAdsPoint={infoClickAdsPoint}
+                      isOfficer={true}
+                      listReport={listReport}
+                      onClick={(id) => {
+                        setIdAdsBoard(id);
+                        setIsActiveAdsBoard(true);
+                        setIsClickAdsPoint(false);
+                      }}
+                      handleClose={() => {
+                        setIsClickAdsPoint(false);
+                      }}
+                      handleDetailReport={() => { }}
+                      handleListReport={() =>
+                        setIsActiveReportList(true)
+                      }
+                    />
+                  ) : (
+                    <></>
+                  )
+                ) : (
+                  <></>
+                )
+              }
+
+              {
+                isActiveReportList ?
+                  <ListReport
+                    listReport={listReport}
+                    handleClose={() => {
+                      setIsActiveReportList(false)
+                      setIsClickAdsPoint(false);
+                    }}
+                    handleBack={() => {
+                      setIsActiveReportList(false)
+                    }}
+                  />
+                  :
+                  <></>
+              }
+
+              {
+                isActiveAdsBoard ? (
+                  infoClickAdsPoint ? (
+                    <DetailAds
+                      adsPoint={infoClickAdsPoint}
+                      id={idAdsBoard}
+                      isOfficer={true}
+                      handleClose={() => {
+                        setIsActiveAdsBoard(false);
+                        setIsClickAdsPoint(false);
+                      }}
+                      handleBack={() => {
+                        setIsActiveAdsBoard(false);
+                        setIsClickAdsPoint(true);
+                      }}
+                      handleDetailReportAdsBoard={() => { }}
+                    ></DetailAds>
+                  ) : (
+                    <></>
+                  )
+                ) : (
+                  <></>
+                )
+              }
+              {isLoading ? <DetailLoader /> : <></>}
+            </CustomMap >
         }
-      </div>
+      </div >
       <LocationDetail
         locationData={locationOnClickDetail}
         isActive={isLocationOnClickPopupActive}
