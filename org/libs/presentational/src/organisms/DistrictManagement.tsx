@@ -16,6 +16,7 @@ function DistrictManagement({
     const formBoxRefs = useRef<Array<React.RefObject<HTMLDivElement> | null>>([]);
     const [districts, setDistricts] = useState<mulSelectOptionType | null>(null);
     const [selectedDistrict, setSelectedDistrict] = useState<string | null>(null);
+    const [isActivePopUpAddDistrict, setIsActivePopUpAddDistrict] = useState<boolean>(false);
 
     const [isShowingPopupDeleteDistrict, setIsShowingPopupDeleteDistrict] = useState<boolean>(false);
     const [isShowingPopupDeleteWard, setIsShowingPopupDeleteWard] = useState<boolean>(false);
@@ -107,6 +108,16 @@ function DistrictManagement({
         <div className="w-[65%]">
             {districts ?
                 <>
+                    <div className="flex items-end justify-end mb-4">
+                        <button
+                            type="button"
+                            className="px-4 py-2 rounded text-xs font-semibold text-white bg-green-600 hover:bg-green-500 transition-colors"
+                            onClick={() => setIsActivePopUpAddDistrict(true)}
+                        >
+                            <i className="fi fi-sr-square-plus mr-2"></i>
+                            Thêm mới quận
+                        </button>
+                    </div>
                     {/* Handle District Management */}
                     <div className='grid grid-cols-4 gap-4 w-full'>
                         {Object.keys(districts).map((r, index) => (
@@ -139,26 +150,6 @@ function DistrictManagement({
                             </div>
                         ))}
                     </div>
-
-                    {/* Button add district */}
-                    <form className={`border border-solid border-zinc-300 rounded w-full mt-4 bg-white h-10 relative`}>
-                        <input
-                            type="text"
-                            placeholder="+  Thêm mới"
-                            className="w-full h-full bg-transparent text-xs font-medium px-4 outline-none"
-                        />
-                        <div className="absolute top-1/2 right-1 -translate-y-1/2 w-10">
-                            <CustomButton
-                                style="fill-green"
-                                type="submit"
-                                isShortLoading={true}
-                                onClick={handleAddDistrict}
-                            >
-                                <i className="fi fi-bs-check"></i>
-                            </CustomButton>
-                        </div>
-                    </form>
-
                     {/* Handle Ward Management */}
                     {Object.keys(districts).map((district, indexDis) => (
                         <div
@@ -226,6 +217,48 @@ function DistrictManagement({
                 </ >
                 : <></>
             }
+
+            {isActivePopUpAddDistrict ?
+                <div className="w-full h-screen mx-[-2rem] fixed top-0 bg-black/60 z-50">
+                    <div className="flex items-start mt-[10rem] justify-center h-screen">
+                        <div className="50% mr-[14rem]">
+                            <form className="bg-white rounded p-5">
+                                <div className='flex justify-between items-start'>
+                                    <div></div>
+                                    <h2 className="text-center mb-3">THÊM MỚI QUẬN</h2>
+                                    <button
+                                        type="button"
+                                        className="text-sm"
+                                        onClick={() => setIsActivePopUpAddDistrict(false)}
+                                    >
+                                        X
+                                    </button>
+                                </div>
+                                <input
+                                    type="text"
+                                    placeholder="Nhập quận bạn muốn thêm"
+                                    className="w-[100%] h-full text-xs font-medium px-4 outline-none border border-solid border-zinc-300 rounded bg-white py-3"
+                                />
+
+                                <input
+                                    type="text"
+                                    placeholder="Nhập phường bạn muốn thêm cho quận đó"
+                                    className="w-[100%] h-full text-xs font-medium px-4 outline-none border border-solid border-zinc-300 rounded bg-white mt-2 py-3"
+                                />
+                                <button
+                                    type="submit"
+                                    className="w-[100%] h-full mt-2 text-sm font-bold text-white px-4 outline-none border border-solid border-zinc-300 rounded bg-green-600 hover:bg-green-500 py-3"
+                                    onClick={handleAddDistrict}>
+                                    XÁC NHẬN THÊM
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                :
+                <></>
+            }
+
 
             <YesNoPopup
                 isActive={isShowingPopupDeleteDistrict}
