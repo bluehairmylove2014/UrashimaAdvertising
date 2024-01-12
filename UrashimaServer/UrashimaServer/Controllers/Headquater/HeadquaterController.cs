@@ -102,7 +102,7 @@ namespace UrashimaServer.Controllers.Headquater
         }
 
         /// <summary>
-        /// API thêm mới đơn vị quản lý của thành phố.
+        /// API xóa đơn vị quản lý của thành phố.
         /// </summary>
         // DELETE: api/headquater/ward-district
         [HttpDelete("ward-district"), AuthorizeRoles(GlobalConstant.HeadQuater)]
@@ -324,12 +324,28 @@ namespace UrashimaServer.Controllers.Headquater
                 });
             }
 
-            var addedPoint = _context.AdsPoints.Add(_mapper.Map<AdsPoint>(createdPoint));
-            await _context.SaveChangesAsync();
+            var addedPoint = _mapper.Map<AdsPoint>(createdPoint);
+            
+            if (addedPoint.AdsBoard != null)
+            {
+                foreach (var item in addedPoint.AdsBoard)
+                {
+                    item.AdsPointId = createdPoint.Id;
+                }
+            }
+            if (addedPoint.Images != null)
+            {
+                foreach (var item in addedPoint.Images)
+                {
+                    item.AdsPointId = createdPoint.Id;
+                }
+            }
+
+            await _context.AdsPoints.AddAsync(addedPoint);
 
             return Ok(new
             {
-                message = $"Tạo điểm quảng cáo mới thành công với id={addedPoint.Entity.Id}."
+                message = $"Tạo điểm quảng cáo mới thành công với id={createdPoint.Id}."
             });
         }
 

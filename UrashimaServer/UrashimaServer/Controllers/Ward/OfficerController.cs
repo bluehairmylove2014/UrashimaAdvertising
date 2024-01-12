@@ -107,14 +107,13 @@ namespace UrashimaServer.Controllers.Ward
 
             var region = HttpContext.Items["address"] as string;
             var result = rawBoards
-                .Where(r =>
-                    Helper.IsUnderAuthority(r.AdsPoint!.Address, acc.UnitUnderManagement, region))
-                .Select(board => board.AdsCreateRequest?.RequestStatus);
+                .Where(r => Helper.IsUnderAuthority(r.AdsPoint!.Address, acc.UnitUnderManagement, region));
+                // .Select(board => board.AdsCreateRequest?.RequestStatus);
 
             // map each element
             var boardDtoList = new List<GetAdsBoardDto>();
 
-            foreach (var item in rawBoards)
+            foreach (var item in result)
             {
                 var boardDto = _mapper.Map<GetAdsBoardDto>(item);
                 boardDtoList.Add(boardDto);
