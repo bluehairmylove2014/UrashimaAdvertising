@@ -7,5 +7,8 @@ const regionResponseSchema = z.array(
     district: z.string(),
   })
 );
+const addRegionResponseSchema = z.object({
+  message: z.string(),
+});
 
-export { regionResponseSchema };
+export { regionResponseSchema, addRegionResponseSchema };

@@ -3,6 +3,7 @@
 import { toggleClass } from '@utils/helpers';
 import Link from 'next/link';
 import { useRef } from 'react';
+import { useNavigateLoader } from '@presentational/atoms/NavigateLoader';
 
 type officerNavDropdown = {
   children: React.ReactNode;
@@ -10,6 +11,7 @@ type officerNavDropdown = {
   options: {
     name: string;
     href: string;
+    isNeedLoader: boolean;
   }[];
 };
 
@@ -25,6 +27,7 @@ function OfficerNavDropdown({
   options,
 }: officerNavDropdown) {
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const { showLoader } = useNavigateLoader();
 
   return (
     <button
@@ -44,6 +47,9 @@ function OfficerNavDropdown({
             href={op.href}
             key={op.name}
             prefetch={true}
+            onClick={() => {
+              op.isNeedLoader && showLoader();
+            }}
             className="bg-inherit hover:bg-zinc-300 transition-colors text-black w-full py-3 px-2"
           >
             {op.name}

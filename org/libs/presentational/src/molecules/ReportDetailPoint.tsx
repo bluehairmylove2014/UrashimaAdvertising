@@ -1,7 +1,8 @@
+'use client'
 import { Carousel } from 'react-responsive-carousel';
 import CustomImage from '@presentational/atoms/CustomImage';
 import CustomButtonIcon from '@presentational/atoms/CustomButtonIcon';
-import { ILocation, ILocationReport } from '@business-layer/services/entities';
+import { IAdLocation, ILocation, ILocationReport } from '@business-layer/services/entities';
 import { useGetLocationDetail } from '@business-layer/business-logic/lib/geocode';
 import { useEffect, useState } from 'react';
 import { useNotification } from '@presentational/atoms/Notification';
@@ -11,11 +12,13 @@ import DetailLoader from '@presentational/atoms/DetailLoader';
 function ReportDetailPoint({
   backActive,
   infoPointReport,
+  infoUnknowPoint,
   handleClose,
   handleBack,
 }: {
   backActive: boolean;
   infoPointReport: ILocationReport;
+  infoUnknowPoint: ILocation | undefined;
   handleClose: () => void;
   handleBack: () => void;
 }) {
@@ -26,20 +29,10 @@ function ReportDetailPoint({
   >(undefined);
 
   useEffect(() => {
-    if (!infoPointReport.reportData) {
-      onGetLocationDetail({
-        latitude: infoPointReport.latitude,
-        longitude: infoPointReport.longitude,
-      })
-        .then((data) => {
-          setInfoUnknowPointReported(data);
-        })
-        .catch((error) => {
-          console.error('ERRORRRRR: ', error);
-          showError('Lỗi lấy dữ liệu địa điểm hú');
-        });
+    if (infoPointReport && !infoPointReport.reportData) {
+      setInfoUnknowPointReported(infoUnknowPoint);
     }
-  }, [infoUnknowPointReported]);
+  }, []);
 
   return (
     <div

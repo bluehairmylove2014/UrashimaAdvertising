@@ -19,33 +19,10 @@ const optionsList: Omit<pointFilterInputProps, 'onChange'>[] = [
     defaultChecked: true,
   },
   {
-    layerIds: [
-      'unclustered-point-reported',
-      'unclustered-point-reported-symbol',
-    ],
+    layerIds: ['unclustered-reported', 'unclustered-reported-symbol'],
     dotColor: 'red',
     dotInnerSymbol: '!',
-    label: 'Điểm quảng cáo bị báo cáo',
-    defaultChecked: true,
-  },
-  {
-    layerIds: [
-      'unclustered-ads-board-reported',
-      'unclustered-ads-board-reported-symbol',
-    ],
-    dotColor: 'orange',
-    dotInnerSymbol: '!',
-    label: 'Bảng quảng cáo bị báo cáo',
-    defaultChecked: true,
-  },
-  {
-    layerIds: [
-      'unclustered-unknown-point-reported',
-      'unclustered-unknown-point-reported-symbol',
-    ],
-    dotColor: 'blue',
-    dotInnerSymbol: '!',
-    label: 'Điểm bất kỳ bị báo cáo',
+    label: 'Điểm bị báo cáo',
     defaultChecked: true,
   },
 ];
@@ -93,7 +70,7 @@ function PointFilterBtn({
       } text-xs font-medium text-black shadow-md transition-colors cursor-pointer`}
     >
       <div className="flex flex-row justify-between items-center h-full">
-        <div>
+        <div className="select-none">
           <i className="fi fi-ss-filter"></i>
           <span className="ml-2">Bộ lọc điểm</span>
         </div>

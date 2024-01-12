@@ -29,7 +29,6 @@ import CustomImage from '@presentational/atoms/CustomImage';
 import { ACCESS_TOKEN, MAP_STYLE } from '@constants/mapbox_key';
 import CustomSearchBox from '@presentational/atoms/CustomSearchBox';
 import PointFilterBtn from '@presentational/molecules/PointFilterBtn';
-import { useNotification } from '@presentational/atoms/Notification';
 
 const MAP_DEFAULT_VIEW_PORT: ViewState = {
   longitude: 106.682448,
@@ -167,31 +166,9 @@ const CustomMap: ForwardRefRenderFunction<MapRef, customMapProps> = (
           (f.properties.planned !== false || f.properties.reported !== false)
       );
     }
-    if (!layers.find((l) => l.id === 'unclustered-ads-board-reported')) {
+    if (!layers.find((l) => l.id === 'unclustered-reported')) {
       newSourceData.features = newSourceData.features.filter(
-        (f) =>
-          f.properties &&
-          (f.properties.reported !== true ||
-            f.properties.isAdsLocation !== true ||
-            f.properties.isAdsBoardReport !== true)
-      );
-    }
-    if (!layers.find((l) => l.id === 'unclustered-unknown-point-reported')) {
-      newSourceData.features = newSourceData.features.filter(
-        (f) =>
-          f.properties &&
-          (f.properties.reported !== true ||
-            f.properties.isAdsLocation !== false ||
-            f.properties.isAdsBoardReport !== false)
-      );
-    }
-    if (!layers.find((l) => l.id === 'unclustered-point-reported')) {
-      newSourceData.features = newSourceData.features.filter(
-        (f) =>
-          f.properties &&
-          (f.properties.reported !== true ||
-            f.properties.isAdsLocation !== true ||
-            f.properties.isAdsBoardReport !== false)
+        (f) => f.properties && f.properties.reported !== true
       );
     }
     setDisplaySourceData(newSourceData);
