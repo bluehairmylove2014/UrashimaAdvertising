@@ -558,6 +558,7 @@ function Home(): ReactElement {
               <DetailAdsPoint
                 detailAdsPoint={infoClickAdsPoint}
                 isOfficer={false}
+                isHQ={false}
                 listReport={undefined}
                 handleListReport={() => { }}
                 onClick={(id) => {
