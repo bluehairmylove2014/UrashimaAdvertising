@@ -354,33 +354,7 @@ namespace UrashimaServer.Controllers
             }
 
             #region REAL TIME - SEND TO OFFICER
-            var accounts = await _context.Accounts
-                .ToListAsync();
-            accounts = accounts
-                    .Where(acc => Helper.IsUnderAuthority(rep.Address, acc.UnitUnderManagement))
-                    .ToList();
-
-            var users = await _context.Users
-                .Include(u => u.Connections)
-                .ToListAsync();
-
-            foreach (var account in accounts)
-            {
-                foreach (var user in users)
-                {
-                    if (user.Email.Equals(account.Email))
-                    {
-                        if (user.Connections != null)
-                        {
-                            foreach (var connection in user.Connections)
-                            {
-                                await _chatHubContext.Clients.Client(connection.ConnectionId)
-                                    .AddMessage($"Trạng thái báo cáo bạn gửi đã được cập nhật");
-                            }
-                        }
-                    }
-                }
-            }
+            await _chatHubContext.Clients.Group("guests").AddMessage("Trạng thái báo cáo bạn gửi đã được cập nhật");
             #endregion
 
             return Ok(_mapper.Map<GetReportDto>(updatedItem));
