@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using UrashimaServer.Common.Constant;
@@ -8,8 +9,8 @@ using UrashimaServer.Common.Helper;
 using UrashimaServer.Database;
 using UrashimaServer.Database.Dtos;
 using UrashimaServer.Database.Models;
-using UrashimaServer.Middlewares;
 using UrashimaServer.Models;
+using UrashimaServer.RealTime;
 
 namespace UrashimaServer.Controllers
 {
@@ -23,12 +24,14 @@ namespace UrashimaServer.Controllers
         private readonly DataContext _context;
         private readonly IMapper _mapper;
         private readonly IEmailService _emailService;
+        private readonly IHubContext<ChatHub, IChatClient> _chatHubContext;
 
-        public ReportsController(DataContext context, IMapper mapper, IEmailService emailService)
+        public ReportsController(DataContext context, IMapper mapper, IEmailService emailService, IHubContext<ChatHub, IChatClient> chatHubContext)
         {
             _context = context;
             _mapper = mapper;
             _emailService = emailService;
+            _chatHubContext = chatHubContext;
         }
 
         /// <summary>
@@ -47,10 +50,40 @@ namespace UrashimaServer.Controllers
             rep.AdsBoardId = rawReport.AdsBoardID;
             var point = await _context.AdsPoints.FindAsync(rawReport.AdsPointID);
             rep.Address = point != null ? point.Address : "";
-
+            
             _context.Reports.Add(rep);
 
             await _context.SaveChangesAsync();
+
+            #region REAL TIME - SEND TO OFFICER
+            var accounts = await _context.Accounts
+                .ToListAsync();
+            accounts = accounts
+                    .Where(acc => Helper.IsUnderAuthority(rep.Address, acc.UnitUnderManagement))
+                    .ToList();
+
+            var users = await _context.Users
+                .Include(u => u.Connections)
+                .ToListAsync();
+
+            foreach (var account in accounts)
+            {
+                foreach (var user in users)
+                {
+                    if (user.Email.Equals(account.Email))
+                    {
+                        if (user.Connections != null)
+                        {
+                            foreach (var connection in user.Connections)
+                            {
+                                await _chatHubContext.Clients.Client(connection.ConnectionId)
+                                    .AddMessage($"Người dân gửi một báo cáo đến khu vực của bạn");
+                            }
+                        }
+                    }
+                }
+            }
+            #endregion
 
             return Ok(new
             {
@@ -115,6 +148,36 @@ namespace UrashimaServer.Controllers
             _context.Reports.Add(rep);
 
             await _context.SaveChangesAsync();
+
+            #region REAL TIME - SEND TO OFFICER
+            var accounts = await _context.Accounts
+                .ToListAsync();
+            accounts = accounts
+                    .Where(acc => Helper.IsUnderAuthority(rep.Address, acc.UnitUnderManagement))
+                    .ToList();
+
+            var users = await _context.Users
+                .Include(u => u.Connections)
+                .ToListAsync();
+
+            foreach (var account in accounts)
+            {
+                foreach (var user in users)
+                {
+                    if (user.Email.Equals(account.Email))
+                    {
+                        if (user.Connections != null)
+                        {
+                            foreach (var connection in user.Connections)
+                            {
+                                await _chatHubContext.Clients.Client(connection.ConnectionId)
+                                    .AddMessage($"Người dân gửi một báo cáo đến khu vực của bạn");
+                            }
+                        }
+                    }
+                }
+            }
+            #endregion
 
             return Ok(new
             {
@@ -289,6 +352,36 @@ namespace UrashimaServer.Controllers
                     Message = "Không thể gửi email"
                 });
             }
+
+            #region REAL TIME - SEND TO OFFICER
+            var accounts = await _context.Accounts
+                .ToListAsync();
+            accounts = accounts
+                    .Where(acc => Helper.IsUnderAuthority(rep.Address, acc.UnitUnderManagement))
+                    .ToList();
+
+            var users = await _context.Users
+                .Include(u => u.Connections)
+                .ToListAsync();
+
+            foreach (var account in accounts)
+            {
+                foreach (var user in users)
+                {
+                    if (user.Email.Equals(account.Email))
+                    {
+                        if (user.Connections != null)
+                        {
+                            foreach (var connection in user.Connections)
+                            {
+                                await _chatHubContext.Clients.Client(connection.ConnectionId)
+                                    .AddMessage($"Trạng thái báo cáo bạn gửi đã được cập nhật");
+                            }
+                        }
+                    }
+                }
+            }
+            #endregion
 
             return Ok(_mapper.Map<GetReportDto>(updatedItem));
         }
