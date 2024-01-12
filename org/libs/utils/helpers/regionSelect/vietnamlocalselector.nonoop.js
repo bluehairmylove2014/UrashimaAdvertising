@@ -1,6 +1,3 @@
-/**
- * Created by Khang Le on 5/14/2017.
- */
 
 (function(){
     this.LocalPicker = function(){

@@ -237,7 +237,7 @@ function ViewLocationMap({ isOfficer }: { isOfficer?: boolean }): ReactElement {
 
       // Click to normal location
       const { lng, lat } = event.lngLat;
-
+      console.log('CLICK: ', { lng, lat });
       setUserClickMarker({
         latitude: lat,
         longitude: lng,
