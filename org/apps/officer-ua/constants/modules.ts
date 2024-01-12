@@ -7,4 +7,6 @@ export const activeModuleConfig: moduleKeyList[] = [
   'approve',
   'regions',
   'viewLocationMap',
+  'navigateLoader',
+  'realtime',
 ];

@@ -1,4 +1,3 @@
-import 'tailwindcss/tailwind.css';
 import AdLocationsTable from '@presentational/organisms/AdLocationsTable';
 import { IBreadcrumb } from '@business-layer/services/entities';
 import Breadcrumbs from '@presentational/molecules/Breadcrumbs';

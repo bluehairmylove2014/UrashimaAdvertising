@@ -75,7 +75,7 @@ function RegionManagementDropdown() {
         className="text-xs text-white hover:text-orange-400 transition-colors font-semibold"
         onClick={() => toggleClass(dropdownRef.current, '!block')}
       >
-        Xem khu vực&nbsp;<i className="fi fi-sr-caret-down"></i>
+        <i className="fi fi-sr-earth-americas mr-2"></i>Xem khu vực
       </button>
       <div
         ref={dropdownRef}

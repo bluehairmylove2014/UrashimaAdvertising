@@ -7,6 +7,7 @@ import { cookies } from 'next/dist/client/components/headers';
 import { HQ_PAGES } from '@constants/hqPages';
 import { getCustomAccessTokenKey } from '@business-layer/business-logic/helper/customKey';
 import { getHostname } from '../../../helper/hostname';
+import Link from 'next/link';
 
 const settingService = new SettingService();
 async function getLocationTypes() {
@@ -86,6 +87,12 @@ async function AdLocations() {
                 : null
             }
           />
+          <Link
+            href={HQ_PAGES.AD_NEW_LOCATION}
+            className="font-medium text-white grid place-items-center bg-green-600 rounded h-full w-fit px-4 text-xs hover:bg-green-400 transition-colors"
+          >
+            + Thêm điểm
+          </Link>
         </div>
       </div>
       <AdLocationsTable customDetailHref={HQ_PAGES.AD_LOCATIONS_DETAIL} />

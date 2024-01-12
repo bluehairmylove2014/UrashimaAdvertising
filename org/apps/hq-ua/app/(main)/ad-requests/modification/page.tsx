@@ -23,7 +23,7 @@ import { MODIFICATION_REQUEST_STATUS_LIST } from '@constants/requestStatus';
 function ModificationRequestDetail() {
   const { get: getId } = useSearchParams();
   const requestId = getId('id');
-  const modificationRequests = useGetAllAdModificationRequest();
+  const { data: modificationRequests } = useGetAllAdModificationRequest();
   const { onApproveAdModificationRequest, isLoading } =
     useApproveAdModificationRequest();
   const { onGetOfficerAdDetail } = useGetOfficerAdDetail();
@@ -132,7 +132,7 @@ function ModificationRequestDetail() {
           </p>
           <hr className="my-8" />
           <h3 className="text-blue-600 mb-4">SAU KHI THAY ĐỔI</h3>
-          <DisplayAdDetail adData={requestData} />
+          <DisplayAdDetail adData={{ ...requestData, isEmpty: false }} />
           <hr className="my-8" />
           <h3 className="text-rose-600 mb-4">TRƯỚC KHI THAY ĐỔI</h3>
           <DisplayAdDetail adData={adDetailData} />

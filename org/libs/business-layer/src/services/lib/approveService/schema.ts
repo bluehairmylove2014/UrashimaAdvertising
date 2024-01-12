@@ -13,7 +13,7 @@ const getApproveListResponseSchema = z.array(
     contractStart: z.string(),
     contractEnd: z.string(),
     requestStatus: z.string(),
-    adsBoard: adBoardSchema,
+    adsBoard: adBoardSchema.nullable(),
     adsPoint: adLocationSchema,
   })
 );

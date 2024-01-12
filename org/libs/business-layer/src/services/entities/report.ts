@@ -1,6 +1,8 @@
 import { IAdLocation, IAdLocationDetail, IAdsBoard } from './ads';
 
 interface IReport {
+  lat: number;
+  lon: number;
   reportType: string;
   name: string;
   email: string;

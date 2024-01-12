@@ -57,6 +57,25 @@ export const sourceLayersList: LayerProps[] = [
     },
   },
   {
+    id: 'unclustered-zero-ads-board-symbol',
+    type: 'symbol',
+    source: sourceName,
+    filter: [
+      'all',
+      ['!', ['has', 'point_count']],
+      ['==', ['get', 'reported'], false],
+      ['==', ['get', 'isEmpty'], true],
+    ],
+    paint: {
+      'text-color': strokeColor,
+    },
+    layout: {
+      'text-field': '0',
+      'text-font': symbolFont,
+      'text-size': fontSize,
+    },
+  },
+  {
     id: 'unclustered-point-planned',
     type: 'circle',
     source: sourceName,
@@ -91,109 +110,29 @@ export const sourceLayersList: LayerProps[] = [
     },
   },
   {
-    id: 'unclustered-ads-board-reported',
+    id: 'unclustered-reported',
     type: 'circle',
     source: sourceName,
     filter: [
       'all',
       ['!', ['has', 'point_count']],
       ['==', ['get', 'reported'], true],
-      ['==', ['get', 'isAdsLocation'], true],
-      ['==', ['get', 'isAdsBoardReport'], true],
     ],
     paint: {
-      'circle-color': '#FB5001',
+      'circle-color': '#e11d48',
       'circle-radius': pointSize,
       'circle-stroke-width': strokeWidth,
       'circle-stroke-color': strokeColor,
     },
   },
   {
-    id: 'unclustered-ads-board-reported-symbol',
+    id: 'unclustered-reported-symbol',
     type: 'symbol',
     source: sourceName,
     filter: [
       'all',
       ['!', ['has', 'point_count']],
       ['==', ['get', 'reported'], true],
-      ['==', ['get', 'isAdsLocation'], true],
-      ['==', ['get', 'isAdsBoardReport'], true],
-    ],
-    paint: {
-      'text-color': strokeColor,
-    },
-    layout: {
-      'text-field': '!',
-      'text-font': symbolFont,
-      'text-size': fontSize,
-    },
-  },
-  {
-    id: 'unclustered-unknown-point-reported',
-    type: 'circle',
-    source: sourceName,
-    filter: [
-      'all',
-      ['!', ['has', 'point_count']],
-      ['==', ['get', 'reported'], true],
-      ['==', ['get', 'isAdsLocation'], false],
-      ['==', ['get', 'isAdsBoardReport'], false],
-    ],
-    paint: {
-      'circle-color': '#00098A',
-      'circle-radius': pointSize,
-      'circle-stroke-width': strokeWidth,
-      'circle-stroke-color': strokeColor,
-    },
-  },
-  {
-    id: 'unclustered-unknown-point-reported-symbol',
-    type: 'symbol',
-    source: sourceName,
-    filter: [
-      'all',
-      ['!', ['has', 'point_count']],
-      ['==', ['get', 'reported'], true],
-      ['==', ['get', 'isAdsLocation'], false],
-      ['==', ['get', 'isAdsBoardReport'], false],
-    ],
-    paint: {
-      'text-color': strokeColor,
-    },
-    layout: {
-      'text-field': '!',
-      'text-font': symbolFont,
-      'text-size': fontSize,
-    },
-  },
-  {
-    id: 'unclustered-point-reported',
-    type: 'circle',
-    source: sourceName,
-    filter: [
-      'all',
-      ['!', ['has', 'point_count']],
-      ['==', ['get', 'reported'], true],
-      ['==', ['get', 'isAdsLocation'], true],
-      ['==', ['get', 'isAdsBoardReport'], false],
-    ],
-    paint: {
-      'circle-color': '#8B0000',
-      'circle-radius': pointSize,
-      'circle-stroke-width': strokeWidth,
-      'circle-stroke-color': strokeColor,
-    },
-  },
-  {
-    id: 'unclustered-point-reported-symbol',
-    type: 'symbol',
-    source: sourceName,
-    filter: [
-      'all',
-      ['!', ['has', 'point_count']],
-      ['==', ['get', 'reported'], true],
-      ['==', ['get', 'isAdsLocation'], true],
-      ['==', ['get', 'isAdsBoardReport'], false],
     ],
     paint: {
       'text-color': strokeColor,
