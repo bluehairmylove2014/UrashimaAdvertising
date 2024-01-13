@@ -4,6 +4,8 @@ import {
   useGetIsActive,
   useSetIsActive,
 } from '@business-layer/business-logic/non-service-lib/navigateLoader';
+import { usePathname } from 'next/navigation';
+import { useEffect } from 'react';
 
 export const useNavigateLoader = () => {
   const isActive = useGetIsActive();
@@ -22,7 +24,13 @@ export const useNavigateLoader = () => {
 };
 function NavigateLoader() {
   const circle = 'w-3 h-3 rounded-full bg-blue-700 animate-bounce';
-  const { isActive } = useNavigateLoader();
+  const { isActive, hideLoader } = useNavigateLoader();
+  const pathName = usePathname()
+
+  useEffect(() => {
+    isActive && hideLoader()
+  }, [pathName])
+
   return (
     <div
       style={{ display: isActive ? 'block' : 'none' }}

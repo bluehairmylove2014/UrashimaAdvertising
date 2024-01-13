@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import { HQ_PAGES } from '@constants/hqPages';
 import { useNavigateLoader } from '@presentational/atoms/NavigateLoader';
@@ -10,7 +10,7 @@ function AddNewLocationBtn() {
     <Link
       href={HQ_PAGES.AD_NEW_LOCATION}
       onClick={() => showLoader()}
-      className="font-medium text-white grid place-items-center bg-green-600 rounded h-full w-fit px-4 text-xs hover:bg-green-400 transition-colors"
+      className="whitespace-nowrap line-clamp-1 font-medium text-white grid place-items-center bg-green-600 rounded h-full w-fit px-4 text-xs hover:bg-green-400 transition-colors"
     >
       + Thêm điểm
     </Link>

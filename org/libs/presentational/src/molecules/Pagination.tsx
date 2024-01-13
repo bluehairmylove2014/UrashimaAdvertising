@@ -137,15 +137,15 @@ function Pagination() {
       <div className="flex flex-1 items-center justify-between">
         <div>
           <p className="text-xs text-gray-700">
-            Showing{' '}
+            Hiển thị{' '}
             <span className="font-medium">
               {calculateFromIndex(dataLength, currentPage, maxElementPerPage)}
             </span>{' '}
-            to{' '}
+            đến{' '}
             <span className="font-medium">
               {calculateToIndex(dataLength, currentPage, maxElementPerPage)}
             </span>{' '}
-            of <span className="font-medium">{dataLength}</span> results
+            trong <span className="font-medium">{dataLength}</span> kết quả
           </p>
         </div>
         <div>

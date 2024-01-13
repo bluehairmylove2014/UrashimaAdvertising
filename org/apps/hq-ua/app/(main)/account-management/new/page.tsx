@@ -221,7 +221,6 @@ function AccountManagement() {
         break;
       }
       case ROLE_LIST.HQ: {
-        console.log('HQ');
         unitAfterCheck = 'all';
         break;
       }

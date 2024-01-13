@@ -13,6 +13,7 @@ import { calculateMaxPage, slicePaginationData } from '@utils/helpers';
 import { IAccountDetail } from '@business-layer/services/entities';
 import Link from 'next/link';
 import { HQ_PAGES } from '@constants/hqPages';
+import { useNavigateLoader } from '@presentational/atoms/NavigateLoader';
 
 const START_PAGE = 1;
 const MAX_ELEMENT_PER_PAGE = 5;
@@ -21,6 +22,7 @@ function AccountManagement() {
   const { data: accountData, refetch } = useGetAllAccount();
   const paginationData = useGetPagination();
   const { setPaginationData } = useSetPaginationData();
+  const { showLoader } = useNavigateLoader();
 
   useEffect(() => {
     if (Array.isArray(accountData)) {
@@ -40,6 +42,7 @@ function AccountManagement() {
         <HQPageTitle title="Quản lý tài khoản" />
         <Link
           href={HQ_PAGES.NEW_ACCOUNT}
+          onClick={() => showLoader()}
           className="px-4 py-2 rounded text-[0.65rem] font-semibold text-white bg-green-600 hover:bg-green-500 transition-colors"
         >
           <i className="fi fi-sr-user-add mr-2"></i>

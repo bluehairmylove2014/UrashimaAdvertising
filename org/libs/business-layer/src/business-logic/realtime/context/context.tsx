@@ -5,6 +5,7 @@ import { RealtimeContextType } from './type';
 export const RealtimeContext = React.createContext<RealtimeContextType>({
   state: {
     socket: null,
+    message: [],
   },
   dispatch: () => undefined,
 });

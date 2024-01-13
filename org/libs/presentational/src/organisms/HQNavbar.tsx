@@ -30,7 +30,7 @@ function HQNavbar() {
       iconCls: 'fi fi-sr-it',
       name: 'Thiết lập chung',
       href: HQ_PAGES.AD_SETTING,
-      isNeedLoader: false,
+      isNeedLoader: true,
     },
     {
       iconCls: 'fi fi-sr-ad',

@@ -3,8 +3,7 @@ import { IOfficerReportDetail } from '@business-layer/services/entities';
 import Thumbnail from '@presentational/atoms/Thumbnail';
 import { formatDate } from '@utils/helpers';
 import ReportResponse from '@presentational/molecules/ReportResponse';
-import { useEffect, useState } from 'react';
-import { useNavigateLoader } from '@presentational/atoms/NavigateLoader';
+import { useState } from 'react';
 
 const DEFAULT_THUMBNAIL_WIDTH = 120;
 const DEFAULT_THUMBNAIL_HEIGHT = 120;
@@ -17,11 +16,6 @@ function DisplayReportDetail({
   isHeadQuarter: boolean;
 }) {
   const [handleReportActive, setHandleReportActive] = useState<boolean>(false);
-  const { hideLoader, isActive } = useNavigateLoader();
-
-  useEffect(() => {
-    isActive && hideLoader();
-  }, []);
 
   return (
     <>
@@ -111,21 +105,27 @@ function DisplayReportDetail({
             </p>
           </div>
 
-          <div className="justify-start items-center mb-2">
-            <h5 className="font-semibold text-sm whitespace-nowrap">
-              <i className="fi fi-sr-graphic-style mr-2"></i>
-              Hình ảnh minh chứng:
-            </h5>
+          {reportDetail.images.length > 0 ? (
+            <div className="justify-start items-center mb-2">
+              <h5 className="font-semibold text-sm whitespace-nowrap">
+                <i className="fi fi-sr-graphic-style mr-2"></i>
+                Hình ảnh minh chứng:
+              </h5>
 
-            <p className="mt-2 w-full whitespace-normal line-clamp-2 relative -bottom-[0.1rem]">
-              <Thumbnail
-                width={DEFAULT_THUMBNAIL_WIDTH}
-                height={DEFAULT_THUMBNAIL_HEIGHT}
-                src="/assets/billboardExample.png"
-              // key={`${img.image}@${index}`}
-              />
-            </p>
-          </div>
+              <p className="mt-2 w-full whitespace-normal line-clamp-2 relative -bottom-[0.1rem]">
+                {reportDetail.images.map((img, index) => (
+                  <Thumbnail
+                    width={DEFAULT_THUMBNAIL_WIDTH}
+                    height={DEFAULT_THUMBNAIL_HEIGHT}
+                    src={img.image}
+                    key={`${img.image}@${index}`}
+                  />
+                ))}
+              </p>
+            </div>
+          ) : (
+            <></>
+          )}
         </div>
         <div className="col-span-1 col-st row-start-1">
           <h5 className=" font-semibold text-sm">
@@ -278,7 +278,7 @@ function DisplayReportDetail({
         <></>
       )}
 
-      {reportDetail.Location ? (
+      {reportDetail.location ? (
         <>
           <h5 className="font-bold mt-5">THÔNG TIN ĐỊA ĐIỂM BỊ TỐ CÁO</h5>
           <div className="grid grid-cols-2 mt-3">
@@ -289,7 +289,7 @@ function DisplayReportDetail({
                   Địa điểm:
                 </h5>
                 <p className="pl-3 w-full whitespace-normal line-clamp-2 relative -bottom-[0.1rem]">
-                  {reportDetail.Location.address}
+                  {reportDetail.location.address}
                 </p>
               </div>
 
@@ -300,7 +300,7 @@ function DisplayReportDetail({
                 </h5>
 
                 <p className="pl-3 w-full whitespace-normal line-clamp-2 relative -bottom-[0.1rem]">
-                  {reportDetail.Location.longitude}
+                  {reportDetail.location.longitude}
                 </p>
               </div>
 
@@ -310,7 +310,7 @@ function DisplayReportDetail({
                   Vĩ độ:
                 </h5>
                 <p className="pl-3 w-full whitespace-normal line-clamp-2 relative -bottom-[0.1rem]">
-                  {reportDetail.Location.latitude}
+                  {reportDetail.location.latitude}
                 </p>
               </div>
             </div>

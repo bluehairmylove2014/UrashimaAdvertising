@@ -9,7 +9,6 @@ import {
 import DetailLoader from '@presentational/atoms/DetailLoader';
 import CustomImage from '@presentational/atoms/CustomImage';
 import ReportForm from '@presentational/molecules/ReportForm';
-import Announcement from '@presentational/molecules/Announcement';
 import CustomMap from '@presentational/organisms/CustomMap';
 
 import {
@@ -19,6 +18,7 @@ import {
 import InfoAdsPoint from '@presentational/molecules/InfoAdsPoint';
 import DetailAds from '@presentational/molecules/DetailAds';
 import DetailAdsPoint from '@presentational/molecules/DetailAdsPoint';
+import Notification from '@presentational/molecules/Notification';
 
 import 'mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import { useGetReportForm } from '@business-layer/business-logic/non-service-lib/reportForm';
@@ -40,12 +40,16 @@ import { IAdReport, ILocationReport } from '@business-layer/services/entities';
 import { FeatureCollection, Point } from 'geojson';
 import { debounce } from '@business-layer/business-logic/helper';
 import { useSocketConnect } from '@business-layer/business-logic/realtime';
+import useGetMessage from '@business-layer/business-logic/realtime/hooks/useGetMessage';
+import { setLocationReportLS } from '@business-layer/business-logic/lib/report/process/helpers/locationReportLocalstorage';
+import { setAdReportLS } from '@business-layer/business-logic/lib/report/process/helpers/adReportLocalstorage';
+import { useReportContext } from '@business-layer/business-logic/lib/report/process/context';
 
 type locationType =
   | {
-    latitude: number;
-    longitude: number;
-  }
+      latitude: number;
+      longitude: number;
+    }
   | undefined;
 
 function Home(): ReactElement {
@@ -80,9 +84,6 @@ function Home(): ReactElement {
     ILocation | undefined
   >(undefined);
 
-  // Create state for show notification
-  const [isNotifications, setIsNotifications] = useState<boolean>(false);
-
   //Create state for checking ads board is click detail
   const [adsBoardReportedDetail, setAdsBoardReportedDetail] =
     useState<IAdReport>();
@@ -107,6 +108,7 @@ function Home(): ReactElement {
     null
   );
 
+  const { dispatch } = useReportContext();
   const locationReportList = useGetLocationReports();
   const adsReportList = useGetAdReports();
   const { onGetLocationDetail } = useGetLocationDetail();
@@ -121,11 +123,58 @@ function Home(): ReactElement {
     reportIdentificationData,
   } = useGetReportForm();
   const { handleConnect } = useSocketConnect();
+  const messages = useGetMessage();
+  const [displayMessage, setDisplayMessage] = useState<string[]>([]);
 
   useEffect(() => {
     handleConnect();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (messages.length > 0) {
+      const [message, submissionData] =
+        messages[messages.length - 1].split('|');
+      console.log('RECEIVE NEW MESSAGE: ', message);
+      console.log('submissionData: ', submissionData);
+      if (locationReportList) {
+        const sameLocationIndex = locationReportList.findIndex(
+          (report) => report.submissionDate === submissionData
+        );
+        if (typeof sameLocationIndex === 'number' && sameLocationIndex !== -1) {
+          const copyLocationReports = [...locationReportList];
+          copyLocationReports[sameLocationIndex].reportStatus = true;
+          setLocationReportLS(copyLocationReports);
+          dispatch({
+            type: 'SET_LOCATION_REPORT_ACTION',
+            payload: copyLocationReports,
+          });
+
+          console.log('FOUND IN: locationReportList');
+          console.log('NEW LIST: ', copyLocationReports);
+          setDisplayMessage([...displayMessage, message]);
+        }
+      }
+      if (adsReportList) {
+        const sameAdIndex = adsReportList.findIndex(
+          (report) => report.submissionDate === submissionData
+        );
+        if (typeof sameAdIndex === 'number' && sameAdIndex !== -1) {
+          const copyAdReports = [...adsReportList];
+          copyAdReports[sameAdIndex].reportStatus = true;
+          setAdReportLS(copyAdReports);
+          dispatch({
+            type: 'SET_AD_REPORT_ACTION',
+            payload: copyAdReports,
+          });
+          console.log('FOUND IN: sameAdIndex');
+          console.log('NEW LIST: ', copyAdReports);
+          setDisplayMessage([...displayMessage, message]);
+        }
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [messages]);
 
   useEffect(() => {
     if (idAdsPoint > -1) {
@@ -150,8 +199,6 @@ function Home(): ReactElement {
   //Catch click mouse event
   const handleClick = useCallback((event: MapLayerMouseEvent) => {
     if (!mapRef.current) return;
-
-    setIsNotifications(false);
     setIsActiveAdsBoard(false);
     setIsClickAdsPoint(false);
     setIsReportHistoryActive(false);
@@ -193,11 +240,9 @@ function Home(): ReactElement {
         .map(Number);
 
       //Check ADS Point is reported
-      if (
-        featuresAllPoint[0].layer.id === 'unclustered-reported'
-      ) {
-        const report = locationReportList?.find((r) =>
-          r.latitude == lat && r.longitude == long
+      if (featuresAllPoint[0].layer.id === 'unclustered-reported') {
+        const report = locationReportList?.find(
+          (r) => r.latitude == lat && r.longitude == long
         );
         if (report && !report.reportData) {
           mapRef.current.flyTo({
@@ -206,9 +251,7 @@ function Home(): ReactElement {
             duration: 1500,
           });
 
-
           setAdsPointReportedDetail(
-
             locationReportList?.find(
               (location) =>
                 location.longitude === long && location.latitude === lat
@@ -217,10 +260,8 @@ function Home(): ReactElement {
           setIsClickReportedPoint(true);
           setIsBackActive(false);
           return;
-        }
-        else setIsClickReportedPoint(false);
-      }
-      else setIsClickReportedPoint(false);
+        } else setIsClickReportedPoint(false);
+      } else setIsClickReportedPoint(false);
 
       mapRef.current.flyTo({
         zoom: 16,
@@ -317,8 +358,8 @@ function Home(): ReactElement {
         //Check Report
         if (adsPoint.layer.id === 'unclustered-reported') {
           //Check report type
-          const report = locationReportList?.find((r) =>
-            r.latitude == lat && r.longitude == long
+          const report = locationReportList?.find(
+            (r) => r.latitude == lat && r.longitude == long
           );
 
           //Unknow report
@@ -344,8 +385,7 @@ function Home(): ReactElement {
 
           //Ads Report Point or Ads Board Report
           setIsAdsPointReported(true);
-        }
-        else setIsAdsPointReported(false);
+        } else setIsAdsPointReported(false);
 
         setIdAdsPoint(adsPoint.properties?.id);
         setPosPrevMouse({
@@ -374,57 +414,57 @@ function Home(): ReactElement {
               type: 'FeatureCollection',
               features: adsData
                 ? [
-                  ...adsData.map((m) => ({
-                    type: 'Feature',
-                    properties: {
-                      id: m.id,
-                      cluster: false,
-                      name: m.address,
-                      planned: m.planned,
-                      isEmpty: m.isEmpty,
-                      reported: Boolean(
-                        (locationReportList &&
-                          locationReportList.some(
-                            (lr) =>
-                              lr.latitude === m.latitude &&
-                              lr.longitude === m.longitude
-                          )) ||
-                        (adsReportList &&
-                          adsReportList.some(
-                            (ar) => ar.adsPointID === m.id
-                          ))
-                      ),
-                      longLatArr: [m.longitude, m.latitude],
-                    },
-                    geometry: {
-                      type: 'Point',
-                      coordinates: [m.longitude, m.latitude],
-                    },
-                  })),
-                  ...(locationReportList
-                    ? locationReportList
-                      .filter(
-                        (locationReport) =>
-                          locationReport.reportData === null
-                      )
-                      .map((m, index) => ({
-                        type: 'Feature',
-                        properties: {
-                          id: adsData.length + index + 1,
-                          cluster: false,
-                          name: '',
-                          planned: false,
-                          reported: true,
-                          isEmpty: false,
-                          longLatArr: [m.longitude, m.latitude],
-                        },
-                        geometry: {
-                          type: 'Point',
-                          coordinates: [m.longitude, m.latitude],
-                        },
-                      }))
-                    : []),
-                ]
+                    ...adsData.map((m) => ({
+                      type: 'Feature',
+                      properties: {
+                        id: m.id,
+                        cluster: false,
+                        name: m.address,
+                        planned: m.planned,
+                        isEmpty: m.isEmpty,
+                        reported: Boolean(
+                          (locationReportList &&
+                            locationReportList.some(
+                              (lr) =>
+                                lr.latitude === m.latitude &&
+                                lr.longitude === m.longitude
+                            )) ||
+                            (adsReportList &&
+                              adsReportList.some(
+                                (ar) => ar.adsPointID === m.id
+                              ))
+                        ),
+                        longLatArr: [m.longitude, m.latitude],
+                      },
+                      geometry: {
+                        type: 'Point',
+                        coordinates: [m.longitude, m.latitude],
+                      },
+                    })),
+                    ...(locationReportList
+                      ? locationReportList
+                          .filter(
+                            (locationReport) =>
+                              locationReport.reportData === null
+                          )
+                          .map((m, index) => ({
+                            type: 'Feature',
+                            properties: {
+                              id: adsData.length + index + 1,
+                              cluster: false,
+                              name: '',
+                              planned: false,
+                              reported: true,
+                              isEmpty: false,
+                              longLatArr: [m.longitude, m.latitude],
+                            },
+                            geometry: {
+                              type: 'Point',
+                              coordinates: [m.longitude, m.latitude],
+                            },
+                          }))
+                      : []),
+                  ]
                 : [],
             } as FeatureCollection<Point>
           }
@@ -443,23 +483,6 @@ function Home(): ReactElement {
               <i className="fi fi-ss-triangle-warning"></i>
               {/* Báo cáo của bạn */}
             </button>
-            <button
-              className="relative bg-white rounded shadow-md shadow-zinc-400 px-2 py-0 h-[36px] text-xs font-medium ml-2 hover:bg-gray-100 transition-colors"
-              onClick={() => {
-                setIsNotifications(!isNotifications);
-              }}
-            >
-              <i className="fi fi-ss-bell"></i>
-            </button>
-            {isNotifications ? (
-              <Announcement
-                handleClose={() => {
-                  setIsNotifications(false);
-                }}
-              />
-            ) : (
-              <></>
-            )}
           </div>
           {userClickMarker ? (
             <Marker {...userClickMarker}>
@@ -558,8 +581,9 @@ function Home(): ReactElement {
               <DetailAdsPoint
                 detailAdsPoint={infoClickAdsPoint}
                 isOfficer={false}
+                isHQ={false}
                 listReport={undefined}
-                handleListReport={() => { }}
+                handleListReport={() => {}}
                 onClick={(id) => {
                   setIdAdsBoard(id);
                   setIsActiveAdsBoard(true);
@@ -690,6 +714,8 @@ function Home(): ReactElement {
           ) : (
             <></>
           )}
+
+          <Notification messages={displayMessage} />
 
           {isLoading ? <DetailLoader /> : <></>}
         </CustomMap>

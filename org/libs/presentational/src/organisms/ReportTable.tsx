@@ -81,7 +81,6 @@ function ReportTable({
 
     // Filter by search input
     if (searchValue.trim() !== '') {
-      console.log('SEARCH');
       const searchLowerCase = searchValue.toLowerCase();
       filteredData = filteredData.filter((report) =>
         report.address.toLowerCase().includes(searchLowerCase)

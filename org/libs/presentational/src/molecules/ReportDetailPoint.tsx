@@ -172,9 +172,7 @@ function ReportDetailPoint({
             <p className=" text-sky-500 font-bold">
               Thông tin báo cáo được phản hồi
             </p>
-            <div className="h-[30vh] border rounded mt-1 p-1 text-[0.7rem] text-neutral-500">
-              <div>{infoPointReport.treatmentProcess}</div>
-            </div>
+            <p>Vui lòng xem trên email của bạn</p>
           </div>
           <hr className="my-4 mx-3" />
         </>

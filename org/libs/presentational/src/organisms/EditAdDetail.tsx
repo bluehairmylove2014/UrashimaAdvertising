@@ -28,26 +28,27 @@ import { renameImageWithUniqueName } from '@utils/helpers/imageName';
 import { useRouter } from 'next/navigation';
 import { OFFICER_PAGES } from '@constants/officerPages';
 import CommonLoader from '@presentational/atoms/CommonLoader';
-import { useNavigateLoader } from '@presentational/atoms/NavigateLoader';
+import {
+  useAdBoardTypeSettings,
+  useAdFormSettings,
+  useLocationSettings,
+} from '@business-layer/business-logic/lib/setting';
+import { useViewLocationMap } from './ViewLocationMap';
+import DistrictSelect from './DistrictSelect';
 
 const DEFAULT_THUMBNAIL_WIDTH = 120;
 const DEFAULT_THUMBNAIL_HEIGHT = 120;
 
 function EditAdDetail({
   adData,
-  locationOptions,
-  adsFormOptions,
-  adsTypeOptions,
   customBackHref,
+  isOfficer,
 }: {
   adData: IAdLocationDetail;
-  locationOptions: modernSelectOptionType[] | null;
-  adsFormOptions: modernSelectOptionType[] | null;
-  adsTypeOptions: modernSelectOptionType[] | null;
   customBackHref?: string;
+  isOfficer?: boolean;
 }) {
   const router = useRouter();
-  const { hideLoader, isActive } = useNavigateLoader();
   const editLocationResolver = useYupValidationResolver(
     editLocationDetailSchema
   );
@@ -75,9 +76,93 @@ function EditAdDetail({
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const { onUpload } = useUpload();
 
+  const { onGetAdFormSetting } = useAdFormSettings();
+  const { onGetLocationSetting } = useLocationSettings();
+  const { onGetAdBoardTypeSettings } = useAdBoardTypeSettings();
+  const [locationOptions, setLocationOptions] = useState<
+    modernSelectOptionType[] | null
+  >(null);
+  const [adsFormOptions, setAdsFormOptions] = useState<
+    modernSelectOptionType[] | null
+  >(null);
+  const [adsTypeOptions, setAdsTypeOptions] = useState<
+    modernSelectOptionType[] | null
+  >(null);
+  const [addressData, setAddressData] = useState({
+    city: '',
+    district: '',
+    ward: '',
+  });
+  const {
+    enableSelecting,
+    openMap,
+    isSelectingLocation,
+    coord,
+    disableSelecting,
+    closeMap,
+  } = useViewLocationMap();
+
+  useEffect(() => {
+    if (
+      coord.length === 2 &&
+      isSelectingLocation &&
+      coord[0] !== getValues().latitude &&
+      coord[1] !== getValues().longitude
+    ) {
+      setValue('latitude', coord[0]);
+      setValue('longitude', coord[1]);
+      disableSelecting();
+      closeMap();
+      showSuccess('Chọn điểm quảng cáo thành công');
+    }
+  }, [coord]);
+
+  useEffect(() => {
+    onGetLocationSetting()
+      .then((data) => {
+        setLocationOptions(
+          data.map((d) => ({
+            name: d.name,
+            value: d.name,
+            defaultChecked: false,
+          }))
+        );
+      })
+      .catch((error) => console.error(error));
+    onGetAdFormSetting().then((data) => {
+      setAdsFormOptions(
+        data.map((d) => ({
+          name: d.name,
+          value: d.name,
+          defaultChecked: false,
+        }))
+      );
+    });
+    onGetAdBoardTypeSettings()
+      .then((data) => {
+        setAdsTypeOptions(
+          data.map((d) => ({
+            name: d.name,
+            value: d.name,
+            defaultChecked: false,
+          }))
+        );
+      })
+      .catch((error) => console.error(error));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // methods
   const onSuccessSubmit = (data: IAdLocationDetail) => {
-    setIsReasonPopupOpen(true);
+    if (
+      addressData.city === '' ||
+      addressData.district === '' ||
+      addressData.ward === ''
+    ) {
+      showError('Bạn chưa chọn đủ thông tin địa điểm');
+    } else {
+      setIsReasonPopupOpen(true);
+    }
   };
   const handleDeleteLocationImage = (image: string) => {
     setValue(
@@ -178,6 +263,9 @@ function EditAdDetail({
       const formData = getValues();
       const modifyData: IAdLocationDetail = {
         ...formData,
+        address: `${formData.address.split(', Phường')[0]}, ${
+          addressData.ward
+        }, ${addressData.district}, ${addressData.city}`,
         images: formData.images.map((fi) => {
           if (fi.image.includes('blob:')) {
             const suitableName = imgData?.locationImages?.find(
@@ -246,10 +334,6 @@ function EditAdDetail({
     });
   };
 
-  useEffect(() => {
-    isActive && hideLoader();
-  }, []);
-
   return (
     <>
       <form
@@ -258,26 +342,39 @@ function EditAdDetail({
       >
         <div className="grid gap-6 border-solid border-b-[1px] border-b-zinc-300 pb-5 mb-5">
           <div className="col-span-1 col-start-1 row-start-1 w-full">
-            <div className="flex flex-row justify-start items-center mb-2 w-full">
+            <div className="flex flex-row justify-start items-start mb-2 w-full">
               <h5 className="font-semibold text-sm whitespace-nowrap">
                 <i className="fi fi-sr-map-marker-home mr-2"></i>
                 Địa điểm:
               </h5>
-              <div className="border-solid border-[1px] border-zinc-400 rounded overflow-hidden w-full h-8 ml-4">
-                <Controller
-                  name="address"
-                  control={control}
-                  disabled={isLoading || isUploading}
-                  render={({ field }) => (
-                    <input
-                      type="text"
-                      id="address-ad-location"
-                      placeholder="Example: 397 Williams ShoalSouth Warren"
-                      {...field}
-                      className="disabled:cursor-not-allowed w-full h-full px-4 outline-none text-ellipsis text-xs"
-                    />
-                  )}
-                />
+              <div className="w-full h-fit ml-4">
+                <div className="border-solid border-[1px] border-zinc-400 rounded overflow-hidden w-full h-8 mb-2">
+                  {/* <Controller
+                    name="address"
+                    control={control}
+                    disabled={isLoading || isUploading}
+                    render={({ field }) => (
+                      <input
+                        type="text"
+                        id="address-ad-location"
+                        placeholder="Example: 397 Williams ShoalSouth Warren"
+                        {...field}
+                        className="disabled:cursor-not-allowed w-full h-full px-4 outline-none text-ellipsis text-xs"
+                      />
+                    )}
+                  /> */}
+                  <input
+                    type="text"
+                    id="address-ad-location"
+                    disabled={isLoading || isUploading}
+                    placeholder="Example: 397 Williams ShoalSouth Warren"
+                    {...register('address')}
+                    className="disabled:cursor-not-allowed w-full h-full px-4 outline-none text-ellipsis text-xs"
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-2 h-16">
+                  <DistrictSelect onChange={setAddressData} />
+                </div>
               </div>
             </div>
 
@@ -344,6 +441,45 @@ function EditAdDetail({
                   Chưa quy hoạch
                 </p>
               )}
+            </div>
+            <div className="col-span-1 col-start-1 row-start-1 w-full">
+              <div className="flex flex-row justify-start items-start mb-2 w-full">
+                <h5 className="font-semibold text-sm whitespace-nowrap">
+                  <i className="fi fi-sr-earth-americas mr-2"></i>
+                  Vị trí địa lý:
+                </h5>
+                <div className="relative ml-[0.6rem] flex flex-col justify-start items-start gap-2 w-full">
+                  <input
+                    type="number"
+                    id="latitude"
+                    placeholder="Vĩ độ"
+                    disabled={isLoading || isUploading}
+                    {...register('latitude')}
+                    className="w-full h-8 outline-none rounded bg-transparent border border-solid border-zinc-400 px-3 text-xs"
+                  />
+                  <input
+                    type="number"
+                    id="longitude"
+                    placeholder="Kinh độ"
+                    disabled={isLoading || isUploading}
+                    {...register('longitude')}
+                    className="w-full h-8 outline-none rounded bg-transparent border border-solid border-zinc-400 px-3 text-xs"
+                  />
+                  <div className="w-full h-fit">
+                    <CustomButton
+                      style="fill-green"
+                      type="button"
+                      loading={isLoading || isUploading}
+                      onClick={() => {
+                        enableSelecting();
+                        openMap(getValues().latitude, getValues().longitude);
+                      }}
+                    >
+                      Chọn trên bản đồ
+                    </CustomButton>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
           <div className="col-span-1 col-start-2 row-start-1">
@@ -558,7 +694,11 @@ function EditAdDetail({
               loading={isLoading || isUploading}
               type="submit"
             >
-              Yêu cầu chỉnh sửa
+              {isOfficer ? (
+                <span>Yêu cầu chỉnh sửa</span>
+              ) : (
+                <span>Chỉnh sửa</span>
+              )}
             </CustomButton>
           </div>
         </div>

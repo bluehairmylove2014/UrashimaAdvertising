@@ -12,6 +12,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import { useGetAdDetail } from '@business-layer/business-logic/lib/ads';
 import DetailLoader from '@presentational/atoms/DetailLoader';
 import CustomImage from '@presentational/atoms/CustomImage';
+import { FeatureCollection, Point } from 'geojson';
 
 import {
   IAdLocation,
@@ -54,7 +55,6 @@ const useViewLocationMap = () => {
   };
   const closeMap = () => {
     setIsActive(false);
-    setCoord(10.762538, 106.682448);
   };
   const enableSelecting = (lat?: number, long?: number) => {
     setIsSelecting(true);
@@ -86,6 +86,7 @@ function ViewLocationMap({ isOfficer }: { isOfficer?: boolean }): ReactElement {
     closeMap,
     isSelectingLocation,
   } = useViewLocationMap();
+  const { setCoord } = useSetCoord();
   const { showError } = useNotification();
   const { data: adsData } = useFetchAllOfficerAds();
   const { data: reportsData } = useGetAllOfficerReport();
@@ -112,11 +113,7 @@ function ViewLocationMap({ isOfficer }: { isOfficer?: boolean }): ReactElement {
   //Create state for getting position mouse previous
   const [posPrevMouse, setPosPrevMouse] = useState<locationType>(undefined);
 
-  //Create state for checking ads is reported
-  const [isAdsPointReported, setIsAdsPointReported] = useState(false);
-  const [isClickReported, setIsClickReported] = useState(false);
-
-  const { onGetAdDetail, isLoading } = useGetAdDetail();
+  const { onGetAdDetail } = useGetAdDetail();
   const [userClickMarker, setUserClickMarker] =
     useState<locationType>(undefined);
   const [locationOnClickDetail, setLocationOnClickDetail] = useState<
@@ -128,12 +125,8 @@ function ViewLocationMap({ isOfficer }: { isOfficer?: boolean }): ReactElement {
     null
   );
 
-  const locationReportList = useGetLocationReports();
+  const [unknowReport, setUnknowReport] = useState<IOfficerReport>();
   const { onGetLocationDetail } = useGetLocationDetail();
-
-  useEffect(() => {
-    console.log(isActive);
-  }, [isActive]);
 
   useEffect(() => {
     mapRef.current &&
@@ -177,6 +170,7 @@ function ViewLocationMap({ isOfficer }: { isOfficer?: boolean }): ReactElement {
       setIsLocationOnClickPopupActive(false);
       setIsActiveReportList(false);
       setListReport(undefined);
+      setUnknowReport(undefined);
 
       //Check the point is cluster? Move and zoom
       const features = mapRef.current.queryRenderedFeatures(event.point, {
@@ -226,7 +220,25 @@ function ViewLocationMap({ isOfficer }: { isOfficer?: boolean }): ReactElement {
         });
 
         setIsLocationOnClickPopupActive(false);
-        setIdAdsPointClick(featuresAllPoint[0].properties?.id);
+
+        const checkID = adsData?.find(
+          (ads) => ads.latitude === lat && ads.longitude === long
+        );
+
+        if (checkID) {
+          setIdAdsPointClick(featuresAllPoint[0].properties?.id);
+        } else {
+          setInfoClickAdsPoint(undefined);
+          setInfoHoverAdsPoint(undefined);
+          setIsClickAdsPoint(false);
+          setIsActiveReportList(true);
+          const report = reportsData?.find(
+            (r) => r.lat === lat && r.lon === long
+          );
+          setUnknowReport(report);
+          return;
+        }
+
         setIsClickAdsPoint(true);
         setInfoHoverAdsPoint(undefined);
         return;
@@ -361,31 +373,62 @@ function ViewLocationMap({ isOfficer }: { isOfficer?: boolean }): ReactElement {
               latitude: initialLatLong[0],
             },
           }}
-          sourceData={{
-            type: 'FeatureCollection',
-            features: adsData
-              ? adsData.map((m) => ({
-                  type: 'Feature',
-                  properties: {
-                    id: m.id,
-                    cluster: false,
-                    name: m.address,
-                    planned: m.planned,
-                    reported: locationReportList
-                      ? locationReportList.findIndex(
-                          (lr) =>
-                            lr.latitude === m.latitude &&
-                            lr.longitude === m.longitude
-                        ) !== -1
-                      : false,
-                  },
-                  geometry: {
-                    type: 'Point',
-                    coordinates: [m.longitude, m.latitude],
-                  },
-                }))
-              : [],
-          }}
+          sourceData={
+            {
+              type: 'FeatureCollection',
+              features: adsData
+                ? [
+                    ...adsData.map((m) => ({
+                      type: 'Feature',
+                      properties: {
+                        id: m.id,
+                        cluster: false,
+                        name: m.address,
+                        planned: m.planned,
+                        isEmpty: m.isEmpty,
+                        reported: Boolean(
+                          reportsData &&
+                            reportsData.some(
+                              (lr) =>
+                                lr.lat === m.latitude && lr.lon === m.longitude
+                            )
+                        ),
+                        longLatArr: [m.longitude, m.latitude],
+                      },
+                      geometry: {
+                        type: 'Point',
+                        coordinates: [m.longitude, m.latitude],
+                      },
+                    })),
+                    ...(reportsData
+                      ? reportsData.map((m, index) => ({
+                          type: 'Feature',
+                          properties: {
+                            id: (
+                              adsData &&
+                              adsData.find(
+                                (ads) =>
+                                  ads.latitude === m.lat &&
+                                  ads.longitude === m.lon
+                              )
+                            )?.id,
+                            cluster: false,
+                            name: m.address,
+                            planned: false,
+                            reported: true,
+                            isEmpty: false,
+                            longLatArr: [m.lon, m.lat],
+                          },
+                          geometry: {
+                            type: 'Point',
+                            coordinates: [m.lon, m.lat],
+                          },
+                        }))
+                      : []),
+                  ]
+                : [],
+            } as FeatureCollection<Point>
+          }
           ref={mapRef}
         >
           <button
@@ -477,17 +520,19 @@ function ViewLocationMap({ isOfficer }: { isOfficer?: boolean }): ReactElement {
             infoClickAdsPoint ? (
               <DetailAdsPoint
                 detailAdsPoint={infoClickAdsPoint}
-                handleListReport={() => {}}
-                isOfficer={true}
-                listReport={undefined}
+                isOfficer={false}
+                isHQ={true}
+                listReport={listReport}
                 onClick={(id) => {
                   setIdAdsBoard(id);
                   setIsActiveAdsBoard(true);
+                  setIsClickAdsPoint(false);
                 }}
                 handleClose={() => {
                   setIsClickAdsPoint(false);
                 }}
                 handleDetailReport={() => {}}
+                handleListReport={() => setIsActiveReportList(true)}
               />
             ) : (
               <></>
@@ -499,6 +544,7 @@ function ViewLocationMap({ isOfficer }: { isOfficer?: boolean }): ReactElement {
           {isActiveReportList ? (
             <ListReport
               listReport={listReport}
+              unknowReport={unknowReport}
               handleClose={() => {
                 setIsActiveReportList(false);
                 setIsClickAdsPoint(false);
@@ -533,8 +579,6 @@ function ViewLocationMap({ isOfficer }: { isOfficer?: boolean }): ReactElement {
           ) : (
             <></>
           )}
-
-          {isLoading ? <DetailLoader /> : <></>}
         </CustomMap>
       </div>
       <LocationDetail
@@ -546,6 +590,9 @@ function ViewLocationMap({ isOfficer }: { isOfficer?: boolean }): ReactElement {
         }}
         isOfficer={true}
         isSelecting={isSelectingLocation}
+        onSelectLocation={(coord: { lat: number; long: number }) => {
+          setCoord(coord.lat, coord.long);
+        }}
       />
     </div>
   );
