@@ -98,8 +98,6 @@ namespace UrashimaServer.Controllers.Ward
             }
 
             var rawBoards = await _context.AdsBoards
-                .Where(board => board.AdsCreateRequest == null
-                    || board.AdsCreateRequest.RequestStatus == RequestConstant.Accepted)
                 .Include(s => s.AdsPoint)
                 .Include(s => s.AdsCreateRequest)
                 .Include(s => s.Reports)
@@ -138,12 +136,9 @@ namespace UrashimaServer.Controllers.Ward
                 });
             }
 
-            var rawResult = await _context.AdsPoints
-                .Where(point => point.AdsCreateRequest == null
-                    || point.AdsCreateRequest.RequestStatus == RequestConstant.Accepted)
-                .ToListAsync();
-
+            var rawResult = await _context.AdsPoints.ToListAsync();
             var region = HttpContext.Items["address"] as string;
+
             rawResult = rawResult.Where(p =>
                 Helper.IsUnderAuthority(p.Address, acc.UnitUnderManagement, region))
             .ToList();

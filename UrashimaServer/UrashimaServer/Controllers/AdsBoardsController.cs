@@ -71,9 +71,8 @@ namespace UrashimaServer.Controllers
                 .ToListAsync();
 
             var result = rawBoards.Where(board 
-                => (board.AdsCreateRequest == null 
-                || board.AdsCreateRequest.RequestStatus == RequestConstant.Accepted )
-                && board.AdsPoint!.Planned);
+                => board.AdsCreateRequest == null 
+                || board.AdsCreateRequest.RequestStatus == RequestConstant.Accepted);
 
             // map each element
             var boardDtoList = new List<GetAdsBoardDto>();
