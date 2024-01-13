@@ -349,7 +349,8 @@ namespace UrashimaServer.Controllers
             }
 
             #region REAL TIME - SEND TO OFFICER
-            await _chatHubContext.Clients.Group("guests").AddMessage($"Trạng thái báo cáo bạn gửi đã được cập nhật|{updatedItem.SubmissionDate}");
+            await _chatHubContext.Clients.Group("guests")
+                .AddMessage($"Trạng thái báo cáo bạn gửi đã được cập nhật|{updatedItem.SubmissionDate:yyyy-MM-ddTHH:mm:ss}");
             #endregion
 
             return Ok(new
