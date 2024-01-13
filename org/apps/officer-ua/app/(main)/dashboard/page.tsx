@@ -89,6 +89,8 @@ function Home(): ReactElement {
     null
   );
 
+  const [unknowReport, setUnknowReport] = useState<IOfficerReport>();
+
   useEffect(() => {
     if (idAdsPoint > -1) {
       if (!infoClickAdsPoint && isClickAdsPoint)
@@ -119,6 +121,7 @@ function Home(): ReactElement {
     setIsLocationOnClickPopupActive(false);
     setIsActiveReportList(false);
     setListReport(undefined);
+    setUnknowReport(undefined);
 
     //Check the point is cluster? Move and zoom
     const features = mapRef.current.queryRenderedFeatures(event.point, {
@@ -169,7 +172,28 @@ function Home(): ReactElement {
       });
 
       setIsLocationOnClickPopupActive(false);
-      setIdAdsPointClick(featuresAllPoint[0].properties?.id);
+
+      console.log(adsData);
+      console.log(reportsData);
+      console.log(lat + " " + long)
+
+      const checkID = adsData?.find((ads) =>
+        ads.latitude === lat && ads.longitude === long
+      )
+
+      if (checkID) {
+        setIdAdsPointClick(featuresAllPoint[0].properties?.id);
+      }
+      else {
+        setInfoClickAdsPoint(undefined);
+        setInfoHoverAdsPoint(undefined);
+        setIsClickAdsPoint(false);
+        setIsActiveReportList(true);
+        const report = reportsData?.find((r) => r.lat === lat && r.lon === long)
+        setUnknowReport(report);
+        return;
+      }
+
       setIsClickAdsPoint(true);
       setInfoHoverAdsPoint(undefined);
       return;
@@ -317,7 +341,13 @@ function Home(): ReactElement {
                         ? reportsData.map((m, index) => ({
                           type: 'Feature',
                           properties: {
-                            id: adsData.length + index + 1,
+                            id: (adsData &&
+                              adsData.find(
+                                (ads) =>
+                                  ads.latitude === m.lat
+                                  &&
+                                  ads.longitude === m.lon
+                              ))?.id,
                             cluster: false,
                             name: m.address,
                             planned: false,
@@ -414,6 +444,7 @@ function Home(): ReactElement {
                     <DetailAdsPoint
                       detailAdsPoint={infoClickAdsPoint}
                       isOfficer={true}
+                      isHQ={false}
                       listReport={listReport}
                       onClick={(id) => {
                         setIdAdsBoard(id);
@@ -440,6 +471,7 @@ function Home(): ReactElement {
                 isActiveReportList ?
                   <ListReport
                     listReport={listReport}
+                    unknowReport={unknowReport}
                     handleClose={() => {
                       setIsActiveReportList(false)
                       setIsClickAdsPoint(false);

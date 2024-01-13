@@ -6,10 +6,12 @@ import { useRouter } from 'next/navigation';
 
 function ListReport({
     listReport,
+    unknowReport,
     handleClose,
     handleBack,
 }: {
     listReport: IOfficerReport[] | undefined;
+    unknowReport: IOfficerReport | undefined;
     handleClose: () => void;
     handleBack: () => void;
 }
@@ -36,28 +38,68 @@ function ListReport({
                     {' '}
                 </CustomButtonIcon>
             </div>
-            <div className="absolute top-0 left-0 z-10 mt-2 mx-1">
-                <CustomButtonIcon
-                    widthIcon="0.7rem"
-                    heightIcon="0.7rem"
-                    type="button"
-                    pathImage="/assets/undo.png"
-                    alt=""
-                    border={1}
-                    colorBorder="blue"
-                    round={4}
-                    onClick={handleBack}
-                >
-                    {' '}
-                </CustomButtonIcon>
-            </div>
+            {unknowReport ?
+                <></>
+                :
+                <div className="absolute top-0 left-0 z-10 mt-2 mx-1">
+                    <CustomButtonIcon
+                        widthIcon="0.7rem"
+                        heightIcon="0.7rem"
+                        type="button"
+                        pathImage="/assets/undo.png"
+                        alt=""
+                        border={1}
+                        colorBorder="blue"
+                        round={4}
+                        onClick={handleBack}
+                    >
+                        {' '}
+                    </CustomButtonIcon>
+                </div>
+            }
 
-            {/* Title history report */}
+            {/* Title history  */}
             <div className="flex justify-center mt-3 p-2">
                 <p className="text-center text-[1rem] font-bold ml-1 text-neutral-700">
                     DANH SÁCH BÁO CÁO
                 </p>
             </div>
+
+            {unknowReport ?
+                <div className="mt-4 mx-3 font-bold">
+                    <p className='text-sky-600 text-[0.8rem]'>Thông tin địa điểm bị báo cáo</p>
+                    <p className="text-[0.75rem] whitespace-normal mt-2 font-normal text-gray-600 ">
+                        <i className="fi fi-sr-marker"></i>
+                        {' '}
+                        <span className="font-semibold ">
+                            {' '}
+                            {unknowReport.address}
+                        </span>
+                    </p>
+                    <p className="text-[0.75rem] whitespace-normal mt-1 font-normal text-gray-600 ">
+                        <i className="fi fi-sr-map-pin"></i>
+                        {' '}
+                        Kinh độ:
+                        <span className="text-sky-500">
+                            {' '}
+                            {unknowReport.lon}
+                        </span>
+                    </p>
+                    <p className="text-[0.75rem] whitespace-normal mt-1 font-normal text-gray-600 ">
+                        <i className="fi fi-sr-map-pin"></i>
+                        {' '}
+                        Vĩ độ:
+                        <span className="text-sky-500">
+                            {' '}
+                            {unknowReport.lat}
+                        </span>
+                    </p>
+                    <hr className='mt-3'></hr>
+                </div>
+                :
+                <>
+                </>
+            }
 
             <div className="my-5">
                 <>
@@ -80,6 +122,7 @@ function ListReport({
                                 }
                             </div>
                             <hr className="my-2" />
+
                             <p className=" text-[0.7rem] whitespace-normal font-semibold">
                                 Địa điểm:
                                 <span className="font-medium text-gray-600">
@@ -87,6 +130,7 @@ function ListReport({
                                     {report.address}
                                 </span>
                             </p>
+
                             <p className=" text-[0.7rem] whitespace-normal">
                                 Vĩ độ:
                                 <span className="font-medium text-gray-600">
@@ -94,6 +138,7 @@ function ListReport({
                                     {report.lat}
                                 </span>
                             </p>
+
                             <p className=" text-[0.7rem] whitespace-normal">
                                 Kinh độ:
                                 <span className="font-medium text-gray-600">
@@ -101,12 +146,10 @@ function ListReport({
                                     {report.lon}
                                 </span>
                             </p>
-                            <p className=" text-[0.7rem] whitespace-normal flex line-clamp-1">
+
+                            <p className="text-[0.7rem] whitespace-normal flex line-clamp-1">
                                 Nội dung báo cáo:
-                                <span className="font-medium text-gray-600">
-                                    {' '}
-                                    <div dangerouslySetInnerHTML={{ __html: report.content }}></div>
-                                </span>
+                                <span className="font-medium text-gray-600" dangerouslySetInnerHTML={{ __html: report.content }}></span>
                             </p>
                         </div>
                     ))}
