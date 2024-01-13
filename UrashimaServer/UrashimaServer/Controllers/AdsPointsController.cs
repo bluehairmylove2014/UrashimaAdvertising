@@ -35,12 +35,10 @@ namespace UrashimaServer.Controllers
         public async Task<ActionResult<IEnumerable<UserAdsPointBasicDto>>> GetAllAdsPoints()
         {
             var rawResult = await _context.AdsPoints.ToListAsync();
-            var result = rawResult
-                .Where(point => point.AdsCreateRequest == null || 
-                point.AdsCreateRequest.RequestStatus == RequestConstant.Accepted);
+            var result = rawResult.Where(point => point.Planned);
 
             var res = new List<UserAdsPointBasicDto>();
-            foreach (var item in rawResult)
+            foreach (var item in result)
             {
                 var pointDto = _mapper.Map<UserAdsPointBasicDto>(item);
                 pointDto.IsEmpty = !(_context.AdsBoards.Where(b => b.AdsPointId == pointDto.Id).ToList().Count > 0);
