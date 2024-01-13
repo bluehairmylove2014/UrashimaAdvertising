@@ -72,7 +72,7 @@ function DistrictManagement() {
       });
       Promise.all(promises)
         .then((msg) => {
-          showSuccess("Xoá quận thành công");
+          showSuccess('Xoá quận thành công');
         })
         .catch((error) => {
           showError(error.message);
@@ -129,7 +129,7 @@ function DistrictManagement() {
   };
 
   // Add Ward
-  const handleAddWard = () => { };
+  const handleAddWard = () => {};
 
   useEffect(() => {
     if (regionsData) {
@@ -151,7 +151,6 @@ function DistrictManagement() {
           formBoxRefs.current.push(React.createRef<HTMLDivElement>());
         });
       }
-      console.log(districts);
     }
   }, [regionsData]);
 
@@ -216,10 +215,11 @@ function DistrictManagement() {
                 </div>
 
                 <button
-                  className={`text-[0.65rem] ${selectedDistrict === r
-                    ? 'bg-rose-500  text-white'
-                    : 'bg-rose-100 text-black hover:bg-rose-500 hover:text-white'
-                    } transition-colors rounded-lg  font-semibold text-start  whitespace-nowrap px-2 py-2 w-full disabled:cursor-not-allowed my-button-district-class`}
+                  className={`text-[0.65rem] ${
+                    selectedDistrict === r
+                      ? 'bg-rose-500  text-white'
+                      : 'bg-rose-100 text-black hover:bg-rose-500 hover:text-white'
+                  } transition-colors rounded-lg  font-semibold text-start  whitespace-nowrap px-2 py-2 w-full disabled:cursor-not-allowed my-button-district-class`}
                   type="button"
                   onClick={() => {
                     onSelectDistrict(r, index);

@@ -9,12 +9,10 @@ import { useGetAllCreationRequest } from '@business-layer/business-logic/lib/app
 import { formatDate } from '@utils/helpers';
 import CommonLoader from '@presentational/atoms/CommonLoader';
 import { IApprove } from '@business-layer/services/entities/approve';
-import { useNavigateLoader } from '@presentational/atoms/NavigateLoader';
 
 async function ApproveRequestDetail() {
   const { get: getId } = useSearchParams();
   const requestId = getId('id');
-  const { isActive, hideLoader } = useNavigateLoader();
   const { data: creationRequests } = useGetAllCreationRequest();
   const breadcrumbsData: IBreadcrumb[] = [
     {
@@ -38,10 +36,6 @@ async function ApproveRequestDetail() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [creationRequests, requestId]);
-
-  useEffect(() => {
-    isActive && hideLoader();
-  }, [hideLoader, isActive]);
 
   return (
     <main className="container mx-auto px-4 py-12 h-screen overflow-y-auto scrollbar-hide">

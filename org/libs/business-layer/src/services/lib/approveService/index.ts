@@ -57,7 +57,6 @@ export class ApproveService extends Services {
         throw new Error('Unauthorized');
       }
     } catch (error) {
-      console.log('DIT ME MAY: ', error);
       throw this.handleError(error);
     }
   };

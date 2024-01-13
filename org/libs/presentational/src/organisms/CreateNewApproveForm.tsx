@@ -50,8 +50,8 @@ function CreateNewApproveForm({
   adsFormOptions,
   locationTypeOptions,
 }: {
-  adsFormOptions: modernSelectOptionType[];
-  locationTypeOptions: modernSelectOptionType[];
+  adsFormOptions: modernSelectOptionType[] | null;
+  locationTypeOptions: modernSelectOptionType[] | null;
 }) {
   const router = useRouter();
   const [adBoardImage, setAdBoardImage] = useState<File | null>(null);

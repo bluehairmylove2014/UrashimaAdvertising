@@ -67,6 +67,7 @@ async function AdLocations() {
                   ]
                 : null
             }
+            defaultValue={'Tất cả hình thức'}
           />
           <LocationTableFilterSelect
             type="locationType"
@@ -86,6 +87,7 @@ async function AdLocations() {
                   ]
                 : null
             }
+            defaultValue={'Tất cả loại địa điểm'}
           />
           <AddNewLocationBtn />
         </div>

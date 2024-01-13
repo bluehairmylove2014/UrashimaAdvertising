@@ -8,10 +8,12 @@ import {
   useSetRegions,
 } from '@business-layer/business-logic/lib/regionManagement';
 import { HQ_PAGES } from '@constants/hqPages';
+import { useNavigateLoader } from './NavigateLoader';
 
 function HQNavAvatar() {
   const { data: regionData } = useFetchRegions();
   const { setRegions } = useSetRegions();
+  const { showLoader } = useNavigateLoader();
 
   useEffect(() => {
     if (regionData) {
@@ -21,6 +23,7 @@ function HQNavAvatar() {
   return (
     <Link
       href={HQ_PAGES.ME}
+      onClick={() => showLoader()}
       className="w-full h-fit rounded overflow-hidden flex flex-row items-center justify-start mb-6 gap-3 hover:text-orange-600 transition-colors"
     >
       <Image src={HQIcon} alt="" width={40} height={40} />

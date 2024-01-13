@@ -32,7 +32,7 @@ function ModernSelect({
 }) {
   const [selectedOption, setSelectedOption] = useState<string | null>(
     defaultValue ||
-      (Array.isArray(options)
+      (Array.isArray(options) && options.length > 0
         ? options.find((op) => op.defaultChecked)?.name || options[0].name
         : null)
   );

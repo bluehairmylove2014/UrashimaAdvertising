@@ -31,7 +31,6 @@ import { regionResponseType } from '@business-layer/services';
 import MultipleLayerSelect, {
   mulSelectOptionType,
 } from '@presentational/atoms/MultipleLayerSelect';
-import { useViewLocationMap } from './ViewLocationMap';
 import YesNoPopup from '@presentational/molecules/YesNoPopup';
 import { useNotification } from '@presentational/atoms/Notification';
 import { useNavigateLoader } from '@presentational/atoms/NavigateLoader';
@@ -61,7 +60,7 @@ type displayDataType = {
     contractStart: string;
     contractEnd: string;
   };
-  isInProgress: boolean;
+  requestStatus: string;
   reasonsData: string;
   requestTypes: string;
   href: string;
@@ -73,7 +72,6 @@ type additionFuncParamsType = {
 };
 function AdRequestTable({ regionsData, isOfficer }: additionFuncParamsType) {
   const router = useRouter();
-  const { openMap } = useViewLocationMap();
   const { showLoader } = useNavigateLoader();
   const { data: modificationRequests, refetch: refetchModificationRequest } =
     useGetAllAdModificationRequest();
@@ -106,8 +104,7 @@ function AdRequestTable({ regionsData, isOfficer }: additionFuncParamsType) {
   const { onDeleteModificationRequest } = useDeleteModificationRequest();
   const { showError, showSuccess } = useNotification();
   const { onApproveAdModificationRequest } = useApproveAdModificationRequest();
-  const { onApproveAdCreationRequest, isLoading } =
-    useApproveAdCreationRequest();
+  const { onApproveAdCreationRequest } = useApproveAdCreationRequest();
 
   useEffect(() => {
     if (regionsData) {
@@ -149,7 +146,7 @@ function AdRequestTable({ regionsData, isOfficer }: additionFuncParamsType) {
             longitude: mr.longitude,
             address: mr.address,
           },
-          isInProgress: true,
+          requestStatus: mr.requestStatus,
           reasonsData: mr.reasons,
           requestTypes: REQUEST_TYPES.MOD,
           href: HQ_PAGES.AD_MODIFICATION_REQUESTS + `?id=${mr.id}`,
@@ -170,15 +167,13 @@ function AdRequestTable({ regionsData, isOfficer }: additionFuncParamsType) {
             contractStart: cr.contractStart,
             contractEnd: cr.contractEnd,
           },
-          isInProgress: cr.requestStatus === 'inprocess',
+          requestStatus: cr.requestStatus,
           reasonsData: '',
           requestTypes: REQUEST_TYPES.CRE,
           href: HQ_PAGES.AD_APPROVE_REQUESTS + `?id=${cr.id}`,
         })
       );
       setRequestData(displayData);
-      console.log(modificationRequests);
-      console.log(creationRequests);
       backupRequestData.current = displayData;
     }
   }, [modificationRequests, creationRequests]);
@@ -406,6 +401,19 @@ function AdRequestTable({ regionsData, isOfficer }: additionFuncParamsType) {
                             <span className="line-clamp-2">
                               {request.pointData.address}
                             </span>
+                            {request.requestStatus === 'inprocess' ? (
+                              <span className="text-orange-600 font-semibold">
+                                Tình trạng: Đang xử lý
+                              </span>
+                            ) : request.requestStatus === 'accepted' ? (
+                              <span className="text-green-600 font-semibold">
+                                Tình trạng: Được chấp thuận
+                              </span>
+                            ) : (
+                              <span className="text-red-600 font-semibold">
+                                Tình trạng: Đã từ chối
+                              </span>
+                            )}
                           </span>,
                           request.requestTypes === REQUEST_TYPES.MOD ? (
                             <span className="line-clamp-4">
@@ -487,7 +495,8 @@ function AdRequestTable({ regionsData, isOfficer }: additionFuncParamsType) {
                             {request.requestTypes}
                           </span>,
                           <>
-                            {isOfficer ? (
+                            {isOfficer &&
+                            request.requestStatus === 'inprocess' ? (
                               <IconButton
                                 type="button"
                                 shape="square"

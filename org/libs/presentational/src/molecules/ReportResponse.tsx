@@ -12,6 +12,8 @@ import { useOfficerEditReport } from '../../../business-layer/src/business-logic
 import { boolean } from 'zod';
 import { useEffect, useState } from 'react';
 import ButtonLoader from '@presentational/atoms/ButtonLoader';
+import { useRouter } from 'next/navigation';
+import { OFFICER_PAGES } from '@constants/officerPages';
 
 type formData = {
   response: string;
@@ -24,9 +26,10 @@ function ReportResponse({
   reportData: IOfficerReportDetail;
   handleClose: () => void;
 }) {
+  const router = useRouter();
   const reasonsInputResolver = useYupValidationResolver(responseInputSchema);
   const { showError, showReactHookFormError, showSuccess } = useNotification();
-  const { control, handleSubmit, reset, watch, register } = useForm({
+  const { handleSubmit, reset, watch, register } = useForm({
     defaultValues: {
       response: '',
     },
@@ -45,17 +48,14 @@ function ReportResponse({
         showSuccess(msg);
         reset();
         handleClose();
+        router.push(OFFICER_PAGES.REPORT);
+        router.refresh();
       })
       .catch((error) => showError(error.message))
       .finally(() => {
         handleClose();
       });
   };
-
-  useEffect(() => {
-    console.log(reportData);
-
-  }, [])
   const responseWatch = watch('response');
 
   return (
@@ -78,8 +78,9 @@ function ReportResponse({
         </div>
         <div className="flex flex-row justify-end mt-2">
           <small
-            className={`${responseWatch.length > 1000 ? 'text-red-600' : 'text-black'
-              }`}
+            className={`${
+              responseWatch.length > 1000 ? 'text-red-600' : 'text-black'
+            }`}
           >
             {responseWatch.length} / 1000
           </small>
@@ -96,15 +97,15 @@ function ReportResponse({
           >
             Huỷ bỏ
           </CustomButton>
-          {isLoading ?
-            <div className='shadow-sm w-full py-2 font-semibold text-xs fill-secondary bg-blue-700 rounded text-white'>
+          {isLoading ? (
+            <div className="shadow-sm w-full py-2 font-semibold text-xs fill-secondary bg-blue-700 rounded text-white">
               <ButtonLoader label="Đang xử lý..." />
             </div>
-            :
+          ) : (
             <CustomButton style="fill-primary" type="submit">
               Xác nhận
             </CustomButton>
-          }
+          )}
         </div>
       </form>
     </div>

@@ -87,10 +87,6 @@ const CustomMap: ForwardRefRenderFunction<MapRef, customMapProps> = (
   useEffect(() => {
     if (currentLocation === undefined && navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
-        console.log('LOCATION: ', {
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-        });
         setCurrentLocation({
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,

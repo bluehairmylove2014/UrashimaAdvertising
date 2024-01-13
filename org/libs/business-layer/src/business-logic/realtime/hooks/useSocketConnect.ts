@@ -4,7 +4,7 @@ import * as signalR from '@microsoft/signalr';
 import { HubConnection } from '@microsoft/signalr';
 
 export function useSocketConnect() {
-  const { dispatch } = useRealtimeContext();
+  const { state, dispatch } = useRealtimeContext();
 
   const handleConnect = (email?: string): Promise<HubConnection> => {
     return new Promise((rs, rj) => {
@@ -12,6 +12,7 @@ export function useSocketConnect() {
       const socket = new signalR.HubConnectionBuilder()
         .withUrl(`${baseSocketUrl}${email ? `?email=${email}` : ''}`)
         .configureLogging(signalR.LogLevel.Information)
+        .withAutomaticReconnect()
         .build();
       socket
         .start()
@@ -30,7 +31,11 @@ export function useSocketConnect() {
         });
 
       socket.on(MSG_KEYS.ON_RECEIVE_MESSAGE, (message) => {
-        alert(message);
+        console.log('NEW MESSAGE: ', message);
+        dispatch({
+          type: 'SET_MESSAGE',
+          payload: [...state.message, message],
+        });
       });
 
       // console.log(`${baseSocketUrl}${email ? `?email=${email}` : ''}`);

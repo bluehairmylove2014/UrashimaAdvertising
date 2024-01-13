@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import { useForm } from 'react-hook-form';
+import regionDataRaw from '@utils/helpers/regionSelect/regionData.json';
 
 const DistrictSelect = ({ onChange }: { onChange: any }) => {
   const { register, setValue, watch, getValues } = useForm<{
@@ -49,10 +49,11 @@ const DistrictSelect = ({ onChange }: { onChange: any }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(
-          'https://raw.githubusercontent.com/kenzouno1/DiaGioiHanhChinhVN/master/data.json'
-        );
-        setData(response.data);
+        // const response = await axios.get(
+        //   'https://raw.githubusercontent.com/kenzouno1/DiaGioiHanhChinhVN/master/data.json'
+        // );
+        // setData(response.data);
+        setData(regionDataRaw);
       } catch (error) {
         console.error('Error fetching data:', error);
       }

@@ -21,6 +21,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import ManRidingGif from '@assets/manRiding.gif';
+import { useNavigateLoader } from '@presentational/atoms/NavigateLoader';
 
 const iconButtonSize = 2;
 const authInputList: authInputParams[] = [
@@ -50,6 +51,7 @@ function LoginForm() {
   const { onGoogleLogin } = useGoogleLogin();
   const { onFacebookLogin } = useFacebookLogin();
   const { onGithubLogin } = useGithubLogin();
+  const { showLoader } = useNavigateLoader();
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
   const { control, handleSubmit } = useForm<loginFormData>({
     defaultValues: Object.fromEntries(
@@ -108,6 +110,7 @@ function LoginForm() {
           <div className="flex flex-row justify-end items-center mb-4 w-full">
             <Link
               href={OFFICER_PAGES.RESET_PASSWORD}
+              onClick={() => showLoader()}
               className="font-semibold text-xs text-gray-400 hover:text-blue-600"
             >
               Quên mật khẩu?

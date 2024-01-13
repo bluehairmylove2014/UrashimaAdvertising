@@ -19,7 +19,6 @@ import { Controller, useForm } from 'react-hook-form';
 import { useViewLocationMap } from './ViewLocationMap';
 import { useCreateNewAd } from '@business-layer/business-logic/lib/ads';
 import { HQ_PAGES } from '@constants/hqPages';
-import { useNavigateLoader } from '@presentational/atoms/NavigateLoader';
 import '@utils/helpers/regionSelect/vietnamlocalselector';
 import DistrictSelect from './DistrictSelect';
 
@@ -46,9 +45,15 @@ function NewAdLocation({
   adsFormOptions: modernSelectOptionType[] | null;
 }) {
   const router = useRouter();
-  const { isActive, hideLoader } = useNavigateLoader();
   const editLocationResolver = useYupValidationResolver(newLocationSchema);
-  const { enableSelecting, openMap } = useViewLocationMap();
+  const {
+    enableSelecting,
+    openMap,
+    isSelectingLocation,
+    coord,
+    disableSelecting,
+    closeMap,
+  } = useViewLocationMap();
   const { handleSubmit, getValues, setValue, control, watch, register } =
     useForm<newLocationType>({
       defaultValues: {
@@ -77,8 +82,19 @@ function NewAdLocation({
   });
 
   useEffect(() => {
-    isActive && hideLoader();
-  }, []);
+    if (
+      coord.length === 2 &&
+      isSelectingLocation &&
+      coord[0] !== getValues().latitude &&
+      coord[1] !== getValues().longitude
+    ) {
+      setValue('latitude', coord[0]);
+      setValue('longitude', coord[1]);
+      disableSelecting();
+      closeMap();
+      showSuccess('Chọn điểm quảng cáo thành công');
+    }
+  }, [coord]);
 
   // methods
   const onSuccessSubmit = (data: newLocationType) => {
@@ -124,6 +140,7 @@ function NewAdLocation({
           .then((msg) => {
             showSuccess(msg);
             router.push(HQ_PAGES.AD_LOCATIONS);
+            router.refresh();
           })
           .catch((error) => showError(error.message))
           .finally(() => {
@@ -342,7 +359,7 @@ function NewAdLocation({
                   loading={isLoading || isUploading}
                   onClick={() => {
                     enableSelecting();
-                    openMap();
+                    openMap(getValues().latitude, getValues().longitude);
                   }}
                 >
                   Chọn trên bản đồ
