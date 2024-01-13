@@ -303,7 +303,6 @@ namespace UrashimaServer.Controllers
             {
                 return NotFound();
             }
-            emailDto.Email = "20127457@student.hcmus.edu.vn";
             var account = await _dbContext.Accounts.FirstOrDefaultAsync(acc => acc.Email == emailDto.Email);
 
             if (account == null)

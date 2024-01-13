@@ -66,8 +66,26 @@ namespace UrashimaServer.Common.Helper
             email.Subject = mailRequest.Subject;
             var builder = new BodyBuilder();
 
-            builder.HtmlBody = mailRequest.Body;
+            var htmlContent = System.IO.File.ReadAllText(Path.Combine(mailRequest.ResourcePath, "index_report.html"));
+            htmlContent = htmlContent.Replace("Guest_Name_To_Replace", $"{mailRequest.Name}");
 
+            var statusString = mailRequest.Status ? "Đã xử lý" : "Chưa xử lý";
+            htmlContent = htmlContent.Replace("Report_Status_To_Replace", $"{statusString}");
+
+            htmlContent = htmlContent.Replace("Treatment_Process_To_Replace", $"{mailRequest.TreatmentProcess}");
+
+            builder.HtmlBody = htmlContent;
+
+            var imgList = new List<string>() {
+                "image-1.png", "image-2.gif", "image-3.png"
+            };
+
+            foreach (var imgName in imgList)
+            {
+                var image = builder.LinkedResources.Add(Path.Combine(mailRequest.ResourcePath, "images_report", imgName));
+                image.ContentId = MimeUtils.GenerateMessageId();
+                builder.HtmlBody = builder.HtmlBody.Replace($"{imgName}", image.ContentId);
+            }
 
             email.Body = builder.ToMessageBody();
 

@@ -9,6 +9,7 @@ using UrashimaServer.Common.Helper;
 using UrashimaServer.Database;
 using UrashimaServer.Database.Dtos;
 using UrashimaServer.Database.Models;
+using UrashimaServer.Dtos;
 using UrashimaServer.Models;
 using UrashimaServer.RealTime;
 
@@ -25,13 +26,15 @@ namespace UrashimaServer.Controllers
         private readonly IMapper _mapper;
         private readonly IEmailService _emailService;
         private readonly IHubContext<ChatHub, IChatClient> _chatHubContext;
+        private readonly IWebHostEnvironment _hostingEnvironment;
 
-        public ReportsController(DataContext context, IMapper mapper, IEmailService emailService, IHubContext<ChatHub, IChatClient> chatHubContext)
+        public ReportsController(DataContext context, IMapper mapper, IEmailService emailService, IHubContext<ChatHub, IChatClient> chatHubContext, IWebHostEnvironment hostingEnvironment)
         {
             _context = context;
             _mapper = mapper;
             _emailService = emailService;
             _chatHubContext = chatHubContext;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         /// <summary>
@@ -296,7 +299,7 @@ namespace UrashimaServer.Controllers
         /// </summary>
         [Route("/api/officer/reports")]
         [HttpPut, AuthorizeRoles(GlobalConstant.WardOfficer, GlobalConstant.DistrictOfficer, GlobalConstant.HeadQuater)]
-        public async Task<ActionResult<GetReportDto>> UpdateReportBasedOnRole(GetReportDto updateReport)
+        public async Task<ActionResult<GetReportDto>> UpdateReportBasedOnRole(UpdateReportTreatmentDto updateReport)
         {
             var acc = await _context.Accounts.FirstOrDefaultAsync(acc => acc.Email == User.Identity!.Name);
 
@@ -333,10 +336,17 @@ namespace UrashimaServer.Controllers
             await _context.SaveChangesAsync();
 
             // Setup mail
-            MailRequest mailRequest = new MailRequest();
-            mailRequest.ToEmail = updatedItem.Email;
-            mailRequest.Subject = "Báo cáo đang xử lí!!!";
-            mailRequest.Body = $"Thân chào {updatedItem.Name}, We are writing to inform you that your report is currently being processed. Our team is working hard to ensure that your order is handled as soon as possible.\r\n\r\nReport status: {updatedItem.ReportStatus}, Treatment: {updatedItem.TreatmentProcess}\r\n\r\n. If you have any questions or concerns about your report, please don't hesitate to contact us. We're always here to help.\r\n\r\nThank you for reporting the problem to us.\r\n\r\nBest regards,\r\n\r\nUrashima Map";
+            string contentRootPath = _hostingEnvironment.ContentRootPath;
+            string folderPath = Path.Combine(contentRootPath, "EmailTemplate");
+            MailRequest mailRequest = new()
+            {
+                ToEmail = updatedItem.Email,
+                Subject = "[Urashima-Ads] Báo cáo đang xử lí!!!",
+                ResourcePath = folderPath,
+                Name = updatedItem.Name,
+                Status = updatedItem.ReportStatus,
+                TreatmentProcess = updatedItem.TreatmentProcess
+            };
             try
             {
                 await _emailService.SendReportEmailAsync(mailRequest);

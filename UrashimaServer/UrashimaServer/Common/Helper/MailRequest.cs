@@ -7,6 +7,8 @@
         public string ResourcePath { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
         public string Otp { get; set; } = string.Empty;
+        public bool Status { get; set; }
+        public string TreatmentProcess { get; set; } = string.Empty;
         public string Body { get; set; } = string.Empty;
     }
 }
