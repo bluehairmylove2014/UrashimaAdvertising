@@ -12,5 +12,6 @@ export interface IAdModificationRequest {
   adsBoard: IAdsBoard[];
   adsPointId: number;
   modifyTime: string;
+  requestStatus: string;
   reasons: string;
 }

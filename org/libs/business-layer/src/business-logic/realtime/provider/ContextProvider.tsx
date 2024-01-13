@@ -11,6 +11,7 @@ export const ContextProvider: React.FC<ContextProviderType> = ({
 }) => {
   const [state, dispatch] = useReducer(realtimeReducer, {
     socket: null,
+    message: [],
   });
 
   return (

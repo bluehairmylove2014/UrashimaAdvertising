@@ -14,11 +14,13 @@ import {
   useYupValidationResolver,
 } from '@utils/validators/yup';
 import { useRouter } from 'next/navigation';
-import { useRef, useState } from 'react';
-import { Controller, useFieldArray, useForm } from 'react-hook-form';
+import { useEffect, useRef, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import { useViewLocationMap } from './ViewLocationMap';
 import { useCreateNewAd } from '@business-layer/business-logic/lib/ads';
 import { HQ_PAGES } from '@constants/hqPages';
+import '@utils/helpers/regionSelect/vietnamlocalselector';
+import DistrictSelect from './DistrictSelect';
 
 const DEFAULT_THUMBNAIL_WIDTH = 120;
 const DEFAULT_THUMBNAIL_HEIGHT = 120;
@@ -44,7 +46,14 @@ function NewAdLocation({
 }) {
   const router = useRouter();
   const editLocationResolver = useYupValidationResolver(newLocationSchema);
-  const { enableSelecting, openMap } = useViewLocationMap();
+  const {
+    enableSelecting,
+    openMap,
+    isSelectingLocation,
+    coord,
+    disableSelecting,
+    closeMap,
+  } = useViewLocationMap();
   const { handleSubmit, getValues, setValue, control, watch, register } =
     useForm<newLocationType>({
       defaultValues: {
@@ -66,56 +75,86 @@ function NewAdLocation({
   const { onCreateNewAd, isLoading } = useCreateNewAd();
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const { onUpload } = useUpload();
+  const [addressData, setAddressData] = useState({
+    city: '',
+    district: '',
+    ward: '',
+  });
+
+  useEffect(() => {
+    if (
+      coord.length === 2 &&
+      isSelectingLocation &&
+      coord[0] !== getValues().latitude &&
+      coord[1] !== getValues().longitude
+    ) {
+      setValue('latitude', coord[0]);
+      setValue('longitude', coord[1]);
+      disableSelecting();
+      closeMap();
+      showSuccess('Chọn điểm quảng cáo thành công');
+    }
+  }, [coord]);
 
   // methods
   const onSuccessSubmit = (data: newLocationType) => {
-    // UPLOAD TO CDN
-    onUploadImageToCDN().then((imgData) => {
-      const modifyData: newLocationType = {
-        ...data,
-        images: data.images.map((fi) => {
-          if (fi.image.includes('blob:')) {
-            const suitableName = imgData?.locationImages?.find(
-              (img) =>
-                img.path.slice(img.path.lastIndexOf('/') + 1) ===
-                additionLocationImages.current.find(
-                  (ai) => ai.blobUrl === fi.image
-                )?.file.name
-            );
-            if (!suitableName) {
-              showError('Lỗi thay đổi hình ảnh địa điểm');
-              return fi;
+    if (
+      addressData.city === '' ||
+      addressData.district === '' ||
+      addressData.ward === ''
+    ) {
+      showError('Bạn chưa chọn đủ thông tin địa điểm');
+    } else {
+      // UPLOAD TO CDN
+      onUploadImageToCDN().then((imgData) => {
+        const modifyData: newLocationType = {
+          ...data,
+          images: data.images.map((fi) => {
+            if (fi.image.includes('blob:')) {
+              const suitableName = imgData?.locationImages?.find(
+                (img) =>
+                  img.path.slice(img.path.lastIndexOf('/') + 1) ===
+                  additionLocationImages.current.find(
+                    (ai) => ai.blobUrl === fi.image
+                  )?.file.name
+              );
+              if (!suitableName) {
+                showError('Lỗi thay đổi hình ảnh địa điểm');
+                return fi;
+              } else {
+                return {
+                  image: suitableName.path,
+                };
+              }
             } else {
-              return {
-                image: suitableName.path,
-              };
+              return fi;
             }
-          } else {
-            return fi;
-          }
-        }),
-      };
-      onCreateNewAd({
-        ...modifyData,
-        adsBoard: [],
-        isEmpty: true,
-      })
-        .then((msg) => {
-          showSuccess(msg);
-          router.push(HQ_PAGES.AD_LOCATIONS);
+          }),
+        };
+        onCreateNewAd({
+          ...modifyData,
+          address: `${modifyData.address}, ${addressData.ward}, ${addressData.district}, ${addressData.city}`,
+          adsBoard: [],
+          isEmpty: true,
         })
-        .catch((error) => showError(error.message))
-        .finally(() => {
-          Object.keys(modifyData).forEach((key) =>
-            setValue(
-              key as keyof newLocationType,
-              modifyData[key as keyof newLocationType]
-            )
-          );
-          additionAdsBoardImages.current = [];
-          additionLocationImages.current = [];
-        });
-    });
+          .then((msg) => {
+            showSuccess(msg);
+            router.push(HQ_PAGES.AD_LOCATIONS);
+            router.refresh();
+          })
+          .catch((error) => showError(error.message))
+          .finally(() => {
+            Object.keys(modifyData).forEach((key) =>
+              setValue(
+                key as keyof newLocationType,
+                modifyData[key as keyof newLocationType]
+              )
+            );
+            additionAdsBoardImages.current = [];
+            additionLocationImages.current = [];
+          });
+      });
+    }
   };
   const handleDeleteLocationImage = (image: string) => {
     setValue(
@@ -185,26 +224,44 @@ function NewAdLocation({
     >
       <div className="grid gap-6 border-solid border-b-[1px] border-b-zinc-300 pb-5 mb-5">
         <div className="col-span-1 col-start-1 row-start-1 w-full">
-          <div className="flex flex-row justify-start items-center mb-2 w-full">
+          <div className="flex flex-row justify-start items-start mb-2 w-full">
             <h5 className="font-semibold text-sm whitespace-nowrap">
               <i className="fi fi-sr-map-marker-home mr-2"></i>
               Địa điểm:
             </h5>
-            <div className="border-solid border-[1px] border-zinc-400 rounded overflow-hidden w-full h-8 ml-4">
-              <Controller
-                name="address"
-                control={control}
-                disabled={isLoading || isUploading}
-                render={({ field }) => (
-                  <input
-                    type="text"
-                    id="address-ad-location"
-                    placeholder="Example: 397 Williams ShoalSouth Warren"
-                    {...field}
-                    className="disabled:cursor-not-allowed w-full h-full px-4 outline-none text-ellipsis text-xs"
-                  />
-                )}
-              />
+            <div className="w-full h-fit ml-4">
+              <div className="border-solid border-[1px] border-zinc-400 rounded overflow-hidden w-full h-8 mb-2">
+                <Controller
+                  name="address"
+                  control={control}
+                  disabled={isLoading || isUploading}
+                  render={({ field }) => (
+                    <input
+                      type="text"
+                      id="address-ad-location"
+                      placeholder="Số nhà, đường, hẻm, ..."
+                      {...field}
+                      className="disabled:cursor-not-allowed w-full h-full px-4 outline-none text-ellipsis text-xs"
+                    />
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-2 h-16">
+                <DistrictSelect onChange={setAddressData} />
+                {/* <select
+                  name="ls_province"
+                  className="h-full outline col-span-1 text-[0.65rem] font-medium outline-none rounded bg-transparent px-2 border border-solid border-zinc-400"
+                ></select>
+                <select
+                  name="ls_district"
+                  className="col-span-1 text-[0.65rem] font-medium outline-none rounded bg-transparent px-2 border border-solid border-zinc-400"
+                ></select>
+                <select
+                  name="ls_ward"
+                  className="col-span-2 text-[0.65rem] font-medium outline-none rounded bg-transparent px-2 border border-solid border-zinc-400"
+                ></select> */}
+              </div>
             </div>
           </div>
 
@@ -302,7 +359,7 @@ function NewAdLocation({
                   loading={isLoading || isUploading}
                   onClick={() => {
                     enableSelecting();
-                    openMap();
+                    openMap(getValues().latitude, getValues().longitude);
                   }}
                 >
                   Chọn trên bản đồ

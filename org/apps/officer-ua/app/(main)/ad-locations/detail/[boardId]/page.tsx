@@ -1,13 +1,13 @@
 import { AdsService } from '@business-layer/services';
 import DisplayAdDetail from '@presentational/organisms/DisplayAdDetail';
 import Breadcrumbs from '@presentational/molecules/Breadcrumbs';
-import Link from 'next/link';
 import { IBreadcrumb } from '@business-layer/services/entities';
 import { OFFICER_PAGES } from '@constants/officerPages';
 import { cookies } from 'next/headers';
 import { getCustomAccessTokenKey } from '@business-layer/business-logic/helper/customKey';
 import { getHostname } from '../../../../../helper/hostname';
 import EmptyIcon from '@presentational/atoms/EmptyIcon';
+import EditBtn from './editBtn';
 
 const officerService = new AdsService();
 async function getAdLocationDetail(boardId: number) {
@@ -57,20 +57,17 @@ async function AdBoards({ params }: { params: { boardId: string } }) {
               </h1>
               <Breadcrumbs bcList={breadcrumbsData} />
             </div>
-            <Link
-              href={OFFICER_PAGES.AD_LOCATION_DETAIL + `/edit/${adData.id}`}
-              className="px-4 py-2 rounded text-[0.65rem] font-semibold text-white bg-green-600 hover:bg-green-500 transition-colors"
-            >
-              <i className="fi fi-ss-file-edit mr-2"></i>
-              Chỉnh sửa
-            </Link>
+            <EditBtn id={adData.id} />
           </div>
           <DisplayAdDetail adData={adData} />
         </>
       ) : (
         <div className="grid place-items-center w-full h-[calc(100vh-120px)]">
           <div className="w-fit h-fit">
-            <EmptyIcon customSize={100} label="Không tìm thấy thông tin cho điểm quảng cáo này" />
+            <EmptyIcon
+              customSize={100}
+              label="Không tìm thấy thông tin cho điểm quảng cáo này"
+            />
           </div>
         </div>
       )}

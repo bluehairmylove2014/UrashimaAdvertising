@@ -8,8 +8,8 @@ import CustomButton from '@presentational/atoms/CustomButton';
 type selectAdLocationPopupParamsType = {
   isActive: boolean;
   handleClose: () => void;
-  adsFormOptions: modernSelectOptionType[];
-  locationTypeOptions: modernSelectOptionType[];
+  adsFormOptions: modernSelectOptionType[] | null;
+  locationTypeOptions: modernSelectOptionType[] | null;
   handleSelect: (adLocationData: IAdLocation) => void;
 };
 function SelectAdLocationPopup({

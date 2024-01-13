@@ -75,7 +75,6 @@ function ApprovesList({
 
   useEffect(() => {
     if (Array.isArray(approvesData)) {
-      console.log(approvesData)
       setPaginationData({
         currentPage: START_PAGE,
         maxPage: calculateMaxPage(approvesData, MAX_ELEMENT_PER_PAGE),
