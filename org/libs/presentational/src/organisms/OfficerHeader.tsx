@@ -1,7 +1,8 @@
 'use client';
+import useGetMessage from '@business-layer/business-logic/realtime/hooks/useGetMessage';
 import { OFFICER_PAGES } from '@constants/officerPages';
-import BellButton from '@presentational/atoms/BellButton';
 import { useNavigateLoader } from '@presentational/atoms/NavigateLoader';
+import Notification from '@presentational/molecules/Notification';
 import OfficerNavLogoutBtn from '@presentational/atoms/OfficerNavLogoutBtn';
 import OfficerNavAvatar from '@presentational/molecules/OfficerNavAvatar';
 import OfficerNavDropdown from '@presentational/molecules/OfficerNavDropdown';
@@ -19,6 +20,7 @@ function OfficerHeader() {
     useState<boolean>(true);
   const [isPersonalPageNeedLoader, setIsPersonalPageNeedLoader] =
     useState<boolean>(true);
+  const messages = useGetMessage();
 
   const [approveOptions, setApproveOptions] = useState([
     {
@@ -83,11 +85,12 @@ function OfficerHeader() {
       })
     );
   }, [pathName]);
+
   return (
     <header className="flex flex-row items-center justify-between bg-indigo-950 w-full h-12 px-4 sticky top-0 z-20">
       <nav>
         <ul className="flex flex-row items-center justify-start gap-5">
-          <Link href={OFFICER_PAGES.DASHBOARD}>
+          <Link href={OFFICER_PAGES.DASHBOARD} onClick={() => showLoader()}>
             <Image
               src={'/assets/images/logo/white.png'}
               alt="Urashima Ads"
@@ -144,9 +147,9 @@ function OfficerHeader() {
       </nav>
       <div className="flex flex-row justify-end items-center gap-4 hover">
         <OfficerNavAvatar isNeedLoader={isPersonalPageNeedLoader} />
-        <BellButton />
         <OfficerNavLogoutBtn />
       </div>
+      <Notification messages={messages} />
     </header>
   );
 }

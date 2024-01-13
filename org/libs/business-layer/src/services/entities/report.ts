@@ -37,5 +37,5 @@ export interface IOfficerReportDetail extends IOfficerReport {
 
   adsPoint?: IAdLocation;
 
-  Location?: Pick<IAdLocation, 'id' | 'longitude' | 'latitude' | 'address'>;
+  location?: Pick<IAdLocation, 'id' | 'longitude' | 'latitude' | 'address'>;
 }

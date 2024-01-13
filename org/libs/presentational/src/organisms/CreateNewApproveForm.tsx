@@ -50,8 +50,8 @@ function CreateNewApproveForm({
   adsFormOptions,
   locationTypeOptions,
 }: {
-  adsFormOptions: modernSelectOptionType[];
-  locationTypeOptions: modernSelectOptionType[];
+  adsFormOptions: modernSelectOptionType[] | null;
+  locationTypeOptions: modernSelectOptionType[] | null;
 }) {
   const router = useRouter();
   const [adBoardImage, setAdBoardImage] = useState<File | null>(null);
@@ -312,7 +312,7 @@ function CreateNewApproveForm({
           />
         </div>
 
-        <div className="shadow-sm  overflow-x-auto overflow-x-hidden rounded-md col-span-4">
+        <div className="shadow-sm overflow-x-auto rounded-md col-span-4">
           <table className="w-full table-auto text-xs text-center border-collapse border">
             <thead className="bg-indigo-950 text-white font-semibold">
               <tr>
@@ -392,7 +392,7 @@ function CreateNewApproveForm({
                   </span>
                 </td>
                 <td className="border-r border-zinc-400 p-3 flex flex-col justify-center items-center">
-                  <div className="w-auto h-8">
+                  <div className="w-auto h-8 z-40 relative">
                     <ModernSelect
                       onOptionSelect={(
                         selectedOption: modernSelectOptionType
@@ -413,14 +413,14 @@ function CreateNewApproveForm({
                           : null
                       }
                       style="clean"
-                      // disabled={isLoading || isUploading}
+                      disabled={isCreatingRequest || isUploading}
                     />
                   </div>
 
                   <input
                     type="number"
                     placeholder="Chiều rộng (m)"
-                    // disabled={isLoading || isUploading}
+                    disabled={isCreatingRequest || isUploading}
                     onChange={(e) => {
                       setAdBoardInfo({
                         ...adBoardInfo,
@@ -433,7 +433,7 @@ function CreateNewApproveForm({
                   <input
                     type="number"
                     placeholder="Chiều cao (m)"
-                    // disabled={isLoading || isUploading}
+                    disabled={isCreatingRequest || isUploading}
                     onChange={(e) => {
                       setAdBoardInfo({
                         ...adBoardInfo,

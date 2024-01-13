@@ -35,6 +35,7 @@ const getAllAdModificationRequestResponseSchema = z.array(
     images: z.array(z.object({ image: z.string() })),
     adsBoard: z.array(adBoardSchema),
     adsPointId: z.number(),
+    requestStatus: z.string(),
     modifyTime: z.string(),
     reasons: z.string(),
   })

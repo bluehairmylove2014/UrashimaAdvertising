@@ -24,8 +24,8 @@ import PreviewImage from '@presentational/atoms/PreviewImage';
 import { useUpload } from '@business-layer/business-logic/lib/sirv';
 import { getCurrentDateTime } from '@utils/helpers';
 import { renameImageWithUniqueName } from '@utils/helpers/imageName';
-import FriendlyCaptcha from '@presentational/atoms/FriendlyCaptcha';
 import QuillEditor from '@presentational/atoms/QuillEditor';
+import useFriendlyCaptcha from '@presentational/atoms/FriendlyCaptcha';
 
 const PREVIEW_HEIGHT = 80;
 const reportsType = [
@@ -73,6 +73,9 @@ function ReportForm({
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [isVerified, setIsVerified] = useState<boolean>(false);
   const quillRef = useRef<HTMLDivElement>(null);
+  const { CaptchaWidget, getIsSolution } = useFriendlyCaptcha({
+    onSuccessVerify: () => setIsVerified(true),
+  });
 
   // Methods
   const getReportFunc = (target: reportTargetType) => {
@@ -94,7 +97,8 @@ function ReportForm({
       setSelectedReportType(null);
       setIsVerified(false);
     }
-  }, [isActive, reset]);
+    isActive && setIsVerified(getIsSolution());
+  }, [isActive]);
 
   const handleReport = (data: any) => {
     // SEND REPORT FORM TO SERVER
@@ -109,6 +113,10 @@ function ReportForm({
           reset();
           setImagesPreview(null);
           setSelectedReportType(null);
+          const quillEditor = quillRef.current?.querySelector('.ql-editor');
+          if (quillEditor) {
+            quillEditor.innerHTML = '';
+          }
         })
         .catch((error) => showError(error.message))
         .finally(() => {
@@ -185,8 +193,9 @@ function ReportForm({
 
   return (
     <div
-      className={`${isActive ? 'block' : 'hidden'
-        } fixed w-screen h-screen top-0 left-0 bg-black/60 p-6 rounded-md z-30 grid place-items-center`}
+      className={`${
+        isActive ? 'block' : 'hidden'
+      } fixed w-screen h-screen top-0 left-0 bg-black/60 p-6 rounded-md z-30 grid place-items-center`}
     >
       <form
         onSubmit={handleSubmit(onSuccessSubmit, showReactHookFormError)}
@@ -240,10 +249,11 @@ function ReportForm({
           {reportsType.map((r) => (
             <button
               key={r}
-              className={`text-[0.6rem] font-medium ${selectedReportType === r
-                ? 'bg-cyan-400'
-                : 'bg-cyan-100 hover:bg-cyan-200'
-                } transition-colors rounded-lg px-3 py-2 whitespace-nowrap disabled:cursor-not-allowed`}
+              className={`text-[0.6rem] font-medium ${
+                selectedReportType === r
+                  ? 'bg-cyan-400'
+                  : 'bg-cyan-100 hover:bg-cyan-200'
+              } transition-colors rounded-lg px-3 py-2 whitespace-nowrap disabled:cursor-not-allowed`}
               type="button"
               onClick={() => onSelectReportType(r)}
               disabled={isReportingAd || isReportingLocation || isUploading}
@@ -281,7 +291,7 @@ function ReportForm({
           )}
         </div>
         <hr />
-        <FriendlyCaptcha onSuccessVerify={() => setIsVerified(true)} />
+        {CaptchaWidget}
 
         {isVerified ? (
           <CustomButton

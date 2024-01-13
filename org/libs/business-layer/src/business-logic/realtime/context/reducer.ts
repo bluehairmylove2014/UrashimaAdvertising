@@ -11,6 +11,11 @@ export const realtimeReducer = (
           ...state,
           socket: action.payload,
         };
+      case 'SET_MESSAGE':
+        return {
+          ...state,
+          message: action.payload,
+        };
       default:
         return state;
     }

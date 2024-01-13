@@ -72,7 +72,7 @@ function DistrictManagement() {
       });
       Promise.all(promises)
         .then((msg) => {
-          showSuccess("Xoá quận thành công");
+          showSuccess('Xoá quận thành công');
         })
         .catch((error) => {
           showError(error.message);
@@ -151,7 +151,6 @@ function DistrictManagement() {
           formBoxRefs.current.push(React.createRef<HTMLDivElement>());
         });
       }
-      console.log(districts);
     }
   }, [regionsData]);
 
@@ -162,6 +161,28 @@ function DistrictManagement() {
       toggleClass(formBoxRef.current, 'activeHQFormBox');
     }
   };
+
+  useEffect(() => {
+    const handleClickOutsideButton = (event: MouseEvent) => {
+      const button = event.target as HTMLElement;
+
+      // Check if the clicked element is not the button or the toggle
+      if (
+        !button.closest('.my-button-district-class') &&
+        !button.closest('.my-toggle-class')
+      ) {
+        setSelectedDistrict(null);
+      }
+    };
+
+    // Add event listener on mount
+    document.addEventListener('click', handleClickOutsideButton);
+
+    // Remove event listener on unmount
+    return () => {
+      document.removeEventListener('click', handleClickOutsideButton);
+    };
+  }, []);
 
   return (
     <div className="w-[65%]">
@@ -198,7 +219,7 @@ function DistrictManagement() {
                     selectedDistrict === r
                       ? 'bg-rose-500  text-white'
                       : 'bg-rose-100 text-black hover:bg-rose-500 hover:text-white'
-                  } transition-colors rounded-lg  font-semibold text-start  whitespace-nowrap px-2 py-2 w-full disabled:cursor-not-allowed`}
+                  } transition-colors rounded-lg  font-semibold text-start  whitespace-nowrap px-2 py-2 w-full disabled:cursor-not-allowed my-button-district-class`}
                   type="button"
                   onClick={() => {
                     onSelectDistrict(r, index);
@@ -212,33 +233,36 @@ function DistrictManagement() {
           {/* Handle Ward Management */}
           {Object.keys(districts).map((district, indexDis) => (
             <div
-              className={`bg-rose-100 overflow-auto rounded shadow-[-10px_0px_25px_-15px_rgba(0,0,0,0.1)] p-6 fixed top-0 right-0 w-0 opacity-0 pointer-events-none invisible transition-all z-30 h-screen`}
+              className={`my-toggle-class bg-rose-100 overflow-auto rounded shadow-[-10px_0px_25px_-15px_rgba(0,0,0,0.1)] p-6 fixed top-0 right-0 w-0 opacity-0 pointer-events-none invisible transition-all z-30 h-screen`}
               ref={formBoxRefs.current[indexDis]}
               key={indexDis}
             >
               <h4 className="text-black mb-4 text-center">Danh sách phường</h4>
               <div className="mb-3">
                 {selectedDistrict ? (
-                  districts[selectedDistrict].map((d, index) => (
-                    <div
-                      key={`${index}`}
-                      className="mb-2 w-full rounded flex flex-row justify-between items-center gap-4 bg-white pr-3 pl-4 py-2 shadow"
-                    >
-                      <p className="text-xs font-medium line-clamp-1 flex-shrink max-w-[80%]">
-                        {d}
-                      </p>
-
-                      {/* Button delete ward */}
-                      <button
-                        onClick={() => {
-                          showDeleteWardPopup(d);
-                        }}
-                        className="text-white text-[0.5rem] rounded bg-rose-600 hover:bg-red-400 transition-colors w-5 h-5 max-w-[1.25rem] flex-grow"
+                  districts[selectedDistrict] ? (
+                    districts[selectedDistrict].map((d, index) => (
+                      <div
+                        key={`${index}`}
+                        className="mb-2 w-full rounded flex flex-row justify-between items-center gap-4 bg-white pr-3 pl-4 py-2 shadow"
                       >
-                        <i className="fi fi-ss-trash"></i>
-                      </button>
-                    </div>
-                  ))
+                        <p className="text-xs font-medium line-clamp-1 flex-shrink max-w-[80%]">
+                          {d}
+                        </p>
+                        {/* Button delete ward */}
+                        <button
+                          onClick={() => {
+                            showDeleteWardPopup(d);
+                          }}
+                          className="text-white text-[0.5rem] rounded bg-rose-600 hover:bg-red-400 transition-colors w-5 h-5 max-w-[1.25rem] flex-grow"
+                        >
+                          <i className="fi fi-ss-trash"></i>
+                        </button>
+                      </div>
+                    ))
+                  ) : (
+                    <></>
+                  )
                 ) : (
                   <CommonLoader />
                 )}

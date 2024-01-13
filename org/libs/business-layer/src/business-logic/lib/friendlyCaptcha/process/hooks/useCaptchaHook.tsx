@@ -170,6 +170,12 @@ function useCaptchaHook({
     customWidgetStyle?: CustomWidgetStyle
   ) => ReactElement;
   captchaStatus: CaptchaStatus;
+  setCaptchaStatus: React.Dispatch<
+    React.SetStateAction<{
+      solution: string | null;
+      error: FriendlyServerErrorResponse | null;
+    }>
+  >;
 } {
   const [captchaStatus, setCaptchaStatus] = useState<{
     solution: string | null;
@@ -217,6 +223,7 @@ function useCaptchaHook({
       );
     },
     captchaStatus,
+    setCaptchaStatus,
   };
 }
 
