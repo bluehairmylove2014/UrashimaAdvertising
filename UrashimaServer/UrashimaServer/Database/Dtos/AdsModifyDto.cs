@@ -8,11 +8,8 @@ namespace UrashimaServer.Database.Dtos
     {
         [Required]
         public int Id { get; set; }
-        [Required]
         public int AdsPointId { get; set; }
-        [Range(-90, 90)]
         public double Longitude { get; set; }
-        [Range(-180, 180)]
         public double Latitude { get; set; }
         public string Address { get; set; } = string.Empty;
         public string LocationType { get; set; } = string.Empty;
@@ -21,6 +18,7 @@ namespace UrashimaServer.Database.Dtos
         public bool IsEmpty { get; set; }
         public DateTime ModifyTime { get; set; }
         public string Reasons { get; set; } = string.Empty;
+        public string RequestStatus { get; set; } = string.Empty;
         public ICollection<PointModifyImageDto>? Images { get; set; }
         public ICollection<BoardModifyDto>? AdsBoard { get; set; }
     }

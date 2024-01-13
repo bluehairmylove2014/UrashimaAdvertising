@@ -222,6 +222,8 @@ namespace UrashimaServer.Controllers.Ward
             result.AdsPointId = result.Id;
             result.Id = 0;
             result.ModifyTime = DateTime.Now;
+            result.RequestStatus = RequestConstant.Inprogress;
+
             if (result.Images != null)
             {
                 foreach (var item in result.Images)
@@ -266,10 +268,20 @@ namespace UrashimaServer.Controllers.Ward
                 });
             }
 
-            _context.PointModifyImages.RemoveRange(pointToRemove.Images!);
-            _context.BoardModifies.RemoveRange(pointToRemove.AdsBoard!);
-            _context.PointModifies.Remove(pointToRemove);
-            await _context.SaveChangesAsync();
+            if (pointToRemove.RequestStatus.Equals(RequestConstant.Inprogress) 
+                || pointToRemove.RequestStatus.Equals(RequestConstant.Rejected))
+            {
+                _context.PointModifyImages.RemoveRange(pointToRemove.Images!);
+                _context.BoardModifies.RemoveRange(pointToRemove.AdsBoard!);
+                _context.PointModifies.Remove(pointToRemove);
+                await _context.SaveChangesAsync();
+            } else
+            {
+                return BadRequest(new
+                {
+                    message = $"Không thể xóa yêu cầu chỉnh sửa 'Đã được chấp thuận' có id={id}."
+                });
+            }
 
             return Ok(new
             {

@@ -327,8 +327,7 @@ namespace UrashimaServer.Controllers
             }
 
             updatedItem.TreatmentProcess = updateReport.TreatmentProcess;
-            updatedItem.ReportStatus = updateReport.ReportStatus;
-            //updatedItem.ReportStatus = !updateReport.TreatmentProcess.IsNullOrEmpty();
+            updatedItem.ReportStatus = !(string.IsNullOrEmpty(updateReport.TreatmentProcess));
 
             await _context.SaveChangesAsync();
 

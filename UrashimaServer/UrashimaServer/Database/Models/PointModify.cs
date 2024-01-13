@@ -17,6 +17,7 @@ namespace UrashimaServer.Database.Models
         public bool Planned { get; set; }
         public DateTime ModifyTime { get; set; }
         public string Reasons { get; set; } = string.Empty;
+        public string RequestStatus { get; set; } = string.Empty;
         public ICollection<PointModifyImage>? Images { get; set; }
         public ICollection<BoardModify>? AdsBoard { get; set; }
     }

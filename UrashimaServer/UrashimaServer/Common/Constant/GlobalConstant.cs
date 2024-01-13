@@ -21,6 +21,7 @@
     {
         private static readonly List<string> Globals = new()
         {
+            "https://urashima-ads.azurewebsites.net",
             "https://localhost:7053",
             "https://localhost:3000"
         };
@@ -51,11 +52,12 @@
         public const string Accepted = "accepted";
         public const string Rejected = "rejected";
         public const string Inprogress = "inprocess";
-    }
 
-    public static class ModifyRequestConstant
-    {
-        public const string Approve = "approve";
-        public const string Deny = "deny";
+        public static readonly List<string> Status = new()
+        {
+            Accepted,
+            Rejected,
+            Inprogress
+        };
     }
 }

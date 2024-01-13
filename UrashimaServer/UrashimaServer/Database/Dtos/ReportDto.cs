@@ -27,9 +27,7 @@ namespace UrashimaServer.Database.Dtos
 
     public class PostReportLocationDto
     {
-        [Range(-90, 90)]
         public double Latitude { get; set; }
-        [Range(-180, 180)]
         public double Longitude { get; set; }
         public string ReportType { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;

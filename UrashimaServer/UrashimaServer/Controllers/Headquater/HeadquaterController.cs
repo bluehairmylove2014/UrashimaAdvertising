@@ -197,15 +197,14 @@ namespace UrashimaServer.Controllers.Headquater
                     message = "Không thể tìm được yêu cầu thay đổi dựa trên id đã cung cấp."
                 });
             }
-             
-            if (!isModify.Status.Equals(ModifyRequestConstant.Approve)
-                && !isModify.Status.Equals(ModifyRequestConstant.Deny))
+
+            if (!RequestConstant.Status.Contains(isModify.Status))
             {
                 return BadRequest(new
                 {
                     message = $"Trạng thái thay đổi:\'{isModify.Status}\' không hỗ trợ."
                 });
-            } else if (isModify.Status.Equals(ModifyRequestConstant.Approve))
+            } else if (isModify.Status.Equals(RequestConstant.Accepted))
             {
                 // Point
                 var pointToModify = await _context.AdsPoints.FindAsync(modifyData.AdsPointId);
@@ -252,13 +251,10 @@ namespace UrashimaServer.Controllers.Headquater
                 }
             }
 
-            _context.BoardModifies.RemoveRange(modifyData.AdsBoard!);
-            _context.PointModifyImages.RemoveRange(modifyData.Images!);
-            _context.PointModifies.Remove(modifyData);
-
+            modifyData.RequestStatus = isModify.Status;
             await _context.SaveChangesAsync();
 
-            if (isModify.Status.Equals(ModifyRequestConstant.Deny))
+            if (isModify.Status.Equals(RequestConstant.Rejected))
             {
                 return Ok(new
                 {
@@ -288,15 +284,14 @@ namespace UrashimaServer.Controllers.Headquater
                 });
             }
 
-            if (isCreated.Status.Equals(RequestConstant.Rejected))
+            if (!RequestConstant.Status.Contains(isCreated.Status))
             {
-                var boardToRemove = _context.AdsBoards.Where(board => board.AdsCreateRequestId == createRequest.Id);
-                _context.AdsBoards.RemoveRange(boardToRemove);
-                _context.AdsCreationRequests.Remove(createRequest);
-            } else
-            {
-                createRequest.RequestStatus = isCreated.Status;
+                return BadRequest(new
+                {
+                    message = $"Trạng thái của Request không hợp lệ: '{isCreated.Status}'."
+                });
             }
+            createRequest.RequestStatus = isCreated.Status;
             await _context.SaveChangesAsync();
 
             return Ok(new
