@@ -1,12 +1,16 @@
-import 'tailwindcss/tailwind.css';
+'use client';
 import AdLocationsTable from '@presentational/organisms/AdLocationsTable';
 import { IBreadcrumb } from '@business-layer/services/entities';
 import Breadcrumbs from '@presentational/molecules/Breadcrumbs';
 import { OFFICER_PAGES } from '@constants/officerPages';
 import LocationTableFilterSelect from '@presentational/molecules/LocationTableFilterSelect';
-import { ADS_FORM } from '../../../constants/adsForm';
-import { LOCATION_TYPES } from '../../../constants/locationTypes';
 import LocationTableSearchBox from '@presentational/molecules/LocationTableSearchBox';
+import {
+  useAdFormSettings,
+  useLocationSettings,
+} from '@business-layer/business-logic/lib/setting';
+import { useEffect, useState } from 'react';
+import { modernSelectOptionType } from '@presentational/atoms/ModernSelect';
 
 const breadcrumbsData: IBreadcrumb[] = [
   {
@@ -22,6 +26,49 @@ const breadcrumbsData: IBreadcrumb[] = [
 ];
 
 function AdLocations() {
+  const { onGetAdFormSetting } = useAdFormSettings();
+  const { onGetLocationSetting } = useLocationSettings();
+  const [adForms, setAdForms] = useState<modernSelectOptionType[] | null>(null);
+  const [locationTypes, setLocationTypes] = useState<
+    modernSelectOptionType[] | null
+  >(null);
+
+  useEffect(() => {
+    onGetAdFormSetting()
+      .then((data) => {
+        setAdForms([
+          {
+            name: 'Tất cả hình thức',
+            value: null,
+            defaultChecked: true,
+          },
+          ...data.map((d) => ({
+            name: d.name,
+            value: d.name,
+            defaultChecked: false,
+          })),
+        ]);
+      })
+      .catch((error) => console.error(error));
+    onGetLocationSetting()
+      .then((data) => {
+        setLocationTypes([
+          {
+            name: 'Tất cả loại địa điểm',
+            value: null,
+            defaultChecked: true,
+          },
+          ...data.map((d) => ({
+            name: d.name,
+            value: d.name,
+            defaultChecked: false,
+          })),
+        ]);
+      })
+      .catch((error) => console.error(error));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="flex flex-col items-start justify-start mb-8">
@@ -33,10 +80,15 @@ function AdLocations() {
       <div className="flex flex-row gap-4 justify-between mb-8 w-full">
         <LocationTableSearchBox />
         <div className="flex flex-row justify-end flex-grow gap-2">
-          <LocationTableFilterSelect type="adsForm" options={ADS_FORM} />
+          <LocationTableFilterSelect
+            type="adsForm"
+            options={adForms}
+            defaultValue={'Tất cả hình thức'}
+          />
           <LocationTableFilterSelect
             type="locationType"
-            options={LOCATION_TYPES}
+            options={locationTypes}
+            defaultValue={'Tất cả loại địa điểm'}
           />
         </div>
       </div>

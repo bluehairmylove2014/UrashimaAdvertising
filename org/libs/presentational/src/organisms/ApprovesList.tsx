@@ -6,8 +6,6 @@ import Pagination from '@presentational/molecules/Pagination';
 import {
   calculateMaxPage,
   formatDate,
-  getCurrentDateTime,
-  isDateGreaterThan,
   slicePaginationData,
 } from '@utils/helpers';
 import { useEffect, useRef, useState } from 'react';
@@ -52,7 +50,6 @@ function ApprovesList({
   timeFilterOptions: modernSelectOptionType[];
   requestStatusFilterOptions: modernSelectOptionType[];
 }) {
-  const currentDate = getCurrentDateTime();
   const router = useRouter();
   const { setPaginationData } = useSetPaginationData();
   const paginationData = useGetPagination();
@@ -60,11 +57,12 @@ function ApprovesList({
   const { filterByRequestStatus, filterBySearchKey, filterByTime } =
     useHandleFilterApprove();
   const { onDeleteApproveRequest } = useDeleteApproveRequest();
-  const { onApproveAdModificationRequest, isLoading } =
-    useApproveAdModificationRequest();
+  const { onApproveAdModificationRequest } = useApproveAdModificationRequest();
 
-  const [isShowingPopupDelete, setIsShowingPopupDelete] = useState<boolean>(false);
-  const [isShowingPopupApprove, setIsShowingPopupApprove] = useState<boolean>(false);
+  const [isShowingPopupDelete, setIsShowingPopupDelete] =
+    useState<boolean>(false);
+  const [isShowingPopupApprove, setIsShowingPopupApprove] =
+    useState<boolean>(false);
 
   const needDeletedRequestId = useRef<number | null>(null);
   const needApproveRequestId = useRef<number | null>(null);
@@ -128,7 +126,7 @@ function ApprovesList({
     if (result && needApproveRequestId.current) {
       onApproveAdModificationRequest({
         id: needApproveRequestId.current,
-        status: MODIFICATION_REQUEST_STATUS_LIST.APPROVE
+        status: MODIFICATION_REQUEST_STATUS_LIST.APPROVE,
       })
         .then((msg) => {
           showSuccess(msg);
@@ -200,7 +198,7 @@ function ApprovesList({
                 ).map((approve, index) => (
                   <tr
                     className="py-4 even:bg-gray-100"
-                    key={`adLocation@${approve.id}`}
+                    key={`adLocation@${approve.id}@${index}`}
                   >
                     <TableRow
                       multiRowColumn={3}
@@ -263,7 +261,8 @@ function ApprovesList({
                             shape="square"
                             callback={() => {
                               router.push(
-                                OFFICER_PAGES.APPROVE_DETAIL + `/${approve.id}`
+                                OFFICER_PAGES.APPROVE_DETAIL +
+                                  `?id=${approve.id}`
                               );
                             }}
                           >
@@ -290,7 +289,6 @@ function ApprovesList({
                               >
                                 <i className="fi fi-ss-trash text-red-600 text-sm hover:text-red-400 transition-colors"></i>
                               </IconButton>
-
                             </>
                           ) : (
                             <></>
@@ -324,7 +322,6 @@ function ApprovesList({
           onResult={handleApproveRequest}
           isActive={isShowingPopupApprove}
         />
-
       </div>
     </>
   );

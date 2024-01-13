@@ -12,29 +12,39 @@ import {
 } from '@business-layer/business-logic/lib/report';
 import { useRouter } from 'next/navigation';
 import { OFFICER_PAGES } from '@constants/officerPages';
+import { useNavigateLoader } from '@presentational/atoms/NavigateLoader';
+import { IOfficerReport } from '@business-layer/services/entities';
+import { useEffect } from 'react';
 
 function DetailAdsPoint({
   detailAdsPoint,
   isOfficer,
+  isHQ,
+  listReport,
   onClick,
   handleClose,
   handleDetailReport,
+  handleListReport,
 }: {
   detailAdsPoint: IAdLocationDetail;
   isOfficer: boolean;
+  isHQ: boolean;
+  listReport: IOfficerReport[] | undefined;
   onClick: (id: number) => void;
   handleClose: () => void;
   handleDetailReport: () => void;
+  handleListReport: () => void;
 }) {
   const { setForm } = useSetReportForm();
   const router = useRouter();
 
   const adsReportList = useGetAdReports();
   const adsPointReportList = useGetLocationReports();
+  const { showLoader } = useNavigateLoader();
 
   return (
     <div
-      className="h-[100vh] w-[25%] absolute shadow-md min-w-[45vh] z-40"
+      className={` w-[25%] absolute shadow-md min-w-[45vh] z-40 ${isOfficer ? "h-[calc(100vh-60px)]" : "h-[100vh]"}`}
       style={{ left: 0, top: 0 }}
     >
       <div className="h-[100%] w-[100%] bg-white relative overflow-y-scroll scrollbar">
@@ -70,21 +80,32 @@ function DetailAdsPoint({
         </Carousel>
 
         {/* two button for adspoint */}
-        {isOfficer ? (
-          <>
-            <div className="my-4 mx-5">
+        {isOfficer || isHQ ? (
+          <div className="my-4 mx-5 flex">
+            <button
+              className="bg-green-600 text-white rounded px-[0.45rem] py-2 font-semibold hover:bg-green-500 transition-colors"
+              onClick={() => {
+                router.push(
+                  OFFICER_PAGES.AD_LOCATION_DETAIL + `/${detailAdsPoint.id}`
+                );
+                showLoader();
+              }}
+            >
+              <i className="fi fi-ss-file-edit mr-1"></i>
+              <span className="text-[0.7rem]">Chỉnh sửa</span>
+            </button>
+            {Array.isArray(listReport) ? (
               <button
-                className='bg-green-600 text-white rounded px-2 py-2 font-semibold hover:bg-green-500 transition-colors'
-                onClick={() => {
-                  router.push(
-                    (OFFICER_PAGES.ADS_BOARD) + `/edit/${detailAdsPoint.id}`
-                  );
-                }}>
-                <i className="fi fi-ss-file-edit mr-2"></i>
-                <span className="text-xs">Chỉnh sửa</span>
+                className="bg-rose-600 text-white rounded px-[0.45rem] py-2 font-semibold hover:bg-rose-500 transition-colors ml-2"
+                onClick={handleListReport}
+              >
+                <i className="fi fi-sr-hexagon-exclamation mr-1"></i>
+                <span className="text-[0.7rem]">Danh sách báo cáo</span>
               </button>
-            </div>
-          </>
+            ) : (
+              <></>
+            )}
+          </div>
         ) : (
           <>
             <div className="mt-4 mx-5">
@@ -249,7 +270,7 @@ function DetailAdsPoint({
                   <></>
                 ) : (
                   <>
-                    {isOfficer ? (
+                    {isOfficer || isHQ ? (
                       <></>
                     ) : (
                       <button

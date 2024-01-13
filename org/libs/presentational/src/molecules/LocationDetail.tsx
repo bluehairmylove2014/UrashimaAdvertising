@@ -11,12 +11,16 @@ function LocationDetail({
   locationData,
   isActive,
   handleClose,
-  isOfficer
+  isOfficer,
+  isSelecting,
+  onSelectLocation,
 }: {
   locationData: ILocation | undefined;
   isActive: boolean;
   handleClose: () => void;
-  isOfficer: boolean
+  isOfficer: boolean;
+  isSelecting?: boolean;
+  onSelectLocation?: (coord: { lat: number; long: number }) => void;
 }) {
   const {
     isReportFormActive,
@@ -38,8 +42,9 @@ function LocationDetail({
   return (
     <>
       <div
-        className={`fixed ${isActive ? 'bottom-6' : '-bottom-full'
-          } bg-white left-1/2 transform -translate-x-1/2 rounded shadow-sm transition-transform w-4/12 h-fit p-3`}
+        className={`fixed ${
+          isActive ? 'bottom-6' : '-bottom-full'
+        } bg-white left-1/2 transform -translate-x-1/2 rounded shadow-sm transition-transform w-4/12 h-fit p-3 z-40`}
         style={{ minHeight: '120px' }}
       >
         {locationData ? (
@@ -61,9 +66,9 @@ function LocationDetail({
                 <span>{locationData.latt}</span>,{' '}
                 <span>{locationData.longt}</span>
               </p>
-              {isOfficer ?
+              {isOfficer ? (
                 <></>
-                :
+              ) : (
                 <button
                   onClick={() =>
                     handleActivateReport(locationData.latt, locationData.longt)
@@ -71,9 +76,29 @@ function LocationDetail({
                   className="flex flex-nowrap justify-center py-1 px-3 rounded text-[0.6rem] text-red-500 border-solid border-[1px] border-red-500"
                 >
                   <i className="fi fi-ss-triangle-warning"></i>
-                  <span className="ml-2 whitespace-nowrap">Báo cáo vi phạm</span>
+                  <span className="ml-2 whitespace-nowrap">
+                    Báo cáo vi phạm
+                  </span>
                 </button>
-              }
+              )}
+              {isSelecting ? (
+                <button
+                  onClick={() => {
+                    onSelectLocation &&
+                      onSelectLocation({
+                        lat: locationData.latt,
+                        long: locationData.longt,
+                      });
+                  }}
+                  className="flex flex-nowrap justify-center py-1 px-3 rounded text-[0.6rem] text-white bg-green-500"
+                >
+                  <span className="ml-2 whitespace-nowrap">
+                    Chọn vị trí này
+                  </span>
+                </button>
+              ) : (
+                <></>
+              )}
             </div>
           </>
         ) : (

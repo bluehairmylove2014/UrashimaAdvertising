@@ -7,3 +7,4 @@ export * from './useGetAllAdModificationRequest';
 export * from './useApproveAdModificationRequest';
 export * from './useGetAllCreationRequest';
 export * from './useApproveAdCreationRequest';
+export * from './useDeleteModificationRequest';

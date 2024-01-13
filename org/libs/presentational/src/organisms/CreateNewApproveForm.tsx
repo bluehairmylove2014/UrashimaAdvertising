@@ -4,11 +4,17 @@ import CustomButton from '@presentational/atoms/CustomButton';
 import ImageInput from '@presentational/atoms/ImageInput';
 import { useNotification } from '@presentational/atoms/Notification';
 import PreviewImage from '@presentational/atoms/PreviewImage';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import SelectAdLocationPopup from './SelectAdLocationPopup';
-import { modernSelectOptionType } from '@presentational/atoms/ModernSelect';
-import { IAdLocation, IAdsBoard } from '@business-layer/services/entities';
+import ModernSelect, {
+  modernSelectOptionType,
+} from '@presentational/atoms/ModernSelect';
+import {
+  IAdLocation,
+  IAdsBoard,
+  ISetting,
+} from '@business-layer/services/entities';
 import { useGetOfficerAdDetail } from '@business-layer/business-logic/lib/officerAds/process/hooks';
 import { useCreateNewAdBoardApproveRequest } from '@business-layer/business-logic/lib/approve/process/hooks';
 import EmptyIcon from '@presentational/atoms/EmptyIcon';
@@ -27,6 +33,7 @@ import { useUpload } from '@business-layer/business-logic/lib/sirv';
 import { useRouter } from 'next/navigation';
 import { OFFICER_PAGES } from '@constants/officerPages';
 import { renameImageWithUniqueName } from '@utils/helpers/imageName';
+import { useAdBoardTypeSettings } from '@business-layer/business-logic/lib/setting';
 
 type createNewApproveFormType = Pick<
   IApproveBase,
@@ -43,12 +50,14 @@ function CreateNewApproveForm({
   adsFormOptions,
   locationTypeOptions,
 }: {
-  adsFormOptions: modernSelectOptionType[];
-  locationTypeOptions: modernSelectOptionType[];
+  adsFormOptions: modernSelectOptionType[] | null;
+  locationTypeOptions: modernSelectOptionType[] | null;
 }) {
   const router = useRouter();
   const [adBoardImage, setAdBoardImage] = useState<File | null>(null);
   const resolver = useYupValidationResolver(approveRequestFormSchema);
+  const [adBoardTypes, setAdBoardTypes] = useState<ISetting[] | null>(null);
+  const { onGetAdBoardTypeSettings } = useAdBoardTypeSettings();
   const { register, reset, handleSubmit } = useForm<createNewApproveFormType>({
     defaultValues: {
       companyName: '',
@@ -62,6 +71,11 @@ function CreateNewApproveForm({
     resolver,
   });
   const { showReactHookFormError, showError, showSuccess } = useNotification();
+  const [adBoardInfo, setAdBoardInfo] = useState({
+    type: '',
+    width: '',
+    height: '',
+  });
   const [isSelectAdLocationPopupActive, setIsSelectAdLocationPopupActive] =
     useState<boolean>(false);
   const [selectedAdLocation, setSelectedAdLocation] =
@@ -80,6 +94,11 @@ function CreateNewApproveForm({
   const { onUpload, isLoading: isUploading } = useUpload();
 
   // Methods
+  useEffect(() => {
+    onGetAdBoardTypeSettings()
+      .then((data) => setAdBoardTypes(data))
+      .catch((error) => console.error(error));
+  }, []);
   const createNewApproveRequest = (data: createNewApproveFormType) => {
     if (
       isDateGreaterThan(
@@ -109,11 +128,19 @@ function CreateNewApproveForm({
       showError('Bạn chưa chọn điểm quảng cáo');
       return;
     }
-    const selectedAdBoard = adsBoardFromLocation
-      ? adsBoardFromLocation.find((adBoard) => adBoard.selected === true)
-      : null;
-    if (!selectedAdBoard) {
-      showError('Bạn chưa chọn bảng quảng cáo phù hợp');
+    // const selectedAdBoard = adsBoardFromLocation
+    //   ? adsBoardFromLocation.find((adBoard) => adBoard.selected === true)
+    //   : null;
+    // if (!selectedAdBoard) {
+    //   showError('Bạn chưa chọn bảng quảng cáo phù hợp');
+    //   return;
+    // }
+    if (
+      Number.parseInt(adBoardInfo.height) <= 0 ||
+      Number.parseInt(adBoardInfo.width) <= 0 ||
+      adBoardInfo.type === ''
+    ) {
+      showError('Thông tin bảng quảng cáo chưa phù hợp');
       return;
     }
     if (!adBoardImage) {
@@ -131,16 +158,16 @@ function CreateNewApproveForm({
           adsPointId: selectedAdLocation.id,
           adsBoard: {
             adsPointId: selectedAdLocation.id,
-            adsType: selectedAdBoard.boardData.adsType,
-            width: selectedAdBoard.boardData.width,
-            height: selectedAdBoard.boardData.height,
+            adsType: adBoardInfo.type,
+            width: Number.parseInt(adBoardInfo.width),
+            height: Number.parseInt(adBoardInfo.height),
             image: imgPath.path,
           },
         })
       )
       .then((msg) => {
         showSuccess(msg);
-        router.push(OFFICER_PAGES.APPROVE_LIST);
+        router.push(OFFICER_PAGES.REQUEST_LIST);
         reset();
       })
       .catch((error) => showError(error.message));
@@ -161,20 +188,20 @@ function CreateNewApproveForm({
       behavior: 'smooth',
     });
   };
-  const handleChooseAdBoard = (adBoardId: number) => {
-    if (Array.isArray(adsBoardFromLocation)) {
-      setAdsBoardFromLocation(
-        adsBoardFromLocation.map((adBoard) =>
-          adBoard.boardData.id === adBoardId
-            ? {
-                ...adBoard,
-                selected: true,
-              }
-            : adBoard
-        )
-      );
-    }
-  };
+  // const handleChooseAdBoard = (adBoardId: number) => {
+  //   if (Array.isArray(adsBoardFromLocation)) {
+  //     setAdsBoardFromLocation(
+  //       adsBoardFromLocation.map((adBoard) =>
+  //         adBoard.boardData.id === adBoardId
+  //           ? {
+  //               ...adBoard,
+  //               selected: true,
+  //             }
+  //           : adBoard
+  //       )
+  //     );
+  //   }
+  // };
 
   return (
     <>
@@ -270,21 +297,22 @@ function CreateNewApproveForm({
 
         <div className="col-start-1 col-span-4 row-start-4 row-span-1">
           <label
-            htmlFor="adsContent"
+            htmlFor="newAdsApproveContent"
             className="text-xs font-semibold opacity-60"
           >
             Nội dung quảng cáo
           </label>
           <textarea
-            id="adsContent"
+            id="newAdsApproveContent"
             placeholder="Mô tả ngắn gọn về quảng cáo của bạn..."
             {...register('adsContent')}
+            style={{ display: 'block' }}
             disabled={isCreatingRequest || isUploading}
-            className="disabled:cursor-not-allowed disabled:bg-zinc-100 border-solid border-[1px] border-zinc-400 px-4 py-3 h-24 rounded outline-none bg-transparent text-xs font-medium resize-none w-full !block"
+            className="disabled:cursor-not-allowed disabled:bg-zinc-100 border-solid border-[1px] border-zinc-400 px-4 py-3 h-24 rounded outline-none bg-transparent text-xs font-medium resize-none w-full"
           />
         </div>
 
-        <div className="shadow-sm overflow-x-auto overflow-y-hidden rounded-md col-span-4">
+        <div className="shadow-sm overflow-x-auto rounded-md col-span-4">
           <table className="w-full table-auto text-xs text-center border-collapse border">
             <thead className="bg-indigo-950 text-white font-semibold">
               <tr>
@@ -305,7 +333,7 @@ function CreateNewApproveForm({
               </tr>
               <tr>
                 <th scope="col" className="px-2 py-3 border-r border-white">
-                  Bảng quảng cáo hiện có
+                  Bảng quảng cáo
                 </th>
                 <th scope="col" className="px-2 py-3">
                   Hình ảnh
@@ -363,70 +391,57 @@ function CreateNewApproveForm({
                     )}
                   </span>
                 </td>
-                <td className="border-r border-zinc-400">
-                  {isGettingOfficerAdDetail ? (
-                    <span className="py-4 w-full grid place-items-center">
-                      <svg
-                        aria-hidden="true"
-                        className="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
-                        viewBox="0 0 100 101"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                          fill="currentColor"
-                        />
-                        <path
-                          d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                          fill="currentFill"
-                        />
-                      </svg>
-                      <span className="sr-only">Loading...</span>
-                    </span>
-                  ) : Array.isArray(adsBoardFromLocation) ? (
-                    adsBoardFromLocation.length > 0 ? (
-                      <span className="flex flex-col items-center justify-between w-full h-full">
-                        <h6 className="flex-grow mb-2 w-full">
-                          Chọn duy nhất 1
-                        </h6>
-                        <span className="flex-shrink w-full">
-                          {adsBoardFromLocation.map((adBoard) => (
-                            <button
-                              onClick={() =>
-                                handleChooseAdBoard(adBoard.boardData.id)
-                              }
-                              type="button"
-                              key={adBoard.boardData.id}
-                              className={`${
-                                adBoard.selected
-                                  ? '!bg-blue-200 hover:!bg-blue-200'
-                                  : ''
-                              } flex flex-row items-center text-xs font-medium gap-3 py-3 px-4 border-t-[1px] border-b-[1px] border-zinc-100 bg-white hover:bg-zinc-100 w-full h-fit`}
-                            >
-                              <Image
-                                src={adBoard.boardData.image}
-                                alt={adBoard.boardData.adsType}
-                                width={70}
-                                height={70}
-                              />
-                              <span>{adBoard.boardData.adsType}</span>
-                              <span>
-                                {adBoard.boardData.width}m x{' '}
-                                {adBoard.boardData.height}m (w x h)
-                              </span>
-                            </button>
-                          ))}
-                        </span>
-                      </span>
-                    ) : (
-                      <span className="py-4">
-                        <EmptyIcon label="Không có bảng quảng cáo nào" />
-                      </span>
-                    )
-                  ) : (
-                    <>Chọn điểm quảng cáo để hiển thị thông tin</>
-                  )}
+                <td className="border-r border-zinc-400 p-3 flex flex-col justify-center items-center">
+                  <div className="w-auto h-8 z-40 relative">
+                    <ModernSelect
+                      onOptionSelect={(
+                        selectedOption: modernSelectOptionType
+                      ) => {
+                        setAdBoardInfo({
+                          ...adBoardInfo,
+                          type: selectedOption.name,
+                        });
+                      }}
+                      defaultValue={'Chọn kiểu bảng'}
+                      options={
+                        adBoardTypes
+                          ? adBoardTypes.map((type) => ({
+                              name: type.name,
+                              value: type.name,
+                              defaultChecked: false,
+                            }))
+                          : null
+                      }
+                      style="clean"
+                      disabled={isCreatingRequest || isUploading}
+                    />
+                  </div>
+
+                  <input
+                    type="number"
+                    placeholder="Chiều rộng (m)"
+                    disabled={isCreatingRequest || isUploading}
+                    onChange={(e) => {
+                      setAdBoardInfo({
+                        ...adBoardInfo,
+                        width: e.target.value,
+                      });
+                    }}
+                    className="disabled:cursor-not-allowed border-solid border-[1px] border-zinc-400 px-3 py-2 my-2 w-28 col-start-2 row-start-1 col-span-1 row-span-1"
+                  />
+
+                  <input
+                    type="number"
+                    placeholder="Chiều cao (m)"
+                    disabled={isCreatingRequest || isUploading}
+                    onChange={(e) => {
+                      setAdBoardInfo({
+                        ...adBoardInfo,
+                        height: e.target.value,
+                      });
+                    }}
+                    className="disabled:cursor-not-allowed border-solid border-[1px] border-zinc-400 px-3 py-2 mb-2 w-28 col-start-2 row-start-1 col-span-1 row-span-1"
+                  />
                 </td>
                 <td className="py-4">
                   {adBoardImage ? (

@@ -6,6 +6,8 @@ const reportResponseSchema = z.object({
 });
 const officerReportSchema = z.object({
   id: z.number(),
+  lat: z.number(),
+  lon: z.number(),
   address: z.string(),
   reportType: z.string(),
   name: z.string(),

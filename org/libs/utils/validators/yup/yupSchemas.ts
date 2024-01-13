@@ -1,6 +1,9 @@
 import * as y from 'yup';
 import { vietnamPhoneNumber } from './../regex/phoneNumber';
 
+const vietnamLatitudeRange = { min: 8, max: 23 };
+const vietnamLongitudeRange = { min: 102, max: 110 };
+
 // DEFAULT
 const y_email = y
   .string()
@@ -60,6 +63,50 @@ export const editLocationDetailSchema = y.object({
       width: y.number().min(1, 'Chiều rộng tối thiểu 1m'),
       image: y.string(),
       expiredDate: y.string(),
+    })
+  ),
+});
+export const newLocationSchema = y.object({
+  address: y
+    .string()
+    .required('Địa chỉ không được để trống')
+    .max(255, 'Địa chỉ tối đa 255 ký tự'),
+  latitude: y
+    .string()
+    .required('Không được để trống kinh độ và vĩ độ')
+    .test(
+      'is-valid-latitude',
+      `Vĩ độ phải thuộc Việt Nam (Trong khoảng ${vietnamLatitudeRange.min} tới ${vietnamLatitudeRange.max})`,
+      (value) => {
+        const numericValue = parseFloat(value);
+        return (
+          !isNaN(numericValue) &&
+          numericValue >= vietnamLatitudeRange.min &&
+          numericValue <= vietnamLatitudeRange.max
+        );
+      }
+    ),
+  longitude: y
+    .string()
+    .required('Không được để trống kinh độ và vĩ độ')
+    .test(
+      'is-valid-longitude',
+      `Kinh độ phải thuộc Việt Nam (Trong khoảng ${vietnamLongitudeRange.min} tới ${vietnamLongitudeRange.max})`,
+      (value) => {
+        const numericValue = parseFloat(value);
+        return (
+          !isNaN(numericValue) &&
+          numericValue >= vietnamLongitudeRange.min &&
+          numericValue <= vietnamLongitudeRange.max
+        );
+      }
+    ),
+  locationType: y.string().required('Không được để trống loại địa điểm'),
+  adsForm: y.string().required('Không được để trống hình thức'),
+  planned: y.boolean(),
+  images: y.array(
+    y.object({
+      image: y.string(),
     })
   ),
 });
@@ -142,4 +189,9 @@ export const newAccountFormSchema = y.object({
   unitUnderManagement: y
     .string()
     .required('Bạn chưa phân công khu vực quản lý'),
+});
+
+export const newRegionSchema = y.object({
+  ward: y.string().required('Bạn chưa nhập tên phường'),
+  district: y.string().required('Bạn chưa nhập tên quận'),
 });

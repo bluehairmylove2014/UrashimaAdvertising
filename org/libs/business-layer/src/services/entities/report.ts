@@ -1,6 +1,8 @@
 import { IAdLocation, IAdLocationDetail, IAdsBoard } from './ads';
 
 interface IReport {
+  lat: number;
+  lon: number;
   reportType: string;
   name: string;
   email: string;
@@ -35,5 +37,5 @@ export interface IOfficerReportDetail extends IOfficerReport {
 
   adsPoint?: IAdLocation;
 
-  Location?: Pick<IAdLocation, 'id' | 'longitude' | 'latitude' | 'address'>;
+  location?: Pick<IAdLocation, 'id' | 'longitude' | 'latitude' | 'address'>;
 }

@@ -6,6 +6,7 @@ import {
   approveAdModificationRequestEndpoint,
   getAllAdModificationRequestEndpoint,
   approveAdCreationRequestEndpoint,
+  deleteModificationRequestUrl,
 } from '../../config/apis';
 import { Services } from '../../service';
 import {
@@ -102,6 +103,35 @@ export class ApproveService extends Services {
         >({
           method: 'DELETE',
           url: deleteApproveUrl,
+          schema: deleteApproveRequestResponseSchema,
+          params: { id },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          signal: this.abortController.signal,
+          transformResponse: (res) => res,
+        });
+        return response;
+      } else {
+        throw new Error('Unauthorized');
+      }
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  };
+  deleteModificationRequest = async ({
+    id,
+    token,
+  }: deleteApproveRequestParamsType): Promise<deleteApproveRequestResponseType> => {
+    this.abortController = new AbortController();
+    try {
+      if (token) {
+        const response = await this.fetchApi<
+          typeof deleteApproveRequestResponseSchema,
+          deleteApproveRequestResponseType
+        >({
+          method: 'DELETE',
+          url: deleteModificationRequestUrl,
           schema: deleteApproveRequestResponseSchema,
           params: { id },
           headers: {

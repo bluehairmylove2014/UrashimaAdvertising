@@ -9,7 +9,6 @@ import {
 import DetailLoader from '@presentational/atoms/DetailLoader';
 import CustomImage from '@presentational/atoms/CustomImage';
 import ReportForm from '@presentational/molecules/ReportForm';
-import Announcement from '@presentational/molecules/Announcement';
 import CustomMap from '@presentational/organisms/CustomMap';
 
 import {
@@ -19,6 +18,7 @@ import {
 import InfoAdsPoint from '@presentational/molecules/InfoAdsPoint';
 import DetailAds from '@presentational/molecules/DetailAds';
 import DetailAdsPoint from '@presentational/molecules/DetailAdsPoint';
+import Notification from '@presentational/molecules/Notification';
 
 import 'mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import { useGetReportForm } from '@business-layer/business-logic/non-service-lib/reportForm';
@@ -39,6 +39,11 @@ import { IAdReport, ILocationReport } from '@business-layer/services/entities';
 
 import { FeatureCollection, Point } from 'geojson';
 import { debounce } from '@business-layer/business-logic/helper';
+import { useSocketConnect } from '@business-layer/business-logic/realtime';
+import useGetMessage from '@business-layer/business-logic/realtime/hooks/useGetMessage';
+import { setLocationReportLS } from '@business-layer/business-logic/lib/report/process/helpers/locationReportLocalstorage';
+import { setAdReportLS } from '@business-layer/business-logic/lib/report/process/helpers/adReportLocalstorage';
+import { useReportContext } from '@business-layer/business-logic/lib/report/process/context';
 
 type locationType =
   | {
@@ -79,9 +84,6 @@ function Home(): ReactElement {
     ILocation | undefined
   >(undefined);
 
-  // Create state for show notification
-  const [isNotifications, setIsNotifications] = useState<boolean>(false);
-
   //Create state for checking ads board is click detail
   const [adsBoardReportedDetail, setAdsBoardReportedDetail] =
     useState<IAdReport>();
@@ -106,6 +108,7 @@ function Home(): ReactElement {
     null
   );
 
+  const { dispatch } = useReportContext();
   const locationReportList = useGetLocationReports();
   const adsReportList = useGetAdReports();
   const { onGetLocationDetail } = useGetLocationDetail();
@@ -119,6 +122,59 @@ function Home(): ReactElement {
     reportData,
     reportIdentificationData,
   } = useGetReportForm();
+  const { handleConnect } = useSocketConnect();
+  const messages = useGetMessage();
+  const [displayMessage, setDisplayMessage] = useState<string[]>([]);
+
+  useEffect(() => {
+    handleConnect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (messages.length > 0) {
+      const [message, submissionData] =
+        messages[messages.length - 1].split('|');
+      console.log('RECEIVE NEW MESSAGE: ', message);
+      console.log('submissionData: ', submissionData);
+      if (locationReportList) {
+        const sameLocationIndex = locationReportList.findIndex(
+          (report) => report.submissionDate === submissionData
+        );
+        if (typeof sameLocationIndex === 'number' && sameLocationIndex !== -1) {
+          const copyLocationReports = [...locationReportList];
+          copyLocationReports[sameLocationIndex].reportStatus = true;
+          setLocationReportLS(copyLocationReports);
+          dispatch({
+            type: 'SET_LOCATION_REPORT_ACTION',
+            payload: copyLocationReports,
+          });
+
+          console.log('FOUND IN: locationReportList');
+          console.log('NEW LIST: ', copyLocationReports);
+          setDisplayMessage([...displayMessage, message]);
+        }
+      }
+      if (adsReportList) {
+        const sameAdIndex = adsReportList.findIndex(
+          (report) => report.submissionDate === submissionData
+        );
+        if (typeof sameAdIndex === 'number' && sameAdIndex !== -1) {
+          const copyAdReports = [...adsReportList];
+          copyAdReports[sameAdIndex].reportStatus = true;
+          setAdReportLS(copyAdReports);
+          dispatch({
+            type: 'SET_AD_REPORT_ACTION',
+            payload: copyAdReports,
+          });
+          console.log('FOUND IN: sameAdIndex');
+          console.log('NEW LIST: ', copyAdReports);
+          setDisplayMessage([...displayMessage, message]);
+        }
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [messages]);
 
   useEffect(() => {
     if (idAdsPoint > -1) {
@@ -143,8 +199,6 @@ function Home(): ReactElement {
   //Catch click mouse event
   const handleClick = useCallback((event: MapLayerMouseEvent) => {
     if (!mapRef.current) return;
-
-    setIsNotifications(false);
     setIsActiveAdsBoard(false);
     setIsClickAdsPoint(false);
     setIsReportHistoryActive(false);
@@ -171,9 +225,7 @@ function Home(): ReactElement {
       layers: [
         'unclustered-point-planned',
         'unclustered-point-unplanned',
-        'unclustered-point-reported',
-        'unclustered-unknown-point-reported',
-        'unclustered-ads-board-reported',
+        'unclustered-reported',
       ],
     });
 
@@ -188,22 +240,31 @@ function Home(): ReactElement {
         .map(Number);
 
       //Check ADS Point is reported
-      if (
-        featuresAllPoint[0].layer.id === 'unclustered-unknown-point-reported'
-      ) {
-        setAdsPointReportedDetail(
-          locationReportList?.find(
-            (location) =>
-              location.longitude === long && location.latitude === lat
-          )
+      if (featuresAllPoint[0].layer.id === 'unclustered-reported') {
+        const report = locationReportList?.find(
+          (r) => r.latitude == lat && r.longitude == long
         );
-        setIsClickReportedPoint(true);
-        setIsBackActive(false);
-        return;
+        if (report && !report.reportData) {
+          mapRef.current.flyTo({
+            zoom: 16,
+            center: [event.lngLat.lng, event.lngLat.lat],
+            duration: 1500,
+          });
+
+          setAdsPointReportedDetail(
+            locationReportList?.find(
+              (location) =>
+                location.longitude === long && location.latitude === lat
+            )
+          );
+          setIsClickReportedPoint(true);
+          setIsBackActive(false);
+          return;
+        } else setIsClickReportedPoint(false);
       } else setIsClickReportedPoint(false);
 
       mapRef.current.flyTo({
-        zoom: 14,
+        zoom: 16,
         center: [event.lngLat.lng, event.lngLat.lat],
         duration: 1500,
       });
@@ -249,9 +310,7 @@ function Home(): ReactElement {
         (f) =>
           f.layer.id === 'unclustered-point-planned' ||
           f.layer.id === 'unclustered-point-unplanned' ||
-          f.layer.id === 'unclustered-point-reported' ||
-          f.layer.id === 'unclustered-unknown-point-reported' ||
-          f.layer.id === 'unclustered-ads-board-reported'
+          f.layer.id === 'unclustered-reported'
       );
 
       if (!adsPoint) {
@@ -296,34 +355,37 @@ function Home(): ReactElement {
             return;
         }
 
-        //Check Unknow Poin is reported
-        if (adsPoint.layer.id === 'unclustered-unknown-point-reported') {
-          setLongLatUnknowPointReported({
-            longitude: long,
-            latitude: lat,
-          });
-          onGetLocationDetail({ latitude: lat, longitude: long })
-            .then((data) => {
-              setInfoUnknowPointReported(data);
-            })
-            .catch((error) => {
-              showError('Lỗi lấy dữ liệu địa điểm');
+        //Check Report
+        if (adsPoint.layer.id === 'unclustered-reported') {
+          //Check report type
+          const report = locationReportList?.find(
+            (r) => r.latitude == lat && r.longitude == long
+          );
+
+          //Unknow report
+          if (report && !report.reportData) {
+            setLongLatUnknowPointReported({
+              longitude: long,
+              latitude: lat,
             });
+            onGetLocationDetail({ latitude: lat, longitude: long })
+              .then((data) => {
+                setInfoUnknowPointReported(data);
+              })
+              .catch((error) => {
+                showError('Lỗi lấy dữ liệu địa điểm');
+              });
 
-          setPosPrevMouse({
-            latitude: lat,
-            longitude: long,
-          });
-          return;
-        }
+            setPosPrevMouse({
+              latitude: lat,
+              longitude: long,
+            });
+            return;
+          }
 
-        //Check ADS Point or ADS Board  is reported
-        if (
-          adsPoint.layer.id === 'unclustered-point-reported' ||
-          adsPoint.layer.id === 'unclustered-ads-board-reported'
-        )
+          //Ads Report Point or Ads Board Report
           setIsAdsPointReported(true);
-        else setIsAdsPointReported(false);
+        } else setIsAdsPointReported(false);
 
         setIdAdsPoint(adsPoint.properties?.id);
         setPosPrevMouse({
@@ -333,6 +395,7 @@ function Home(): ReactElement {
 
         return;
       }
+
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, 10),
     []
@@ -358,10 +421,7 @@ function Home(): ReactElement {
                         cluster: false,
                         name: m.address,
                         planned: m.planned,
-                        isAdsLocation: true,
-                        isAdsBoardReport: adsReportList
-                          ? adsReportList.some((ar) => ar.adsPointID === m.id)
-                          : false,
+                        isEmpty: m.isEmpty,
                         reported: Boolean(
                           (locationReportList &&
                             locationReportList.some(
@@ -395,8 +455,7 @@ function Home(): ReactElement {
                               name: '',
                               planned: false,
                               reported: true,
-                              isAdsLocation: false,
-                              isAdsBoardReport: false,
+                              isEmpty: false,
                               longLatArr: [m.longitude, m.latitude],
                             },
                             geometry: {
@@ -424,23 +483,6 @@ function Home(): ReactElement {
               <i className="fi fi-ss-triangle-warning"></i>
               {/* Báo cáo của bạn */}
             </button>
-            <button
-              className="relative bg-white rounded shadow-md shadow-zinc-400 px-2 py-0 h-[36px] text-xs font-medium ml-2 hover:bg-gray-100 transition-colors"
-              onClick={() => {
-                setIsNotifications(!isNotifications);
-              }}
-            >
-              <i className="fi fi-ss-bell"></i>
-            </button>
-            {isNotifications ? (
-              <Announcement
-                handleClose={() => {
-                  setIsNotifications(false);
-                }}
-              />
-            ) : (
-              <></>
-            )}
           </div>
           {userClickMarker ? (
             <Marker {...userClickMarker}>
@@ -539,6 +581,9 @@ function Home(): ReactElement {
               <DetailAdsPoint
                 detailAdsPoint={infoClickAdsPoint}
                 isOfficer={false}
+                isHQ={false}
+                listReport={undefined}
+                handleListReport={() => {}}
                 onClick={(id) => {
                   setIdAdsBoard(id);
                   setIsActiveAdsBoard(true);
@@ -613,7 +658,7 @@ function Home(): ReactElement {
                 setIsClickReportedPoint(true);
                 if (mapRef.current !== null)
                   mapRef.current.flyTo({
-                    zoom: 14,
+                    zoom: 16,
                     center: [point.longitude, point.latitude],
                     duration: 1500,
                   });
@@ -653,6 +698,7 @@ function Home(): ReactElement {
               <ReportDetailPoint
                 backActive={isBackActive}
                 infoPointReport={adsPointReportedDetail}
+                infoUnknowPoint={infoUnknowPointReported}
                 handleClose={() => {
                   setIsClickReportedPoint(false);
                   setIsReportHistoryActive(false);
@@ -668,6 +714,8 @@ function Home(): ReactElement {
           ) : (
             <></>
           )}
+
+          <Notification messages={displayMessage} />
 
           {isLoading ? <DetailLoader /> : <></>}
         </CustomMap>

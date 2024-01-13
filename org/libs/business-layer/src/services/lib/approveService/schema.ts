@@ -13,7 +13,7 @@ const getApproveListResponseSchema = z.array(
     contractStart: z.string(),
     contractEnd: z.string(),
     requestStatus: z.string(),
-    adsBoard: adBoardSchema,
+    adsBoard: adBoardSchema.nullable(),
     adsPoint: adLocationSchema,
   })
 );
@@ -35,6 +35,7 @@ const getAllAdModificationRequestResponseSchema = z.array(
     images: z.array(z.object({ image: z.string() })),
     adsBoard: z.array(adBoardSchema),
     adsPointId: z.number(),
+    requestStatus: z.string(),
     modifyTime: z.string(),
     reasons: z.string(),
   })

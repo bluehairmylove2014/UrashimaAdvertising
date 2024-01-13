@@ -11,6 +11,7 @@ export const HQ_PAGES = {
 
   AD_SETTING: '/ad-setting',
 
+  AD_NEW_LOCATION: '/ad-locations/new',
   AD_LOCATIONS: '/ad-locations',
   AD_LOCATIONS_DETAIL: '/ad-locations/detail',
   AD_LOCATIONS_MODIFICATION: '/ad-locations/edit',

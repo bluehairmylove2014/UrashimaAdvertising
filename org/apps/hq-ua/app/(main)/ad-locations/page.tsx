@@ -7,6 +7,7 @@ import { cookies } from 'next/dist/client/components/headers';
 import { HQ_PAGES } from '@constants/hqPages';
 import { getCustomAccessTokenKey } from '@business-layer/business-logic/helper/customKey';
 import { getHostname } from '../../../helper/hostname';
+import AddNewLocationBtn from './addNewLocationBtn';
 
 const settingService = new SettingService();
 async function getLocationTypes() {
@@ -66,6 +67,7 @@ async function AdLocations() {
                   ]
                 : null
             }
+            defaultValue={'Tất cả hình thức'}
           />
           <LocationTableFilterSelect
             type="locationType"
@@ -85,7 +87,9 @@ async function AdLocations() {
                   ]
                 : null
             }
+            defaultValue={'Tất cả loại địa điểm'}
           />
+          <AddNewLocationBtn />
         </div>
       </div>
       <AdLocationsTable customDetailHref={HQ_PAGES.AD_LOCATIONS_DETAIL} />

@@ -87,10 +87,6 @@ const CustomMap: ForwardRefRenderFunction<MapRef, customMapProps> = (
   useEffect(() => {
     if (currentLocation === undefined && navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
-        console.log('LOCATION: ', {
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-        });
         setCurrentLocation({
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
@@ -166,31 +162,9 @@ const CustomMap: ForwardRefRenderFunction<MapRef, customMapProps> = (
           (f.properties.planned !== false || f.properties.reported !== false)
       );
     }
-    if (!layers.find((l) => l.id === 'unclustered-ads-board-reported')) {
+    if (!layers.find((l) => l.id === 'unclustered-reported')) {
       newSourceData.features = newSourceData.features.filter(
-        (f) =>
-          f.properties &&
-          (f.properties.reported !== true ||
-            f.properties.isAdsLocation !== true ||
-            f.properties.isAdsBoardReport !== true)
-      );
-    }
-    if (!layers.find((l) => l.id === 'unclustered-unknown-point-reported')) {
-      newSourceData.features = newSourceData.features.filter(
-        (f) =>
-          f.properties &&
-          (f.properties.reported !== true ||
-            f.properties.isAdsLocation !== false ||
-            f.properties.isAdsBoardReport !== false)
-      );
-    }
-    if (!layers.find((l) => l.id === 'unclustered-point-reported')) {
-      newSourceData.features = newSourceData.features.filter(
-        (f) =>
-          f.properties &&
-          (f.properties.reported !== true ||
-            f.properties.isAdsLocation !== true ||
-            f.properties.isAdsBoardReport !== false)
+        (f) => f.properties && f.properties.reported !== true
       );
     }
     setDisplaySourceData(newSourceData);

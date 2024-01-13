@@ -24,8 +24,8 @@ import PreviewImage from '@presentational/atoms/PreviewImage';
 import { useUpload } from '@business-layer/business-logic/lib/sirv';
 import { getCurrentDateTime } from '@utils/helpers';
 import { renameImageWithUniqueName } from '@utils/helpers/imageName';
-import FriendlyCaptcha from '@presentational/atoms/FriendlyCaptcha';
 import QuillEditor from '@presentational/atoms/QuillEditor';
+import useFriendlyCaptcha from '@presentational/atoms/FriendlyCaptcha';
 
 const PREVIEW_HEIGHT = 80;
 const reportsType = [
@@ -68,11 +68,14 @@ function ReportForm({
   const { onReportAd, isLoading: isReportingAd } = useReportAd();
   const { onReportLocation, isLoading: isReportingLocation } =
     useReportLocation();
-  const [imagesPreview, setImagesPreview] = useState<FileList | null>(null);
+  const [imagesPreview, setImagesPreview] = useState<File[] | null>(null);
   const { onUpload } = useUpload();
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [isVerified, setIsVerified] = useState<boolean>(false);
   const quillRef = useRef<HTMLDivElement>(null);
+  const { CaptchaWidget, getIsSolution } = useFriendlyCaptcha({
+    onSuccessVerify: () => setIsVerified(true),
+  });
 
   // Methods
   const getReportFunc = (target: reportTargetType) => {
@@ -85,6 +88,17 @@ function ReportForm({
         return undefined;
     }
   };
+
+  useEffect(() => {
+    if (isActive) {
+      // Reset the form when the component becomes active
+      reset();
+      setImagesPreview(null);
+      setSelectedReportType(null);
+      setIsVerified(false);
+    }
+    isActive && setIsVerified(getIsSolution());
+  }, [isActive]);
 
   const handleReport = (data: any) => {
     // SEND REPORT FORM TO SERVER
@@ -99,6 +113,10 @@ function ReportForm({
           reset();
           setImagesPreview(null);
           setSelectedReportType(null);
+          const quillEditor = quillRef.current?.querySelector('.ql-editor');
+          if (quillEditor) {
+            quillEditor.innerHTML = '';
+          }
         })
         .catch((error) => showError(error.message))
         .finally(() => {
@@ -170,7 +188,7 @@ function ReportForm({
   };
 
   const handleSelectImage = (imageList: FileList) => {
-    setImagesPreview(imageList);
+    setImagesPreview(Array.from(imageList));
   };
 
   return (
@@ -273,7 +291,7 @@ function ReportForm({
           )}
         </div>
         <hr />
-        <FriendlyCaptcha onSuccessVerify={() => setIsVerified(true)} />
+        {CaptchaWidget}
 
         {isVerified ? (
           <CustomButton

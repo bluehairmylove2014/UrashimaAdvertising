@@ -71,7 +71,7 @@ export class Services {
     const response = await (!isProduction
       ? axios(mockParams)
       : getAxiosNormalInstance()(mockParams));
-    const dataResponse = schema.parse(response.data);
+    const dataResponse = schema ? schema.parse(response.data) : response.data;
     typeof window !== 'undefined' &&
       window.removeEventListener('beforeunload', this.cancelRequest);
     return transformResponse ? transformResponse(dataResponse) : dataResponse;
