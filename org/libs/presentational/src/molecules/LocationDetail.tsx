@@ -40,9 +40,8 @@ function LocationDetail({
   return (
     <>
       <div
-        className={`fixed ${
-          isActive ? 'bottom-6' : '-bottom-full'
-        } bg-white left-1/2 transform -translate-x-1/2 rounded shadow-sm transition-transform w-4/12 h-fit p-3`}
+        className={`fixed ${isActive ? 'bottom-6' : '-bottom-full'
+          } bg-white left-1/2 transform -translate-x-1/2 rounded shadow-sm transition-transform w-4/12 h-fit p-3 z-40`}
         style={{ minHeight: '120px' }}
       >
         {locationData ? (
@@ -81,7 +80,7 @@ function LocationDetail({
               )}
               {isSelecting ? (
                 <button
-                  onClick={() => {}}
+                  onClick={() => { }}
                   className="flex flex-nowrap justify-center py-1 px-3 rounded text-[0.6rem] text-white bg-green-500"
                 >
                   <span className="ml-2 whitespace-nowrap">
