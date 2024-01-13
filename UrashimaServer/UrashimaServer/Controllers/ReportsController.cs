@@ -257,6 +257,7 @@ namespace UrashimaServer.Controllers
                 .Include(r => r.AdsBoard)
                 .Include(r => r.AdsPoint)
                 .Include(r => r.Location)
+                .Include(r => r.Images)
                 .FirstOrDefaultAsync();
 
             var region = HttpContext.Items["address"] as string;
@@ -348,7 +349,7 @@ namespace UrashimaServer.Controllers
             }
 
             #region REAL TIME - SEND TO OFFICER
-            await _chatHubContext.Clients.Group("guests").AddMessage("Trạng thái báo cáo bạn gửi đã được cập nhật");
+            await _chatHubContext.Clients.Group("guests").AddMessage($"Trạng thái báo cáo bạn gửi đã được cập nhật|{updatedItem.SubmissionDate}");
             #endregion
 
             return Ok(new
