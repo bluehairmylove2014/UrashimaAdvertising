@@ -16,6 +16,7 @@ namespace UrashimaServer.Database.Dtos
         public string Email { get; set; } = string.Empty;
         public string Phone { get; set; } = string.Empty;
         public string Content { get; set; } = string.Empty;
+        public DateTime SubmissionDate { get; set; }
         public ICollection<ReportImageDto>? Images { get; set; }
     }
 
@@ -35,6 +36,7 @@ namespace UrashimaServer.Database.Dtos
         public string Email { get; set; } = string.Empty;
         public string Phone { get; set; } = string.Empty;
         public string Content { get; set; } = string.Empty;
+        public DateTime SubmissionDate { get; set; }
         public ICollection<ReportImageDto>? Images { get; set; }
     }
 
