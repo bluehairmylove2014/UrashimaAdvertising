@@ -109,4 +109,12 @@ namespace UrashimaServer.Database.Dtos
         public LocationBasicDto? Location { get; set; }
 
     }
+
+    public class UpdateReportTreatmentDto
+    {
+        [Required]
+        public int Id { get; set; }
+        public bool ReportStatus { get; set; } = false;
+        public string TreatmentProcess { get; set; } = string.Empty;
+    }
 }

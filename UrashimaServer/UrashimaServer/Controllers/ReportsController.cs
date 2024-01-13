@@ -185,27 +185,6 @@ namespace UrashimaServer.Controllers
             });
         }
 
-        ///// <summary>
-        ///// API Lấy danh sách các báo cáo.
-        ///// </summary>
-        //// GET: api/report
-        //[HttpGet]
-        //public async Task<ActionResult<IEnumerable<Report>>> GetAllReports()
-        //{
-        //    var rawResult = await _context.Reports
-        //        .Include(s => s.Images)
-        //        .ToListAsync();
-
-        //    var result = new List<GetReportDto>();
-        //    foreach (var rawItem in rawResult)
-        //    {
-        //        var getReportDto = _mapper.Map<GetReportDto>(rawItem);
-        //        result.Add(getReportDto);
-        //    }
-
-        //    return Ok(result);
-        //}
-
         /// <summary>
         /// API Officer|Headquarter lấy danh sách báo cáo theo đơn vị quản lý.
         /// </summary>
@@ -328,14 +307,13 @@ namespace UrashimaServer.Controllers
                 });
             }
 
-            var rawResult = await _context.Reports
+            var updatedItem = await _context.Reports
                 .Include(r => r.Images)
                 .Include(r => r.AdsPoint)
-                .ToListAsync();
+                .Include(r => r.Location)
+                .FirstOrDefaultAsync(r => r.Id == updateReport.Id);
 
             var region = HttpContext.Items["address"] as string;
-            var updatedItem = rawResult.FirstOrDefault(r => r.Id == updateReport.Id);
-
             var reportedAddress = updatedItem!.AdsPoint != null 
                 ? updatedItem!.AdsPoint.Address
                 : updatedItem!.Location!.Address;
@@ -350,13 +328,15 @@ namespace UrashimaServer.Controllers
 
             updatedItem.TreatmentProcess = updateReport.TreatmentProcess;
             updatedItem.ReportStatus = updateReport.ReportStatus;
+            //updatedItem.ReportStatus = !updateReport.TreatmentProcess.IsNullOrEmpty();
+
             await _context.SaveChangesAsync();
 
             // Setup mail
             MailRequest mailRequest = new MailRequest();
             mailRequest.ToEmail = updatedItem.Email;
             mailRequest.Subject = "Báo cáo đang xử lí!!!";
-            mailRequest.Body = $"Thân chào {acc.FullName}, We are writing to inform you that your report is currently being processed. Our team is working hard to ensure that your order is handled as soon as possible.\r\n\r\nReport status: {updatedItem.ReportStatus}, Treatment: {updatedItem.TreatmentProcess}\r\n\r\n. If you have any questions or concerns about your report, please don't hesitate to contact us. We're always here to help.\r\n\r\nThank you for reporting the problem to us.\r\n\r\nBest regards,\r\n\r\nUrashima Map";
+            mailRequest.Body = $"Thân chào {updatedItem.Name}, We are writing to inform you that your report is currently being processed. Our team is working hard to ensure that your order is handled as soon as possible.\r\n\r\nReport status: {updatedItem.ReportStatus}, Treatment: {updatedItem.TreatmentProcess}\r\n\r\n. If you have any questions or concerns about your report, please don't hesitate to contact us. We're always here to help.\r\n\r\nThank you for reporting the problem to us.\r\n\r\nBest regards,\r\n\r\nUrashima Map";
             try
             {
                 await _emailService.SendReportEmailAsync(mailRequest);
