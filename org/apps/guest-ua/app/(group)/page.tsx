@@ -19,6 +19,7 @@ import {
 import InfoAdsPoint from '@presentational/molecules/InfoAdsPoint';
 import DetailAds from '@presentational/molecules/DetailAds';
 import DetailAdsPoint from '@presentational/molecules/DetailAdsPoint';
+import Notification from '@presentational/molecules/Notification';
 
 import 'mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import { useGetReportForm } from '@business-layer/business-logic/non-service-lib/reportForm';
@@ -208,7 +209,6 @@ function Home(): ReactElement {
 
 
           setAdsPointReportedDetail(
-
             locationReportList?.find(
               (location) =>
                 location.longitude === long && location.latitude === lat
@@ -443,23 +443,6 @@ function Home(): ReactElement {
               <i className="fi fi-ss-triangle-warning"></i>
               {/* Báo cáo của bạn */}
             </button>
-            <button
-              className="relative bg-white rounded shadow-md shadow-zinc-400 px-2 py-0 h-[36px] text-xs font-medium ml-2 hover:bg-gray-100 transition-colors"
-              onClick={() => {
-                setIsNotifications(!isNotifications);
-              }}
-            >
-              <i className="fi fi-ss-bell"></i>
-            </button>
-            {isNotifications ? (
-              <Announcement
-                handleClose={() => {
-                  setIsNotifications(false);
-                }}
-              />
-            ) : (
-              <></>
-            )}
           </div>
           {userClickMarker ? (
             <Marker {...userClickMarker}>
@@ -691,6 +674,9 @@ function Home(): ReactElement {
           ) : (
             <></>
           )}
+
+
+          <Notification />
 
           {isLoading ? <DetailLoader /> : <></>}
         </CustomMap>

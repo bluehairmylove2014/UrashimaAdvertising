@@ -591,7 +591,6 @@ function ViewLocationMap({ isOfficer }: { isOfficer?: boolean }): ReactElement {
             <></>
           )}
 
-          {isLoading ? <DetailLoader /> : <></>}
         </CustomMap>
       </div>
       <LocationDetail

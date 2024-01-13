@@ -11,6 +11,7 @@ import { IOfficerReportDetail } from '@business-layer/services/entities';
 import { useOfficerEditReport } from '../../../business-layer/src/business-logic/lib/officerReport/process/hooks/useOfficerEditReport';
 import { boolean } from 'zod';
 import { useEffect, useState } from 'react';
+import ButtonLoader from '@presentational/atoms/ButtonLoader';
 
 type formData = {
   response: string;
@@ -35,16 +36,20 @@ function ReportResponse({
 
   const onModify = (formData: formData) => {
     reportData.treatmentProcess = formData.response;
-    console.log(reportData);
+    reportData.reportStatus = true;
+
     onOfficerEditReport({
       ...reportData,
     })
       .then((msg) => {
         showSuccess(msg);
         reset();
+        handleClose();
       })
       .catch((error) => showError(error.message))
-      .finally(() => { });
+      .finally(() => {
+        handleClose();
+      });
   };
 
   useEffect(() => {
@@ -91,9 +96,15 @@ function ReportResponse({
           >
             Huỷ bỏ
           </CustomButton>
-          <CustomButton style="fill-primary" type="submit">
-            Xác nhận
-          </CustomButton>
+          {isLoading ?
+            <div className='shadow-sm w-full py-2 font-semibold text-xs fill-secondary bg-blue-700 rounded text-white'>
+              <ButtonLoader label="Đang xử lý..." />
+            </div>
+            :
+            <CustomButton style="fill-primary" type="submit">
+              Xác nhận
+            </CustomButton>
+          }
         </div>
       </form>
     </div>
