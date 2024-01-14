@@ -44,11 +44,6 @@ namespace UrashimaServer.Common.Helper
 
             builder.HtmlBody = htmlContent;
 
-            var image = builder.LinkedResources.Add(Path.Combine(mailRequest.ResourcePath, "images", "image-5.png"));
-            image.ContentId = MimeUtils.GenerateMessageId();
-            builder.HtmlBody = builder.HtmlBody.Replace("{{IMAGE_CID}}", image.ContentId);
-
-
             email.Body = builder.ToMessageBody();
 
             using var smtp = new SmtpClient();
@@ -75,17 +70,6 @@ namespace UrashimaServer.Common.Helper
             htmlContent = htmlContent.Replace("Treatment_Process_To_Replace", $"{mailRequest.TreatmentProcess}");
 
             builder.HtmlBody = htmlContent;
-
-            var imgList = new List<string>() {
-                "image-1.png", "image-2.gif", "image-3.png"
-            };
-
-            foreach (var imgName in imgList)
-            {
-                var image = builder.LinkedResources.Add(Path.Combine(mailRequest.ResourcePath, "images_report", imgName));
-                image.ContentId = MimeUtils.GenerateMessageId();
-                builder.HtmlBody = builder.HtmlBody.Replace($"{imgName}", image.ContentId);
-            }
 
             email.Body = builder.ToMessageBody();
 
