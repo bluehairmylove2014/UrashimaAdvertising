@@ -204,7 +204,7 @@ namespace UrashimaServer.Controllers.Headquater
                 {
                     message = $"Trạng thái thay đổi:\'{isModify.Status}\' không hỗ trợ."
                 });
-            } else if (isModify.Status.Equals(RequestConstant.Accepted))
+            } else if (isModify.Status.Equals(RequestConstant.Approve))
             {
                 // Point
                 var pointToModify = await _context.AdsPoints.FindAsync(modifyData.AdsPointId);
@@ -254,7 +254,7 @@ namespace UrashimaServer.Controllers.Headquater
             modifyData.RequestStatus = isModify.Status;
             await _context.SaveChangesAsync();
 
-            if (isModify.Status.Equals(RequestConstant.Rejected))
+            if (isModify.Status.Equals(RequestConstant.Deny))
             {
                 return Ok(new
                 {

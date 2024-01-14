@@ -52,12 +52,16 @@
         public const string Accepted = "accepted";
         public const string Rejected = "rejected";
         public const string Inprogress = "inprocess";
+        public const string Approve = "approve";
+        public const string Deny = "deny";
 
         public static readonly List<string> Status = new()
         {
             Accepted,
             Rejected,
-            Inprogress
+            Inprogress,
+            Approve,
+            Deny
         };
     }
 }
