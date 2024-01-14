@@ -38,7 +38,7 @@ namespace UrashimaServer.Common.Helper
             email.Subject = mailRequest.Subject;
             var builder = new BodyBuilder();
 
-            var htmlContent = System.IO.File.ReadAllText(Path.Combine(mailRequest.ResourcePath, "index.html"));
+            var htmlContent = EmailBlob.OtpEmail;
             htmlContent = htmlContent.Replace("EmailNameToReplace", $"{mailRequest.Name}");
             htmlContent = htmlContent.Replace("MyPasswordToReplace", $"{mailRequest.Otp}");
 
@@ -61,7 +61,7 @@ namespace UrashimaServer.Common.Helper
             email.Subject = mailRequest.Subject;
             var builder = new BodyBuilder();
 
-            var htmlContent = System.IO.File.ReadAllText(Path.Combine(mailRequest.ResourcePath, "index_report.html"));
+            var htmlContent = EmailBlob.ReportEmail;
             htmlContent = htmlContent.Replace("Guest_Name_To_Replace", $"{mailRequest.Name}");
 
             var statusString = mailRequest.Status ? "Đã xử lý" : "Chưa xử lý";

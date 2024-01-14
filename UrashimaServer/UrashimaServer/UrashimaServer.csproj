@@ -32,12 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Common\Helper\" />
     <Folder Include="Migrations\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Common\Helper\" />
   </ItemGroup>
 
 </Project>
